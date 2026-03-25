@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>galeria</title>
+</head>
+<body class="page">
+
+<div class="container galeria">
+  <h1>📸 Memórias</h1>
+
+  <img id="img" src="foto1.jpg">
+
+  <button onclick="next()">➡️</button>
+</div>
+
+<script src="js/script.js"></script>
+
+<script>
+let imgs = ["foto1.jpg","foto2.jpg","foto3.jpg"];
+let i = 0;
+
+function next(){
+  i = (i+1) % imgs.length;
+  document.getElementById("img").src = imgs[i];
+}
+</script>
+</body>
+</html>
