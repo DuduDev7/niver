@@ -1,29 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
     <title>surpresa</title>
-</head>
-<body class="page">
+  </head>
+  <body class="page">
+    <div class="container">
+      <h1>🎉 SURPRESA</h1>
 
-<div class="container">
-  <h1>🎉 SURPRESA</h1>
+      <p>Você é a melhor mãe do mundo ❤️</p>
+      <p>Depois que abrir coloque no tempo 0:28s ❤️</p>
 
-  <p>Você é a melhor mãe do mundo ❤️</p>
+      <button onclick="abrir()">🎵 Tocar Música</button>
 
-  <button onclick="play()">Tocar Música 🎵</button>
-</div>
+      <div id="yt-container" style="display: none; margin-top: 15px">
+        <iframe
+          width="100%"
+          height="200"
+          id="player"
+          src=""
+          frameborder="0"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+        >
+        </iframe>
+      </div>
+      <div id="btn-2">
+        <button onclick="revelar()">🎁 Clique aqui</button>
+        <p
+          id="msg"
+          style="display: none; margin-top: 15px; font-size: 18px"
+        ></p>
+      </div>
+    </div>
 
-<audio id="m" src="music.mp3"></audio>
+    <a class="back-btn" href="home.html">⬅ Voltar</a>
 
-<script src="js/script.js"></script>
+    <script src="js/script.js"></script>
 
-<script>
-function play(){
-  document.getElementById("m").play();
-}
-</script>
-</body>
+    <script>
+      function abrir() {
+        window.open(
+          'https://www.youtube.com/watch?v=AoIuOrzZCiw&t=28s',
+          '_blank'
+        )
+      }
+
+      function revelar() {
+        const msg = document.getElementById('msg')
+
+        msg.style.display = 'block'
+        msg.innerText = 'Mãe, você é tudo pra mim!! ❤️'
+      }
+    </script>
+  </body>
 </html>
