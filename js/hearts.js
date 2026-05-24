@@ -6,36 +6,73 @@ c.height = window.innerHeight;
 
 let arr = [];
 
-// Função para criar um 4
-function drawFour(x, y, size) {
-  ctx.fillStyle = "#D3AF37"; // ouro
+// desenhar símbolo
+function drawItem(x, y, size, emoji, color){
+
   ctx.font = `bold ${size * 3}px Arial`;
+
   ctx.textAlign = "center";
+
   ctx.textBaseline = "middle";
-  ctx.fillText("4", x, y);
+
+  ctx.fillStyle = color;
+
+  ctx.fillText(emoji, x, y);
 }
 
 function add(){
+
+  // escolhe aleatoriamente entre 4 e coração
+  const isHeart = Math.random() > 0.5;
+
   arr.push({
-    x: Math.random()*c.width,
-    y: c.height,
-    s: Math.random()*10+5,
-    v: Math.random()*2+1
+
+    x: Math.random() * c.width,
+
+    y: c.height + 50,
+
+    s: Math.random() * 10 + 8,
+
+    v: Math.random() * 2 + 1,
+
+    emoji: isHeart ? "❤️" : "4",
+
+    color: isHeart ? "#ff4d6d" : "#D3AF37"
   });
 }
 
 function draw(){
+
   ctx.clearRect(0,0,c.width,c.height);
 
   arr.forEach((h,i)=>{
-    drawFour(h.x, h.y, h.s);
+
+    drawItem(
+      h.x,
+      h.y,
+      h.s,
+      h.emoji,
+      h.color
+    );
 
     h.y -= h.v;
-    if(h.y < -h.s*2) arr.splice(i,1);
+
+    if(h.y < -100){
+      arr.splice(i,1);
+    }
   });
 
   requestAnimationFrame(draw);
 }
 
-setInterval(add,300);
+setInterval(add, 250);
+
 draw();
+
+window.addEventListener("resize", () => {
+
+  c.width = window.innerWidth;
+
+  c.height = window.innerHeight;
+
+});

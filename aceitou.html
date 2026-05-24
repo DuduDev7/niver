@@ -16,26 +16,26 @@
       <h1 class="titulo-final">Parabéns 🤎</h1>
 
       <p class="texto-final">
-        Agora você oficialmente virou minha dupla de futevôlei.
+        Agora você oficialmente virou MINHA dupla de futevôlei.
       </p>
 
       <p class="texto-final">Isso significa:</p>
 
       <div class="lista-final">
-        <div class="item-final">🏐 Muitos jogos juntos</div>
+        <div class="item-final">🚀 Muitos jogos juntos</div>
 
         <div class="item-final">😂 Resenha infinita</div>
 
-        <div class="item-final">☀ Reclamar do calor</div>
+        <div class="item-final">😮‍💨 Reclamar do calor</div>
 
-        <div class="item-final">🤝 Parceria obrigatória</div>
+        <div class="item-final">⚡ Parceria obrigatória</div>
 
-        <div class="item-final">🥇 Futuras vitórias</div>
+        <div class="item-final">🎯 Futuras vitórias</div>
       </div>
 
-      <p class="mensagem-final">Obrigado por aceitar entrar nessa comigo.</p>
+      <p class="mensagem-final">Te amo minha jogadora ❤️</p>
 
-      <button onclick="soltarCoracoes()">🤎 comemorar</button>
+      <button onclick="soltarCoracoes()">🎉 comemorar</button>
     </div>
     <div class="voltar">
       <a class="back-btn" href="home.html">⬅ Voltar</a>
@@ -55,10 +55,12 @@
       function criarExplosao() {
         const emoji = document.createElement('div')
 
-        const elementos = ['🤎', '🏐', '4']
+        const elementos = ['❤️', '4']
 
-        emoji.innerText =
+        const escolhido =
           elementos[Math.floor(Math.random() * elementos.length)]
+
+        emoji.innerText = escolhido
 
         emoji.style.position = 'fixed'
 
@@ -74,11 +76,20 @@
 
         emoji.style.transition = 'transform 3s linear, opacity 3s'
 
+        // COR DO 4
+        if (escolhido === '4') {
+          emoji.style.color = '#D4AF37' // dourado
+
+          emoji.style.fontWeight = 'bold'
+
+          emoji.style.textShadow = '0 0 10px #D4AF37'
+        }
+
         document.body.appendChild(emoji)
 
         setTimeout(() => {
           emoji.style.transform = `translateY(-${window.innerHeight + 200}px)
-           rotate(${Math.random() * 360}deg)`
+     rotate(${Math.random() * 360}deg)`
 
           emoji.style.opacity = '0'
         }, 50)
