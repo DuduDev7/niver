@@ -859,3 +859,94 @@ canvas {
   }
 
 }
+
+/* ========================= */
+/* CORREÇÕES MOBILE */
+/* ========================= */
+
+@media (max-width: 768px){
+
+  /* evita faixa branca lateral */
+  html,
+  body{
+
+    width: 100%;
+
+    overflow-x: hidden;
+  }
+
+  body{
+
+    min-height: 100vh;
+
+    background:
+      linear-gradient(135deg, #8B6F47, #A0826D);
+
+    background-attachment: fixed;
+  }
+
+  /* container centralizado */
+  .container{
+
+    width: calc(100% - 30px);
+
+    margin-left: auto;
+
+    margin-right: auto;
+  }
+
+  /* evita botão voltar em cima do texto */
+  .container,
+  .analise-box,
+  .final-box{
+
+    padding-bottom: 90px;
+  }
+
+  /* botão voltar */
+  .back-btn{
+
+    width: 70%;
+
+    max-width: 260px;
+
+    bottom: 15px;
+
+    z-index: 9999;
+  }
+
+  /* área dos botões do convite */
+  .botoes{
+
+    position: relative;
+
+    height: 340px;
+
+    overflow: hidden;
+  }
+
+  /* botão NÃO funcionando várias vezes */
+  .nao-btn{
+
+    position: absolute;
+
+    top: 140px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    z-index: 999;
+
+    transition:
+      top 0.2s,
+      left 0.2s;
+  }
+
+  /* botão SIM alinhado */
+  .sim-btn{
+
+    margin-top: 0;
+  }
+
+}
