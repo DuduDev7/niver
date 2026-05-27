@@ -1,66 +1,61 @@
 const paginasPublicas = [
   "index.html",
-  "login.html"
+  "login.html",
+  "login2.html"
 ];
 
 const paginaAtual = window.location.pathname.split("/").pop();
-
 const autenticado = localStorage.getItem("auth");
 
 if (!paginasPublicas.includes(paginaAtual) && autenticado !== "true") {
-
   window.location.href = "login.html";
-
 }
 
 function logout(){
-
   localStorage.removeItem("auth");
-
   window.location.href = "login.html";
-
 }
 
 function go(p) {
-  window.location.href = p
+  window.location.href = p;
 }
 
-// let imgs = [
-//   null, // 👈 primeiro é o "mistério"
-//   'imgs/nossa.jpeg',
-//   'imgs/missi.jpeg',
-//   'imgs/camp.jpeg',
-//   'imgs/arthur.jpeg',
-//   'imgs/sesi.jpeg'
-// ]
+// --- CONTROLE DOS BOTÕES DE LOGIN (PÁGINA 1 E PÁGINA 2) ---
+const campoErro = document.getElementById("erro");
 
-// let textos = ['❤️', '', '', '']
+// Se estiver na login2.html (onde o botão é o btn-login2)
+const botaoLogin2 = document.getElementById("btn-login2");
+if (botaoLogin2 && campoErro) {
+  botaoLogin2.addEventListener("click", () => {
+    campoErro.innerText = "Senha incorreta, tente novamente!";
+    campoErro.style.color = "red";
+    campoErro.style.fontWeight = "bold";
+  });
+}
 
-// let i = 0
+// Se o script rodar na login.html original (onde o botão não tem esse id)
+// --- Função que o botão da home.html está chamando ---
+function aoClicarBotaoJulia() {
+  // Mostra o erro na tela (se o elemento 'erro' existir na home)
+  const campoErro = document.getElementById("erro");
+  if (campoErro) {
+    campoErro.innerText = "erro, senha invalida";
+    campoErro.style.color = "red";
+    campoErro.style.fontWeight = "bold";
+  }
 
-// function next() {
-//   i = (i + 1) % imgs.length
+  // Espera 3 segundos, solta o alerta e limpa o histórico para ela não voltar
+  setTimeout(() => {
+    alert("Parabéns dona Julia, pela sua desobediência você acaba de trocar a senha do site");
+    window.location.replace("login2.html");
+  }, 0);
+}
+// --------------------------------------------------------
 
-//   const img = document.getElementById('img')
-//   const txt = document.getElementById('texto')
-
-//   if (imgs[i] === null) {
-//     img.style.display = 'none'
-//     txt.innerText = textos[i]
-//     txt.className = 'misterio-text'
-//   } else {
-//     img.style.display = 'block'
-//     img.src = imgs[i]
-//     txt.innerText = ''
-//   }
-// }
-
+// Lógica do botão "Não" que foge
 const botaoNao = document.getElementById("nao");
-
 if(botaoNao){
-
     botaoNao.addEventListener("mouseenter", () => {
-
         const larguraTela = window.innerWidth - botaoNao.offsetWidth;
         const alturaTela = window.innerHeight - botaoNao.offsetHeight;
 
@@ -69,39 +64,26 @@ if(botaoNao){
 
         botaoNao.style.left = `${novaPosicaoX}px`;
         botaoNao.style.top = `${novaPosicaoY}px`;
-
         botaoNao.style.transform = "translate(-50%, -50%)";
-
     });
-
 }
 
+// Lógica de exibição dos itens em lista (animação)
 const itens = document.querySelectorAll(".item");
 const checks = document.querySelectorAll(".check");
 const resultado = document.getElementById("resultado");
 
 if(itens.length > 0){
-
     itens.forEach((item, index) => {
-
         setTimeout(() => {
-
             item.classList.add("show");
-
             setTimeout(() => {
-
                 checks[index].classList.remove("hidden");
-
             }, 500);
-
         }, index * 1200);
-
     });
 
     setTimeout(() => {
-
         resultado.classList.add("show");
-
     }, itens.length * 1200 + 800);
-
 }
