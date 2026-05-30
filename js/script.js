@@ -23,33 +23,7 @@ function go(p) {
 // --- CONTROLE DOS BOTÕES DE LOGIN (PÁGINA 1 E PÁGINA 2) ---
 const campoErro = document.getElementById("erro");
 
-// Se estiver na login2.html (onde o botão é o btn-login2)
-const botaoLogin2 = document.getElementById("btn-login2");
-if (botaoLogin2 && campoErro) {
-  botaoLogin2.addEventListener("click", () => {
-    campoErro.innerText = "Senha incorreta, tente novamente!";
-    campoErro.style.color = "red";
-    campoErro.style.fontWeight = "bold";
-  });
-}
 
-// Se o script rodar na login.html original (onde o botão não tem esse id)
-// --- Função que o botão da home.html está chamando ---
-function aoClicarBotaoJulia() {
-  // Mostra o erro na tela (se o elemento 'erro' existir na home)
-  const campoErro = document.getElementById("erro");
-  if (campoErro) {
-    campoErro.innerText = "erro, senha invalida";
-    campoErro.style.color = "red";
-    campoErro.style.fontWeight = "bold";
-  }
-
-  // Espera 3 segundos, solta o alerta e limpa o histórico para ela não voltar
-  setTimeout(() => {
-    alert("Parabéns dona Julia, pela sua desobediência você acaba de trocar a senha do site");
-    window.location.replace("login2.html");
-  }, 0);
-}
 // --------------------------------------------------------
 
 // Lógica do botão "Não" que foge
