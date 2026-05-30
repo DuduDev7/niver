@@ -30,6 +30,69 @@ async function login() {
   }
 }
 
+async function loginInfo() {
+
+  const senhaDigitada = document.getElementById("senha").value;
+
+  const senhaHash = "c33b854e1796da73da1cde0f459d3fbea8a9325db93d579ae4b35c976d14265d";
+
+  const encoder = new TextEncoder();
+
+  const data = encoder.encode(senhaDigitada);
+
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+  const hashHex = hashArray
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+
+  if (hashHex === senhaHash) {
+
+    localStorage.setItem("auth", "true");
+
+    window.location.href = "info.html";
+
+  } else {
+
+    document.getElementById("erro").innerText =
+      "Senha incorreta 🎮";
+
+  }
+}
+async function loginGarrudos() {
+
+  const senhaDigitada = document.getElementById("senha").value;
+
+  const senhaHash = "f5358d49aaca1d2586eed00c861715fbdf8bcc163c63f2595ba5f7b223e17c70";
+
+  const encoder = new TextEncoder();
+
+  const data = encoder.encode(senhaDigitada);
+
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+  const hashHex = hashArray
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+
+  if (hashHex === senhaHash) {
+
+    localStorage.setItem("auth", "true");
+
+    window.location.href = "garrudos.html";
+
+  } else {
+
+    document.getElementById("erro").innerText =
+      "Senha incorreta 🎮";
+
+  }
+}
+
 // async function gerarHash(senha) {
 //   const encoder = new TextEncoder();
 //   const data = encoder.encode(senha);

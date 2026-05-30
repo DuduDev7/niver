@@ -87,3 +87,36 @@ if(itens.length > 0){
         resultado.classList.add("show");
     }, itens.length * 1200 + 800);
 }
+
+const textos = [
+  "Verificando sentimentos...",
+  "Analisando conversas...",
+  "Relembrando momentos...",
+  "Calculando saudade...",
+  "Acessando coração...",
+  "Conteúdo encontrado...",
+  "Acesso concedido ❤️"
+];
+
+let i = 0;
+
+const status = document.getElementById("status");
+
+const intervalo = setInterval(() => {
+
+  status.textContent = textos[i];
+
+  i++;
+
+  if (i >= textos.length) {
+
+    clearInterval(intervalo);
+
+    setTimeout(() => {
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("carta").style.display = "block";
+    }, 1000);
+
+  }
+
+}, 1200);
