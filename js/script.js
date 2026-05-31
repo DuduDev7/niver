@@ -148,7 +148,7 @@ function perguntarIA() {
     resposta =
       'Provavelmente um dos melhores acontecimentos da minha linha do tempo.'
   } else if (pergunta.includes('importancia')) {
-    resposta = 'Nível de importância: absurdo. Sistema incapaz de calcular.'
+    resposta = 'Nível de importância: absurdo... Sistema incapaz de calcular.'
   } else {
     const respostas = [
       '🤖 Não sei responder isso.',
