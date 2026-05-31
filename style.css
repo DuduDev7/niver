@@ -1180,3 +1180,131 @@ canvas {
 
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
+
+.page-box{
+
+  max-width:600px;
+
+  margin:auto;
+
+  text-align:center;
+}
+
+.item-list{
+
+  margin:15px 0;
+
+  padding:15px;
+
+  border-radius:12px;
+
+  background:rgba(255,255,255,.3);
+
+  animation:fadeIn .6s ease;
+}
+
+.hidden{
+  display:none;
+}
+
+.resultado{
+
+  margin-top:25px;
+
+  font-size:20px;
+
+  font-weight:bold;
+}
+
+@keyframes fadeIn{
+
+  from{
+    opacity:0;
+    transform:translateY(15px);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+}
+
+@media(max-width:768px){
+
+  .page-box{
+    width:95%;
+  }
+
+  .resultado{
+    font-size:18px;
+  }
+
+}
+
+.wiki-card{
+
+  text-align: left;
+
+  margin-top: 20px;
+
+  padding: 15px;
+
+  border-radius: 12px;
+
+  background: rgba(255,255,255,0.35);
+
+  border: 2px solid rgba(139,111,71,0.2);
+
+}
+
+.wiki-card p{
+
+  margin: 10px 0;
+
+}
+
+.wiki-card ul{
+
+  margin-left: 20px;
+
+}
+
+.wiki-card li{
+
+  margin: 10px 0;
+
+}
+
+.wiki-status{
+
+  margin-top: 25px;
+
+  padding: 15px;
+
+  border-radius: 12px;
+
+  background: rgba(255,255,255,0.45);
+
+  border: 2px dashed #8B6F47;
+
+}
+
+.wiki-status h2{
+
+  margin-bottom: 10px;
+
+  color: #6B4E3D;
+
+}
+
+@media(max-width:768px){
+
+  .wiki-card,
+  .wiki-status{
+
+    padding: 12px;
+
+  }
+
+}
