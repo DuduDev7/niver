@@ -217,3 +217,41 @@ function abrirArquivo() {
     }
   }, 800)
 }
+
+// LEIA-ME
+
+const tituloLivro =
+document.getElementById("tituloLivro");
+
+if(tituloLivro){
+
+  let cliques = 0;
+
+  tituloLivro.addEventListener("click",()=>{
+
+    cliques++;
+
+    if(cliques === 3){
+
+      tituloLivro.textContent =
+      "📖 Hmm...";
+
+    }
+
+    if(cliques === 4){
+
+      tituloLivro.textContent =
+      "📖 Tem algo escondido aqui...";
+
+    }
+
+    if(cliques >= 5){
+
+      window.location.href =
+      "secreta.html";
+
+    }
+
+  });
+
+}
