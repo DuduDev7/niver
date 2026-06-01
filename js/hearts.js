@@ -28,6 +28,9 @@ function add(){
   } else if (sorteio === 2) {
     escolhidoEmoji = "🦀";
     escolhidaColor = "#ff5c00"; // Laranja/Vermelho Caranguejo
+  } else if (sorteio === 3) {
+    escolhidoEmoji = "💎";
+    escolhidaColor = "#00b4d8"; // Azul Diamante
   }
 
   arr.push({
