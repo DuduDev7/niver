@@ -1127,6 +1127,103 @@ canvas {
 
 }
 
+.times-menu{
+
+  width: 100%;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  flex-wrap: wrap;
+
+  gap: 12px;
+
+  margin: 30px 0;
+}
+
+.time-btn{
+
+  text-decoration: none;
+
+  color: white;
+
+  background: rgba(255,255,255,.15);
+
+  border: 2px solid rgba(255,255,255,.25);
+
+  padding: 12px 20px;
+
+  border-radius: 12px;
+
+  font-weight: bold;
+
+  transition: .3s;
+
+  backdrop-filter: blur(8px);
+}
+
+.time-btn:hover{
+
+  transform: translateY(-3px);
+
+  background: rgba(255,255,255,.25);
+
+  box-shadow: 0 8px 20px rgba(0,0,0,.25);
+}
+
+.time-btn:active{
+
+  transform: scale(.97);
+}
+
+.uefa {
+  background-color: #ff8800 ;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+
+  min-height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 20px;
+}
+
+.tauros {
+  background-color: #6200a3;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+
+  min-height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 20px;
+}
+
+.atenun {
+  background-color: #00a81c;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+
+  min-height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 20px;
+}
+
 .garrudos {
   background-color: #001866;
   background-image: url("imgs/garrudos.png");
@@ -1486,6 +1583,17 @@ canvas {
   background: #e3f2fd;
 
   border-left: 5px solid #2196f3;
+
+  border-radius: 8px;
+}
+
+/* 😌 ANSIOSA */
+
+.postit-ansiosa{
+
+  background: #dff6f0;
+
+  border-left: 5px solid #20b486;
 
   border-radius: 8px;
 }
