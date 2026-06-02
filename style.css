@@ -1350,3 +1350,151 @@ canvas {
 
   font-weight:bold;
 }
+
+.frase-final{
+  margin-top: 25px;
+  padding: 15px;
+
+  border-left: 4px solid #8B6F47;
+
+  background: rgba(255,255,255,0.25);
+
+  border-radius: 10px;
+
+  font-style: italic;
+
+  font-weight: bold;
+}
+
+.postit{
+
+  margin: 25px 0;
+
+  padding: 15px;
+
+  border-radius: 10px;
+
+  box-shadow: 0 4px 10px rgba(0,0,0,.15);
+
+  text-align: left;
+}
+
+.postit h3{
+
+  margin-bottom: 10px;
+
+  color: #5C4033;
+}
+
+.postit p{
+
+  margin: 6px 0;
+}
+
+/* 😂 RIR */
+
+.postit-rir{
+
+  background: #fff3a6;
+
+  border-left: 5px solid #f5c400;
+
+  border-radius: 8px;
+}
+
+/* ❤️ SAUDADE */
+
+.postit-saudade{
+
+  background: #ffd6d6;
+
+  border-left: 5px solid #ff6b6b;
+
+  border-radius: 8px;
+}
+
+/* 🚀 MOTIVAÇÃO */
+
+.postit-motivacao{
+
+  background: #d7f8d7;
+
+  border-left: 5px solid #2ecc71;
+
+  border-radius: 8px;
+}
+
+/* 🤯 CONFUSA */
+
+.postit-confusa{
+
+  background: #d9e8ff;
+
+  border-left: 5px solid #4a90e2;
+
+  border-radius: 8px;
+}
+
+/* 🌱 INSEGURA */
+
+.postit-insegura{
+
+  background: #f4ddff;
+
+  border-left: 5px solid #b76cff;
+
+  border-radius: 8px;
+}
+
+/* 💎 DUVIDANDO DE SI */
+
+.postit-duvida{
+
+  background: #d8f5ff;
+
+  border-left: 5px solid #00bcd4;
+
+  border-radius: 8px;
+}
+
+/* 🔥 DESISTIR */
+
+.postit-desistir{
+
+  background: #ffe3c8;
+
+  border-left: 5px solid #ff7b00;
+
+  border-radius: 8px;
+}
+
+/* 🫶 PRECISAR DE MIM */
+
+.postit-precisar{
+
+  background: #ffe8c7;
+
+  border-left: 5px solid #d9a441;
+
+  border-radius: 8px;
+}
+
+/* 😞 DIA RUIM */
+
+.postit-dia-ruim{
+
+  background: #e3f2fd;
+
+  border-left: 5px solid #2196f3;
+
+  border-radius: 8px;
+}
+
+.postit-secreta{
+
+  background: #fff1cc;
+
+  border-left: 5px solid #d4a017;
+
+  border-radius: 8px;
+}
