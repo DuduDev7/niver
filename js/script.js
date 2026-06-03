@@ -255,3 +255,24 @@ if(tituloLivro){
   });
 
 }
+
+// CONTADOR DO PROJETO
+
+const contadorDias =
+document.getElementById("diasProjeto");
+
+if(contadorDias){
+
+  const inicio =
+  new Date("2026-04-11");
+
+  const hoje =
+  new Date();
+
+  const dias = Math.floor(
+    (hoje - inicio) / 86400000
+  );
+
+  contadorDias.innerHTML =
+  dias + " dias";
+}
