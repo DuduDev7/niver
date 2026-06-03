@@ -378,3 +378,27 @@ function registrarSequencia(pagina) {
     window.location.href = 'coincidencia.html'
   }
 }
+
+const titulo = document.querySelector(".secret-box h1");
+
+if (titulo) {
+
+  const texto = titulo.textContent;
+
+  titulo.textContent = "";
+
+  let i = 0;
+
+  const timer = setInterval(() => {
+
+    titulo.textContent += texto.charAt(i);
+
+    i++;
+
+    if (i >= texto.length) {
+      clearInterval(timer);
+    }
+
+  }, 50);
+
+}

@@ -1179,51 +1179,6 @@ canvas {
   transform: scale(.97);
 }
 
-.uefa {
-  background-color: #ff8800 ;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: contain;
-
-  min-height: 100vh;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  padding: 20px;
-}
-
-.tauros {
-  background-color: #6200a3;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: contain;
-
-  min-height: 100vh;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  padding: 20px;
-}
-
-.atenun {
-  background-color: #00a81c;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: contain;
-
-  min-height: 100vh;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  padding: 20px;
-}
-
 .garrudos {
   background-color: #001866;
   background-image: url("imgs/garrudos.png");
@@ -1771,4 +1726,447 @@ canvas {
 
   }
 
+}
+
+.ultima-pista{
+
+  margin-top:50px;
+
+  padding:15px;
+
+  background:rgba(0,0,0,.08);
+
+  border-left:4px solid #d4a017;
+
+  border-radius:10px;
+
+  font-family:monospace;
+
+  color:#5C4033;
+
+  opacity:.7;
+}
+
+.ultima-pista span{
+
+  color:#d4a017;
+
+  font-weight:bold;
+}
+
+/* ================================= */
+/* PÁGINAS SECRETAS */
+/* ================================= */
+
+.secret-page{
+
+  min-height:100vh;
+
+  background:
+  linear-gradient(
+    135deg,
+    #4f3728,
+    #7b5d47,
+    #a0826d
+  );
+
+  padding:40px 15px 100px;
+
+  position:relative;
+}
+
+.secret-page::before{
+
+  content:"";
+
+  position:fixed;
+
+  inset:0;
+
+  background:
+  radial-gradient(
+    circle at top,
+    rgba(255,255,255,.08),
+    transparent 60%
+  );
+
+  pointer-events:none;
+}
+
+.secret-box{
+
+  max-width:750px;
+
+  margin:auto;
+
+  background:
+  rgba(245,230,211,.95);
+
+  border:3px solid #8B6F47;
+
+  border-radius:25px;
+
+  padding:35px;
+
+  box-shadow:
+  0 20px 50px rgba(0,0,0,.25);
+
+  animation:secretAppear .8s ease;
+}
+
+@keyframes secretAppear{
+
+  from{
+
+    opacity:0;
+
+    transform:
+    translateY(25px);
+  }
+
+  to{
+
+    opacity:1;
+
+    transform:
+    translateY(0);
+  }
+}
+
+/* TITULOS */
+
+.secret-box h1{
+
+  text-align:center;
+
+  color:#6B4E3D;
+
+  margin-bottom:30px;
+
+  font-size:38px;
+
+  line-height:1.3;
+  
+  white-space: pre-line;
+}
+
+.secret-box h2{
+
+  text-align:center;
+
+  margin-top:40px;
+
+  color:#6B4E3D;
+
+  line-height:1.5;
+}
+
+/* PARÁGRAFOS */
+
+.secret-box p{
+
+  font-size:19px;
+
+  line-height:1.9;
+
+  color:#5C4033;
+
+  margin-bottom:18px;
+
+  text-align:center;
+}
+
+/* FRASE FINAL */
+
+.secret-box h2{
+
+  background:
+  rgba(255,255,255,.4);
+
+  padding:25px;
+
+  border-radius:20px;
+
+  border:
+  2px dashed #8B6F47;
+}
+
+/* RESPONSIVO */
+
+@media(max-width:768px){
+
+  .secret-box{
+
+    padding:25px;
+  }
+
+  .secret-box h1{
+
+    font-size:28px;
+  }
+
+  .secret-box h2{
+
+    font-size:22px;
+  }
+
+  .secret-box p{
+
+    font-size:17px;
+
+    line-height:1.8;
+  }
+}
+
+/* ================================= */
+/* POSTIT */
+/* ================================= */
+
+.segredo-postit{
+
+  margin:35px auto;
+
+  max-width:500px;
+
+  background:#fff3a6;
+
+  padding:18px;
+
+  border-left:6px solid #f5c400;
+
+  border-radius:10px;
+
+  font-weight:bold;
+
+  color:#5C4033;
+
+  transform:rotate(-1deg);
+
+  box-shadow:
+  0 10px 20px rgba(0,0,0,.15);
+}
+
+/* ================================= */
+/* IA */
+/* ================================= */
+
+.ia-card{
+
+  margin:30px auto;
+
+  max-width:500px;
+
+  padding:20px;
+
+  text-align:center;
+
+  border-radius:15px;
+
+  background:#1f1f1f;
+
+  color:#00ff95;
+
+  font-family:monospace;
+
+  font-weight:bold;
+
+  box-shadow:
+  0 0 25px rgba(0,255,149,.2);
+}
+
+/* ================================= */
+/* WIKI */
+/* ================================= */
+
+.wiki-secret{
+
+  margin-top:35px;
+
+  padding:18px;
+
+  background:#f5f5f5;
+
+  border-left:5px solid #999;
+
+  border-radius:10px;
+
+  font-style:italic;
+}
+
+/* ================================= */
+/* FOTO */
+/* ================================= */
+
+.foto-secreta{
+
+  max-width:450px;
+
+  margin:30px auto;
+
+  padding:12px;
+
+  background:white;
+
+  border-radius:12px;
+
+  box-shadow:
+  0 10px 25px rgba(0,0,0,.2);
+}
+
+.foto-secreta img{
+
+  width:100%;
+
+  border-radius:8px;
+}
+
+/**********************************/
+/* COINCIDÊNCIA */
+/**********************************/
+
+.registro-final{
+
+  text-align:center;
+
+  margin-bottom:30px;
+
+  padding:15px;
+
+  background:
+  linear-gradient(
+    90deg,
+    #d4af37,
+    #ffe082
+  );
+
+  color:#5C4033;
+
+  font-weight:bold;
+
+  border-radius:12px;
+
+  box-shadow:
+  0 8px 20px rgba(212,175,55,.3);
+}
+
+/* ===================================== */
+/* SISTEMA SECRETO */
+/* ===================================== */
+
+.secret-box{
+
+  position:relative;
+
+  overflow:hidden;
+}
+
+.secret-box::before{
+
+  content:"CONFIDENCIAL";
+
+  position:absolute;
+
+  top:35px;
+
+  right:-45px;
+
+  padding:10px 60px;
+
+  background:#c62828;
+
+  color:white;
+
+  font-size:12px;
+
+  font-weight:bold;
+
+  letter-spacing:3px;
+
+  transform:rotate(35deg);
+
+  box-shadow:0 5px 15px rgba(0,0,0,.25);
+}
+
+.secret-box{
+
+  background:
+  repeating-linear-gradient(
+    transparent,
+    transparent 34px,
+    rgba(0,0,0,.04) 35px
+  ),
+  #f9f2e8;
+}
+
+.secret-box h1{
+
+  position:relative;
+
+  display:inline-block;
+
+  left:50%;
+
+  transform:translateX(-50%);
+}
+
+.secret-box h1::after{
+
+  content:"";
+
+  display:block;
+
+  height:4px;
+
+  width:70%;
+
+  margin:10px auto 0;
+
+  border-radius:20px;
+
+  background:
+  linear-gradient(
+    90deg,
+    transparent,
+    #8B6F47,
+    transparent
+  );
+}
+
+.ultima-pista{
+
+  margin-top:60px;
+
+  padding:20px;
+
+  border-radius:15px;
+
+  background:
+  rgba(0,0,0,.05);
+
+  border:2px dashed #8B6F47;
+
+  text-align:center;
+
+  font-family:monospace;
+
+  transition:.4s;
+
+  cursor:default;
+}
+
+.ultima-pista:hover{
+
+  transform:scale(1.02);
+
+  background:
+  rgba(0,0,0,.08);
+}
+
+.ultima-pista span{
+
+  font-weight:bold;
+
+  letter-spacing:2px;
+
+  color:#8B6F47;
 }
