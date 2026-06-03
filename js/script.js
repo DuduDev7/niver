@@ -149,6 +149,8 @@ function perguntarIA() {
       'Provavelmente um dos melhores acontecimentos da minha linha do tempo.'
   } else if (pergunta.includes('importancia')) {
     resposta = 'Nível de importância: absurdo... Sistema incapaz de calcular.'
+  } else if (pergunta.includes('secrety')) {
+    resposta = window.location.href = 'iaS.html'
   } else {
     const respostas = [
       '🤖 Não sei responder isso.',
@@ -220,59 +222,159 @@ function abrirArquivo() {
 
 // LEIA-ME
 
-const tituloLivro =
-document.getElementById("tituloLivro");
+const tituloLivro = document.getElementById('tituloLivro')
 
-if(tituloLivro){
+if (tituloLivro) {
+  let cliques = 0
 
-  let cliques = 0;
+  tituloLivro.addEventListener('click', () => {
+    cliques++
 
-  tituloLivro.addEventListener("click",()=>{
-
-    cliques++;
-
-    if(cliques === 3){
-
-      tituloLivro.textContent =
-      "📖 Hmm...";
-
+    if (cliques === 3) {
+      tituloLivro.textContent = '📖 Hmm...'
     }
 
-    if(cliques === 4){
-
-      tituloLivro.textContent =
-      "📖 Tem algo escondido aqui...";
-
+    if (cliques === 4) {
+      tituloLivro.textContent = '📖 Tem algo escondido aqui...'
     }
 
-    if(cliques >= 5){
-
-      window.location.href =
-      "secreta.html";
-
+    if (cliques >= 5) {
+      window.location.href = 'secreta.html'
     }
-
-  });
-
+  })
 }
 
 // CONTADOR DO PROJETO
 
-const contadorDias =
-document.getElementById("diasProjeto");
+const contadorDias = document.getElementById('diasProjeto')
 
-if(contadorDias){
+if (contadorDias) {
+  const inicio = new Date('2026-04-11')
 
-  const inicio =
-  new Date("2026-04-11");
+  const hoje = new Date()
 
-  const hoje =
-  new Date();
+  const dias = Math.floor((hoje - inicio) / 86400000)
 
-  const dias = Math.floor(
-    (hoje - inicio) / 86400000
-  );
+  contadorDias.innerHTML = dias + ' dias'
+}
 
-  contadorDias.innerHTML =
-  dias + " dias";
+// =========================
+// SEGREDO POST-IT
+// =========================
+
+const postitSegredo = document.getElementById('postitSecreto')
+
+const msgPostit = document.getElementById('msgPostit')
+
+const mensagensPostit = [
+  '',
+  '',
+  '',
+  '',
+  '🤔 Você está procurando algo ?',
+  '⚠️ Está quase...',
+  '🔓 Encontrado.'
+]
+
+if (postitSegredo) {
+  let cliquesPostit = 0
+
+  postitSegredo.addEventListener('click', () => {
+    cliquesPostit++
+
+    if (cliquesPostit <= mensagensPostit.length) {
+      msgPostit.innerHTML = mensagensPostit[cliquesPostit - 1]
+    }
+
+    if (cliquesPostit >= 7) {
+      setTimeout(() => {
+        window.location.href = '../postit.html'
+      }, 1000)
+    }
+  })
+}
+
+// =========================
+// SEGREDO GARRUDOS
+// =========================
+
+const fotoSegredo = document.getElementById('garrudosS')
+
+const msgFoto = document.getElementById('msgFoto')
+
+const mensagensFoto = [
+  '',
+  '',
+  '',
+  '',
+  'Você realmente está clicando nisso?',
+  '😑 Não precisava né...',
+  '🔓 Encontrado.'
+]
+
+if (fotoSegredo) {
+  let cliquesFoto = 0
+
+  fotoSegredo.addEventListener('click', () => {
+    cliquesFoto++
+
+    if (cliquesFoto <= mensagensFoto.length) {
+      msgFoto.innerHTML = mensagensFoto[cliquesFoto - 1]
+    }
+
+    if (cliquesFoto >= 7) {
+      setTimeout(() => {
+        window.location.href = 'garrudosS.html'
+      }, 1000)
+    }
+  })
+}
+
+// WIKIPEDIA
+
+const wiki = document.getElementById('wiki')
+
+if (wiki) {
+  let cliques = 0
+
+  wiki.addEventListener('click', () => {
+    cliques++
+
+    if (cliques === 3) {
+      wiki.textContent = '📖 Não continua'
+    }
+
+    if (cliques === 4) {
+      wiki.textContent = '📖 Para Julia'
+    }
+
+    if (cliques >= 7) {
+      window.location.href = 'wikiS.html'
+    }
+  })
+}
+
+// ======================
+// SEQUÊNCIA SECRETA
+// processo -> convite -> arquivo -> wikipedia -> ia
+// ======================
+
+function registrarSequencia(pagina) {
+  let sequencia = JSON.parse(localStorage.getItem('sequenciaSecreta')) || []
+
+  sequencia.push(pagina)
+
+  if (sequencia.length > 5) {
+    sequencia.shift()
+  }
+
+  localStorage.setItem('sequenciaSecreta', JSON.stringify(sequencia))
+
+  const correta = ['processo', 'convite', 'arquivo', 'wikipedia', 'ia']
+
+  if (JSON.stringify(sequencia) === JSON.stringify(correta)) {
+    localStorage.removeItem('sequenciaSecreta')
+
+    window.location.href = 'coincidencia.html'
+  }
 }

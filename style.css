@@ -1740,3 +1740,35 @@ canvas {
   }
 
 }
+
+#msgPostit,
+#msgFoto{
+
+  margin-top:15px;
+
+  font-weight:bold;
+
+  color:rgb(0, 0, 0);
+
+  text-align:center;
+
+  animation:fadeMsg .3s ease;
+}
+
+@keyframes fadeMsg{
+
+  from{
+
+    opacity:0;
+    transform:translateY(10px);
+
+  }
+
+  to{
+
+    opacity:1;
+    transform:translateY(0);
+
+  }
+
+}
