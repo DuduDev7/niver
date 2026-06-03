@@ -1,104 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>home</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="style.css" />
-  <title>home</title>
-</head>
+  <body class="center">
+    <canvas id="hearts"></canvas>
 
-<body class="center">
-  <canvas id="hearts"></canvas>
+    <div class="container home-box">
+      <h1 id="homeTitulo">❤️ Central da Julia ❤️</h1>
 
-  <div class="container home-box">
-
-    <h1 id="homeTitulo">
-      ❤️ Central da Julia ❤️
-    </h1>
-
-    <p class="sub-home">
-      Sistema carregado com sucesso.
-      <br>
-      Todos os módulos estão funcionando normalmente.
-    </p>
-
-    <div class="status-box">
-
-      <h3>📡 Status Atual</h3>
-
-      <p>
-        Última análise realizada:
+      <p class="sub-home">
+        Sistema carregado com sucesso.
+        <br />
+        Todos os módulos estão funcionando normalmente.
       </p>
 
-      <span>
-        Julia continua especial.
-      </span>
+      <div class="status-box">
+        <h3>📡 Status Atual</h3>
 
+        <p>Última análise realizada:</p>
+
+        <span> Julia continua especial. </span>
+      </div>
+
+      <div class="contador-dias">
+        ⏳ Projeto em desenvolvimento há:
+
+        <br />
+
+        <span id="diasProjeto"></span>
+      </div>
+
+      <div class="destaque-home">
+        <h2>📖 Leia-me quando precisar de mim</h2>
+
+        <p>
+          Uma coleção de cartas para os dias em que eu não estiver por perto.
+        </p>
+
+        <button onclick="go('leiame/indexLeiame.html')">Abrir Livro</button>
+      </div>
+
+      <h3 class="categoria">🧠 Sistemas</h3>
+
+      <button onclick="go('analise.html')">🔍 Analise</button>
+      <button onclick="go('estatistica.html')">📊 Estatistica</button>
+      <button onclick="go('arquivo.html')">🗂️ Arquivo</button>
+      <button onclick="go('ia.html')">🧠 IA</button>
+      <button onclick="go('wikipedia.html')">🌐 Wikipedia</button>
+      <button onclick="go('processo.html')">🔍 Processo</button>
+
+      <h3 class="categoria">❤️ Pessoal</h3>
+
+      <button onclick="go('obrigacoes.html')">📜 Suas Obrigações</button>
+      <button onclick="go('convite.html')">💌 Convite</button>
+
+      <h3 class="categoria">🦀 Área Restrita</h3>
+
+      <button onclick="go('loginInfo.html')">⚠️ Não entre por favor</button>
+
+      <!-- <button onclick="go('loginGarrudos.html')">🦀 Garrudos</button> -->
+
+      <button onclick="logout()">🚪 Sair</button>
     </div>
 
-    <div class="contador-dias">
-
-      ⏳ Projeto em desenvolvimento há:
-
-      <br>
-
-      <span id="diasProjeto"></span>
-
-    </div>
-
-    <div class="destaque-home">
-
-      <h2>📖 Leia-me quando precisar de mim</h2>
-
-      <p>
-        Uma coleção de cartas para os dias em que eu não estiver por perto.
-      </p>
-
-      <button onclick="go('leiame/indexLeiame.html')">
-        Abrir Livro
-      </button>
-
-    </div>
-
-    <h3 class="categoria">
-      🧠 Sistemas
-    </h3>
-
-    <button onclick="go('analise.html')">🔍 Analise</button>
-    <button onclick="go('estatistica.html')">📊 Estatistica</button>
-    <button onclick="go('arquivo.html')">🗂️ Arquivo</button>
-    <button onclick="go('ia.html')">🧠 IA</button>
-    <button onclick="go('wikipedia.html')">🌐 Wikipedia</button>
-    <button onclick="go('processo.html')">🔍 Processo</button>
-
-    <h3 class="categoria">
-      ❤️ Pessoal
-    </h3>
-
-    <button onclick="go('obrigacoes.html')">📜 Suas Obrigações</button>
-    <button onclick="go('convite.html')">💌 Convite</button>
-
-    <h3 class="categoria">
-      🦀 Área Restrita
-    </h3>
-
-    <button onclick="go('loginInfo.html')">
-      ⚠️ Não entre por favor
-    </button>
-
-    <button onclick="go('loginGarrudos.html')">
-      🦀 Garrudos
-    </button>
-
-    <button onclick="logout()">
-      🚪 Sair
-    </button>
-
-  </div>
-
-  <script src="js/hearts.js"></script>
-  <script src="js/script.js"></script>
-</body>
-
+    <script src="js/hearts.js"></script>
+    <script src="js/script.js"></script>
+  </body>
 </html>
