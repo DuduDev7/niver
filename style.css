@@ -1800,7 +1800,7 @@ canvas {
   margin:auto;
 
   background:
-  rgba(245,230,211,.95);
+  #8B6F47;
 
   border:3px solid #8B6F47;
 
@@ -2169,4 +2169,51 @@ canvas {
   letter-spacing:2px;
 
   color:#8B6F47;
+}
+
+#iaResp{
+
+  min-height:60px;
+
+  margin-top:20px;
+
+  font-family:monospace;
+
+  font-size:18px;
+
+  color:#8B4513;
+
+  text-align:center;
+
+  animation:pulseIA 1.5s infinite;
+}
+
+@keyframes pulseIA{
+
+  0%{
+    opacity:.5;
+  }
+
+  50%{
+    opacity:1;
+  }
+
+  100%{
+    opacity:.5;
+  }
+}
+
+.acesso-liberado{
+
+  text-align:center;
+
+  margin-bottom:30px;
+
+  color:#00ff95;
+
+  font-family:monospace;
+
+  font-weight:bold;
+
+  letter-spacing:3px;
 }

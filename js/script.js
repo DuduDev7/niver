@@ -143,14 +143,72 @@ function perguntarIA() {
   let resposta = ''
 
   if (pergunta.includes('julia')) {
-    resposta = '❤️ Assunto favorito do sistema.'
+    resposta = 'Uma das melhores pessoas que já passaram pela minha vida.'
+  } else if (pergunta.includes('importancia')) {
+    resposta = 'Mais do que eu provavelmente demonstrei.'
   } else if (pergunta.includes('acontecimento')) {
     resposta =
-      'Provavelmente um dos melhores acontecimentos da minha linha do tempo.'
-  } else if (pergunta.includes('importancia')) {
-    resposta = 'Nível de importância: absurdo... Sistema incapaz de calcular.'
+      'Um daqueles acontecimentos que mudam a forma como a gente enxerga os próprios dias.'
+  } else if (pergunta.includes('saudade')) {
+    resposta = 'Sim. Mais vezes do que eu gostaria de admitir.'
+  } else if (pergunta.includes('felicidade')) {
+    resposta = 'Muitas das minhas memórias favoritas têm você em algum lugar.'
+  } else if (pergunta.includes('futuro')) {
+    resposta = 'Eu gostaria muito que você fizesse parte dele.'
+  } else if (pergunta.includes('nós')) {
+    resposta = 'Talvez eu nunca tenha deixado de acreditar um pouco em nós.'
+  } else if (pergunta.includes('amor')) {
+    resposta =
+      'Tem sentimentos que a gente demora para entender. Outros que a gente entende rápido e tem medo de admitir.'
+  } else if (pergunta.includes('medo')) {
+    resposta = 'Perder alguém que se tornou importante demais.'
+  } else if (pergunta.includes('mensagem')) {
+    resposta =
+      'Você não faz ideia da quantidade de vezes que uma simples notificação sua mudou meu dia.'
+  } else if (pergunta.includes('sorriso')) {
+    resposta = 'Sempre foi uma das minhas coisas favoritas.'
+  } else if (pergunta.includes('especial')) {
+    resposta = 'Muito mais do que você imagina.'
+  } else if (pergunta.includes('valor')) {
+    resposta = 'Incalculável.'
+  } else if (pergunta.includes('segredo')) {
+    resposta = 'A maioria dos meus segredos tem você envolvida de alguma forma.'
+  } else if (pergunta.includes('esquecer')) {
+    resposta = 'Nunca pareceu uma opção muito interessante.'
+  } else if (pergunta.includes('escolha')) {
+    resposta = 'Se eu pudesse voltar no tempo, ainda escolheria conhecer você.'
+  } else if (pergunta.includes('verdade')) {
+    resposta =
+      'A verdade é que você se tornou importante para mim muito antes de eu perceber isso.'
   } else if (pergunta.includes('secrety')) {
-    resposta = window.location.href = 'iaS.html'
+    const iaResp = document.getElementById('iaResp')
+
+    const mensagens = [
+      '🔍 Procurando registros...',
+      '📂 Acessando arquivos...',
+      '🧠 Lendo memória...',
+      '❤️ Encontrado.'
+    ]
+
+    let etapa = 0
+
+    iaResp.innerHTML = mensagens[0]
+
+    const timer = setInterval(() => {
+      etapa++
+
+      if (etapa < mensagens.length) {
+        iaResp.innerHTML = mensagens[etapa]
+      } else {
+        clearInterval(timer)
+
+        setTimeout(() => {
+          window.location.href = 'iaS.html'
+        }, 1000)
+      }
+    }, 1500)
+
+    return
   } else {
     const respostas = [
       '🤖 Não sei responder isso.',
@@ -165,7 +223,29 @@ function perguntarIA() {
     resposta = respostas[Math.floor(Math.random() * respostas.length)]
   }
 
-  document.getElementById('iaResp').innerHTML = resposta
+  escreverIA(resposta)
+}
+
+function escreverIA(texto) {
+  const campo = document.getElementById('iaResp')
+
+  campo.innerHTML = '...'
+
+  setTimeout(() => {
+    campo.innerHTML = ''
+
+    let i = 0
+
+    const timer = setInterval(() => {
+      campo.innerHTML += texto.charAt(i)
+
+      i++
+
+      if (i >= texto.length) {
+        clearInterval(timer)
+      }
+    }, 25)
+  }, 400)
 }
 
 /* ========================= */
@@ -379,26 +459,22 @@ function registrarSequencia(pagina) {
   }
 }
 
-const titulo = document.querySelector(".secret-box h1");
+const titulo = document.querySelector('.secret-box h1')
 
 if (titulo) {
+  const texto = titulo.textContent
 
-  const texto = titulo.textContent;
+  titulo.textContent = ''
 
-  titulo.textContent = "";
-
-  let i = 0;
+  let i = 0
 
   const timer = setInterval(() => {
+    titulo.textContent += texto.charAt(i)
 
-    titulo.textContent += texto.charAt(i);
-
-    i++;
+    i++
 
     if (i >= texto.length) {
-      clearInterval(timer);
+      clearInterval(timer)
     }
-
-  }, 50);
-
+  }, 50)
 }
