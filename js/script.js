@@ -459,6 +459,32 @@ function registrarSequencia(pagina) {
   }
 }
 
+// =========================
+// SEGREDO FLOR 
+// =========================
+
+const florSegredo = document.getElementById('flor')
+
+if (florSegredo) {
+  let cliques = 0
+
+  florSegredo.addEventListener('click', () => {
+    cliques++
+
+    if (cliques === 5) {
+      msgFoto.textContent = 'PARA'
+    }
+
+    if (cliques === 6) {
+      msgFoto.textContent = 'Não Continua!'
+    }
+
+    if (cliques >= 7) {
+      window.location.href = 'flor.html'
+    }
+  })
+}
+
 const titulo = document.querySelector('.secret-box h1')
 
 if (titulo) {
