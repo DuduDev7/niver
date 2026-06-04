@@ -2217,3 +2217,40 @@ canvas {
 
   letter-spacing:3px;
 }
+
+.versiculo{
+
+  margin:40px auto;
+
+  max-width:550px;
+
+  padding:25px;
+
+  text-align:center;
+
+  font-style:italic;
+
+  line-height:1.8;
+
+  color:#6B4E3D;
+
+  background:rgba(255,255,255,.45);
+
+  border-left:4px solid #d4a017;
+
+  border-radius:12px;
+
+  box-shadow:
+    0 8px 20px rgba(0,0,0,.08);
+}
+
+.versiculo strong{
+
+  display:block;
+
+  margin-top:10px;
+
+  color:#8B6F47;
+
+  letter-spacing:1px;
+}
