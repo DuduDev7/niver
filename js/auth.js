@@ -20,7 +20,7 @@ async function login() {
 
     localStorage.setItem("auth", "true");
 
-    window.location.href = "manutencao.html";
+    window.location.href = "home.html";
 
   } else {
 
