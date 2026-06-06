@@ -329,7 +329,7 @@ if (tituloLivro) {
 const contadorDias = document.getElementById('diasProjeto')
 
 if (contadorDias) {
-  const inicio = new Date('2026-04-11')
+  const inicio = new Date('2026-05-15')
 
   const hoje = new Date()
 
