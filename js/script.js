@@ -504,3 +504,92 @@ if (titulo) {
     }
   }, 50)
 }
+
+const inicio = new Date("2026-04-11");
+
+const tempoEspecial =
+document.getElementById("tempoEspecial");
+
+if(tempoEspecial){
+
+  setInterval(()=>{
+
+    const agora = new Date();
+
+    const diff =
+    agora - inicio;
+
+    const dias =
+    Math.floor(diff / 86400000);
+
+    const horas =
+    Math.floor(diff / 3600000) % 24;
+
+    const minutos =
+    Math.floor(diff / 60000) % 60;
+
+    tempoEspecial.innerHTML =
+    `${dias} dias, ${horas}h e ${minutos}min`;
+
+  },1000);
+
+}
+
+// LINHA DE DESCOBERTA 
+
+const timelineLinha =
+document.getElementById("timelineLinha")
+
+const timelineTexto =
+document.getElementById("timelineTexto")
+
+if(timelineLinha){
+
+  const paginas = [
+
+    "segredo0",
+    "segredo1",
+    "segredo2",
+    "segredo3",
+    "segredo4"
+
+  ]
+
+  let encontrados = 0
+
+  let linha = ""
+
+  paginas.forEach((item,index)=>{
+
+    if(localStorage.getItem(item)){
+
+      linha += "●"
+
+      encontrados++
+
+    }else{
+
+      linha += "○"
+    }
+
+    if(index < paginas.length - 1){
+
+      linha += "────"
+    }
+
+  })
+
+  timelineLinha.innerHTML = linha
+
+  timelineTexto.innerHTML =
+  `${encontrados} de ${paginas.length} registros recuperados`
+
+}   // SE QUISER ZERAR = localStorage.clear()
+
+// function resetarSegredos(){
+
+//   localStorage.clear()
+
+//   location.reload()
+
+// }

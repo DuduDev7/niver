@@ -1618,6 +1618,11 @@ canvas {
   background:rgba(255,255,255,.2);
 
   font-weight:bold;
+
+  border-left:5px solid #016dac;
+  border-bottom:5px solid #016dac;
+  border-right:1px solid #016dac;
+  border-top:1px solid #016dac;
 }
 
 .contador-dias span{
@@ -2253,4 +2258,268 @@ canvas {
   color:#8B6F47;
 
   letter-spacing:1px;
+}
+
+.timeline-secret{
+
+  margin:25px 0;
+
+  padding:18px;
+
+  border-radius:15px;
+
+  background:rgba(255,255,255,.25);
+
+  border:2px solid rgba(139,111,71,.2);
+
+  text-align:center;
+}
+
+#timelineLinha{
+
+  font-size:24px;
+
+  color:#8B6F47;
+
+  margin-bottom:10px;
+
+  letter-spacing:2px;
+}
+
+#timelineTexto{
+
+  color:#5C4033;
+
+  font-style:italic;
+}
+
+.timeline-line{
+
+  font-size:22px;
+
+  letter-spacing:2px;
+
+  color:#8B6F47;
+
+  margin-bottom:10px;
+}
+
+.timeline-line .done{
+
+  color:#d4a017;
+}
+
+.timeline-line .current{
+
+  color:#6B4E3D;
+
+  animation:pulseTimeline 2s infinite;
+}
+
+.timeline-secret small{
+
+  color:#5C4033;
+
+  font-style:italic;
+}
+
+@keyframes pulseTimeline{
+
+  0%{
+    opacity:.5;
+    transform:scale(1);
+  }
+
+  50%{
+    opacity:1;
+    transform:scale(1.25);
+  }
+
+  100%{
+    opacity:.5;
+    transform:scale(1);
+  }
+
+}
+
+.relogio-secreto{
+
+  margin:20px 0;
+
+  padding:18px;
+
+  border-radius:15px;
+
+  background:
+  linear-gradient(
+    135deg,
+    rgba(255,255,255,.35),
+    rgba(255,255,255,.15)
+  );
+
+  border-left:5px solid #d4a017;
+  border-bottom:5px solid #d4a017;
+  border-right:1px solid #d4a017;
+  border-top:1px solid #d4a017;
+}
+
+.relogio-titulo{
+
+  font-weight:bold;
+
+  margin-bottom:10px;
+
+  color:#6B4E3D;
+}
+
+#tempoEspecial{
+
+  font-size:22px;
+
+  font-weight:bold;
+
+  color:#8B6F47;
+}
+
+.manutencao-body{
+
+  min-height:100vh;
+
+  background:#111;
+
+  display:flex;
+
+  justify-content:center;
+
+  align-items:center;
+
+  overflow:hidden;
+
+  position:relative;
+
+  font-family:Arial,sans-serif;
+}
+
+.manutencao-box{
+
+  text-align:center;
+
+  color:#cfcfcf;
+
+  opacity:.8;
+}
+
+.manutencao-box h1{
+
+  margin-bottom:20px;
+
+  color:#fff;
+}
+
+.mensagem-fundo{
+
+  position:fixed;
+
+  inset:0;
+
+  display:flex;
+
+  justify-content:center;
+
+  align-items:center;
+
+  font-size:18px;
+
+  color:rgba(255,255,255,.03);
+
+  pointer-events:none;
+
+  user-select:none;
+
+  letter-spacing:3px;
+
+  text-transform:uppercase;
+}
+
+.canto1{
+
+  top:-8px;
+
+  left:-15px;
+
+  transform:rotate(25deg);
+
+}
+
+.canto2{
+
+  top:-10px;
+
+  right:-15px;
+
+  transform:rotate(-20deg);
+
+}
+
+.canto3{
+
+  bottom:-10px;
+
+  left:-15px;
+
+  transform:rotate(-15deg);
+
+}
+
+.segredo-real{
+
+  bottom:-10px;
+
+  right:-15px;
+
+  transform:rotate(18deg);
+
+}
+
+.papel-antigo{
+
+  position:fixed;
+
+  width:50px;
+
+  height:10px;
+
+  opacity:.06;
+
+  background:
+  linear-gradient(
+    #f7e8b4,
+    #ead49a
+  );
+
+  border-radius:2px;
+
+  cursor:pointer;
+
+  z-index:2;
+
+  transition:.4s;
+}
+
+.papel-antigo:hover{
+
+  opacity:.18;
+
+}
+
+@media(max-width:768px){
+
+  .papel-antigo{
+
+    width:40px;
+
+    height:8px;
+
+  }
+
 }
