@@ -2342,6 +2342,15 @@ canvas {
 
 }
 
+@media (max-width:768px){
+
+  .timeline-line{
+    font-size: 14px;
+    letter-spacing: 0px;
+  }
+
+}
+
 .relogio-secreto{
 
   margin:20px 0;
