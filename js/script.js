@@ -460,7 +460,7 @@ function registrarSequencia(pagina) {
 }
 
 // =========================
-// SEGREDO FLOR 
+// SEGREDO FLOR
 // =========================
 
 const florSegredo = document.getElementById('flor')
@@ -505,86 +505,69 @@ if (titulo) {
   }, 50)
 }
 
-const inicio = new Date("2026-04-11");
+const inicio = new Date('2026-04-11')
 
-const tempoEspecial =
-document.getElementById("tempoEspecial");
+const tempoEspecial = document.getElementById('tempoEspecial')
 
-if(tempoEspecial){
+if (tempoEspecial) {
+  setInterval(() => {
+    const agora = new Date()
 
-  setInterval(()=>{
+    const diff = agora - inicio
 
-    const agora = new Date();
+    const dias = Math.floor(diff / 86400000)
 
-    const diff =
-    agora - inicio;
+    const horas = Math.floor(diff / 3600000) % 24
 
-    const dias =
-    Math.floor(diff / 86400000);
+    const minutos = Math.floor(diff / 60000) % 60
 
-    const horas =
-    Math.floor(diff / 3600000) % 24;
-
-    const minutos =
-    Math.floor(diff / 60000) % 60;
-
-    tempoEspecial.innerHTML =
-    `${dias} dias, ${horas}h e ${minutos}min`;
-
-  },1000);
-
+    tempoEspecial.innerHTML = `${dias} dias, ${horas}h e ${minutos}min`
+  }, 1000)
 }
 
-// LINHA DE DESCOBERTA 
+// LINHA DE DESCOBERTA
 
-const timelineLinha =
-document.getElementById("timelineLinha")
+const timelineLinha = document.getElementById('timelineLinha')
 
-const timelineTexto =
-document.getElementById("timelineTexto")
+const timelineTexto = document.getElementById('timelineTexto')
 
-if(timelineLinha){
-
-  const paginas = [
-
-    "segredo0",
-    "segredo1",
-    "segredo2",
-    "segredo3",
-    "segredo4"
-
-  ]
+if (timelineLinha) {
+  const paginas = ['segredo0', 'segredo1', 'segredo2', 'segredo3', 'segredo4']
 
   let encontrados = 0
 
-  let linha = ""
+  let linha = ''
 
-  paginas.forEach((item,index)=>{
-
-    if(localStorage.getItem(item)){
-
-      linha += "●"
+  paginas.forEach((item, index) => {
+    if (localStorage.getItem(item)) {
+      linha += '●'
 
       encontrados++
-
-    }else{
-
-      linha += "○"
+    } else {
+      linha += '○'
     }
 
-    if(index < paginas.length - 1){
-
-      linha += "────"
+    if (index < paginas.length - 1) {
+      linha += '────'
     }
-
   })
 
   timelineLinha.innerHTML = linha
 
-  timelineTexto.innerHTML =
-  `${encontrados} de ${paginas.length} registros recuperados`
+  timelineTexto.innerHTML = `${encontrados} de ${paginas.length} registros recuperados`
 
-}   // SE QUISER ZERAR = localStorage.clear()
+  const timelinePorcentagem = document.getElementById('timelinePorcentagem')
+
+  const porcentagem = Math.round((encontrados / paginas.length) * 100)
+
+  timelinePorcentagem.innerHTML = `🔓 ${porcentagem}% desbloqueado`
+
+  if (porcentagem === 100) {
+    timelinePorcentagem.innerHTML = '❤️ Todos os registros foram encontrados.'
+  }
+}
+
+// SE QUISER ZERAR = localStorage.clear()
 
 // function resetarSegredos(){
 

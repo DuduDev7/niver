@@ -2351,6 +2351,86 @@ canvas {
 
 }
 
+.timeline-secret{
+
+  position:relative;
+
+  overflow:hidden;
+
+  margin:25px 0;
+
+  padding:18px;
+
+  border-radius:15px;
+
+  background:rgba(255,255,255,.25);
+
+  border:2px solid rgba(139,111,71,.2);
+
+  text-align:center;
+}
+
+.timeline-bg{
+
+  position:absolute;
+
+  inset:0;
+
+  pointer-events:none;
+}
+
+#timelineProgresso{
+
+  height:100%;
+
+  width:0%;
+
+  background:
+  linear-gradient(
+    90deg,
+    rgba(212,175,55,.12),
+    rgba(212,175,55,.03)
+  );
+
+  transition:1s;
+}
+
+#timelineLinha{
+
+  position:relative;
+
+  font-size:18px;
+
+  color:#8B6F47;
+
+  z-index:2;
+
+  margin-bottom:10px;
+
+  white-space:nowrap;
+}
+
+@media(max-width:768px){
+
+  #timelineLinha{
+
+    font-size:14px;
+  }
+
+}
+
+#timelinePorcentagem{
+
+  margin-top:10px;
+
+  font-size:14px;
+
+  font-weight:bold;
+
+  color:#8B6F47;
+
+}
+
 .relogio-secreto{
 
   margin:20px 0;
