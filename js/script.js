@@ -485,6 +485,32 @@ if (florSegredo) {
   })
 }
 
+// =========================
+// SEGREDO FOTOS
+// =========================
+
+const fotos = document.getElementById('fotos')
+
+if (fotos) {
+  let cliques = 0
+
+  fotos.addEventListener('click', () => {
+    cliques++
+
+    if (cliques === 5) {
+      msgFoto.textContent = 'PARA'
+    }
+
+    if (cliques === 6) {
+      msgFoto.textContent = 'CHEGA !'
+    }
+
+    if (cliques >= 7) {
+      window.location.href = '../julia.html'
+    }
+  })
+}
+
 const titulo = document.querySelector('.secret-box h1')
 
 if (titulo) {
@@ -562,8 +588,10 @@ if (timelineLinha) {
 
   timelinePorcentagem.innerHTML = `🔓 ${porcentagem}% desbloqueado`
 
+  const finalLiberado = document.getElementById('finalLiberado')
+
   if (porcentagem === 100) {
-    timelinePorcentagem.innerHTML = '❤️ Todos os registros foram encontrados.'
+    finalLiberado.style.display = 'block'
   }
 }
 
@@ -576,3 +604,99 @@ if (timelineLinha) {
 //   location.reload()
 
 // }
+
+const fotoJulia =
+document.getElementById("fotoJulia")
+
+const textoFundo =
+document.getElementById("textoFundo")
+
+if(fotoJulia){
+
+  const slides = [
+
+    {
+      foto: 'imgs/elevador.jpeg',
+      fundo: '#537687',
+      texto: 'VOCÊ É ABSURDAMENTE LINDA'
+    },
+    
+    {
+      foto: 'imgs/espelho.jpeg',
+      fundo: '#52392F',
+      texto: 'MAIS LINDA DO QUE IMAGINA'
+    },
+    
+    {
+      foto: 'imgs/gato.jpeg',
+      fundo: '#311E18',
+      texto: 'PERFEITA ATÉ NOS DETALHES'
+    },
+    
+    {
+      foto: 'imgs/praia.jpeg',
+      fundo: '#98570B',
+      texto: 'ATÉ O SOL PERDE A DISPUTA'
+    },
+    
+    {
+      foto: 'imgs/perfil.jpeg',
+      fundo: '#C47749',
+      texto: 'MAIS BONITA QUE QUALQUER PAISAGEM'
+    },
+    
+    {
+      foto: 'imgs/carro.jpeg',
+      fundo: '#85CCCA',
+      texto: 'MEU OLHAR SEMPRE PROCURA VOCÊ'
+    },
+    
+    {
+      foto: 'imgs/preto.jpeg',
+      fundo: '#303030',
+      texto: 'VOCÊ SE TORNOU INESQUECÍVEL'
+    },
+    
+    {
+      foto: 'imgs/especial.jpeg',
+      fundo: '#D13B33',
+      texto: 'TE AMO MUITO ❤️'
+    }
+
+  ]
+
+  let atual = 0
+
+  fotoJulia.addEventListener("click",()=>{
+
+    fotoJulia.classList.add("virando")
+
+    setTimeout(()=>{
+
+      atual++
+
+      if(atual >= slides.length){
+
+        atual = 0
+      }
+
+      fotoJulia.src =
+      slides[atual].foto
+
+      document.body.style.background =
+      slides[atual].fundo
+
+      textoFundo.innerHTML =
+      slides[atual].texto
+
+    },400)
+
+    setTimeout(()=>{
+
+      fotoJulia.classList.remove("virando")
+
+    },800)
+
+  })
+
+}

@@ -2469,3 +2469,157 @@ canvas {
 
   color:#8B6F47;
 }
+
+#finalLiberado{
+
+  display:none;
+
+  margin-top:25px;
+
+  padding:20px;
+
+  border-radius:15px;
+
+  background:
+  linear-gradient(
+    135deg,
+    rgba(212,175,55,.15),
+    rgba(212,175,55,.05)
+  );
+
+  border:2px solid #d4a017;
+
+  animation:aparecerFinal 1s ease;
+}
+
+#finalLiberado button{
+
+  margin-top:10px;
+
+  background:#d4a017;
+
+  color:white;
+
+  font-weight:bold;
+}
+
+@keyframes aparecerFinal{
+
+  from{
+
+    opacity:0;
+
+    transform:translateY(15px);
+  }
+
+  to{
+
+    opacity:1;
+
+    transform:translateY(0);
+  }
+
+}
+
+/* ===================== */
+/* JULIA */
+/* ===================== */
+
+.julia-page{
+
+  min-height:100vh;
+
+  display:flex;
+
+  justify-content:center;
+
+  align-items:center;
+
+  overflow:hidden;
+
+  position:relative;
+
+  transition:2s;
+
+  background:#8ecdf1;
+}
+
+.texto-fundo{
+
+  position:absolute;
+
+  left:50%;
+  top:50%;
+
+  transform:translate(-50%,-50%);
+
+  width:90%;
+
+  text-align:center;
+
+  font-size:clamp(28px, 8vw, 120px);
+
+  font-weight:900;
+
+  letter-spacing:2px;
+
+  color:rgba(255,255,255,.18);
+
+  text-shadow:
+  0 0 20px rgba(255,255,255,.08);
+
+  white-space:nowrap;
+
+  pointer-events:none;
+
+  user-select:none;
+
+  overflow:hidden;
+
+  white-space:pre-line;
+
+  line-height:.9;
+}
+
+.julia-container{
+
+  position:relative;
+
+  z-index:2;
+}
+
+#fotoJulia{
+
+  width:320px;
+  max-width:85vw;
+
+  transition:.8s;
+
+  cursor:pointer;
+
+}
+
+@media(max-width:768px){
+
+  #fotoJulia{
+
+    width:260px;
+  }
+
+  .texto-fundo{
+
+    font-size:14vw;
+
+    white-space:pre-line;
+
+    line-height:.9;
+  }
+
+}
+
+.virando{
+
+  transform:
+  rotateY(90deg);
+
+}

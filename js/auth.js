@@ -93,6 +93,38 @@ async function loginGarrudos() {
   }
 }
 
+async function loginFotos() {
+
+  const senhaDigitada = document.getElementById("senha").value;
+
+  const senhaHash = "ce96a918faad6070164133e2d45feef9aefc78b6bdfc8cc5b2eff3aded8e4151";
+
+  const encoder = new TextEncoder();
+
+  const data = encoder.encode(senhaDigitada);
+
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+  const hashHex = hashArray
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+
+  if (hashHex === senhaHash) {
+
+    localStorage.setItem("auth", "true");
+
+    window.location.href = "garrudos.html";
+
+  } else {
+
+    document.getElementById("erro").innerText =
+      "Senha incorreta 🎮";
+
+  }
+}
+
 // async function gerarHash(senha) {
 //   const encoder = new TextEncoder();
 //   const data = encoder.encode(senha);
