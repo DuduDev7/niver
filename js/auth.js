@@ -115,7 +115,7 @@ async function loginFotos() {
 
     localStorage.setItem("auth", "true");
 
-    window.location.href = "garrudos.html";
+    window.location.href = "julia.html";
 
   } else {
 

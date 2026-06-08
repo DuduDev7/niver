@@ -506,7 +506,7 @@ if (fotos) {
     }
 
     if (cliques >= 7) {
-      window.location.href = '../julia.html'
+      window.location.href = '../loginFotos.html'
     }
   })
 }
