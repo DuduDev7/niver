@@ -486,6 +486,32 @@ if (florSegredo) {
 }
 
 // =========================
+// SEGREDO MUSEU
+// =========================
+
+const clickMuseu = document.getElementById('LevaMuseu')
+
+if (clickMuseu) {
+  let cliques = 0
+
+  clickMuseu.addEventListener('click', () => {
+    cliques++
+
+    if (cliques === 5) {
+      msgFoto.textContent = 'NÃO VAI'
+    }
+
+    if (cliques === 6) {
+      msgFoto.textContent = 'PARA, PARA, PARA'
+    }
+
+    if (cliques >= 7) {
+      window.location.href = 'museu.html'
+    }
+  })
+}
+
+// =========================
 // SEGREDO FOTOS
 // =========================
 
@@ -700,3 +726,74 @@ if(fotoJulia){
   })
 
 }
+
+const quadros =
+document.querySelectorAll(".quadro")
+
+quadros.forEach(quadro=>{
+
+  quadro.addEventListener("click",()=>{
+
+    quadro.classList.toggle("aberto")
+
+  })
+
+})
+
+const especial =
+document.querySelector(".especial")
+
+let cliqueEspecial = 0
+
+especial.addEventListener("click",()=>{
+
+  if(!especial.classList.contains("aberto")) return
+
+  cliqueEspecial++
+
+  const texto =
+  document.getElementById("textoEspecial")
+
+  if(cliqueEspecial === 2){
+
+    texto.innerHTML =
+    "A melhor memória deste site não está nesta foto."
+
+  }
+
+  if(cliqueEspecial === 3){
+
+    texto.innerHTML =
+    "Porque ela ainda não aconteceu."
+
+  }
+
+  if(cliqueEspecial === 4){
+
+    texto.innerHTML =
+    "Algumas histórias são lembranças."
+
+  }
+
+  if(cliqueEspecial === 5){
+
+    texto.innerHTML =
+    "Outras ainda estão sendo escritas."
+
+  }
+
+  if(cliqueEspecial === 6){
+
+    texto.innerHTML =
+    "E, sinceramente..."
+
+  }
+
+  if(cliqueEspecial === 7){
+
+    texto.innerHTML =
+    "Eu gostaria muito que a nossa ainda tivesse muitos capítulos pela frente. ❤️"
+
+  }
+
+})
