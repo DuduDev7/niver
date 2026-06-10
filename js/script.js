@@ -631,169 +631,336 @@ if (timelineLinha) {
 
 // }
 
-const fotoJulia =
-document.getElementById("fotoJulia")
+const fotoJulia = document.getElementById('fotoJulia')
 
-const textoFundo =
-document.getElementById("textoFundo")
+const textoFundo = document.getElementById('textoFundo')
 
-if(fotoJulia){
-
+if (fotoJulia) {
   const slides = [
-
     {
       foto: 'imgs/elevador.jpeg',
       fundo: '#537687',
       texto: 'VOCÊ É ABSURDAMENTE LINDA'
     },
-    
+
     {
       foto: 'imgs/espelho.jpeg',
       fundo: '#52392F',
       texto: 'MAIS LINDA DO QUE IMAGINA'
     },
-    
+
     {
       foto: 'imgs/gato.jpeg',
       fundo: '#311E18',
       texto: 'PERFEITA ATÉ NOS DETALHES'
     },
-    
+
     {
       foto: 'imgs/praia.jpeg',
       fundo: '#98570B',
       texto: 'ATÉ O SOL PERDE A DISPUTA'
     },
-    
+
     {
       foto: 'imgs/perfil.jpeg',
       fundo: '#C47749',
       texto: 'MAIS BONITA QUE QUALQUER PAISAGEM'
     },
-    
+
     {
       foto: 'imgs/carro.jpeg',
       fundo: '#85CCCA',
       texto: 'MEU OLHAR SEMPRE PROCURA VOCÊ'
     },
-    
+
     {
       foto: 'imgs/preto.jpeg',
       fundo: '#303030',
       texto: 'VOCÊ SE TORNOU INESQUECÍVEL'
     },
-    
+
     {
       foto: 'imgs/especial.jpeg',
       fundo: '#D13B33',
       texto: 'TE AMO MUITO ❤️'
     }
-
   ]
 
   let atual = 0
 
-  fotoJulia.addEventListener("click",()=>{
+  fotoJulia.addEventListener('click', () => {
+    fotoJulia.classList.add('virando')
 
-    fotoJulia.classList.add("virando")
-
-    setTimeout(()=>{
-
+    setTimeout(() => {
       atual++
 
-      if(atual >= slides.length){
-
+      if (atual >= slides.length) {
         atual = 0
       }
 
-      fotoJulia.src =
-      slides[atual].foto
+      fotoJulia.src = slides[atual].foto
 
-      document.body.style.background =
-      slides[atual].fundo
+      document.body.style.background = slides[atual].fundo
 
-      textoFundo.innerHTML =
-      slides[atual].texto
+      textoFundo.innerHTML = slides[atual].texto
+    }, 400)
 
-    },400)
-
-    setTimeout(()=>{
-
-      fotoJulia.classList.remove("virando")
-
-    },800)
-
+    setTimeout(() => {
+      fotoJulia.classList.remove('virando')
+    }, 800)
   })
-
 }
 
-const quadros =
-document.querySelectorAll(".quadro")
+const quadros = document.querySelectorAll('.quadro')
 
-quadros.forEach(quadro=>{
-
-  quadro.addEventListener("click",()=>{
-
-    quadro.classList.toggle("aberto")
-
+quadros.forEach(quadro => {
+  quadro.addEventListener('click', () => {
+    quadro.classList.toggle('aberto')
   })
-
 })
 
-const especial =
-document.querySelector(".especial")
+const especial = document.querySelector('.especial')
 
 let cliqueEspecial = 0
 
-especial.addEventListener("click",()=>{
+if (especial) {
+  especial.addEventListener('click', () => {
+    if (!especial.classList.contains('aberto')) return
 
-  if(!especial.classList.contains("aberto")) return
+    cliqueEspecial++
 
-  cliqueEspecial++
+    const texto = document.getElementById('textoEspecial')
 
-  const texto =
-  document.getElementById("textoEspecial")
+    if (!texto) return
 
-  if(cliqueEspecial === 2){
+    if (cliqueEspecial === 2) {
+      texto.innerHTML = 'A melhor memória deste site não está nesta foto.'
+    }
 
-    texto.innerHTML =
-    "A melhor memória deste site não está nesta foto."
+    if (cliqueEspecial === 3) {
+      texto.innerHTML = 'Porque ela ainda não aconteceu.'
+    }
 
+    if (cliqueEspecial === 4) {
+      texto.innerHTML = 'Algumas histórias são lembranças.'
+    }
+
+    if (cliqueEspecial === 5) {
+      texto.innerHTML = 'Outras ainda estão sendo escritas.'
+    }
+
+    if (cliqueEspecial === 6) {
+      texto.innerHTML = 'E, sinceramente...'
+    }
+
+    if (cliqueEspecial === 7) {
+      texto.innerHTML =
+        'Eu gostaria muito que a nossa ainda tivesse muitos capítulos pela frente. ❤️'
+    }
+  })
+}
+
+// =========================
+// NOVO - 09/06
+// =========================
+
+// WPP
+
+const mensagens = [
+  'Tem uma coisa que eu queria te falar.',
+
+  '__APAGAR__',
+
+  'Melhor deixar pra lá.',
+
+  '__BOTAO__',
+
+  'Eu pensei muito antes de fazer este site.',
+
+  'Mais do que você imagina.',
+
+  '__BOTAO__',
+
+  'Porque a verdade é que eu queria te dizer uma coisa.',
+
+  'Eu queria muito namorar com você.',
+
+  '__APAGAR__',
+
+  'Não... esquece isso.',
+
+  'Talvez não seja o momento.',
+
+  '__BOTAO__',
+
+  'Mas também seria mentira fingir que eu nunca pensei nisso.',
+
+  'Porque pensei.',
+
+  'Muitas vezes.',
+
+  '__BOTAO__',
+
+  'E sabe o que é mais estranho?',
+
+  'Eu não gosto de você por causa de uma foto.',
+
+  'Nem por causa de um sorriso.',
+
+  'Nem por causa de um momento específico.',
+
+  'Eu gosto de você pelo conjunto.',
+
+  '__BOTAO__',
+
+  'Pelo jeito que você faz os dias parecerem mais leves.',
+
+  'Pelas conversas que nunca parecem suficientes.',
+
+  'Pela falta que você faz quando desaparece.',
+
+  '__BOTAO__',
+
+  'Talvez eu esteja sendo sincero demais.',
+
+  'Mas se você chegou até aqui...',
+
+  'Existe uma mensagem que eu não quero apagar.',
+
+  'Você é muito mais importante para mim do que imagina.',
+
+  '❤️'
+]
+
+const chat = document.getElementById('chatMensagens')
+
+const continuar = document.getElementById('continuarChat')
+
+if (chat && continuar) {
+  let i = 0
+
+  function proxima() {
+    if (i >= mensagens.length) {
+      continuar.style.display = 'none'
+
+      return
+    }
+
+    if (mensagens[i] === '__APAGAR__') {
+      const ultima = chat.lastElementChild
+
+      if (ultima) {
+        ultima.classList.add('apagada')
+
+        ultima.innerHTML = '🚫 Esta mensagem foi apagada'
+      }
+
+      i++
+
+      setTimeout(proxima, 1500)
+
+      return
+    }
+
+    if (mensagens[i] === '__BOTAO__') {
+      continuar.style.display = 'block'
+
+      return
+    }
+
+    const div = document.createElement('div')
+
+    div.classList.add('msg')
+
+    div.innerText = mensagens[i]
+
+    chat.appendChild(div)
+
+    chat.scrollTop = chat.scrollHeight
+
+    i++
+
+    setTimeout(proxima, 2200)
   }
 
-  if(cliqueEspecial === 3){
+  continuar.onclick = () => {
+    continuar.style.display = 'none'
 
-    texto.innerHTML =
-    "Porque ela ainda não aconteceu."
+    i++
 
+    proxima()
   }
 
-  if(cliqueEspecial === 4){
+  proxima()
+}
 
-    texto.innerHTML =
-    "Algumas histórias são lembranças."
+// CAMINHO
 
+const resposta = document.getElementById('resposta')
+
+document.querySelectorAll('.opcoes button').forEach(botao => {
+  botao.onclick = () => {
+    const id = botao.dataset.id
+
+    if (id === '1') {
+      resposta.innerHTML = `
+
+      <h2>❌ Caminho encerrado</h2>
+
+      <p>
+      Algumas pessoas são fáceis de ignorar.
+      Você nunca foi uma delas.
+      </p>
+
+      `
+
+      return
+    }
+
+    if (id === '2') {
+      resposta.innerHTML = `
+
+      <h2>❌ Caminho encerrado</h2>
+
+      <p>
+      Se fosse fácil esquecer,
+      este site não existiria.
+      </p>
+
+      `
+
+      return
+    }
+
+    if (id === '3') {
+      resposta.innerHTML = `
+
+      <h2>⚠️ Quase.</h2>
+
+      <p>
+      Arriscar é importante.
+      Mas existe algo antes disso.
+      </p>
+
+      `
+
+      return
+    }
+
+    if (id === '4') {
+      resposta.innerHTML = `
+
+      <h2>❤️</h2>
+
+      <p>
+      Foi exatamente isso que eu fiz.
+      Continuei.
+      Conversa após conversa.
+      Dia após dia.
+      Até perceber que você já era importante demais.
+      </p>
+
+      `
+    }
   }
-
-  if(cliqueEspecial === 5){
-
-    texto.innerHTML =
-    "Outras ainda estão sendo escritas."
-
-  }
-
-  if(cliqueEspecial === 6){
-
-    texto.innerHTML =
-    "E, sinceramente..."
-
-  }
-
-  if(cliqueEspecial === 7){
-
-    texto.innerHTML =
-    "Eu gostaria muito que a nossa ainda tivesse muitos capítulos pela frente. ❤️"
-
-  }
-
 })

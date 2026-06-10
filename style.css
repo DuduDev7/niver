@@ -2821,3 +2821,224 @@ canvas {
 
   justify-self:center;
 }
+
+/* =========================
+NOVO - 09/06
+========================= */
+
+/*wpp*/
+
+.chat-page{
+
+  min-height:100vh;
+
+  background:#e5ddd5;
+
+  display:flex;
+
+  justify-content:center;
+
+  align-items:center;
+
+  padding:20px;
+}
+
+.chat-container{
+
+  width:100%;
+
+  max-width:500px;
+
+  background:white;
+
+  border-radius:20px;
+
+  padding:20px;
+
+  box-shadow:
+  0 15px 40px rgba(0,0,0,.15);
+
+  display:flex;
+
+  flex-direction:column;
+
+  gap:15px;
+}
+
+.chat-title{
+
+  text-align:center;
+
+  color:#075E54;
+
+  margin:0;
+}
+
+#chatMensagens{
+
+  display:flex;
+
+  flex-direction:column;
+
+  gap:12px;
+}
+
+.msg{
+
+  background:#DCF8C6;
+
+  padding:12px 16px;
+
+  border-radius:18px;
+
+  max-width:85%;
+
+  width:fit-content;
+
+  align-self:flex-end;
+
+  word-break:break-word;
+
+  line-height:1.5;
+
+  animation:aparecer .5s ease;
+}
+
+.apagada{
+
+  background:#ececec !important;
+
+  color:#666 !important;
+
+  font-style:italic;
+
+  opacity:.8;
+}
+
+.continuar-chat{
+
+  align-self:center;
+
+  padding:12px 20px;
+
+  border:none;
+
+  border-radius:12px;
+
+  background:#25D366;
+
+  color:white;
+
+  font-size:14px;
+
+  cursor:pointer;
+
+  transition:.3s;
+}
+
+.continuar-chat:hover{
+
+  transform:scale(1.05);
+}
+
+@keyframes aparecer{
+
+  from{
+
+    opacity:0;
+
+    transform:translateY(15px);
+
+  }
+
+  to{
+
+    opacity:1;
+
+    transform:translateY(0);
+
+  }
+
+}
+
+@media(max-width:768px){
+
+  .chat-container{
+
+    padding:15px;
+  }
+
+  .msg{
+
+    max-width:92%;
+
+    font-size:14px;
+  }
+
+  .continuar-chat{
+
+    width:100%;
+  }
+
+}
+
+/*caminho*/
+
+.caminho-page{
+
+  min-height:100vh;
+
+  display:flex;
+
+  flex-direction:column;
+
+  justify-content:center;
+
+  align-items:center;
+
+  gap:20px;
+
+  text-align:center;
+}
+
+.opcoes{
+
+  display:grid;
+
+  gap:15px;
+}
+
+.opcoes button{
+
+  padding:15px 30px;
+
+  border:none;
+
+  border-radius:12px;
+
+  cursor:pointer;
+}
+
+.resposta-final{
+
+  animation: brilhoFinal 2s forwards;
+
+}
+
+@keyframes brilhoFinal{
+
+  from{
+
+    transform:scale(1);
+    opacity:.8;
+
+  }
+
+  to{
+
+    transform:scale(1.03);
+    opacity:1;
+
+  }
+
+}
