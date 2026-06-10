@@ -714,9 +714,13 @@ if (fotoJulia) {
 const quadros = document.querySelectorAll('.quadro')
 
 quadros.forEach(quadro => {
-  quadro.addEventListener('click', () => {
+
+  quadro.addEventListener('click',()=>{
+
     quadro.classList.toggle('aberto')
+
   })
+
 })
 
 const especial = document.querySelector('.especial')
