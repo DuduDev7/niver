@@ -1025,7 +1025,7 @@ if (talvez) {
     }
 
     if (cliques === 6) {
-      msgFoto.textContent = 'OU SERÁ QUE ESTA?'
+      msgFoto.textContent = 'OU SERÁ QUE ESTÁ?'
     }
 
     if (cliques >= 7) {
