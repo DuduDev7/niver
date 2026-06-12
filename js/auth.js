@@ -125,6 +125,38 @@ async function loginFotos() {
   }
 }
 
+async function loginSera() {
+
+  const senhaDigitada = document.getElementById("senha").value;
+
+  const senhaHash = "3a92db8e4321b7307efb35069e3aa62d31994a1efac094602bfe35afe25d1cc9";
+
+  const encoder = new TextEncoder();
+
+  const data = encoder.encode(senhaDigitada);
+
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+  const hashHex = hashArray
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+
+  if (hashHex === senhaHash) {
+
+    localStorage.setItem("auth", "true");
+
+    window.location.href = "talvez.html";
+
+  } else {
+
+    document.getElementById("erro").innerText =
+      "Senha incorreta 🎮";
+
+  }
+}
+
 // async function gerarHash(senha) {
 //   const encoder = new TextEncoder();
 //   const data = encoder.encode(senha);

@@ -968,3 +968,68 @@ document.querySelectorAll('.opcoes button').forEach(botao => {
     }
   }
 })
+
+
+//CHEGANDO LA
+
+const final = document.getElementById('versiculo')
+
+if (final) {
+  let cliques = 0
+
+  final.addEventListener('click', () => {
+    cliques++
+
+    if (cliques === 5) {
+      msgFoto.textContent = 'NÃO'
+    }
+
+    if (cliques === 6) {
+      msgFoto.textContent = 'NÃO VAI !'
+    }
+
+    if (cliques >= 7) {
+      window.location.href = 'loginSera.html'
+    }
+  })
+}
+
+//TALVEZ
+
+const talvez = document.getElementById('10')
+
+if (talvez) {
+  let cliques = 0
+
+  talvez.addEventListener('click', () => {
+    cliques++
+
+    if (cliques === 1) {
+      msgFoto.textContent = 'Você não está pronta'
+    }
+
+    if (cliques === 2) {
+      msgFoto.textContent = 'Você não está pronta'
+    }
+
+    if (cliques === 3) {
+      msgFoto.textContent = 'Você não está pronta'
+    }
+
+    if (cliques === 4) {
+      msgFoto.textContent = 'Você não está pronta'
+    }
+
+    if (cliques === 5) {
+      msgFoto.textContent = 'NÃO'
+    }
+
+    if (cliques === 6) {
+      msgFoto.textContent = 'OU SERÁ QUE ESTA?'
+    }
+
+    if (cliques >= 7) {
+      window.location.href = 'sera.html'
+    }
+  })
+}
