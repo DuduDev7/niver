@@ -215,7 +215,7 @@ function perguntarIA() {
 
       '📊 Dados insuficientes.',
 
-      '❤️ Mas provavelmente envolve a Júlia.',
+      '❤️ Mas provavelmente envolve a Julia.',
 
       '⚠ Sistema tendencioso.'
     ]
