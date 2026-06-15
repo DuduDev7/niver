@@ -3973,3 +3973,207 @@ NOVO - 09/06
     font-size:18px;
   }
 }
+
+/*ALTERAÇÕES*/
+
+.alteracoes-page{
+
+  min-height:100vh;
+
+  padding:40px 15px 100px;
+
+  background:#0f172a;
+
+  color:white;
+
+  text-align:center;
+}
+
+.alteracoes-page h1{
+
+  margin-bottom:10px;
+}
+
+.sub{
+
+  opacity:.8;
+
+  margin-bottom:40px;
+}
+
+#alteracoes{
+
+  width:100%;
+
+  max-width:900px;
+
+  margin:auto;
+
+  display:flex;
+
+  flex-direction:column;
+
+  gap:18px;
+}
+
+.alteracao{
+
+  display:grid !important;
+
+  grid-template-columns:1fr 1fr !important;
+
+  gap:8px;
+
+  opacity:0;
+
+  transform:translateY(20px);
+
+  transition:.7s;
+}
+
+.alteracao.mostrar{
+
+  opacity:1;
+
+  transform:translateY(0);
+}
+
+.antes,
+.depois{
+
+  padding:20px;
+
+  border-radius:15px;
+
+  min-height:120px;
+
+  display:flex;
+
+  flex-direction:column;
+
+  justify-content:center;
+}
+
+.antes{
+
+  background:#1e293b;
+
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.depois{
+
+  background:rgba(236,72,153,.15);
+
+  border:1px solid rgba(236,72,153,.3);
+}
+
+.antes span,
+.depois span{
+
+  font-size:12px;
+
+  letter-spacing:2px;
+
+  font-weight:bold;
+
+  opacity:.7;
+}
+
+.antes p,
+.depois p{
+
+  margin-top:10px;
+
+  font-size:18px;
+
+  line-height:1.5;
+}
+
+#finalRegistro{
+
+  display:none;
+
+  margin-top:50px;
+}
+
+.final-box{
+
+  display:grid;
+
+  grid-template-columns:1fr 1fr;
+
+  gap:20px;
+
+  max-width:700px;
+
+  margin:30px auto 0;
+}
+
+.antes-final,
+.depois-final{
+
+  padding:30px;
+
+  border-radius:18px;
+}
+
+.antes-final{
+
+  background:#1e293b;
+}
+
+.depois-final{
+
+  background:linear-gradient(
+  135deg,
+  #ec4899,
+  #8b5cf6);
+}
+
+.antes-final span,
+.depois-final span{
+
+  display:block;
+
+  margin-bottom:15px;
+
+  font-size:12px;
+
+  letter-spacing:2px;
+}
+
+.antes-final p,
+.depois-final p{
+
+  font-size:38px;
+
+  font-weight:bold;
+}
+
+@media(max-width:768px){
+
+  .alteracao{
+
+    display:grid !important;
+
+    grid-template-columns:1fr 1fr !important;
+
+    gap:8px;
+  }
+
+  .antes,
+  .depois{
+
+    padding:10px;
+
+    min-height:auto;
+  }
+
+  .antes p,
+  .depois p{
+
+    font-size:13px;
+  }
+
+}

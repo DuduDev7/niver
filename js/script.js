@@ -1076,7 +1076,7 @@ if(caixas.length){
 
 }
 
-//404
+// 404
 
 const progresso =
 document.getElementById('progresso')
@@ -1090,110 +1090,232 @@ document.getElementById('btnVoltar')
 const pagina =
 document.getElementById('paginaEncontrada')
 
-let carregamento = 0
+if(
+  progresso &&
+  mensagem &&
+  btnVoltar &&
+  pagina
+){
 
-let cliques = 0
+  let carregamento = 0
 
-btnVoltar.style.opacity = '.5'
+  let cliques = 0
 
-setTimeout(() => {
+  btnVoltar.style.opacity = '.5'
 
-  btnVoltar.style.opacity = '1'
+  setTimeout(() => {
 
-}, 2000)
+    btnVoltar.style.opacity = '1'
 
-const fakeLoad = setInterval(() => {
+  }, 2000)
 
-  carregamento++
+  const fakeLoad = setInterval(() => {
 
-  progresso.style.width =
-  carregamento + '%'
+    carregamento++
 
-  if(carregamento >= 53){
+    progresso.style.width =
+    carregamento + '%'
 
-    clearInterval(fakeLoad)
+    if(carregamento >= 53){
 
-    mensagem.innerHTML =
-    'Erro inesperado durante o carregamento.'
+      clearInterval(fakeLoad)
 
-  }
+      mensagem.innerHTML =
+      'Erro inesperado durante o carregamento.'
 
-}, 40)
+    }
 
-btnVoltar.addEventListener('click', () => {
+  }, 40)
 
-  cliques++
+  btnVoltar.addEventListener('click', () => {
 
-  const frases = [
+    cliques++
 
-    'Tentando retornar...',
+    const frases = [
 
-    'A página continua indisponível...',
+      '',
 
-    'Reconectando...',
+      '',
 
-    'Verificando arquivos...',
+      '',
 
-    'Procurando backups...',
+      '',
 
-    'Tentando novamente...',
+      '',
 
-    'Algo foi encontrado...',
+      '',
 
-    'Abrindo arquivo oculto...',
+      '',
 
-    'Página localizada...',
+      '',
 
-    'Restaurando conteúdo...'
+      'Página localizada...',
+
+      'Restaurando conteúdo...'
+
+    ]
+
+    if(cliques <= frases.length){
+
+      mensagem.innerHTML =
+      frases[cliques - 1]
+
+    }
+
+    if(cliques === 10){
+
+      let atual = 53
+
+      const finalizar = setInterval(() => {
+
+        atual++
+
+        progresso.style.width =
+        atual + '%'
+
+        if(atual >= 100){
+
+          clearInterval(finalizar)
+
+          mensagem.innerHTML =
+          'Conteúdo restaurado com sucesso.'
+
+          setTimeout(() => {
+
+            pagina.style.display =
+            'block'
+
+            btnVoltar.style.display =
+            'none'
+
+            mensagem.style.display =
+            'none'
+
+            const barra =
+            document.querySelector('.barra')
+
+            if(barra){
+
+              barra.style.display =
+              'none'
+
+            }
+
+          }, 1500)
+
+        }
+
+      }, 20)
+
+    }
+
+  })
+
+}
+
+// ALTERAÇÕES
+
+const alteracoes =
+document.getElementById('alteracoes')
+
+if(alteracoes){
+
+  const registros = [
+
+    {
+      antes:'Treinava no Nível 7.',
+      depois:'Treinou no Nível 2 porque uma certa pessoa pediu.'
+    },
+
+    {
+      antes:'Via vídeos engraçados.',
+      depois:'Via vídeos engraçados e pensava: "vou mandar pra ela".'
+    },
+
+    {
+      antes:'Pegava o celular quando precisava.',
+      depois:'Pegava o celular para ver se você respondeu.'
+    },
+
+    {
+      antes:'Gostava de dirigir.',
+      depois:'Passou a gostar ainda mais quando você estava junto.'
+    },
+
+    {
+      antes:'Era só mais um ano normal.',
+      depois:'Virou o ano em que conheceu você.'
+    },
+
+    {
+      antes:'Acordava e seguia o dia.',
+      depois:'Acordava procurando mensagem sua.'
+    },
+
+    {
+      antes:'Não fazia ideia de quem era Julia.',
+      depois:'Criou um site inteiro por causa dela.'
+    },
+
+    {
+      antes:'Tinha planos.',
+      depois:'Começou a imaginar você dentro deles.'
+    }
 
   ]
 
-  if(cliques <= frases.length){
+  let atual = 0
 
-    mensagem.innerHTML =
-    frases[cliques - 1]
+  function adicionar(){
+
+    if(atual >= registros.length){
+
+      document
+      .getElementById('finalRegistro')
+      .style.display = 'block'
+
+      return
+    }
+
+    const item =
+    document.createElement('div')
+
+    item.classList.add('alteracao')
+
+    item.innerHTML = `
+
+      <div class="antes">
+
+        <span>ANTES</span>
+
+        <p>${registros[atual].antes}</p>
+
+      </div>
+
+      <div class="depois">
+
+        <span>DEPOIS</span>
+
+        <p>${registros[atual].depois}</p>
+
+      </div>
+
+    `
+
+    alteracoes.appendChild(item)
+
+    setTimeout(()=>{
+
+      item.classList.add('mostrar')
+
+    },100)
+
+    atual++
+
+    setTimeout(adicionar,1400)
 
   }
 
-  if(cliques === 10){
+  adicionar()
 
-    let atual = 53
-
-    const finalizar = setInterval(() => {
-
-      atual++
-
-      progresso.style.width =
-      atual + '%'
-
-      if(atual >= 100){
-
-        clearInterval(finalizar)
-
-        mensagem.innerHTML =
-        'Conteúdo restaurado com sucesso.'
-
-        setTimeout(() => {
-
-          pagina.style.display =
-          'block'
-
-          btnVoltar.style.display =
-          'none'
-
-          mensagem.style.display =
-          'none'
-
-          document.querySelector('.barra')
-          .style.display =
-          'none'
-
-        }, 1500)
-
-      }
-
-    }, 20)
-
-  }
-
-})
+}

@@ -61,6 +61,7 @@ async function loginInfo() {
 
   }
 }
+
 async function loginGarrudos() {
 
   const senhaDigitada = document.getElementById("senha").value;
@@ -156,6 +157,72 @@ async function loginSera() {
 
   }
 }
+
+async function loginHoje() {
+
+  const senhaDigitada = document.getElementById("senha").value;
+
+  const senhaHash = "175ff2cb577f2b6e1b9c2ffc896a65dcb66caf60f0358ce61da42687d7d7d56a";
+
+  const encoder = new TextEncoder();
+
+  const data = encoder.encode(senhaDigitada);
+
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+  const hashHex = hashArray
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+
+  if (hashHex === senhaHash) {
+
+    localStorage.setItem("auth", "true");
+
+    window.location.href = "1506.html";
+
+  } else {
+
+    document.getElementById("erro").innerText =
+      "Senha incorreta 🎮";
+
+  }
+}
+
+
+async function loginAmanha() {
+
+  const senhaDigitada = document.getElementById("senha").value;
+
+  const senhaHash = "37cc7a10515690136ae7758fb7c9dd5d7c3bfc82345bf0ed10c64613762ab8e3";
+
+  const encoder = new TextEncoder();
+
+  const data = encoder.encode(senhaDigitada);
+
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+  const hashHex = hashArray
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+
+  if (hashHex === senhaHash) {
+
+    localStorage.setItem("auth", "true");
+
+    window.location.href = "1606.html";
+
+  } else {
+
+    document.getElementById("erro").innerText =
+      "Senha incorreta 🎮";
+
+  }
+}
+
 
 // async function gerarHash(senha) {
 //   const encoder = new TextEncoder();
