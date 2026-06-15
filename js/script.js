@@ -1033,3 +1033,167 @@ if (talvez) {
     }
   })
 }
+
+//CIA
+
+(() => {
+
+  const btnArquivoCIA =
+  document.getElementById('abrirArquivo')
+
+  const arquivoCIA =
+  document.getElementById('arquivoSecreto')
+
+  if(!btnArquivoCIA || !arquivoCIA)
+  return
+
+  btnArquivoCIA.onclick = () => {
+
+    arquivoCIA.style.display = 'block'
+
+    btnArquivoCIA.style.display = 'none'
+
+  }
+
+})()
+
+//CAIXAS
+
+const caixas =
+document.querySelectorAll('.caixa')
+
+if(caixas.length){
+
+  caixas.forEach(caixa => {
+
+    caixa.addEventListener('click', () => {
+
+      caixa.classList.toggle('aberta')
+
+    })
+
+  })
+
+}
+
+//404
+
+const progresso =
+document.getElementById('progresso')
+
+const mensagem =
+document.getElementById('mensagemErro')
+
+const btnVoltar =
+document.getElementById('btnVoltar')
+
+const pagina =
+document.getElementById('paginaEncontrada')
+
+let carregamento = 0
+
+let cliques = 0
+
+btnVoltar.style.opacity = '.5'
+
+setTimeout(() => {
+
+  btnVoltar.style.opacity = '1'
+
+}, 2000)
+
+const fakeLoad = setInterval(() => {
+
+  carregamento++
+
+  progresso.style.width =
+  carregamento + '%'
+
+  if(carregamento >= 53){
+
+    clearInterval(fakeLoad)
+
+    mensagem.innerHTML =
+    'Erro inesperado durante o carregamento.'
+
+  }
+
+}, 40)
+
+btnVoltar.addEventListener('click', () => {
+
+  cliques++
+
+  const frases = [
+
+    'Tentando retornar...',
+
+    'A página continua indisponível...',
+
+    'Reconectando...',
+
+    'Verificando arquivos...',
+
+    'Procurando backups...',
+
+    'Tentando novamente...',
+
+    'Algo foi encontrado...',
+
+    'Abrindo arquivo oculto...',
+
+    'Página localizada...',
+
+    'Restaurando conteúdo...'
+
+  ]
+
+  if(cliques <= frases.length){
+
+    mensagem.innerHTML =
+    frases[cliques - 1]
+
+  }
+
+  if(cliques === 10){
+
+    let atual = 53
+
+    const finalizar = setInterval(() => {
+
+      atual++
+
+      progresso.style.width =
+      atual + '%'
+
+      if(atual >= 100){
+
+        clearInterval(finalizar)
+
+        mensagem.innerHTML =
+        'Conteúdo restaurado com sucesso.'
+
+        setTimeout(() => {
+
+          pagina.style.display =
+          'block'
+
+          btnVoltar.style.display =
+          'none'
+
+          mensagem.style.display =
+          'none'
+
+          document.querySelector('.barra')
+          .style.display =
+          'none'
+
+        }, 1500)
+
+      }
+
+    }, 20)
+
+  }
+
+})
