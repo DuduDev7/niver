@@ -4423,8 +4423,8 @@ NOVO - 09/06
 
   background:linear-gradient(
     180deg,
-    #ff8d21,
-    #723802
+    #e9b976,
+    #8B6F47
   );
 
   text-align:center;
@@ -4870,6 +4870,276 @@ NOVO - 09/06
 
     font-size:24px;
 
+  }
+
+}
+
+/* BOTÃO NÃO PRECISAVA*/
+
+.proibido-page{
+
+  min-height:100vh;
+
+  background:
+  radial-gradient(circle at center,
+  #1f1f1f 0%,
+  #0a0a0a 70%);
+
+  color:white;
+
+  display:flex;
+
+  justify-content:center;
+
+  align-items:center;
+
+  padding:30px 20px 100px;
+
+  text-align:center;
+
+  overflow-x:hidden;
+}
+
+.container-proibido{
+
+  width:100%;
+
+  max-width:850px;
+}
+
+#inicio{
+
+  transition:1s;
+}
+
+#inicio h1{
+
+  font-size:42px;
+
+  margin-bottom:15px;
+}
+
+#inicio p{
+
+  opacity:.8;
+
+  margin-bottom:35px;
+}
+
+#botaoProibido{
+
+  background:#9b0000;
+
+  color:white;
+
+  border:none;
+
+  padding:18px 40px;
+
+  border-radius:15px;
+
+  font-size:20px;
+
+  cursor:pointer;
+
+  transition:.3s;
+}
+
+#botaoProibido:hover{
+
+  transform:scale(1.05);
+}
+
+#aviso{
+
+  margin-top:30px;
+
+  min-height:40px;
+
+  color:#ff8f8f;
+}
+
+#revelacao{
+
+  display:none;
+
+  animation:aparecer 2s forwards;
+}
+
+.efeito-luz{
+
+  width:120px;
+
+  height:120px;
+
+  margin:auto;
+
+  border-radius:50%;
+
+  background:
+  radial-gradient(
+  rgba(255,255,255,.8),
+  transparent);
+
+  filter:blur(10px);
+
+  margin-bottom:40px;
+}
+
+.frase-topo{
+
+  font-size:20px;
+
+  opacity:.8;
+}
+
+#revelacao h2{
+
+  font-size:50px;
+
+  color:#ffd4d4;
+
+  margin:20px 0;
+}
+
+.linha{
+
+  width:120px;
+
+  height:3px;
+
+  background:white;
+
+  margin:30px auto;
+}
+
+#revelacao p{
+
+  font-size:20px;
+
+  line-height:1.8;
+
+  margin-bottom:15px;
+}
+
+.destaque{
+
+  font-size:32px;
+
+  font-weight:bold;
+
+  color:#ffd4d4;
+}
+
+.frase-gigante{
+
+  font-size:42px;
+
+  font-weight:bold;
+
+  color:#ffb3b3;
+
+  margin:40px 0;
+}
+
+.versiculo{
+
+  margin-top:50px;
+
+  padding:25px;
+
+  border:1px solid rgba(255,255,255,.2);
+
+  border-radius:20px;
+
+  background:rgba(255,255,255,.05);
+
+  font-size:24px;
+}
+
+.final{
+
+  margin-top:60px;
+
+  font-size:34px;
+
+  font-weight:bold;
+
+  color:#ffd4d4;
+}
+
+@keyframes aparecer{
+
+  from{
+
+    opacity:0;
+
+    transform:translateY(40px);
+  }
+
+  to{
+
+    opacity:1;
+
+    transform:translateY(0);
+  }
+
+}
+
+@media(max-width:768px){
+
+  #inicio h1{
+
+    font-size:32px;
+  }
+
+  #revelacao h2{
+
+    font-size:34px;
+  }
+
+  .frase-gigante{
+
+    font-size:28px;
+  }
+
+  .destaque{
+
+    font-size:24px;
+  }
+
+  .versiculo{
+
+    font-size:18px;
+  }
+
+  .final{
+
+    font-size:24px;
+  }
+
+  #revelacao p{
+
+    font-size:17px;
+  }
+
+}
+
+@media(max-width:480px){
+
+  #botaoProibido{
+
+    width:100%;
+  }
+
+  .frase-gigante{
+
+    font-size:24px;
+  }
+
+  #revelacao h2{
+
+    font-size:28px;
   }
 
 }

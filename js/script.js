@@ -1418,7 +1418,7 @@ if(erro404){
     if(cliqueCodigo >= 5){
 
       window.location.href =
-      'timeline.html'
+      'timeLine.html'
 
     }
 
@@ -1484,6 +1484,115 @@ if(exportar && relatorio){
       'block'
 
     },2000)
+
+  })
+
+}
+
+// BOTÃO NÃO PRECISAVA
+
+const inicioProibido =
+document.getElementById('inicio')
+
+const revelacaoProibida =
+document.getElementById('revelacao')
+
+const botaoProibido =
+document.getElementById('botaoProibido')
+
+const avisoProibido =
+document.getElementById('aviso')
+
+if(
+  inicioProibido &&
+  revelacaoProibida &&
+  botaoProibido &&
+  avisoProibido
+){
+
+  let clique = 0
+
+  botaoProibido.addEventListener('click',()=>{
+
+    clique++
+
+    const mensagens = [
+
+      'Tem certeza?',
+
+      'Eu avisei.',
+
+      'Ainda dá tempo de voltar.',
+
+      'Última chance.',
+
+      'Ok... abrindo arquivo.'
+
+    ]
+
+    avisoProibido.innerHTML =
+    mensagens[clique - 1]
+
+    if(clique >= 5){
+
+      inicioProibido.style.display =
+      'none'
+
+      document.body.style.background =
+      '#000'
+
+      setTimeout(()=>{
+
+        revelacaoProibida.style.display =
+        'block'
+
+      },800)
+
+    }
+
+  })
+
+}
+
+let cliqueEstaRela = 0
+
+const erroEstaRela =
+document.getElementById('estarela')
+
+if(erroEstaRela){
+
+  erroEstaRela.addEventListener('click',()=>{
+
+    cliqueEstaRela++
+
+    if(cliqueEstaRela >= 5){
+
+      window.location.href =
+      'estaRela.html'
+
+    }
+
+  })
+
+}
+
+let cliqueBtnNP = 0
+
+const erroBtnNP =
+document.getElementById('erroBtnNP')
+
+if(erroBtnNP){
+
+  erroBtnNP.addEventListener('click',()=>{
+
+    cliqueBtnNP++
+
+    if(cliqueBtnNP >= 5){
+
+      window.location.href =
+      'btnNP.html'
+
+    }
 
   })
 
