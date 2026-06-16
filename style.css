@@ -4177,3 +4177,699 @@ NOVO - 09/06
   }
 
 }
+
+/* SUPER SECRETA */
+
+.arquivo-page{
+
+  min-height:100vh;
+
+  background:#050505;
+
+  color:white;
+
+  padding:30px 15px 120px;
+
+  text-align:center;
+}
+
+.arquivo-container{
+
+  width:100%;
+
+  max-width:900px;
+
+  margin:auto;
+}
+
+.status{
+
+  color:#ff4d4d;
+
+  letter-spacing:3px;
+
+  font-size:13px;
+
+  margin-bottom:20px;
+
+  font-weight:bold;
+}
+
+.arquivo-page h1{
+
+  font-size:40px;
+
+  margin-bottom:15px;
+}
+
+.sub{
+
+  opacity:.75;
+
+  margin-bottom:35px;
+}
+
+#abrirArquivoSecreto{
+
+  border:none;
+
+  padding:15px 30px;
+
+  border-radius:12px;
+
+  cursor:pointer;
+
+  font-size:16px;
+
+  margin-bottom:40px;
+}
+
+#conteudoSecreto{
+
+  display:none;
+}
+
+.bloco{
+
+  margin:50px 0;
+
+  line-height:2;
+
+  font-size:18px;
+}
+
+.frase-destaque{
+
+  font-size:40px;
+
+  font-weight:bold;
+
+  line-height:1.4;
+}
+
+.destaque{
+
+  font-size:34px;
+
+  font-weight:bold;
+
+  color:#ff8bd1;
+}
+
+.versiculo{
+
+  margin:70px 0;
+
+  padding:40px;
+
+  border-radius:20px;
+
+  background:rgba(255,255,255,.05);
+
+  font-size:28px;
+
+  font-weight:bold;
+}
+
+.foto-secreta{
+
+  margin:50px auto;
+}
+
+.foto-secreta img{
+
+  width:100%;
+
+  max-width:450px;
+
+  border-radius:20px;
+
+  box-shadow:
+  0 0 40px rgba(255,255,255,.12);
+}
+
+.bob-marley{
+
+  margin:70px 0;
+
+  font-size:24px;
+
+  line-height:2;
+}
+
+.ultima{
+
+  font-size:34px;
+
+  color:#ff8bd1;
+
+  font-weight:bold;
+}
+
+.final{
+
+  margin-top:100px;
+}
+
+.linha{
+
+  width:120px;
+
+  height:2px;
+
+  background:white;
+
+  margin:0 auto 40px;
+}
+
+.final h2{
+
+  font-size:42px;
+
+  line-height:1.6;
+}
+
+.coracao-final{
+
+  font-size:60px;
+
+  margin-top:30px;
+
+  animation:pulsar 1.5s infinite;
+}
+
+@keyframes pulsar{
+
+  50%{
+
+    transform:scale(1.15);
+  }
+
+}
+
+@media(max-width:768px){
+
+  .arquivo-page h1{
+
+    font-size:30px;
+  }
+
+  .frase-destaque{
+
+    font-size:28px;
+  }
+
+  .destaque{
+
+    font-size:24px;
+  }
+
+  .versiculo{
+
+    font-size:20px;
+
+    padding:25px;
+  }
+
+  .bob-marley{
+
+    font-size:18px;
+  }
+
+  .ultima{
+
+    font-size:26px;
+  }
+
+  .final h2{
+
+    font-size:28px;
+  }
+
+  .coracao-final{
+
+    font-size:45px;
+  }
+
+}
+
+/* TIME LINE */
+
+.timeline-page{
+
+  min-height:100vh;
+
+  padding:40px 20px 100px;
+
+  background:linear-gradient(
+    180deg,
+    #ff8d21,
+    #723802
+  );
+
+  text-align:center;
+
+}
+
+.timeline-container{
+
+  max-width:900px;
+
+  margin:auto;
+
+}
+
+.timeline-container h1{
+
+  color:#5c4033;
+
+  line-height:1.4;
+
+  margin-bottom:25px;
+
+}
+
+.intro{
+
+  color:#6d5547;
+
+  margin-bottom:15px;
+
+}
+
+.timeline-container h2{
+
+  color:#5c4033;
+
+}
+
+#timeline{
+
+  margin-top:40px;
+
+  display:flex;
+
+  flex-direction:column;
+
+  gap:15px;
+
+}
+
+.evento{
+
+  background:white;
+
+  padding:18px;
+
+  border-radius:15px;
+
+  box-shadow:
+  0 8px 20px rgba(0,0,0,.08);
+
+  transition:
+  opacity .8s,
+  transform .8s;
+
+}
+
+.removido{
+
+  opacity:.1;
+
+  transform:
+  translateX(-80px);
+
+}
+
+#removerEvento{
+
+  margin-top:35px;
+
+  padding:15px 30px;
+
+  border:none;
+
+  border-radius:15px;
+
+  cursor:pointer;
+
+  background:#5c4033;
+
+  color:white;
+
+  font-size:16px;
+
+  transition:.3s;
+
+}
+
+#removerEvento:hover{
+
+  transform:scale(1.05);
+
+}
+
+#finalTimeline{
+
+  display:none;
+
+  margin-top:50px;
+
+}
+
+.frase-final{
+
+  margin-top:30px;
+
+  background:white;
+
+  padding:30px;
+
+  border-radius:20px;
+
+  box-shadow:
+  0 10px 30px rgba(0,0,0,.08);
+
+  color:#5c4033;
+
+  font-size:24px;
+
+  font-weight:bold;
+
+}
+
+@keyframes aparecer{
+
+  from{
+
+    opacity:0;
+
+    transform:translateY(30px);
+
+  }
+
+  to{
+
+    opacity:1;
+
+    transform:translateY(0);
+
+  }
+
+}
+
+#finalTimeline.mostrar{
+
+  display:block;
+
+  animation:aparecer 1.5s ease;
+
+}
+
+@media(max-width:768px){
+
+  .timeline-page{
+
+    padding:25px 15px 100px;
+
+  }
+
+  .timeline-container h1{
+
+    font-size:28px;
+
+  }
+
+  .timeline-container h2{
+
+    font-size:22px;
+
+  }
+
+  .evento{
+
+    font-size:14px;
+
+    padding:15px;
+
+  }
+
+  .frase-final{
+
+    font-size:18px;
+
+    padding:20px;
+
+  }
+
+}
+
+/* % */
+
+.stats-page{
+
+  min-height:100vh;
+
+  background:#0f172a;
+
+  color:white;
+
+  padding:40px 20px 100px;
+
+}
+
+.stats-container{
+
+  max-width:900px;
+
+  margin:auto;
+
+}
+
+.stats-page h1{
+
+  text-align:center;
+
+  margin-bottom:10px;
+
+}
+
+.subtitulo{
+
+  text-align:center;
+
+  opacity:.8;
+
+  margin-bottom:40px;
+
+}
+
+.card{
+
+  background:rgba(255,255,255,.05);
+
+  padding:25px;
+
+  border-radius:20px;
+
+  margin-bottom:30px;
+
+}
+
+.linha-stat{
+
+  display:flex;
+
+  justify-content:space-between;
+
+  margin-bottom:8px;
+
+}
+
+.barra{
+
+  width:100%;
+
+  height:14px;
+
+  background:rgba(255,255,255,.1);
+
+  border-radius:20px;
+
+  overflow:hidden;
+
+  margin-bottom:20px;
+
+}
+
+.preenchimento{
+
+  width:0;
+
+  height:100%;
+
+  background:linear-gradient(
+    90deg,
+    #ff4d6d,
+    #ff758f
+  );
+
+  transition:2s;
+}
+
+.dados-grid{
+
+  display:grid;
+
+  grid-template-columns:
+  repeat(2,1fr);
+
+  gap:20px;
+
+  margin-bottom:30px;
+
+}
+
+.box{
+
+  background:rgba(255,255,255,.05);
+
+  padding:25px;
+
+  border-radius:20px;
+
+  text-align:center;
+
+}
+
+.box h3{
+
+  font-size:40px;
+
+  color:#ff758f;
+
+  margin-bottom:10px;
+
+}
+
+.sistema{
+
+  background:rgba(255,255,255,.05);
+
+  padding:25px;
+
+  border-radius:20px;
+
+  margin-bottom:30px;
+
+  text-align:center;
+
+}
+
+.erro-box{
+
+  background:#2a1015;
+
+  border:1px solid #ff4d6d;
+
+  padding:25px;
+
+  border-radius:20px;
+
+  margin-bottom:30px;
+
+}
+
+.erro{
+
+  color:#ff758f;
+
+  font-weight:bold;
+
+}
+
+.resultado-final{
+
+  display:none;
+
+  text-align:center;
+
+  margin-top:40px;
+
+}
+
+.analise{
+
+  font-size:30px;
+
+  color:#ff758f;
+
+  margin-bottom:20px;
+
+}
+
+.frase-final{
+
+  font-size:28px;
+
+  line-height:1.6;
+
+  margin-bottom:30px;
+
+}
+
+#exportar{
+
+  padding:15px 30px;
+
+  border:none;
+
+  border-radius:12px;
+
+  cursor:pointer;
+
+}
+
+@media(max-width:768px){
+
+  .dados-grid{
+
+    grid-template-columns:1fr;
+
+  }
+
+  .box h3{
+
+    font-size:30px;
+
+  }
+
+  .frase-final{
+
+    font-size:22px;
+
+  }
+
+}
+
+@media(max-width:480px){
+
+  .stats-page{
+
+    padding:25px 12px 100px;
+
+  }
+
+  .frase-final{
+
+    font-size:18px;
+
+  }
+
+  .analise{
+
+    font-size:24px;
+
+  }
+
+}

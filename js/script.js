@@ -1319,3 +1319,172 @@ if(alteracoes){
   adicionar()
 
 }
+
+// SUPER SECRETO
+
+const abrirArquivoSecreto =
+document.getElementById('abrirArquivoSecreto')
+
+const conteudoSecreto =
+document.getElementById('conteudoSecreto')
+
+if(abrirArquivoSecreto && conteudoSecreto){
+
+  abrirArquivoSecreto.addEventListener('click',()=>{
+
+    abrirArquivoSecreto.style.display =
+    'none'
+
+    conteudoSecreto.style.display =
+    'block'
+
+    window.scrollTo({
+
+      top:0,
+
+      behavior:'smooth'
+
+    })
+
+  })
+
+}
+
+// TIME LINE
+
+const btnTimeline =
+document.getElementById('removerEvento')
+
+const finalTimeline =
+document.getElementById('finalTimeline')
+
+if(btnTimeline){
+
+  btnTimeline.addEventListener('click',()=>{
+
+    const eventos =
+    document.querySelectorAll('.evento')
+
+    let i = 0
+
+    function apagar(){
+
+      if(i >= eventos.length){
+
+        document.body.style.transition =
+        '2s'
+
+        document.body.style.filter =
+        'grayscale(1) brightness(.8)'
+
+        btnTimeline.style.display =
+        'none'
+
+        setTimeout(()=>{
+
+          finalTimeline.classList.add('mostrar')
+
+        },1200)
+
+        return
+
+      }
+
+      eventos[i].classList.add('removido')
+
+      i++
+
+      setTimeout(apagar,900)
+
+    }
+
+    apagar()
+
+  })
+
+}
+
+let cliqueCodigo = 0
+
+const erro404 =
+document.getElementById('404')
+
+if(erro404){
+
+  erro404.addEventListener('click',()=>{
+
+    cliqueCodigo++
+
+    if(cliqueCodigo >= 5){
+
+      window.location.href =
+      'timeline.html'
+
+    }
+
+  })
+
+}
+
+// %
+
+const barras =
+document.querySelectorAll('.preenchimento')
+
+if(barras.length){
+
+  barras.forEach((barra,index)=>{
+
+    setTimeout(()=>{
+
+      barra.style.width =
+      barra.dataset.width + '%'
+
+    },500 + (index * 400))
+
+  })
+
+}
+
+setTimeout(()=>{
+
+  const resultado =
+  document.getElementById('resultadoFinal')
+
+  if(resultado){
+
+    resultado.style.display =
+    'block'
+
+  }
+
+},5000)
+
+const exportar =
+document.getElementById('exportar')
+
+const relatorio =
+document.getElementById('relatorioCompleto')
+
+if(exportar && relatorio){
+
+  exportar.addEventListener('click',()=>{
+
+    exportar.innerHTML =
+    'Gerando relatório...'
+
+    exportar.disabled = true
+
+    setTimeout(()=>{
+
+      exportar.style.display =
+      'none'
+
+      relatorio.style.display =
+      'block'
+
+    },2000)
+
+  })
+
+}

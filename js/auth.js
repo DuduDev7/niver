@@ -160,34 +160,57 @@ async function loginSera() {
 
 async function loginHoje() {
 
-  const senhaDigitada = document.getElementById("senha").value;
+  const senhaDigitada =
+  document.getElementById("senha").value;
 
-  const senhaHash = "175ff2cb577f2b6e1b9c2ffc896a65dcb66caf60f0358ce61da42687d7d7d56a";
+  const senhaPrincipal =
+  "175ff2cb577f2b6e1b9c2ffc896a65dcb66caf60f0358ce61da42687d7d7d56a";
+
+  const senhaSecreta =
+  "957611f12cf0a07ca9d12c557704ec886987c18950b11af8f647c7697ba9d03a";
 
   const encoder = new TextEncoder();
 
-  const data = encoder.encode(senhaDigitada);
+  const data =
+  encoder.encode(senhaDigitada);
 
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashBuffer =
+  await crypto.subtle.digest('SHA-256', data);
 
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashArray =
+  Array.from(new Uint8Array(hashBuffer));
 
-  const hashHex = hashArray
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
+  const hashHex =
+  hashArray
+  .map(b => b.toString(16).padStart(2,'0'))
+  .join('');
 
-  if (hashHex === senhaHash) {
+  if(hashHex === senhaPrincipal){
 
-    localStorage.setItem("auth", "true");
+    localStorage.setItem("auth","true");
 
-    window.location.href = "1506.html";
-
-  } else {
-
-    document.getElementById("erro").innerText =
-      "Senha incorreta 🎮";
+    window.location.href =
+    "1506.html";
 
   }
+
+  else if(hashHex === senhaSecreta){
+
+    localStorage.setItem("auth","true");
+
+    window.location.href =
+    "superSecreto.html";
+
+  }
+
+  else{
+
+    document.getElementById("erro")
+    .innerText =
+    "Senha incorreta 🎮";
+
+  }
+
 }
 
 
