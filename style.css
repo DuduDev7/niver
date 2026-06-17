@@ -5370,50 +5370,11 @@ NOVO - 09/06
   display:grid;
 
   grid-template-columns:
-  repeat(3,80px);
+  repeat(3,1fr);
 
-  justify-content:center;
+  gap:10px;
 
-  gap:12px;
-
-  margin-top:20px;
-
-}
-
-.teclado button{
-
-  width:80px !important;
-
-  height:80px !important;
-
-  display:flex !important;
-
-  align-items:center;
-
-  justify-content:center;
-
-  background:white;
-
-  color:#111;
-
-  border:none;
-
-  border-radius:15px;
-
-  font-size:28px;
-
-  font-weight:bold;
-
-  cursor:pointer;
-
-  transition:.2s;
-
-}
-
-.teclado button:hover{
-
-  transform:scale(1.05);
-
+  margin-bottom:20px;
 }
 
 .cofre-page .teclado button{
@@ -5550,7 +5511,7 @@ NOVO - 09/06
 
   font-weight:bold;
 
-  color:#f1b2b2;
+  color:#c75f5f;
 
   line-height:1.6;
 }
@@ -5637,6 +5598,692 @@ NOVO - 09/06
 
     width:15px;
     height:15px;
+  }
+
+}
+
+/* TEMPO GALAXIA */
+
+.relogio-page{
+
+  background:
+  linear-gradient(
+  180deg,
+  #070707,
+  #151515);
+
+  min-height:100vh;
+
+  color:white;
+
+}
+
+.container-tempo{
+
+  min-height:100vh;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  padding:20px;
+
+}
+
+.painel{
+
+  width:100%;
+
+  max-width:900px;
+
+  text-align:center;
+
+}
+
+.painel h1{
+
+  font-size:48px;
+
+  margin-bottom:20px;
+
+}
+
+.subtitulo{
+
+  font-size:20px;
+
+  opacity:.8;
+
+  margin-bottom:40px;
+
+  line-height:1.8;
+
+}
+
+#iniciarTempo{
+
+  padding:18px 40px;
+
+  border:none;
+
+  border-radius:50px;
+
+  cursor:pointer;
+
+  font-size:18px;
+
+}
+
+#contador{
+
+  display:flex;
+
+  justify-content:center;
+
+  gap:20px;
+
+  flex-wrap:wrap;
+
+  margin-top:50px;
+
+}
+
+.tempo-box{
+
+  width:150px;
+
+  height:150px;
+
+  border-radius:20px;
+
+  background:
+  rgba(255,255,255,.05);
+
+  border:
+  1px solid rgba(255,255,255,.1);
+
+  display:flex;
+
+  flex-direction:column;
+
+  align-items:center;
+
+  justify-content:center;
+
+}
+
+.tempo-box span{
+
+  font-size:48px;
+
+  font-weight:bold;
+
+}
+
+.tempo-box small{
+
+  margin-top:10px;
+
+  opacity:.7;
+
+}
+
+#mensagemFinal{
+
+  display:none;
+
+  margin-top:60px;
+
+}
+
+#mensagemFinal p{
+
+  font-size:26px;
+
+  margin-bottom:20px;
+
+}
+
+#continuar{
+
+  display:none;
+
+  margin-top:40px;
+
+  padding:18px 40px;
+
+  border:none;
+
+  border-radius:50px;
+
+  cursor:pointer;
+
+}
+
+@media(max-width:768px){
+
+  .painel h1{
+
+    font-size:32px;
+
+  }
+
+  .subtitulo{
+
+    font-size:16px;
+
+  }
+
+  .tempo-box{
+
+    width:120px;
+
+    height:120px;
+
+  }
+
+  .tempo-box span{
+
+    font-size:34px;
+
+  }
+
+  #mensagemFinal p{
+
+    font-size:20px;
+
+  }
+
+}
+
+/* MSG GALAXIA */
+
+.galaxia-page{
+
+  background:
+  radial-gradient(
+  circle at center,
+  #09111f,
+  #02050d 80%
+  );
+
+  min-height:100vh;
+
+  color:white;
+
+  font-family:
+  'Segoe UI',
+  sans-serif;
+  overflow-x:hidden;
+  overflow-y:auto;
+
+}
+
+.estrelas{
+
+  position:fixed;
+
+  inset:0;
+
+  background-image:
+  radial-gradient(
+  white 1px,
+  transparent 1px);
+
+  background-size:
+  40px 40px;
+
+  opacity:.15;
+
+}
+
+.transmissao{
+
+  position:relative;
+
+  z-index:2;
+
+  min-height:100vh;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  padding:30px;
+
+}
+
+#inicio{
+
+  width:100%;
+
+  max-width:700px;
+
+  text-align:center;
+
+}
+
+#inicio h1{
+
+  margin-bottom:40px;
+
+  font-size:42px;
+
+}
+
+.barra{
+
+  width:100%;
+
+  height:16px;
+
+  border-radius:20px;
+
+  overflow:hidden;
+
+  background:
+  rgba(255,255,255,.08);
+
+}
+
+#progressoGalaxia{
+
+  width:0%;
+
+  height:100%;
+
+  background:#8cc7ff;
+
+}
+
+#conteudoGalaxia{
+
+  display:none;
+
+  max-width:800px;
+
+  text-align:center;
+
+}
+
+.cabecalho{
+
+  margin-bottom:40px;
+
+  opacity:.7;
+
+}
+
+.cabecalho p{
+
+  margin-bottom:10px;
+
+}
+
+#textoDigitando{
+
+  font-size:24px;
+
+  line-height:1.9;
+
+  min-height:300px;
+
+  white-space:pre-line;
+
+}
+
+#fotoGalaxia{
+
+  width:100%;
+
+  max-width:420px;
+
+  border-radius:20px;
+
+  margin-top:40px;
+
+  display:none;
+
+  opacity:0;
+
+  transition:2s;
+
+}
+
+#btnConstelacao{
+
+  display:none;
+
+  margin-top:50px;
+
+  padding:18px 35px;
+
+  border:none;
+
+  border-radius:50px;
+
+  cursor:pointer;
+
+  font-size:18px;
+
+}
+
+@media(max-width:768px){
+
+  #inicio h1{
+
+    font-size:30px;
+
+  }
+
+  #textoDigitando{
+
+    font-size:18px;
+
+  }
+
+}
+
+/* CONSTELACAO JULIA */
+
+.container-constelacao{
+
+  min-height:100vh;
+
+  background:
+  radial-gradient(
+  circle at center,
+  #07111f 0%,
+  #030712 60%,
+  #000 100%
+  );
+
+  color:white;
+
+  position:relative;
+
+  overflow:hidden;
+
+  padding:40px 20px;
+
+  text-align:center;
+
+}
+
+.container-constelacao h1{
+
+  font-size:42px;
+
+  margin-bottom:15px;
+
+}
+
+#statusConstelacao{
+
+  font-size:18px;
+
+  opacity:.8;
+
+  margin-bottom:50px;
+
+}
+
+#campoEstrelas{
+
+  position:relative;
+
+  width:100%;
+
+  max-width:900px;
+
+  height:450px;
+
+  margin:0 auto;
+
+}
+
+.estrela{
+
+  position:absolute;
+
+  font-size:55px;
+
+  color:white;
+
+  cursor:pointer;
+
+  transition:.4s;
+
+  user-select:none;
+
+  text-shadow:
+  0 0 10px white,
+  0 0 20px white,
+  0 0 40px white;
+
+  animation:
+  piscar 3s infinite;
+}
+
+.estrela:hover{
+
+  transform:
+  scale(1.3);
+
+}
+
+.estrela.ativa{
+
+  color:#ffe082;
+
+  text-shadow:
+  0 0 15px #ffe082,
+  0 0 30px #ffe082,
+  0 0 60px #ffe082;
+
+}
+
+.estrela1{
+
+  top:40px;
+  left:10%;
+
+}
+
+.estrela2{
+
+  top:160px;
+  right:15%;
+
+}
+
+.estrela3{
+
+  top:300px;
+  left:20%;
+
+}
+
+.estrela4{
+
+  top:120px;
+  left:45%;
+
+}
+
+.estrela5{
+
+  top:320px;
+  right:20%;
+
+}
+
+#nomeConstelacao{
+
+  margin-top:20px;
+
+  font-size:70px;
+
+  font-weight:bold;
+
+  letter-spacing:15px;
+
+  color:#ffe082;
+
+  text-shadow:
+  0 0 20px #ffe082,
+  0 0 50px #ffe082;
+
+  min-height:90px;
+
+}
+
+#mensagemFinalConstelacao{
+
+  display:none;
+
+  max-width:700px;
+
+  margin:60px auto 0;
+
+  background:
+  rgba(255,255,255,.05);
+
+  border:
+  1px solid rgba(255,255,255,.1);
+
+  border-radius:25px;
+
+  padding:35px;
+
+  backdrop-filter:
+  blur(10px);
+
+}
+
+#mensagemFinalConstelacao p{
+
+  font-size:22px;
+
+  line-height:1.8;
+
+  margin-bottom:10px;
+
+}
+
+#btnLirios{
+
+  margin-top:30px;
+
+  border:none;
+
+  border-radius:50px;
+
+  padding:18px 35px;
+
+  font-size:18px;
+
+  cursor:pointer;
+
+  background:#ffe082;
+
+  color:#111;
+
+  font-weight:bold;
+
+  transition:.3s;
+
+}
+
+#btnLirios:hover{
+
+  transform:
+  scale(1.05);
+
+}
+
+@keyframes piscar{
+
+  0%{
+
+    opacity:.5;
+
+  }
+
+  50%{
+
+    opacity:1;
+
+  }
+
+  100%{
+
+    opacity:.5;
+
+  }
+
+}
+
+@media(max-width:768px){
+
+  .container-constelacao h1{
+
+    font-size:30px;
+
+  }
+
+  #nomeConstelacao{
+
+    font-size:42px;
+
+    letter-spacing:8px;
+
+  }
+
+  #campoEstrelas{
+
+    height:350px;
+
+  }
+
+  .estrela{
+
+    font-size:40px;
+
+  }
+
+  #mensagemFinalConstelacao p{
+
+    font-size:18px;
+
+  }
+
+}
+
+@media(max-width:480px){
+
+  #nomeConstelacao{
+
+    font-size:34px;
+
+    letter-spacing:5px;
+
+  }
+
+  .estrela{
+
+    font-size:34px;
+
+  }
+
+  #statusConstelacao{
+
+    font-size:16px;
+
   }
 
 }

@@ -714,13 +714,9 @@ if (fotoJulia) {
 const quadros = document.querySelectorAll('.quadro')
 
 quadros.forEach(quadro => {
-
-  quadro.addEventListener('click',()=>{
-
+  quadro.addEventListener('click', () => {
     quadro.classList.toggle('aberto')
-
   })
-
 })
 
 const especial = document.querySelector('.especial')
@@ -969,7 +965,6 @@ document.querySelectorAll('.opcoes button').forEach(botao => {
   }
 })
 
-
 //CHEGANDO LA
 
 const final = document.getElementById('versiculo')
@@ -1036,67 +1031,43 @@ if (talvez) {
 
 //CIA
 
-(() => {
+;(() => {
+  const btnArquivoCIA = document.getElementById('abrirArquivo')
 
-  const btnArquivoCIA =
-  document.getElementById('abrirArquivo')
+  const arquivoCIA = document.getElementById('arquivoSecreto')
 
-  const arquivoCIA =
-  document.getElementById('arquivoSecreto')
-
-  if(!btnArquivoCIA || !arquivoCIA)
-  return
+  if (!btnArquivoCIA || !arquivoCIA) return
 
   btnArquivoCIA.onclick = () => {
-
     arquivoCIA.style.display = 'block'
 
     btnArquivoCIA.style.display = 'none'
-
   }
-
 })()
 
 //CAIXAS
 
-const caixas =
-document.querySelectorAll('.caixa')
+const caixas = document.querySelectorAll('.caixa')
 
-if(caixas.length){
-
+if (caixas.length) {
   caixas.forEach(caixa => {
-
     caixa.addEventListener('click', () => {
-
       caixa.classList.toggle('aberta')
-
     })
-
   })
-
 }
 
 // 404
 
-const progresso =
-document.getElementById('progresso')
+const progresso = document.getElementById('progresso')
 
-const mensagem =
-document.getElementById('mensagemErro')
+const mensagem = document.getElementById('mensagemErro')
 
-const btnVoltar =
-document.getElementById('btnVoltar')
+const btnVoltar = document.getElementById('btnVoltar')
 
-const pagina =
-document.getElementById('paginaEncontrada')
+const pagina = document.getElementById('paginaEncontrada')
 
-if(
-  progresso &&
-  mensagem &&
-  btnVoltar &&
-  pagina
-){
-
+if (progresso && mensagem && btnVoltar && pagina) {
   let carregamento = 0
 
   let cliques = 0
@@ -1104,35 +1075,25 @@ if(
   btnVoltar.style.opacity = '.5'
 
   setTimeout(() => {
-
     btnVoltar.style.opacity = '1'
-
   }, 2000)
 
   const fakeLoad = setInterval(() => {
-
     carregamento++
 
-    progresso.style.width =
-    carregamento + '%'
+    progresso.style.width = carregamento + '%'
 
-    if(carregamento >= 53){
-
+    if (carregamento >= 53) {
       clearInterval(fakeLoad)
 
-      mensagem.innerHTML =
-      'Erro inesperado durante o carregamento.'
-
+      mensagem.innerHTML = 'Erro inesperado durante o carregamento.'
     }
-
   }, 40)
 
   btnVoltar.addEventListener('click', () => {
-
     cliques++
 
     const frases = [
-
       '',
 
       '',
@@ -1152,133 +1113,101 @@ if(
       'Página localizada...',
 
       'Restaurando conteúdo...'
-
     ]
 
-    if(cliques <= frases.length){
-
-      mensagem.innerHTML =
-      frases[cliques - 1]
-
+    if (cliques <= frases.length) {
+      mensagem.innerHTML = frases[cliques - 1]
     }
 
-    if(cliques === 10){
-
+    if (cliques === 10) {
       let atual = 53
 
       const finalizar = setInterval(() => {
-
         atual++
 
-        progresso.style.width =
-        atual + '%'
+        progresso.style.width = atual + '%'
 
-        if(atual >= 100){
-
+        if (atual >= 100) {
           clearInterval(finalizar)
 
-          mensagem.innerHTML =
-          'Conteúdo restaurado com sucesso.'
+          mensagem.innerHTML = 'Conteúdo restaurado com sucesso.'
 
           setTimeout(() => {
+            pagina.style.display = 'block'
 
-            pagina.style.display =
-            'block'
+            btnVoltar.style.display = 'none'
 
-            btnVoltar.style.display =
-            'none'
+            mensagem.style.display = 'none'
 
-            mensagem.style.display =
-            'none'
+            const barra = document.querySelector('.barra')
 
-            const barra =
-            document.querySelector('.barra')
-
-            if(barra){
-
-              barra.style.display =
-              'none'
-
+            if (barra) {
+              barra.style.display = 'none'
             }
-
           }, 1500)
-
         }
-
       }, 20)
-
     }
-
   })
-
 }
 
 // ALTERAÇÕES
 
-const alteracoes =
-document.getElementById('alteracoes')
+const alteracoes = document.getElementById('alteracoes')
 
-if(alteracoes){
-
+if (alteracoes) {
   const registros = [
-
     {
-      antes:'Treinava no Nível 7.',
-      depois:'Treinou no Nível 2 porque uma certa pessoa pediu.'
+      antes: 'Treinava no Nível 7.',
+      depois: 'Treinou no Nível 2 porque uma certa pessoa pediu.'
     },
 
     {
-      antes:'Via vídeos engraçados.',
-      depois:'Via vídeos engraçados e pensava: "vou mandar pra ela".'
+      antes: 'Via vídeos engraçados.',
+      depois: 'Via vídeos engraçados e pensava: "vou mandar pra ela".'
     },
 
     {
-      antes:'Pegava o celular quando precisava.',
-      depois:'Pegava o celular para ver se você respondeu.'
+      antes: 'Pegava o celular quando precisava.',
+      depois: 'Pegava o celular para ver se você respondeu.'
     },
 
     {
-      antes:'Gostava de dirigir.',
-      depois:'Passou a gostar ainda mais quando você estava junto.'
+      antes: 'Gostava de dirigir.',
+      depois: 'Passou a gostar ainda mais quando você estava junto.'
     },
 
     {
-      antes:'Era só mais um ano normal.',
-      depois:'Virou o ano em que conheceu você.'
+      antes: 'Era só mais um ano normal.',
+      depois: 'Virou o ano em que conheceu você.'
     },
 
     {
-      antes:'Acordava e seguia o dia.',
-      depois:'Acordava procurando mensagem sua.'
+      antes: 'Acordava e seguia o dia.',
+      depois: 'Acordava procurando mensagem sua.'
     },
 
     {
-      antes:'Não fazia ideia de quem era Julia.',
-      depois:'Criou um site inteiro por causa dela.'
+      antes: 'Não fazia ideia de quem era Julia.',
+      depois: 'Criou um site inteiro por causa dela.'
     },
 
     {
-      antes:'Tinha planos.',
-      depois:'Começou a imaginar você dentro deles.'
+      antes: 'Tinha planos.',
+      depois: 'Começou a imaginar você dentro deles.'
     }
-
   ]
 
   let atual = 0
 
-  function adicionar(){
-
-    if(atual >= registros.length){
-
-      document
-      .getElementById('finalRegistro')
-      .style.display = 'block'
+  function adicionar() {
+    if (atual >= registros.length) {
+      document.getElementById('finalRegistro').style.display = 'block'
 
       return
     }
 
-    const item =
-    document.createElement('div')
+    const item = document.createElement('div')
 
     item.classList.add('alteracao')
 
@@ -1304,220 +1233,145 @@ if(alteracoes){
 
     alteracoes.appendChild(item)
 
-    setTimeout(()=>{
-
+    setTimeout(() => {
       item.classList.add('mostrar')
-
-    },100)
+    }, 100)
 
     atual++
 
-    setTimeout(adicionar,1400)
-
+    setTimeout(adicionar, 1400)
   }
 
   adicionar()
-
 }
 
 // SUPER SECRETO
 
-const abrirArquivoSecreto =
-document.getElementById('abrirArquivoSecreto')
+const abrirArquivoSecreto = document.getElementById('abrirArquivoSecreto')
 
-const conteudoSecreto =
-document.getElementById('conteudoSecreto')
+const conteudoSecreto = document.getElementById('conteudoSecreto')
 
-if(abrirArquivoSecreto && conteudoSecreto){
+if (abrirArquivoSecreto && conteudoSecreto) {
+  abrirArquivoSecreto.addEventListener('click', () => {
+    abrirArquivoSecreto.style.display = 'none'
 
-  abrirArquivoSecreto.addEventListener('click',()=>{
-
-    abrirArquivoSecreto.style.display =
-    'none'
-
-    conteudoSecreto.style.display =
-    'block'
+    conteudoSecreto.style.display = 'block'
 
     window.scrollTo({
+      top: 0,
 
-      top:0,
-
-      behavior:'smooth'
-
+      behavior: 'smooth'
     })
-
   })
-
 }
 
 // TIME LINE
 
-const btnTimeline =
-document.getElementById('removerEvento')
+const btnTimeline = document.getElementById('removerEvento')
 
-const finalTimeline =
-document.getElementById('finalTimeline')
+const finalTimeline = document.getElementById('finalTimeline')
 
-if(btnTimeline){
-
-  btnTimeline.addEventListener('click',()=>{
-
-    const eventos =
-    document.querySelectorAll('.evento')
+if (btnTimeline) {
+  btnTimeline.addEventListener('click', () => {
+    const eventos = document.querySelectorAll('.evento')
 
     let i = 0
 
-    function apagar(){
+    function apagar() {
+      if (i >= eventos.length) {
+        document.body.style.transition = '2s'
 
-      if(i >= eventos.length){
+        document.body.style.filter = 'grayscale(1) brightness(.8)'
 
-        document.body.style.transition =
-        '2s'
+        btnTimeline.style.display = 'none'
 
-        document.body.style.filter =
-        'grayscale(1) brightness(.8)'
-
-        btnTimeline.style.display =
-        'none'
-
-        setTimeout(()=>{
-
+        setTimeout(() => {
           finalTimeline.classList.add('mostrar')
-
-        },1200)
+        }, 1200)
 
         return
-
       }
 
       eventos[i].classList.add('removido')
 
       i++
 
-      setTimeout(apagar,900)
-
+      setTimeout(apagar, 900)
     }
 
     apagar()
-
   })
-
 }
 
 let cliqueCodigo = 0
 
-const erro404 =
-document.getElementById('404')
+const erro404 = document.getElementById('404')
 
-if(erro404){
-
-  erro404.addEventListener('click',()=>{
-
+if (erro404) {
+  erro404.addEventListener('click', () => {
     cliqueCodigo++
 
-    if(cliqueCodigo >= 5){
-
-      window.location.href =
-      'timeLine.html'
-
+    if (cliqueCodigo >= 5) {
+      window.location.href = 'timeLine.html'
     }
-
   })
-
 }
 
 // %
 
-const barras =
-document.querySelectorAll('.preenchimento')
+const barras = document.querySelectorAll('.preenchimento')
 
-if(barras.length){
-
-  barras.forEach((barra,index)=>{
-
-    setTimeout(()=>{
-
-      barra.style.width =
-      barra.dataset.width + '%'
-
-    },500 + (index * 400))
-
+if (barras.length) {
+  barras.forEach((barra, index) => {
+    setTimeout(() => {
+      barra.style.width = barra.dataset.width + '%'
+    }, 500 + index * 400)
   })
-
 }
 
-setTimeout(()=>{
+setTimeout(() => {
+  const resultado = document.getElementById('resultadoFinal')
 
-  const resultado =
-  document.getElementById('resultadoFinal')
-
-  if(resultado){
-
-    resultado.style.display =
-    'block'
-
+  if (resultado) {
+    resultado.style.display = 'block'
   }
+}, 5000)
 
-},5000)
+const exportar = document.getElementById('exportar')
 
-const exportar =
-document.getElementById('exportar')
+const relatorio = document.getElementById('relatorioCompleto')
 
-const relatorio =
-document.getElementById('relatorioCompleto')
-
-if(exportar && relatorio){
-
-  exportar.addEventListener('click',()=>{
-
-    exportar.innerHTML =
-    'Gerando relatório...'
+if (exportar && relatorio) {
+  exportar.addEventListener('click', () => {
+    exportar.innerHTML = 'Gerando relatório...'
 
     exportar.disabled = true
 
-    setTimeout(()=>{
+    setTimeout(() => {
+      exportar.style.display = 'none'
 
-      exportar.style.display =
-      'none'
-
-      relatorio.style.display =
-      'block'
-
-    },2000)
-
+      relatorio.style.display = 'block'
+    }, 2000)
   })
-
 }
 
 // BOTÃO NÃO PRECISAVA
 
-const inicioProibido =
-document.getElementById('inicio')
+const inicioProibido = document.getElementById('inicio')
 
-const revelacaoProibida =
-document.getElementById('revelacao')
+const revelacaoProibida = document.getElementById('revelacao')
 
-const botaoProibido =
-document.getElementById('botaoProibido')
+const botaoProibido = document.getElementById('botaoProibido')
 
-const avisoProibido =
-document.getElementById('aviso')
+const avisoProibido = document.getElementById('aviso')
 
-if(
-  inicioProibido &&
-  revelacaoProibida &&
-  botaoProibido &&
-  avisoProibido
-){
-
+if (inicioProibido && revelacaoProibida && botaoProibido && avisoProibido) {
   let clique = 0
 
-  botaoProibido.addEventListener('click',()=>{
-
+  botaoProibido.addEventListener('click', () => {
     clique++
 
     const mensagens = [
-
       'Tem certeza?',
 
       'Eu avisei.',
@@ -1527,224 +1381,414 @@ if(
       'Última chance.',
 
       'Ok... abrindo arquivo.'
-
     ]
 
-    avisoProibido.innerHTML =
-    mensagens[clique - 1]
+    avisoProibido.innerHTML = mensagens[clique - 1]
 
-    if(clique >= 5){
+    if (clique >= 5) {
+      inicioProibido.style.display = 'none'
 
-      inicioProibido.style.display =
-      'none'
+      document.body.style.background = '#000'
 
-      document.body.style.background =
-      '#000'
-
-      setTimeout(()=>{
-
-        revelacaoProibida.style.display =
-        'block'
-
-      },800)
-
+      setTimeout(() => {
+        revelacaoProibida.style.display = 'block'
+      }, 800)
     }
-
   })
-
 }
 
 let cliqueEstaRela = 0
 
-const erroEstaRela =
-document.getElementById('estarela')
+const erroEstaRela = document.getElementById('estarela')
 
-if(erroEstaRela){
-
-  erroEstaRela.addEventListener('click',()=>{
-
+if (erroEstaRela) {
+  erroEstaRela.addEventListener('click', () => {
     cliqueEstaRela++
 
-    if(cliqueEstaRela >= 5){
-
-      window.location.href =
-      'estaRela.html'
-
+    if (cliqueEstaRela >= 5) {
+      window.location.href = 'estaRela.html'
     }
-
   })
-
 }
 
 let cliqueBtnNP = 0
 
-const erroBtnNP =
-document.getElementById('erroBtnNP')
+const erroBtnNP = document.getElementById('erroBtnNP')
 
-if(erroBtnNP){
-
-  erroBtnNP.addEventListener('click',()=>{
-
+if (erroBtnNP) {
+  erroBtnNP.addEventListener('click', () => {
     cliqueBtnNP++
 
-    if(cliqueBtnNP >= 5){
-
-      window.location.href =
-      'btnNP.html'
-
+    if (cliqueBtnNP >= 5) {
+      window.location.href = 'btnNP.html'
     }
-
   })
-
 }
 
 // COFRE
 
 const btnAbrir = document.getElementById('btnAbrir')
 
-if(btnAbrir){
-
-  const senhaCorreta =
-  '020406'
+if (btnAbrir) {
+  const senhaCorreta = '020406'
 
   let senhaDigitada = ''
 
-  const display =
-  document.querySelectorAll('.bolinha')
+  const display = document.querySelectorAll('.bolinha')
 
-  const numeros =
-  document.querySelectorAll('.numero')
+  const numeros = document.querySelectorAll('.numero')
 
-  const limpar =
-  document.getElementById('limpar')
+  const limpar = document.getElementById('limpar')
 
-  const statusTexto =
-  document.getElementById('status')
+  const statusTexto = document.getElementById('status')
 
-  const cofre =
-  document.getElementById('cofre')
+  const cofre = document.getElementById('cofre')
 
-  const conteudo =
-  document.getElementById('conteudoCofre')
+  const conteudo = document.getElementById('conteudoCofre')
 
-  const etapa1 =
-  document.querySelector('.etapa1')
+  const etapa1 = document.querySelector('.etapa1')
 
-  const etapa2 =
-  document.querySelector('.etapa2')
+  const etapa2 = document.querySelector('.etapa2')
 
-  const etapa3 =
-  document.querySelector('.etapa3')
+  const etapa3 = document.querySelector('.etapa3')
 
-  function atualizarDisplay(){
-
-    display.forEach((item,index)=>{
-
-      if(index < senhaDigitada.length){
-
+  function atualizarDisplay() {
+    display.forEach((item, index) => {
+      if (index < senhaDigitada.length) {
         item.classList.add('preenchida')
-
-      }else{
-
+      } else {
         item.classList.remove('preenchida')
-
       }
-
     })
-
   }
 
-  numeros.forEach(botao=>{
-
-    botao.addEventListener('click',()=>{
-
-      if(senhaDigitada.length >= 6){
-
+  numeros.forEach(botao => {
+    botao.addEventListener('click', () => {
+      if (senhaDigitada.length >= 6) {
         return
-
       }
 
       senhaDigitada += botao.innerText
 
       atualizarDisplay()
-
     })
-
   })
 
-  limpar.addEventListener('click',()=>{
-
+  limpar.addEventListener('click', () => {
     senhaDigitada = ''
 
     atualizarDisplay()
 
-    statusTexto.innerHTML =
-    'Digite a combinação'
-
+    statusTexto.innerHTML = 'Digite a combinação'
   })
 
-  btnAbrir.addEventListener('click',()=>{
-
-    if(senhaDigitada !== senhaCorreta){
-
-      statusTexto.innerHTML =
-      'Combinação incorreta.'
+  btnAbrir.addEventListener('click', () => {
+    if (senhaDigitada !== senhaCorreta) {
+      statusTexto.innerHTML = 'Combinação incorreta.'
 
       senhaDigitada = ''
 
       atualizarDisplay()
 
       return
+    }
+
+    statusTexto.innerHTML = 'Verificando...'
+
+    setTimeout(() => {
+      statusTexto.innerHTML = 'Acesso concedido.'
+    }, 1200)
+
+    setTimeout(() => {
+      statusTexto.innerHTML = 'Abrindo cofre...'
+    }, 2200)
+
+    setTimeout(() => {
+      cofre.style.opacity = '.2'
+    }, 3200)
+
+    setTimeout(() => {
+      conteudo.style.display = 'block'
+
+      etapa1.style.display = 'block'
+    }, 5200)
+
+    setTimeout(() => {
+      etapa2.style.display = 'block'
+    }, 7600)
+
+    setTimeout(() => {
+      etapa3.style.display = 'block'
+    }, 9800)
+  })
+}
+
+// TEMPO GALAXIA
+
+const iniciarTempo = document.getElementById('iniciarTempo')
+
+if (iniciarTempo) {
+  iniciarTempo.addEventListener('click', () => {
+    iniciarTempo.style.display = 'none'
+
+    document.getElementById('contador').style.display = 'flex'
+
+    const dataEspecial = new Date('2026-04-11T21:30:00')
+
+    function atualizar() {
+      const agora = new Date()
+
+      const diferenca = agora - dataEspecial
+
+      const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24))
+
+      const horas = agora.getHours()
+
+      const minutos = agora.getMinutes()
+
+      const segundos = agora.getSeconds()
+
+      document.getElementById('dias').innerText = dias
+
+      document.getElementById('horas').innerText = horas
+
+      document.getElementById('minutos').innerText = minutos
+
+      document.getElementById('segundos').innerText = segundos
+    }
+
+    atualizar()
+
+    setInterval(atualizar, 1000)
+
+    setTimeout(() => {
+      document.getElementById('mensagemFinal').style.display = 'block'
+    }, 6000)
+
+    setTimeout(() => {
+      document.getElementById('continuar').style.display = 'inline-block'
+    }, 9000)
+  })
+
+  document.getElementById('continuar').addEventListener('click', () => {
+  
+    window.location.href =
+    'msgGalaxia.html'
+  
+  })
+}
+
+//MSG GALAXIA
+
+const progressoGalaxia = document.getElementById('progressoGalaxia')
+
+if (progressoGalaxia) {
+  const inicio = document.getElementById('inicio')
+
+  const conteudo = document.getElementById('conteudoGalaxia')
+
+  let valor = 0
+
+  const carregar = setInterval(() => {
+    valor++
+
+    progressoGalaxia.style.width = valor + '%'
+
+    if (valor >= 100) {
+      clearInterval(carregar)
+
+      inicio.style.display = 'none'
+
+      conteudo.style.display = 'block'
+
+      iniciarMensagem()
+    }
+  }, 30)
+
+  function iniciarMensagem() {
+    const texto = `Se você está lendo isso...
+
+significa que a transmissão conseguiu atravessar milhares de estrelas.
+
+Durante a busca foram encontrados:
+
+8 planetas habitáveis.
+
+327 luas.
+
+Bilhões de estrelas.
+
+Mas apenas uma coisa chamou atenção.
+
+Você.
+
+Entre todas as coisas improváveis do universo...
+
+você continua sendo a minha favorita.
+
+O mundo tem suas maravilhas.
+
+Mas você é a maravilha do meu mundo.
+
+E então eu lembrei de uma frase...
+
+"Como eu sou sortudo por ter alguém que torna tão difícil dizer adeus."
+
+— Ursinho Pooh
+
+Transmissão encerrada.`
+
+    const alvo = document.getElementById('textoDigitando')
+
+    let i = 0
+
+    const escrever = setInterval(() => {
+      alvo.innerHTML += texto.charAt(i)
+
+      i++
+
+      if (i >= texto.length) {
+        clearInterval(escrever)
+
+        mostrarFinal()
+      }
+    }, 35)
+  }
+
+  function mostrarFinal() {
+    const foto = document.getElementById('fotoGalaxia')
+
+    foto.style.display = 'block'
+
+    setTimeout(() => {
+      foto.style.opacity = '1'
+    }, 100)
+
+    setTimeout(() => {
+      document.getElementById('btnConstelacao').style.display = 'inline-block'
+    }, 2000)
+  }
+
+  document.getElementById('btnConstelacao').addEventListener('click', () => {
+    window.location.href = 'constJulia.html'
+  })
+}
+
+
+// CONSTELACAO JULIA
+
+const estrelas =
+document.querySelectorAll('.estrela')
+
+const statusConstelacao =
+document.getElementById(
+'statusConstelacao'
+)
+
+const nomeConstelacao =
+document.getElementById(
+'nomeConstelacao'
+)
+
+const mensagemFinal =
+document.getElementById(
+'mensagemFinalConstelacao'
+)
+
+let cliques = 0
+
+estrelas.forEach(estrela=>{
+
+  estrela.addEventListener(
+  'click',()=>{
+
+    cliques++
+
+    estrela.classList.add(
+    'ativa'
+    )
+
+    if(cliques === 3){
+
+      statusConstelacao.innerHTML =
+      'Sinal detectado...'
+
+      nomeConstelacao.innerHTML =
+      'J'
 
     }
 
-    statusTexto.innerHTML =
-    'Verificando...'
+    if(cliques === 6){
 
-    setTimeout(()=>{
+      nomeConstelacao.innerHTML =
+      'JU'
 
-      statusTexto.innerHTML =
-      'Acesso concedido.'
+    }
 
-    },1200)
+    if(cliques === 9){
 
-    setTimeout(()=>{
+      nomeConstelacao.innerHTML =
+      'JUL'
 
-      statusTexto.innerHTML =
-      'Abrindo cofre...'
+    }
 
-    },2200)
+    if(cliques === 12){
 
-    setTimeout(()=>{
+      nomeConstelacao.innerHTML =
+      'JULI'
 
-      cofre.style.opacity =
-      '.2'
-    
-    },3200)
+    }
 
-    setTimeout(()=>{
+    if(cliques === 15){
 
-      conteudo.style.display =
-      'block'
+      nomeConstelacao.innerHTML =
+      'JULIA'
 
-      etapa1.style.display =
-      'block'
+      statusConstelacao.innerHTML =
+      'Constelação encontrada.'
 
-    },5200)
+      setTimeout(()=>{
 
-    setTimeout(()=>{
+        mensagemFinal.style.display =
+        'block'
 
-      etapa2.style.display =
-      'block'
+      },1500)
 
-    },7600)
+    }
 
-    setTimeout(()=>{
+  })
 
-      etapa3.style.display =
-      'block'
+})
 
-    },9800)
+const levaTempo =
+document.getElementById(
+'levaTempo'
+)
+
+if(levaTempo){
+
+  levaTempo.addEventListener(
+  'click',()=>{
+
+    window.location.href =
+    'tempo.html'
+
+  })
+
+}
+
+const levaCofre =
+document.getElementById(
+'levaCofre'
+)
+
+if(levaCofre){
+
+  levaCofre.addEventListener(
+  'click',()=>{
+
+    window.location.href =
+    'cofre.html'
 
   })
 
