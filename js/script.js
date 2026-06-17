@@ -1597,3 +1597,155 @@ if(erroBtnNP){
   })
 
 }
+
+// COFRE
+
+const btnAbrir = document.getElementById('btnAbrir')
+
+if(btnAbrir){
+
+  const senhaCorreta =
+  '020406'
+
+  let senhaDigitada = ''
+
+  const display =
+  document.querySelectorAll('.bolinha')
+
+  const numeros =
+  document.querySelectorAll('.numero')
+
+  const limpar =
+  document.getElementById('limpar')
+
+  const statusTexto =
+  document.getElementById('status')
+
+  const cofre =
+  document.getElementById('cofre')
+
+  const conteudo =
+  document.getElementById('conteudoCofre')
+
+  const etapa1 =
+  document.querySelector('.etapa1')
+
+  const etapa2 =
+  document.querySelector('.etapa2')
+
+  const etapa3 =
+  document.querySelector('.etapa3')
+
+  function atualizarDisplay(){
+
+    display.forEach((item,index)=>{
+
+      if(index < senhaDigitada.length){
+
+        item.classList.add('preenchida')
+
+      }else{
+
+        item.classList.remove('preenchida')
+
+      }
+
+    })
+
+  }
+
+  numeros.forEach(botao=>{
+
+    botao.addEventListener('click',()=>{
+
+      if(senhaDigitada.length >= 6){
+
+        return
+
+      }
+
+      senhaDigitada += botao.innerText
+
+      atualizarDisplay()
+
+    })
+
+  })
+
+  limpar.addEventListener('click',()=>{
+
+    senhaDigitada = ''
+
+    atualizarDisplay()
+
+    statusTexto.innerHTML =
+    'Digite a combinação'
+
+  })
+
+  btnAbrir.addEventListener('click',()=>{
+
+    if(senhaDigitada !== senhaCorreta){
+
+      statusTexto.innerHTML =
+      'Combinação incorreta.'
+
+      senhaDigitada = ''
+
+      atualizarDisplay()
+
+      return
+
+    }
+
+    statusTexto.innerHTML =
+    'Verificando...'
+
+    setTimeout(()=>{
+
+      statusTexto.innerHTML =
+      'Acesso concedido.'
+
+    },1200)
+
+    setTimeout(()=>{
+
+      statusTexto.innerHTML =
+      'Abrindo cofre...'
+
+    },2200)
+
+    setTimeout(()=>{
+
+      cofre.style.opacity =
+      '.2'
+    
+    },3200)
+
+    setTimeout(()=>{
+
+      conteudo.style.display =
+      'block'
+
+      etapa1.style.display =
+      'block'
+
+    },5200)
+
+    setTimeout(()=>{
+
+      etapa2.style.display =
+      'block'
+
+    },7600)
+
+    setTimeout(()=>{
+
+      etapa3.style.display =
+      'block'
+
+    },9800)
+
+  })
+
+}
