@@ -82,12 +82,13 @@
 }
 
 .cena.ativa{
-
   opacity:1;
+  transform:translateY(0);
+  pointer-events:auto;
+}
 
-  transform:
-  translateY(0);
-
+.btnProximo{
+  cursor:pointer;
 }
 
 .conteudo{
@@ -354,5 +355,88 @@
     font-size:20px;
 
   }
+
+}
+
+.brilho{
+
+  animation:
+  brilhoFinal 2s infinite;
+
+}
+
+@keyframes brilhoFinal{
+
+  0%{
+
+    text-shadow:
+    0 0 10px rgba(255,255,255,.4);
+
+  }
+
+  50%{
+
+    text-shadow:
+    0 0 35px rgba(255,255,255,.9),
+    0 0 60px rgba(255,214,230,.9);
+
+  }
+
+  100%{
+
+    text-shadow:
+    0 0 10px rgba(255,255,255,.4);
+
+  }
+
+}
+
+.btnProximo{
+
+  margin-top:35px;
+
+  padding:15px 40px;
+
+  border:none;
+
+  border-radius:50px;
+
+  cursor:pointer;
+
+  font-size:18px;
+
+  font-weight:600;
+
+  color:white;
+
+  background:
+  linear-gradient(
+  135deg,
+  #d88db2,
+  #b56ac8
+  );
+
+  box-shadow:
+  0 10px 25px rgba(0,0,0,.25);
+
+  transition:.3s;
+
+}
+
+.btnProximo:hover{
+
+  transform:
+  translateY(-3px)
+  scale(1.04);
+
+  box-shadow:
+  0 15px 35px rgba(0,0,0,.35);
+
+}
+
+.btnProximo:active{
+
+  transform:
+  scale(.97);
 
 }

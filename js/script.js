@@ -1571,10 +1571,7 @@ if (iniciarTempo) {
   })
 
   document.getElementById('continuar').addEventListener('click', () => {
-  
-    window.location.href =
-    'msgGalaxia.html'
-  
+    window.location.href = 'msgGalaxia.html'
   })
 }
 
@@ -1674,286 +1671,66 @@ Transmissão encerrada.`
   })
 }
 
-
 // CONSTELACAO JULIA
 
-const estrelas =
-document.querySelectorAll('.estrela')
+const estrelas = document.querySelectorAll('.estrela')
 
-const statusConstelacao =
-document.getElementById(
-'statusConstelacao'
-)
+const statusConstelacao = document.getElementById('statusConstelacao')
 
-const nomeConstelacao =
-document.getElementById(
-'nomeConstelacao'
-)
+const nomeConstelacao = document.getElementById('nomeConstelacao')
 
-const mensagemFinal =
-document.getElementById(
-'mensagemFinalConstelacao'
-)
+const mensagemFinal = document.getElementById('mensagemFinalConstelacao')
 
 let cliques = 0
 
-estrelas.forEach(estrela=>{
-
-  estrela.addEventListener(
-  'click',()=>{
-
+estrelas.forEach(estrela => {
+  estrela.addEventListener('click', () => {
     cliques++
 
-    estrela.classList.add(
-    'ativa'
-    )
+    estrela.classList.add('ativa')
 
-    if(cliques === 3){
+    if (cliques === 3) {
+      statusConstelacao.innerHTML = 'Sinal detectado...'
 
-      statusConstelacao.innerHTML =
-      'Sinal detectado...'
-
-      nomeConstelacao.innerHTML =
-      'J'
-
+      nomeConstelacao.innerHTML = 'J'
     }
 
-    if(cliques === 6){
-
-      nomeConstelacao.innerHTML =
-      'JU'
-
+    if (cliques === 6) {
+      nomeConstelacao.innerHTML = 'JU'
     }
 
-    if(cliques === 9){
-
-      nomeConstelacao.innerHTML =
-      'JUL'
-
+    if (cliques === 9) {
+      nomeConstelacao.innerHTML = 'JUL'
     }
 
-    if(cliques === 12){
-
-      nomeConstelacao.innerHTML =
-      'JULI'
-
+    if (cliques === 12) {
+      nomeConstelacao.innerHTML = 'JULI'
     }
 
-    if(cliques === 15){
+    if (cliques === 15) {
+      nomeConstelacao.innerHTML = 'JULIA'
 
-      nomeConstelacao.innerHTML =
-      'JULIA'
+      statusConstelacao.innerHTML = 'Constelação encontrada.'
 
-      statusConstelacao.innerHTML =
-      'Constelação encontrada.'
-
-      setTimeout(()=>{
-
-        mensagemFinal.style.display =
-        'block'
-
-      },1500)
-
+      setTimeout(() => {
+        mensagemFinal.style.display = 'block'
+      }, 1500)
     }
-
   })
-
 })
 
-const levaTempo =
-document.getElementById(
-'levaTempo'
-)
+const levaTempo = document.getElementById('levaTempo')
 
-if(levaTempo){
-
-  levaTempo.addEventListener(
-  'click',()=>{
-
-    window.location.href =
-    'tempo.html'
-
+if (levaTempo) {
+  levaTempo.addEventListener('click', () => {
+    window.location.href = 'tempo.html'
   })
-
 }
 
-const levaCofre =
-document.getElementById(
-'levaCofre'
-)
+const levaCofre = document.getElementById('levaCofre')
 
-if(levaCofre){
-
-  levaCofre.addEventListener(
-  'click',()=>{
-
-    window.location.href =
-    'cofre.html'
-
+if (levaCofre) {
+  levaCofre.addEventListener('click', () => {
+    window.location.href = 'cofre.html'
   })
-
 }
-
-// =========================
-// PÉTALAS
-// =========================
-
-const petalasContainer =
-document.getElementById(
-'petalas'
-)
-
-if(petalasContainer){
-
-  function criarPetala(){
-
-    const petala =
-    document.createElement(
-    'div'
-    )
-
-    petala.classList.add(
-    'petala'
-    )
-
-    petala.innerHTML =
-    '🌸'
-
-    petala.style.left =
-    Math.random() * 100 + 'vw'
-
-    petala.style.animationDuration =
-    (8 + Math.random() * 8)
-    + 's'
-
-    petala.style.fontSize =
-    (18 + Math.random() * 22)
-    + 'px'
-
-    petalasContainer.appendChild(
-    petala
-    )
-
-    setTimeout(()=>{
-
-      petala.remove()
-
-    },16000)
-
-  }
-
-  setInterval(
-  criarPetala,
-  700
-  )
-
-}
-
-// =========================
-// CENAS
-// =========================
-
-const cenas =
-document.querySelectorAll(
-'.cena'
-)
-
-let cenaAtual = 0
-
-function mostrarCena(indice){
-
-  cenas.forEach(cena=>{
-
-    cena.classList.remove(
-    'ativa'
-    )
-
-  })
-
-  cenas[indice].classList.add(
-  'ativa'
-  )
-
-}
-
-// primeira cena
-
-mostrarCena(0)
-
-function proximaCena(){
-
-  cenas[cenaAtual]
-  .classList.remove(
-  'ativa'
-  )
-
-  cenaAtual++
-
-  if(
-    cenaAtual >= cenas.length
-  ){
-    return
-  }
-
-  cenas[cenaAtual]
-  .classList.add(
-  'ativa'
-  )
-
-  // troca wallpaper
-
-  if(cenaAtual === 2){
-
-    document.body.style
-    .backgroundImage =
-    "url('imgs/lirios.JPEG')"
-
-  }
-
-}
-
-// =========================
-// TIMELINE
-// =========================
-
-setTimeout(()=>{
-
-  proximaCena()
-
-},7000)
-
-setTimeout(()=>{
-
-  proximaCena()
-
-},13000)
-
-setTimeout(()=>{
-
-  proximaCena()
-
-},20000)
-
-setTimeout(()=>{
-
-  proximaCena()
-
-},27000)
-
-setTimeout(()=>{
-
-  proximaCena()
-
-},33000)
-
-setTimeout(()=>{
-
-  proximaCena()
-
-},40000)
-
-setTimeout(()=>{
-
-  proximaCena()
-
-},49000)
