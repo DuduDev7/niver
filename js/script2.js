@@ -1,139 +1,144 @@
-document.addEventListener('DOMContentLoaded', () => {
+// =========================
+// LIRIOS 
+// =========================
 
-  if (!document.body.classList.contains('lirios-page')) {
-  return
-  }
-  
-  // =========================
-  // PÉTALAS
-  // =========================
-  
-  const petalasContainer =
-  document.getElementById('petalas')
-  
-  function criarPetala() {
-  
-  const petala =
-  document.createElement('div')
-  
-  petala.classList.add('petala')
-  
-  petala.innerHTML = '🌸'
-  
-  petala.style.left =
-  Math.random() * 100 + 'vw'
-  
-  petala.style.fontSize =
-  (18 + Math.random() * 20) + 'px'
-  
-  petala.style.animationDuration =
-  (8 + Math.random() * 8) + 's'
-  
-  petalasContainer.appendChild(petala)
-  
-  setTimeout(() => {
-    petala.remove()
-  }, 15000)
-  
-  }
-  
-  setInterval(criarPetala, 700)
-  
-  // =========================
-  // CENAS
-  // =========================
-  
-  const cenas =
-  document.querySelectorAll('.cena')
-  
-  const botoes =
-  document.querySelectorAll('.btnProximo')
-  
-  let cenaAtual = 0
-  
-  function mostrarCena(indice){
-  
-  cenas.forEach(cena => {
-    cena.classList.remove('ativa')
-  })
-  
-  cenas[indice].classList.add('ativa')
-  
-  if(indice <= 1){
-  
-    document.body.style.backgroundImage =
-    "url('imgs/liriosClaro.JPEG')"
-  
-  }else{
-  
-    document.body.style.backgroundImage =
-    "url('imgs/lirios.JPEG')"
-  
-  }
+document.addEventListener('DOMContentLoaded',()=>{
 
-  
-  }
-  
-  botoes.forEach(botao => {
-  
-  botao.addEventListener('click', () => {
-  
-    cenaAtual++
-  
-    if(cenaAtual >= cenas.length){
-      return
-    }
-  
-    mostrarCena(cenaAtual)
+if(!document.body.classList.contains('lirios-page')){
+return
+}
 
-    function mostrarCena(indice){
+const cenas =
+document.querySelectorAll('.cena')
 
-      cenas.forEach(cena => {
-    
-        cena.classList.remove('ativa')
-    
-      })
-    
-      cenas[indice].classList.add('ativa')
-    
-      // FUNDOS
-    
-      if(indice === 0 || indice === 1){
-    
-        document.body.style.backgroundImage =
-        "url('imgs/liriosClaro.JPEG')"
-    
-      }else{
-    
-        document.body.style.backgroundImage =
-        "url('imgs/lirios.JPEG')"
-    
-      }
-    
-    }
-  
-    if(cenaAtual === 3){
-  
-      const destaque =
-      document.querySelector('.destaque')
-  
-      if(destaque){
-  
-        setTimeout(() => {
-  
-          destaque.classList.add('brilho')
-  
-        },1000)
-  
-      }
-  
-    }
-  
-  })
-  
-  })
-  
-  mostrarCena(0)
-  
-  })
+const botoes =
+document.querySelectorAll('.btnProximo')
+
+const petalas =
+document.getElementById('petalas')
+
+let cenaAtual = 0
+
+let velocidade = 900
+
+function criarPetala(){
+
+const petala =
+document.createElement('div')
+
+petala.classList.add('petala')
+
+petala.innerHTML = '🌸'
+
+petala.style.left =
+Math.random()*100+'vw'
+
+petala.style.fontSize =
+(18+Math.random()*20)+'px'
+
+petala.style.animationDuration =
+(8+Math.random()*8)+'s'
+
+petalas.appendChild(petala)
+
+setTimeout(()=>{
+
+petala.remove()
+
+},15000)
+
+}
+
+function iniciarPetalas(){
+
+setInterval(()=>{
+
+criarPetala()
+
+if(cenaAtual >= 2){
+
+criarPetala()
+
+}
+
+if(cenaAtual === 3){
+
+criarPetala()
+criarPetala()
+
+}
+
+},velocidade)
+
+}
+
+iniciarPetalas()
+
+function trocarFundo(){
+
+if(cenaAtual <= 1){
+
+document.body.style.backgroundImage =
+"url('imgs/liriosClaro.JPEG')"
+
+}else{
+
+document.body.style.backgroundImage =
+"url('imgs/lirios.JPEG')"
+
+}
+
+}
+
+function mostrarCena(){
+
+cenas.forEach(c=>{
+
+c.classList.remove('ativa')
+
+})
+
+cenas[cenaAtual]
+.classList.add('ativa')
+
+trocarFundo()
+
+if(cenaAtual === 3){
+
+setTimeout(()=>{
+
+const destaque =
+document.querySelector('.destaque')
+
+if(destaque){
+
+destaque.classList.add('brilho')
+
+}
+
+},1000)
+
+}
+
+}
+
+botoes.forEach(botao=>{
+
+botao.addEventListener('click',()=>{
+
+if(cenaAtual < cenas.length-1){
+
+cenaAtual++
+
+mostrarCena()
+
+}
+
+})
+
+})
+
+mostrarCena()
+
+})
   
