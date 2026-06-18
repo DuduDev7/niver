@@ -1793,3 +1793,167 @@ if(levaCofre){
   })
 
 }
+
+// =========================
+// PÉTALAS
+// =========================
+
+const petalasContainer =
+document.getElementById(
+'petalas'
+)
+
+if(petalasContainer){
+
+  function criarPetala(){
+
+    const petala =
+    document.createElement(
+    'div'
+    )
+
+    petala.classList.add(
+    'petala'
+    )
+
+    petala.innerHTML =
+    '🌸'
+
+    petala.style.left =
+    Math.random() * 100 + 'vw'
+
+    petala.style.animationDuration =
+    (8 + Math.random() * 8)
+    + 's'
+
+    petala.style.fontSize =
+    (18 + Math.random() * 22)
+    + 'px'
+
+    petalasContainer.appendChild(
+    petala
+    )
+
+    setTimeout(()=>{
+
+      petala.remove()
+
+    },16000)
+
+  }
+
+  setInterval(
+  criarPetala,
+  700
+  )
+
+}
+
+// =========================
+// CENAS
+// =========================
+
+const cenas =
+document.querySelectorAll(
+'.cena'
+)
+
+let cenaAtual = 0
+
+function mostrarCena(indice){
+
+  cenas.forEach(cena=>{
+
+    cena.classList.remove(
+    'ativa'
+    )
+
+  })
+
+  cenas[indice].classList.add(
+  'ativa'
+  )
+
+}
+
+// primeira cena
+
+mostrarCena(0)
+
+function proximaCena(){
+
+  cenas[cenaAtual]
+  .classList.remove(
+  'ativa'
+  )
+
+  cenaAtual++
+
+  if(
+    cenaAtual >= cenas.length
+  ){
+    return
+  }
+
+  cenas[cenaAtual]
+  .classList.add(
+  'ativa'
+  )
+
+  // troca wallpaper
+
+  if(cenaAtual === 2){
+
+    document.body.style
+    .backgroundImage =
+    "url('imgs/lirios.JPEG')"
+
+  }
+
+}
+
+// =========================
+// TIMELINE
+// =========================
+
+setTimeout(()=>{
+
+  proximaCena()
+
+},7000)
+
+setTimeout(()=>{
+
+  proximaCena()
+
+},13000)
+
+setTimeout(()=>{
+
+  proximaCena()
+
+},20000)
+
+setTimeout(()=>{
+
+  proximaCena()
+
+},27000)
+
+setTimeout(()=>{
+
+  proximaCena()
+
+},33000)
+
+setTimeout(()=>{
+
+  proximaCena()
+
+},40000)
+
+setTimeout(()=>{
+
+  proximaCena()
+
+},49000)

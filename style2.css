@@ -1,0 +1,358 @@
+/* ========================= */
+/* PÁGINA DOS LÍRIOS */
+/* ========================= */
+
+.lirios-page{
+
+  margin:0;
+
+  min-height:100vh;
+
+  overflow:hidden;
+
+  position:relative;
+
+  font-family:
+  'Segoe UI',
+  sans-serif;
+
+  background-image:
+  url('imgs/liriosClaro.JPEG');
+
+  background-size:cover;
+
+  background-position:center;
+
+  background-repeat:no-repeat;
+
+  transition:
+  background-image 2s ease;
+
+  color:white;
+
+}
+
+.overlay{
+
+  background:
+  linear-gradient(
+  rgba(0,0,0,0.45),
+  rgba(0,0,0,0.55)
+  );
+
+}
+
+.lirios-container{
+
+  position:relative;
+
+  z-index:3;
+
+  min-height:100vh;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  padding:30px;
+
+}
+
+.cena{
+
+  position:absolute;
+
+  width:min(900px,90vw);
+
+  text-align:center;
+
+  opacity:0;
+
+  transform:
+  translateY(20px);
+
+  transition:
+  opacity 1.5s ease,
+  transform 1.5s ease;
+
+  pointer-events:none;
+
+}
+
+.cena.ativa{
+
+  opacity:1;
+
+  transform:
+  translateY(0);
+
+}
+
+.conteudo{
+
+  backdrop-filter:
+  blur(8px);
+
+  background:
+  rgba(255,255,255,0.08);
+
+  border:
+  1px solid rgba(255,255,255,0.15);
+
+  border-radius:30px;
+
+  padding:40px;
+
+}
+
+.conteudo h1{
+
+  font-size:52px;
+
+  margin-bottom:25px;
+
+  text-shadow:
+  0 0 25px rgba(255,255,255,0.4);
+
+}
+
+.conteudo h2{
+
+  font-size:42px;
+
+  margin:20px 0;
+
+  color:#fff0c7;
+
+}
+
+.conteudo p{
+
+  font-size:24px;
+
+  line-height:1.8;
+
+  margin:10px 0;
+
+}
+
+.texto-grande{
+
+  font-size:42px !important;
+
+  font-weight:600;
+
+}
+
+.texto-destaque{
+
+  font-size:42px !important;
+
+  font-weight:bold;
+
+  color:#ffe9a8;
+
+  text-shadow:
+  0 0 20px rgba(255,233,168,0.7);
+
+}
+
+.autor{
+
+  font-style:italic;
+
+  opacity:.85;
+
+}
+
+.final h2{
+
+  font-size:64px;
+
+  color:#ffd6e6;
+
+  text-shadow:
+  0 0 25px rgba(255,214,230,0.8);
+
+}
+
+.final p{
+
+  font-size:32px;
+
+  margin-top:25px;
+
+}
+
+/* ========================= */
+/* PÉTALAS */
+/* ========================= */
+
+#petalas{
+
+  position:fixed;
+
+  inset:0;
+
+  z-index:2;
+
+  pointer-events:none;
+
+}
+
+.petala{
+
+  position:absolute;
+
+  top:-50px;
+
+  font-size:24px;
+
+  opacity:.9;
+
+  animation:
+  cair linear forwards;
+
+}
+
+@keyframes cair{
+
+  from{
+
+    transform:
+    translateY(-50px)
+    rotate(0deg);
+
+    opacity:0;
+
+  }
+
+  10%{
+
+    opacity:1;
+
+  }
+
+  100%{
+
+    transform:
+    translateY(120vh)
+    rotate(720deg);
+
+    opacity:.3;
+
+  }
+
+}
+
+/* ========================= */
+/* RESPONSIVO */
+/* ========================= */
+
+@media(max-width:768px){
+
+  .conteudo{
+
+    padding:30px 22px;
+
+  }
+
+  .conteudo h1{
+
+    font-size:36px;
+
+  }
+
+  .conteudo h2{
+
+    font-size:30px;
+
+  }
+
+  .conteudo p{
+
+    font-size:19px;
+
+  }
+
+  .texto-grande{
+
+    font-size:30px !important;
+
+  }
+
+  .texto-destaque{
+
+    font-size:30px !important;
+
+  }
+
+  .final h2{
+
+    font-size:42px;
+
+  }
+
+  .final p{
+
+    font-size:24px;
+
+  }
+
+}
+
+@media(max-width:480px){
+
+  .conteudo{
+
+    padding:25px 18px;
+
+  }
+
+  .conteudo h1{
+
+    font-size:30px;
+
+  }
+
+  .conteudo h2{
+
+    font-size:24px;
+
+  }
+
+  .conteudo p{
+
+    font-size:17px;
+
+    line-height:1.7;
+
+  }
+
+  .texto-grande{
+
+    font-size:24px !important;
+
+  }
+
+  .texto-destaque{
+
+    font-size:24px !important;
+
+  }
+
+  .final h2{
+
+    font-size:34px;
+
+  }
+
+  .final p{
+
+    font-size:20px;
+
+  }
+
+}
