@@ -164,7 +164,7 @@ async function loginHoje() {
   document.getElementById("senha").value;
 
   const senhaPrincipal =
-  "175ff2cb577f2b6e1b9c2ffc896a65dcb66caf60f0358ce61da42687d7d7d56a";
+  "7bb8aa3e32b70733a0b6fc0d9a5bb2adc1fdba5265dc5ace241ab9cfff16bed0";
 
   const senhaSecreta =
   "957611f12cf0a07ca9d12c557704ec886987c18950b11af8f647c7697ba9d03a";
@@ -211,39 +211,6 @@ async function loginHoje() {
 
   }
 
-}
-
-
-async function loginAmanha() {
-
-  const senhaDigitada = document.getElementById("senha").value;
-
-  const senhaHash = "37cc7a10515690136ae7758fb7c9dd5d7c3bfc82345bf0ed10c64613762ab8e3";
-
-  const encoder = new TextEncoder();
-
-  const data = encoder.encode(senhaDigitada);
-
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-
-  const hashHex = hashArray
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
-
-  if (hashHex === senhaHash) {
-
-    localStorage.setItem("auth", "true");
-
-    window.location.href = "1606.html";
-
-  } else {
-
-    document.getElementById("erro").innerText =
-      "Senha incorreta 🎮";
-
-  }
 }
 
 

@@ -141,4 +141,123 @@ mostrarCena()
 mostrarCena()
 
 })
-  
+
+// COORDENADAS
+
+const blocos =
+document.querySelectorAll('.bloco')
+
+let atual = 0
+
+function mostrar(id){
+
+  blocos.forEach(bloco=>{
+
+    bloco.classList.remove('ativo')
+
+  })
+
+  document
+  .getElementById(id)
+  .classList
+  .add('ativo')
+
+}
+
+document
+.getElementById('btnIniciar')
+.addEventListener('click',()=>{
+
+  mostrar('bloco2')
+
+  const textos = [
+
+    'Analisando sinais...',
+    'Analisando memórias...',
+    'Analisando conversas...',
+    'Destino encontrado.'
+
+  ]
+
+  let i = 0
+
+  const digitando =
+  document.getElementById(
+  'digitando'
+  )
+
+  const intervalo =
+  setInterval(()=>{
+
+    digitando.innerHTML +=
+    textos[i] + '<br>'
+
+    i++
+
+    if(i >= textos.length){
+
+      clearInterval(intervalo)
+
+      setTimeout(()=>{
+
+        mostrar('bloco3')
+
+      },2000)
+
+    }
+
+  },1500)
+
+})
+
+document
+.querySelectorAll('.btnProximo')
+.forEach(btn=>{
+
+  btn.addEventListener('click',()=>{
+
+    atual++
+
+    mostrar(
+      'bloco' + (atual + 3)
+    )
+
+    if(atual === 3){
+
+      animarNome()
+
+    }
+
+  })
+
+})
+
+function animarNome(){
+
+  const letras =
+  ['J','JU','JUL','JULI','JULIA']
+
+  const nome =
+  document.getElementById(
+  'nomeFinal'
+  )
+
+  let i = 0
+
+  const intervalo =
+  setInterval(()=>{
+
+    nome.innerHTML =
+    letras[i]
+
+    i++
+
+    if(i >= letras.length){
+
+      clearInterval(intervalo)
+
+    }
+
+  },600)
+
+}
