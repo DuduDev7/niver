@@ -142,122 +142,204 @@ mostrarCena()
 
 })
 
+// =========================
 // COORDENADAS
+// =========================
 
-const blocos =
-document.querySelectorAll('.bloco')
+if(document.body.classList.contains('coordenadas-page')){
 
-let atual = 0
-
-function mostrar(id){
-
-  blocos.forEach(bloco=>{
-
-    bloco.classList.remove('ativo')
-
-  })
-
-  document
-  .getElementById(id)
-  .classList
-  .add('ativo')
-
-}
-
-document
-.getElementById('btnIniciar')
-.addEventListener('click',()=>{
-
-  mostrar('bloco2')
-
-  const textos = [
-
-    'Analisando sinais...',
-    'Analisando memórias...',
-    'Analisando conversas...',
-    'Destino encontrado.'
-
-  ]
-
-  let i = 0
-
-  const digitando =
-  document.getElementById(
-  'digitando'
-  )
-
-  const intervalo =
-  setInterval(()=>{
-
-    digitando.innerHTML +=
-    textos[i] + '<br>'
-
-    i++
-
-    if(i >= textos.length){
-
-      clearInterval(intervalo)
-
-      setTimeout(()=>{
-
-        mostrar('bloco3')
-
-      },2000)
-
-    }
-
-  },1500)
-
-})
-
-document
-.querySelectorAll('.btnProximo')
-.forEach(btn=>{
-
-  btn.addEventListener('click',()=>{
-
-    atual++
-
-    mostrar(
-      'bloco' + (atual + 3)
+  const blocos =
+  document.querySelectorAll('.bloco')
+  
+  let atual = 0
+  
+  function mostrar(id){
+  
+    blocos.forEach(bloco=>{
+  
+      bloco.classList.remove('ativo')
+  
+    })
+  
+    document
+    .getElementById(id)
+    .classList
+    .add('ativo')
+  
+  }
+  
+  const btnIniciar =
+  document.getElementById('btnIniciar')
+  
+  if(btnIniciar){
+  
+  btnIniciar.addEventListener('click',()=>{
+  
+    mostrar('bloco2')
+  
+    const textos = [
+  
+      'Analisando sinais...',
+      'Analisando memórias...',
+      'Analisando conversas...',
+      'Destino encontrado.'
+  
+    ]
+  
+    let i = 0
+  
+    const digitando =
+    document.getElementById(
+    'digitando'
     )
-
-    if(atual === 3){
-
-      animarNome()
-
-    }
-
+  
+    const intervalo =
+    setInterval(()=>{
+  
+      digitando.innerHTML +=
+      textos[i] + '<br>'
+  
+      i++
+  
+      if(i >= textos.length){
+  
+        clearInterval(intervalo)
+  
+        setTimeout(()=>{
+  
+          mostrar('bloco3')
+  
+        },2000)
+  
+      }
+  
+    },1500)
+  
   })
+  
+  }
+  
+  document
+  .querySelectorAll('.btnProximo')
+  .forEach(btn=>{
+  
+    btn.addEventListener('click',()=>{
+  
+      atual++
+  
+      mostrar(
+        'bloco' + (atual + 3)
+      )
+  
+      if(atual === 3){
+  
+        animarNome()
+  
+      }
+  
+    })
+  
+  })
+  
+  function animarNome(){
+  
+    const letras =
+    ['J','JU','JUL','JULI','JULIA']
+  
+    const nome =
+    document.getElementById(
+    'nomeFinal'
+    )
+  
+    if(!nome) return
+  
+    let i = 0
+  
+    const intervalo =
+    setInterval(()=>{
+  
+      nome.innerHTML =
+      letras[i]
+  
+      i++
+  
+      if(i >= letras.length){
+  
+        clearInterval(intervalo)
+  
+      }
+  
+    },600)
+  
+  }
+  
+  }
 
-})
+// BANDEIRA 
 
-function animarNome(){
+document.addEventListener('DOMContentLoaded',()=>{
 
-  const letras =
-  ['J','JU','JUL','JULI','JULIA']
+  if(
+  !document.body.classList.contains(
+  'bandeira-page'
+  )
+  ){
+  return
+  }
+  
+  const telas =
+  document.querySelectorAll(
+  '.tela'
+  )
+  
+  const botoes =
+  document.querySelectorAll(
+  '.btnProximo'
+  )
+  
+  let atual = 0
+  
+  function mostrar(indice){
+  
 
-  const nome =
-  document.getElementById(
-  'nomeFinal'
+  telas.forEach(tela=>{
+  
+    tela.classList.remove(
+      'ativa'
+    )
+  
+  })
+  
+  telas[indice].classList.add(
+    'ativa'
   )
 
-  let i = 0
-
-  const intervalo =
-  setInterval(()=>{
-
-    nome.innerHTML =
-    letras[i]
-
-    i++
-
-    if(i >= letras.length){
-
-      clearInterval(intervalo)
-
+  
+  }
+  
+  botoes.forEach(botao=>{
+  
+  botao.addEventListener(
+    'click',
+    ()=>{
+  
+      atual++
+  
+      if(
+        atual >= telas.length
+      ){
+        return
+      }
+  
+      mostrar(atual)
+  
     }
+  )
 
-  },600)
-
-}
+  
+  })
+  
+  mostrar(0)
+  
+  })
+  
