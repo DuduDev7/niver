@@ -910,4 +910,239 @@ body.bandeira-page{
   }
   
   }
+
+  /* ========================= */
+/* PÓDIO */
+/* ========================= */
+
+body.podio-page{
+  margin:0;
+  min-height:100vh;
+  overflow:hidden;
+  font-family:'Segoe UI',sans-serif;
+  color:#fff;
+  background:#000;
+}
+
+.foto-fundo{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  filter:blur(10px);
+  transform:scale(1.08);
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.65);
+  z-index:1;
+}
+
+.podio-container{
+  position:relative;
+  z-index:2;
+  min-height:100vh;
+}
+
+/* ========================= */
+/* TELAS */
+/* ========================= */
+
+.tela{
+  position:absolute;
+  inset:0;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  padding:20px;
+
+  opacity:0;
+  pointer-events:none;
+
+  transition:1s;
+}
+
+.tela.ativa{
+  opacity:1;
+  pointer-events:auto;
+}
+
+/* ========================= */
+/* CARD */
+/* ========================= */
+
+.card{
+  width:min(900px,95vw);
+
+  background:rgba(255,255,255,.08);
+
+  backdrop-filter:blur(12px);
+
+  border:1px solid rgba(255,255,255,.15);
+
+  border-radius:25px;
+
+  padding:40px;
+
+  text-align:center;
+
+  box-shadow:
+  0 20px 60px rgba(0,0,0,.4);
+}
+
+.card h1{
+  font-size:3rem;
+  margin-bottom:20px;
+}
+
+.card h2{
+  font-size:2.5rem;
+  color:#ffd6e5;
+}
+
+.card p{
+  font-size:1.25rem;
+  line-height:1.8;
+}
+
+/* ========================= */
+/* FOTO */
+/* ========================= */
+
+.foto-podio{
+  margin-bottom:25px;
+}
+
+.foto-podio img{
+  width:100%;
+  max-width:450px;
+
+  border-radius:20px;
+
+  border:2px solid rgba(255,255,255,.15);
+
+  box-shadow:
+  0 15px 40px rgba(0,0,0,.5);
+}
+
+/* ========================= */
+/* BOTÃO */
+/* ========================= */
+
+.btnProximo{
+  margin-top:30px;
+
+  border:none;
+
+  border-radius:40px;
+
+  padding:15px 40px;
+
+  cursor:pointer;
+
+  font-size:18px;
+
+  font-weight:600;
+
+  color:#fff;
+
+  background:
+  linear-gradient(
+  135deg,
+  #ff6fa7,
+  #d05dff
+  );
+
+  transition:.3s;
+}
+
+.btnProximo:hover{
+  transform:translateY(-3px);
+}
+
+/* ========================= */
+/* FINAL */
+/* ========================= */
+
+.final{
+  overflow-y:auto;
+}
+
+.final-card{
+  max-height:85vh;
+  overflow-y:auto;
+}
+
+.final-card::-webkit-scrollbar{
+  width:8px;
+}
+
+.final-card::-webkit-scrollbar-thumb{
+  background:#ff8dc4;
+  border-radius:20px;
+}
+
+.destaque{
+  color:#ffb6d9;
+
+  animation:brilho 2s infinite;
+}
+
+@keyframes brilho{
+
+  50%{
+    text-shadow:
+    0 0 20px #ffb6d9,
+    0 0 40px #ffb6d9,
+    0 0 60px #ffb6d9;
+  }
+
+}
+
+/* ========================= */
+/* MOBILE */
+/* ========================= */
+
+@media(max-width:768px){
+
+  .tela{
+    padding:15px;
+  }
+
+  .card{
+    width:100%;
+    padding:25px;
+  }
+
+  .card h1{
+    font-size:2rem;
+  }
+
+  .card h2{
+    font-size:1.8rem;
+  }
+
+  .card p{
+    font-size:1rem;
+    line-height:1.7;
+  }
+
+  .btnProximo{
+    width:100%;
+  }
+
+  .foto-podio img{
+    max-width:100%;
+  }
+
+  .final-card{
+    max-height:80vh;
+  }
+
+}
   

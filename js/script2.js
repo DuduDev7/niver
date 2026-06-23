@@ -343,3 +343,65 @@ document.addEventListener('DOMContentLoaded',()=>{
   
   })
   
+
+  document.addEventListener('DOMContentLoaded', () => {
+
+    if(!document.body.classList.contains('podio-page')){
+      return
+    }
+  
+    const telas =
+    document.querySelectorAll('.tela')
+  
+    const botoes =
+    document.querySelectorAll('.btnProximo')
+  
+    let telaAtual = 0
+  
+    function mostrarTela(indice){
+  
+      telas.forEach(tela => {
+  
+        tela.classList.remove('ativa')
+  
+      })
+  
+      telas[indice].classList.add('ativa')
+  
+    }
+  
+    botoes.forEach(botao => {
+  
+      botao.addEventListener('click', () => {
+  
+        telaAtual++
+  
+        if(telaAtual >= telas.length){
+          return
+        }
+  
+        mostrarTela(telaAtual)
+  
+        if(telaAtual === telas.length - 1){
+  
+          const destaque =
+          document.querySelector('.destaque')
+  
+          if(destaque){
+  
+            destaque.scrollIntoView({
+              behavior:'smooth',
+              block:'center'
+            })
+  
+          }
+  
+        }
+  
+      })
+  
+    })
+  
+    mostrarTela(0)
+  
+  })
