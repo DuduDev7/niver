@@ -1454,6 +1454,17 @@ canvas {
   border-radius: 8px;
 }
 
+/* ESTRESSE */
+
+.postit-estresse{
+
+  background: #5ecc95;
+
+  border-left: 5px solid #0baa5a;
+
+  border-radius: 8px;
+}
+
 /* ❤️ SAUDADE */
 
 .postit-saudade{
