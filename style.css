@@ -1454,6 +1454,15 @@ canvas {
   border-radius: 8px;
 }
 
+.postit-amor{
+
+  background: #ff7474;
+
+  border-left: 5px solid #cf0000;
+
+  border-radius: 8px;
+}
+
 /* ESTRESSE */
 
 .postit-estresse{
@@ -6294,6 +6303,92 @@ NOVO - 09/06
   #statusConstelacao{
 
     font-size:16px;
+
+  }
+
+}
+
+/* BOTÃO ESPECIAL */
+
+#areaSurpresa{
+
+  margin-top:25px;
+
+  animation:
+  aparecerSuave .8s ease;
+
+}
+
+.msg-surpresa{
+
+  color:#ffb3d9;
+
+  font-size:14px;
+
+  margin-bottom:10px;
+
+  opacity:.9;
+
+}
+
+.btn-surpresa{
+
+  border:none;
+
+  cursor:pointer;
+
+  padding:14px 28px;
+
+  border-radius:50px;
+
+  font-size:16px;
+
+  font-weight:700;
+
+  color:white;
+
+  background:
+  linear-gradient(
+  135deg,
+  #ff4fa3,
+  #b84dff
+  );
+
+  box-shadow:
+  0 0 20px rgba(255,79,163,.4);
+
+  transition:.3s;
+
+}
+
+.btn-surpresa:hover{
+
+  transform:
+  translateY(-2px)
+  scale(1.04);
+
+  box-shadow:
+  0 0 35px rgba(255,79,163,.8);
+
+}
+
+@keyframes aparecerSuave{
+
+  from{
+
+    opacity:0;
+
+    transform:
+    translateY(15px);
+
+  }
+
+  to{
+
+    opacity:1;
+
+    transform:
+    translateY(0);
 
   }
 

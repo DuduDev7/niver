@@ -27,29 +27,31 @@
         <span> Julia continua especial. </span>
       </div>
 
-      <div class="timeline-secret">
+      <div id="areaSurpresa" style="display: none">
+        <p class="msg-surpresa">📡 Novo registro detectado...</p>
 
+        <button class="btn-surpresa" onclick="go('hora.html')">
+          ❤️ Abrir Registro
+        </button>
+      </div>
+
+      <div class="timeline-secret">
         <div id="timelineLinha"></div>
-      
+
         <small id="timelineTexto"></small>
-      
+
         <div id="timelinePorcentagem"></div>
-      
+
         <small>
-          <br>Algumas partes da história já aconteceram.<br>
+          <br />Algumas partes da história já aconteceram.<br />
           Outras ainda estão sendo escritas.
         </small>
 
         <div id="finalLiberado">
-
           <p>❤️ Todos os registros foram recuperados.</p>
-        
-          <button onclick="go('final.html')">
-            🔓 Abrir Registro Final
-          </button>
-        
+
+          <button onclick="go('final.html')">🔓 Abrir Registro Final</button>
         </div>
-      
       </div>
 
       <!-- <button onclick="resetarSegredos()">
@@ -121,5 +123,6 @@
 
     <script src="js/hearts.js"></script>
     <script src="js/script.js"></script>
+    <script src="js/script2.js"></script>
   </body>
 </html>

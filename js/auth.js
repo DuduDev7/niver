@@ -190,7 +190,7 @@ async function loginHoje() {
     localStorage.setItem("auth","true");
 
     window.location.href =
-    "1506.html";
+    "engano.html";
 
   }
 

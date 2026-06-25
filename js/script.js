@@ -1734,3 +1734,35 @@ if (levaCofre) {
     window.location.href = 'cofre.html'
   })
 }
+
+const levaLogincerto = document.getElementById('btn-1506')
+
+const msgFotoLogin = document.getElementById('msgFoto')
+
+const mensagensFotoLogin = [
+  '',
+  '',
+  '',
+  '',
+  '',
+  'Você realmente está clicando nisso?',
+  'PARA'
+]
+
+if (levaLogincerto) {
+  let cliquesFoto = 0
+
+  levaLogincerto.addEventListener('click', () => {
+    cliquesFoto++
+
+    if (cliquesFoto <= mensagensFotoLogin.length) {
+      msgFotoLogin.innerHTML = mensagensFotoLogin[cliquesFoto - 1]
+    }
+
+    if (cliquesFoto >= 7) {
+      setTimeout(() => {
+        window.location.href = '1506.html'
+      }, 1000)
+    }
+  })
+}
