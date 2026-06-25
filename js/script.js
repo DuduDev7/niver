@@ -1766,3 +1766,35 @@ if (levaLogincerto) {
     }
   })
 }
+
+const levaMimpage = document.getElementById('levaMim')
+
+const msgFotoMim = document.getElementById('msgFoto')
+
+const mensagensFotoMim = [
+  '',
+  '',
+  '',
+  '',
+  '',
+  '...',
+  'Você realmente está clicando nisso?'
+]
+
+if (levaMimpage) {
+  let cliquesFoto = 0
+
+  levaMimpage.addEventListener('click', () => {
+    cliquesFoto++
+
+    if (cliquesFoto <= mensagensFotoMim.length) {
+      msgFotoMim.innerHTML = mensagensFotoMim[cliquesFoto - 1]
+    }
+
+    if (cliquesFoto >= 7) {
+      setTimeout(() => {
+        window.location.href = '../leiaAgora.html'
+      }, 1000)
+    }
+  })
+}
