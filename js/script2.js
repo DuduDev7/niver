@@ -280,3 +280,38 @@ document.addEventListener('DOMContentLoaded', () => {
     area.style.display = 'block'
   }
 })
+
+document.addEventListener("DOMContentLoaded", () => {
+  const telas = document.querySelectorAll(".tela");
+  const botoes = document.querySelectorAll(".btnProximo");
+
+  let atual = 0;
+
+  function mostrarTela(index) {
+    telas.forEach((tela, i) => {
+      tela.classList.toggle("ativa", i === index);
+    });
+  }
+
+  function proximaTela() {
+    if (atual < telas.length - 1) {
+      atual++;
+      mostrarTela(atual);
+    }
+  }
+
+  // inicia na primeira tela
+  mostrarTela(atual);
+
+  // eventos dos botões
+  botoes.forEach((btn) => {
+    btn.addEventListener("click", proximaTela);
+  });
+
+  // opcional: avançar com Enter ou Espaço
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      proximaTela();
+    }
+  });
+});

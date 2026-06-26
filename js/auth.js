@@ -164,7 +164,7 @@ async function loginHoje() {
   document.getElementById("senha").value;
 
   const senhaPrincipal =
-  "7bb8aa3e32b70733a0b6fc0d9a5bb2adc1fdba5265dc5ace241ab9cfff16bed0";
+  "07b875015ff0f9718c7cb08da4759ddfc160d163ff1670c810f3ec05a059b588";
 
   const senhaSecreta =
   "957611f12cf0a07ca9d12c557704ec886987c18950b11af8f647c7697ba9d03a";
@@ -190,7 +190,7 @@ async function loginHoje() {
     localStorage.setItem("auth","true");
 
     window.location.href =
-    "engano.html";
+    "1506.html";
 
   }
 
