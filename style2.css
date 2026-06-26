@@ -1773,3 +1773,671 @@ body.esquecer-page{
   }
 
 }
+
+/* ================================================= */
+/* PORQUE FOI VOCÊ                                   */
+/* ================================================= */
+
+body.porque-page{
+
+  margin:0;
+  padding:0;
+
+  width:100%;
+  height:100vh;
+
+  overflow-x:hidden;
+  overflow-y:hidden;
+
+  background:
+  radial-gradient(circle at top,#20253b,#0b0d16);
+
+  color:#fff;
+
+  font-family:'Segoe UI',sans-serif;
+
+}
+
+/* ========================= */
+
+.porque-container{
+
+  width:100%;
+  height:100vh;
+
+  display:flex;
+
+  justify-content:center;
+  align-items:center;
+
+  padding:15px;
+
+  box-sizing:border-box;
+
+  overflow:hidden;
+
+}
+
+/* ========================= */
+
+.cena{
+
+  position:absolute;
+
+  width:100%;
+
+  max-width:900px;
+
+  padding:10px;
+
+  box-sizing:border-box;
+
+  opacity:0;
+
+  transform:translateY(20px);
+
+  transition:.8s;
+
+  pointer-events:none;
+
+}
+
+.cena.ativa{
+
+  opacity:1;
+
+  transform:
+  translateY(0)
+  scale(1);
+
+  pointer-events:auto;
+
+}
+
+/* ========================= */
+
+.card{
+
+  width:100%;
+
+  max-width:850px;
+
+  margin:auto;
+
+  padding:35px;
+
+  box-sizing:border-box;
+
+  border-radius:25px;
+
+  backdrop-filter:blur(15px);
+
+  background:rgba(255,255,255,.08);
+
+}
+/* ========================= */
+
+.card h1{
+
+  font-size:3.2rem;
+
+  margin-bottom:35px;
+
+  color:#ffd3ec;
+
+}
+
+.card h2{
+
+  font-size:2.5rem;
+
+  color:#ffd9f2;
+
+  margin-bottom:25px;
+
+}
+
+/* ========================= */
+
+.card p{
+
+  font-size:1.35rem;
+
+  line-height:2;
+
+  margin:10px 0;
+
+}
+
+/* ========================= */
+
+.destaque{
+
+  color:#ffc8e8;
+
+  font-weight:700;
+
+  font-size:1.6rem;
+
+  text-shadow:
+
+  0 0 18px
+  rgba(255,180,220,.7);
+
+  animation:
+
+  brilho 2.5s infinite;
+
+}
+
+/* ========================= */
+
+small{
+
+  opacity:.75;
+
+  font-size:.95rem;
+
+}
+
+/* ========================= */
+
+.btnProximo{
+
+  margin-top:40px;
+
+  padding:
+
+  15px 45px;
+
+  border:none;
+
+  border-radius:40px;
+
+  cursor:pointer;
+
+  font-size:18px;
+
+  font-weight:600;
+
+  color:white;
+
+  background:
+
+  linear-gradient(
+  135deg,
+  #ff7fbf,
+  #d56cff
+  );
+
+  transition:.35s;
+
+  box-shadow:
+
+  0 10px 25px
+  rgba(0,0,0,.3);
+
+}
+
+.btnProximo:hover{
+
+  transform:
+
+  translateY(-3px)
+  scale(1.03);
+
+}
+
+.btnProximo:active{
+
+  transform:
+
+  scale(.97);
+
+}
+
+/* ========================= */
+/* TELA FINAL */
+/* ========================= */
+
+.final{
+
+  max-height:85vh;
+
+  overflow-y:auto;
+
+  overflow-x:hidden;
+
+  display:block;
+
+  padding-right:12px;
+
+  text-align:center;
+
+}
+
+.final *{
+
+  display:block;
+
+}
+
+.final p{
+
+  display:block;
+
+  width:100%;
+
+  margin:12px auto;
+
+}
+
+.final h2{
+
+  display:block;
+
+  margin-bottom:20px;
+
+}
+
+.final small{
+
+  display:block;
+
+  margin-top:5px;
+
+}
+
+.final::-webkit-scrollbar{
+
+  width:8px;
+
+}
+
+.final::-webkit-scrollbar-thumb{
+
+  background:#ff9fd4;
+
+  border-radius:50px;
+
+}
+
+.final::-webkit-scrollbar-track{
+
+  background:transparent;
+
+}
+
+/* ========================= */
+
+@keyframes brilho{
+
+0%{
+
+text-shadow:
+
+0 0 10px rgba(255,180,220,.4);
+
+}
+
+50%{
+
+text-shadow:
+
+0 0 30px rgba(255,180,220,.9),
+0 0 60px rgba(255,120,200,.8);
+
+}
+
+100%{
+
+text-shadow:
+
+0 0 10px rgba(255,180,220,.4);
+
+}
+
+}
+
+/* ================================================= */
+/* TABLET                                            */
+/* ================================================= */
+
+@media (max-width:900px){
+
+  body.porque-page{
+  
+  overflow:hidden;
+  
+  }
+  
+  .porque-container{
+  
+  padding:20px;
+  
+  }
+  
+  .cena{
+  
+  padding:10px;
+  
+  }
+  
+  .card{
+  
+  width:100%;
+  
+  max-width:720px;
+  
+  padding:30px;
+  
+  }
+  
+  .card h1{
+  
+  font-size:2.2rem;
+  
+  }
+  
+  .card h2{
+  
+  font-size:1.8rem;
+  
+  }
+  
+  .card p{
+  
+  font-size:1.08rem;
+  
+  line-height:1.8;
+  
+  }
+  
+  .destaque{
+  
+  font-size:1.3rem;
+  
+  }
+  
+  .final{
+  
+  max-height:78vh;
+  
+  overflow-y:auto;
+  
+  overflow-x:hidden;
+  
+  }
+  
+  }
+  
+  /* ================================================= */
+  /* CELULAR                                           */
+  /* ================================================= */
+  
+  @media (max-width:600px){
+  
+  body.porque-page{
+  
+  overflow:hidden;
+  
+  }
+  
+  .porque-container{
+  
+  padding:12px;
+  
+  display:flex;
+  
+  justify-content:center;
+  
+  align-items:center;
+  
+  }
+  
+  .cena{
+  
+  width:100%;
+  
+  padding:5px;
+  
+  }
+  
+  .card{
+  
+  width:100%;
+  
+  max-width:100%;
+  
+  padding:22px 18px;
+  
+  border-radius:22px;
+  
+  }
+  
+  .card h1{
+  
+  font-size:1.7rem;
+  
+  line-height:1.3;
+  
+  }
+  
+  .card h2{
+  
+  font-size:1.45rem;
+  
+  line-height:1.3;
+  
+  }
+  
+  .card p{
+  
+  font-size:.98rem;
+  
+  line-height:1.65;
+  
+  margin:10px 0;
+  
+  }
+  
+  .destaque{
+  
+  font-size:1.08rem;
+  
+  }
+  
+  .btnProximo{
+  
+  width:100%;
+  
+  padding:15px;
+  
+  font-size:16px;
+  
+  }
+  
+  .final{
+  
+  max-height:78vh;
+  
+  overflow-y:auto;
+  
+  overflow-x:hidden;
+  
+  padding-right:6px;
+  
+  padding-bottom:15px;
+  
+  }
+  
+  /* impede qualquer elemento de aumentar a largura */
+  
+  .card *{
+  
+  max-width:100%;
+  
+  word-break:break-word;
+  
+  white-space:normal;
+  
+  }
+  
+  }
+
+  html,
+body{
+
+overflow-x:hidden !important;
+
+}
+
+*{
+
+box-sizing:border-box;
+
+}
+
+.card{
+
+overflow-x:hidden;
+
+}
+
+.cena{
+
+overflow-x:hidden;
+
+}
+
+/* 100 MOTIVOS */
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Segoe UI, sans-serif;
+}
+
+body{
+  height:100vh;
+  overflow:hidden;
+  color:#fff;
+  background:linear-gradient(180deg,#0b0d12,#1a1f2d);
+}
+
+.bg{
+  position:fixed;
+  inset:0;
+  background:radial-gradient(circle at top,#ff6aa8 0%,transparent 60%);
+  opacity:.15;
+  pointer-events:none;
+}
+
+.container{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+}
+
+/* CARD */
+.card{
+  width:min(600px, 92vw);
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.15);
+  backdrop-filter:blur(14px);
+  border-radius:25px;
+  padding:40px 30px;
+  text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.4);
+  display:none;
+  animation:fade .6s ease;
+}
+
+.card.ativa{
+  display:block;
+}
+
+@keyframes fade{
+  from{opacity:0; transform:translateY(20px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+h1{
+  font-size:2.2rem;
+  color:#ffb3d6;
+  margin-bottom:25px;
+}
+
+p{
+  font-size:1.4rem;
+  line-height:1.8;
+  margin-bottom:30px;
+}
+
+button{
+  padding:14px 40px;
+  border:none;
+  border-radius:40px;
+  cursor:pointer;
+  font-size:1rem;
+  font-weight:bold;
+  color:white;
+  background:linear-gradient(135deg,#ff5da8,#c86bff);
+  transition:.3s;
+}
+
+button:hover{
+  transform:scale(1.05);
+}
+
+/* FINAL */
+.final{
+  position:fixed;
+  inset:0;
+  background:#000;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:30px;
+  opacity:0;
+  pointer-events:none;
+  transition:2s ease;
+}
+
+.final.ativo{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.final-box{
+  max-width:700px;
+  text-align:center;
+  animation:fade 2s ease;
+}
+
+.final p{
+  font-size:1.2rem;
+  color:#ddd;
+}
+
+.final .big{
+  font-size:1.5rem;
+  color:#fff;
+  margin:20px 0;
+}
+
+.final h2{
+  margin-top:25px;
+  color:#ff7ac0;
+  font-size:1.8rem;
+}
+
+/* RESPONSIVO */
+@media (max-width:600px){
+  h1{font-size:1.8rem;}
+  p{font-size:1.1rem;}
+  button{width:100%;}
+}
