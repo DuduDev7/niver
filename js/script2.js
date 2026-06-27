@@ -398,192 +398,334 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+// ======================================================
 // 100 MOTIVOS
+// ======================================================
 
-const motivos = [
-  "Seu sorriso",
-  "O jeito que você me acalma só de falar comigo.",
-  "O jeito que você me faz sentir especial sem nem perceber.",
-  "A forma como você consegue mudar meu dia inteiro.",
-  "O jeito que sua presença me faz bem, mesmo em silêncio.",
-  "O modo como você me faz sorrir sem esforço.",
-  "O jeito que você me entende sem eu precisar explicar tudo.",
-  "O conforto que eu sinto quando você está por perto.",
-  "O jeito que você me passa paz.",
-  "A forma como você me faz querer ser melhor.",
-  "O jeito que você me faz sentir em casa.",
+document.addEventListener("DOMContentLoaded", () => {
 
-  "O jeito que você me faz esquecer qualquer problema.",
-  "O modo como você fica na minha mente o dia inteiro.",
-  "O jeito que você me faz sentir importante.",
-  "O jeito que você me escuta de verdade.",
-  "O quanto você me faz falta quando some por pouco tempo.",
-  "O jeito que você consegue ser tudo pra mim sem perceber.",
-  "O modo como você me acalma só com uma mensagem.",
-  "O jeito que você me deixa feliz com coisas simples.",
-  "O jeito que você me faz acreditar em nós.",
-  "O jeito que você me faz querer continuar conversando pra sempre.",
+  if (!document.body.classList.contains("motivos-page")) return;
 
-  "O jeito que seu sorriso mexe comigo.",
-  "O jeito que sua voz me faz bem.",
-  "O jeito que seu olhar me prende.",
-  "O jeito que você me trata com carinho.",
-  "O jeito que você me faz sentir escolhido.",
-  "O jeito que você me faz sentir único.",
-  "O jeito que você me faz esquecer o resto do mundo.",
-  "O jeito que você se importa comigo.",
-  "O jeito que você percebe quando eu não estou bem.",
-  "O jeito que você tenta me entender mesmo quando é difícil.",
+  const motivos = [
+      "Seu sorriso.",
+      "O jeito que você me acalma só de falar comigo.",
+      "O jeito que você me faz sentir especial sem nem perceber.",
+      "A forma como você consegue mudar meu dia inteiro.",
+      "O jeito que sua presença me faz bem.",
+      "O modo como você me faz sorrir sem esforço.",
+      "O jeito que você me entende.",
+      "O conforto que eu sinto quando você está por perto.",
+      "O jeito que você me transmite paz.",
+      "A forma como você me faz querer ser melhor.",
+      "O jeito que você me faz sentir em casa."
+      // Complete até o 100 normalmente
+  ];
 
-  "O jeito que você me faz querer te proteger.",
-  "O jeito que você me faz querer ficar mais perto.",
-  "O jeito que você me deixa tranquilo.",
-  "O jeito que você me faz sentir leve.",
-  "O jeito que você me faz perder a noção do tempo.",
-  "O jeito que você me faz feliz sem esforço nenhum.",
-  "O jeito que você me faz acreditar em sentimentos bons.",
-  "O jeito que você me faz querer ser melhor pra você.",
-  "O jeito que você me faz sentir que vale a pena.",
-  "O jeito que você me faz querer te escolher sempre.",
+  const titulo = document.getElementById("titulo");
+  const texto = document.getElementById("texto");
+  const btn = document.getElementById("btn");
 
-  "O jeito que você me faz sentir saudade mesmo falando contigo.",
-  "O jeito que você fica na minha cabeça o dia todo.",
-  "O jeito que você me faz sorrir sozinho.",
-  "O jeito que você me faz sentir vivo.",
-  "O jeito que você me faz esquecer de tudo ruim.",
-  "O jeito que você me transmite paz sem falar nada.",
-  "O jeito que você me faz sentir segurança.",
-  "O jeito que você me faz querer cuidar de você.",
-  "O jeito que você me faz sentir algo diferente de tudo.",
-  "O jeito que você me faz querer ser constante pra você.",
+  const card = document.getElementById("card");
 
-  "O jeito que você me faz sentir que eu não estou sozinho.",
-  "O jeito que você me faz querer te ouvir por horas.",
-  "O jeito que você me faz sorrir quando nem quero sorrir.",
-  "O jeito que você me faz sentir bem comigo mesmo.",
-  "O jeito que você me faz esquecer o mundo lá fora.",
-  "O jeito que você me faz querer te contar tudo.",
-  "O jeito que você me faz sentir leve até nos dias pesados.",
-  "O jeito que você me faz querer ser alguém melhor pra você.",
-  "O jeito que você me faz sentir que tudo faz sentido.",
-  "O jeito que você me faz querer ficar.",
+  const final = document.getElementById("final");
+  const finalBox = document.getElementById("finalBox");
 
-  "O jeito que você me faz gostar mais da vida.",
-  "O jeito que você me faz sentir sorte de te conhecer.",
-  "O jeito que você me faz querer cuidar do nosso momento.",
-  "O jeito que você me faz sentir que eu importo.",
-  "O jeito que você me faz sentir que sou visto.",
-  "O jeito que você me faz querer ser suficiente pra você.",
-  "O jeito que você me faz querer não te perder.",
-  "O jeito que você me faz querer construir algo contigo.",
-  "O jeito que você me faz sentir paz em você.",
-  "O jeito que você me faz ser melhor sem perceber.",
+  let indice = -1;
+  let iniciou = false;
 
-  "O jeito que você me faz te amar sem esforço.",
-  "O jeito que você me faz querer você por perto sempre.",
-  "O jeito que você me faz sentir que tudo vale a pena.",
-  "O jeito que você me faz esquecer o que é solidão.",
-  "O jeito que você me faz querer ficar mesmo quando tudo complica.",
-  "O jeito que você me faz sentir algo que não sei explicar.",
-  "O jeito que você me faz querer te proteger de tudo.",
-  "O jeito que você me faz acreditar em nós dois.",
-  "O jeito que você me faz querer continuar aqui.",
-  "O jeito que você simplesmente é você comigo.",
-  "O jeito que você me faz querer ficar mesmo quando tudo está confuso.",
-  "O jeito que você me faz sentir que eu sou suficiente.",
-  "O jeito que você me faz sorrir mesmo sem motivo nenhum.",
-  "O jeito que você me faz sentir que tudo pode dar certo.",
-  "O jeito que você me faz ter vontade de te contar tudo do meu dia.",
-  "O jeito que você me faz sentir calma só de lembrar de você.",
-  "O jeito que você me faz querer melhorar sem ninguém pedir.",
-  "O jeito que você me faz sentir que existe algo bom no meio do caos.",
-  "O jeito que você me faz querer proteger o seu coração.",
-  "O jeito que você me faz sentir que amar não é pesado.",
-  "O jeito que você me faz querer continuar mesmo nos dias difíceis.",
-  "O jeito que você me faz acreditar que eu não preciso de mais ninguém.",
-  "O jeito que você simplesmente existe na minha vida."
-];
+  // =====================================
 
-const extras = [
-  "101...",
-  "102...",
-  "103...",
-  "104...",
-  "999...",
-  "1.000...",
-  "10.000...",
-  "∞"
-];
+  function trocarTexto(novoTitulo, novoTexto){
 
-const titulo = document.getElementById("titulo");
-const texto = document.getElementById("texto");
-const btn = document.getElementById("btn");
+      card.style.opacity = 0;
 
-const card = document.getElementById("card");
-const final = document.getElementById("final");
+      setTimeout(()=>{
 
-let i = 0;
-let modoExtra = false;
-let j = 0;
+          titulo.innerHTML = novoTitulo;
+          texto.innerHTML = novoTexto;
 
-btn.addEventListener("click", () => {
+          card.style.opacity = 1;
 
-  // Fase 1: 1 a 100
-  if (!modoExtra) {
+      },350);
 
-    i++;
-
-    if (i < 100) {
-      titulo.innerText = `Motivo #${i + 1}`;
-      texto.innerText = motivos[i];
-    }
-
-    // chegou no 100
-    if (i === 99) {
-      modoExtra = true;
-      titulo.innerText = "Motivo #100";
-      texto.innerText = motivos[99];
-
-      setTimeout(() => {
-        card.style.display = "none";
-        final.classList.add("ativo");
-        iniciarInfinito();
-      }, 1200);
-    }
-
-    return;
   }
+
+  // =====================================
+
+  function mostrarMotivo(){
+
+      indice++;
+
+      if(indice >= motivos.length){
+
+          abrirFinal();
+
+          return;
+
+      }
+
+      trocarTexto(
+
+          `Motivo #${indice+1}`,
+
+          motivos[indice]
+
+      );
+
+      if(indice === 99){
+
+          btn.innerHTML = "Finalizar";
+
+      }
+
+  }
+
+  // =====================================
+
+  btn.addEventListener("click",()=>{
+
+      if(!iniciou){
+
+          iniciou = true;
+
+          btn.innerHTML="Próximo";
+
+          mostrarMotivo();
+
+          return;
+
+      }
+
+      mostrarMotivo();
+
+  });
+
+  // =====================================
+  // FINAL
+  // =====================================
+
+  function abrirFinal(){
+
+      card.style.display="none";
+
+      final.classList.add("ativo");
+
+      iniciarSistema();
+
+  }
+
+  // =====================================
+
+  function esperar(ms){
+
+      return new Promise(resolve=>{
+
+          setTimeout(resolve,ms);
+
+      });
+
+  }
+
+  // =====================================
+
+  async function iniciarSistema(){
+
+      const linhas=[
+
+          "Calculando quantidade de motivos...",
+
+          "Analisando registros...",
+
+          "Procurando novos motivos...",
+
+          "100 encontrados.",
+
+          "Verificando se existem mais...",
+
+          "500...",
+
+          "2.000...",
+
+          "10.000...",
+
+          "100.000...",
+
+          "1.000.000...",
+
+          "∞"
+
+      ];
+
+      for(const linha of linhas){
+
+          finalBox.innerHTML=
+
+          `<h2>${linha}</h2>`;
+
+          await esperar(900);
+
+      }
+
+      await esperar(1000);
+
+      mostrarMensagemFinal();
+
+  }
+
+  // =====================================
+
+  function mostrarMensagemFinal(){
+
+      finalBox.innerHTML=`
+
+      <h2 class="erro">
+
+      ERRO
+
+      </h2>
+
+      <p>
+
+      Quantidade máxima de motivos excedeu o limite permitido.
+
+      </p>
+
+      <br>
+
+      <p>
+
+      Tentando aumentar capacidade...
+
+      </p>
+
+      <p>
+
+      Falha.
+
+      </p>
+
+      <br><br>
+
+      <p class="big">
+
+      Porque o problema nunca foi encontrar motivos.
+
+      </p>
+
+      <br>
+
+      <p>
+
+      O problema...
+
+      </p>
+
+      <p>
+
+      é que eles nunca acabam.
+
+      </p>
+
+      <br>
+
+      <p>
+
+      Todos os dias você me dá um motivo novo.
+
+      </p>
+
+      <p>
+
+      Toda conversa cria outro.
+
+      </p>
+
+      <p>
+
+      Todo sorriso cria mais um.
+
+      </p>
+
+      <p>
+
+      Toda lembrança cria dezenas deles.
+
+      </p>
+
+      <br>
+
+      <p>
+
+      Amanhã essa lista já será maior.
+
+      </p>
+
+      <p>
+
+      Depois de amanhã também.
+
+      </p>
+
+      <br>
+
+      <p>
+
+      Enquanto eu existir...
+
+      </p>
+
+      <p>
+
+      nunca vou conseguir terminar essa página.
+
+      </p>
+
+      <br>
+
+      <p class="destaque">
+
+      Porque amar você nunca vai caber
+
+      </p>
+
+      <p class="destaque">
+
+      em apenas 100 motivos.
+
+      </p>
+
+      <br><br>
+
+      <p>
+
+      Eu poderia passar o resto da minha vida escrevendo...
+
+      </p>
+
+      <p>
+
+      e ainda assim não conseguiria colocar todos aqui.
+
+      </p>
+
+      <br>
+
+      <p class="destaque">
+
+      Porque todos os dias eu encontro um motivo novo para escolher você.
+
+      </p>
+
+      <br><br>
+
+      <h2>
+
+      ❤️ Eu te amo muito, minha princesa. ❤️
+
+      </h2>
+
+      `;
+
+  }
+
 });
-
-// sequência infinita + erro
-function iniciarInfinito() {
-  const box = document.querySelector(".final-box");
-
-  const interval = setInterval(() => {
-
-    if (j < extras.length) {
-      const p = document.createElement("p");
-      p.innerText = extras[j];
-      box.appendChild(p);
-      j++;
-    }
-
-    // depois do infinito → erro
-    if (j === extras.length) {
-      clearInterval(interval);
-
-      setTimeout(() => {
-        const erro = document.createElement("h2");
-        erro.innerText = "ERRO. Quantidade de motivos excede o limite do sistema.";
-        erro.style.color = "#ff4d6d";
-
-        const finalMsg = document.createElement("p");
-        finalMsg.innerText = "❤️ Existem infinitos motivos para eu amar você.";
-
-        box.appendChild(erro);
-        box.appendChild(finalMsg);
-      }, 1200);
-    }
-
-  }, 700);
-}

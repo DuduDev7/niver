@@ -2310,134 +2310,357 @@ overflow-x:hidden;
 
 }
 
-/* 100 MOTIVOS */
+/* ================================================= */
+/* 100 MOTIVOS                                       */
+/* ================================================= */
 
-*{
+body.motivos-page{
+
   margin:0;
   padding:0;
-  box-sizing:border-box;
-  font-family:Segoe UI, sans-serif;
-}
-
-body{
+  
   height:100vh;
+  
   overflow:hidden;
+  
   color:#fff;
+  
+  font-family:'Segoe UI',sans-serif;
+  
   background:linear-gradient(180deg,#0b0d12,#1a1f2d);
-}
-
-.bg{
+  
+  }
+  
+  body.motivos-page *{
+  
+  box-sizing:border-box;
+  
+  }
+  
+  /* ========================= */
+  
+  .motivos-page .bg{
+  
   position:fixed;
+  
   inset:0;
-  background:radial-gradient(circle at top,#ff6aa8 0%,transparent 60%);
+  
+  background:
+  radial-gradient(circle at top,#ff6aa8 0%,transparent 60%);
+  
   opacity:.15;
+  
   pointer-events:none;
-}
-
-.container{
+  
+  }
+  
+  /* ========================= */
+  
+  .motivos-page .container{
+  
   height:100vh;
+  
   display:flex;
+  
   justify-content:center;
+  
   align-items:center;
+  
   padding:20px;
-}
-
-/* CARD */
-.card{
-  width:min(600px, 92vw);
+  
+  }
+  
+  /* ========================= */
+  /* CARD */
+  /* ========================= */
+  
+  .motivos-page .card{
+  
+  width:min(600px,92vw);
+  
   background:rgba(255,255,255,.06);
+  
   border:1px solid rgba(255,255,255,.15);
+  
   backdrop-filter:blur(14px);
+  
   border-radius:25px;
+  
   padding:40px 30px;
+  
   text-align:center;
-  box-shadow:0 20px 60px rgba(0,0,0,.4);
+  
+  box-shadow:
+  0 20px 60px rgba(0,0,0,.4);
+  
   display:none;
-  animation:fade .6s ease;
-}
-
-.card.ativa{
+  
+  animation:motivosFade .6s ease;
+  
+  }
+  
+  .motivos-page .card.ativa{
+  
   display:block;
-}
-
-@keyframes fade{
-  from{opacity:0; transform:translateY(20px);}
-  to{opacity:1; transform:translateY(0);}
-}
-
-h1{
-  font-size:2.2rem;
-  color:#ffb3d6;
-  margin-bottom:25px;
-}
-
-p{
-  font-size:1.4rem;
-  line-height:1.8;
-  margin-bottom:30px;
-}
-
-button{
-  padding:14px 40px;
-  border:none;
-  border-radius:40px;
-  cursor:pointer;
-  font-size:1rem;
-  font-weight:bold;
-  color:white;
-  background:linear-gradient(135deg,#ff5da8,#c86bff);
-  transition:.3s;
-}
-
-button:hover{
-  transform:scale(1.05);
-}
-
-/* FINAL */
-.final{
-  position:fixed;
-  inset:0;
-  background:#000;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:30px;
+  
+  }
+  
+  /* ========================= */
+  
+  @keyframes motivosFade{
+  
+  from{
+  
   opacity:0;
-  pointer-events:none;
-  transition:2s ease;
-}
-
-.final.ativo{
+  transform:translateY(20px);
+  
+  }
+  
+  to{
+  
   opacity:1;
+  transform:translateY(0);
+  
+  }
+  
+  }
+  
+  /* ========================= */
+  
+  .motivos-page h1{
+  
+  font-size:2.2rem;
+  
+  color:#ffb3d6;
+  
+  margin-bottom:25px;
+  
+  }
+  
+  /* ========================= */
+  
+  .motivos-page p{
+  
+  font-size:1.4rem;
+  
+  line-height:1.8;
+  
+  margin-bottom:30px;
+  
+  }
+  
+  /* ========================= */
+  
+  .motivos-page button{
+  
+  padding:14px 40px;
+  
+  border:none;
+  
+  border-radius:40px;
+  
+  cursor:pointer;
+  
+  font-size:1rem;
+  
+  font-weight:bold;
+  
+  color:white;
+  
+  background:
+  linear-gradient(
+  135deg,
+  #ff5da8,
+  #c86bff
+  );
+  
+  transition:.3s;
+  
+  }
+  
+  .motivos-page button:hover{
+  
+  transform:scale(1.05);
+  
+  }
+  
+  /* ================================================= */
+  /* FINAL                                             */
+  /* ================================================= */
+  
+  .motivos-page .final{
+  
+  position:fixed;
+  
+  inset:0;
+  
+  display:flex;
+  
+  justify-content:center;
+  
+  align-items:center;
+  
+  padding:30px;
+  
+  background:#050507;
+  
+  opacity:0;
+  
+  pointer-events:none;
+  
+  transition:1.5s;
+  
+  }
+  
+  .motivos-page .final.ativo{
+  
+  opacity:1;
+  
   pointer-events:auto;
-}
-
-.final-box{
-  max-width:700px;
+  
+  }
+  
+  /* ========================= */
+  
+  .motivos-page .final-box{
+  
+  width:min(750px,95vw);
+  
+  max-height:85vh;
+  
+  overflow-y:auto;
+  
+  overflow-x:hidden;
+  
   text-align:center;
-  animation:fade 2s ease;
-}
-
-.final p{
-  font-size:1.2rem;
-  color:#ddd;
-}
-
-.final .big{
-  font-size:1.5rem;
-  color:#fff;
-  margin:20px 0;
-}
-
-.final h2{
-  margin-top:25px;
-  color:#ff7ac0;
+  
+  padding:20px;
+  
+  }
+  
+  /* ========================= */
+  
+  .motivos-page .final-box::-webkit-scrollbar{
+  
+  width:8px;
+  
+  }
+  
+  .motivos-page .final-box::-webkit-scrollbar-thumb{
+  
+  background:#ff78ba;
+  
+  border-radius:50px;
+  
+  }
+  
+  /* ========================= */
+  
+  .motivos-page .final-box h2{
+  
+  color:#ff7ebf;
+  
+  margin:25px 0;
+  
+  font-size:2rem;
+  
+  }
+  
+  /* ========================= */
+  
+  .motivos-page .final-box p{
+  
+  margin:18px 0;
+  
+  font-size:1.25rem;
+  
+  line-height:1.8;
+  
+  }
+  
+  /* ========================= */
+  
+  .motivos-page .big{
+  
+  font-size:1.6rem;
+  
+  color:white;
+  
+  }
+  
+  .motivos-page .destaque{
+  
+  color:#ffb3d8;
+  
   font-size:1.8rem;
-}
-
-/* RESPONSIVO */
-@media (max-width:600px){
-  h1{font-size:1.8rem;}
-  p{font-size:1.1rem;}
-  button{width:100%;}
-}
+  
+  font-weight:bold;
+  
+  text-shadow:
+  
+  0 0 15px #ff87c7,
+  0 0 30px #ff87c7;
+  
+  }
+  
+  .motivos-page .erro{
+  
+  color:#ff5d73;
+  
+  font-size:2rem;
+  
+  margin-top:40px;
+  
+  }
+  
+  /* ================================================= */
+  /* RESPONSIVO                                        */
+  /* ================================================= */
+  
+  @media(max-width:600px){
+  
+  .motivos-page h1{
+  
+  font-size:1.8rem;
+  
+  }
+  
+  .motivos-page p{
+  
+  font-size:1.1rem;
+  
+  }
+  
+  .motivos-page button{
+  
+  width:100%;
+  
+  }
+  
+  .motivos-page .card{
+  
+  padding:28px 22px;
+  
+  }
+  
+  .motivos-page .final-box{
+  
+  padding:15px;
+  
+  max-height:82vh;
+  
+  }
+  
+  .motivos-page .big{
+  
+  font-size:1.35rem;
+  
+  }
+  
+  .motivos-page .destaque{
+  
+  font-size:1.45rem;
+  
+  }
+  
+  }
