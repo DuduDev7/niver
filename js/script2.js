@@ -406,21 +406,118 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!document.body.classList.contains("motivos-page")) return;
 
+  // ======================================================
+  // ARRAY DOS 100 MOTIVOS
+  // ======================================================
+
   const motivos = [
-      "Seu sorriso.",
-      "O jeito que você me acalma só de falar comigo.",
-      "O jeito que você me faz sentir especial sem nem perceber.",
-      "A forma como você consegue mudar meu dia inteiro.",
-      "O jeito que sua presença me faz bem.",
-      "O modo como você me faz sorrir sem esforço.",
-      "O jeito que você me entende.",
-      "O conforto que eu sinto quando você está por perto.",
-      "O jeito que você me transmite paz.",
-      "A forma como você me faz querer ser melhor.",
-      "O jeito que você me faz sentir em casa."
-      // Complete até o 100 normalmente
+    "Seu sorriso.",
+    "O jeito que você me acalma só de falar comigo.",
+    "O jeito que você me faz sentir especial sem nem perceber.",
+    "A forma como você consegue mudar meu dia inteiro.",
+    "O jeito que sua presença me faz bem.",
+    "O brilho dos seus olhos quando você sorri.",
+    "A paz que eu sinto quando estou com você.",
+    "O seu abraço, que parece o lugar mais seguro do mundo.",
+    "A sua voz, que consegue acalmar qualquer tempestade dentro de mim.",
+    "O jeito que você me olha.",
+    "Porque você faz qualquer lugar parecer casa.",
+    "Porque até os dias ruins ficam mais leves quando você está comigo.",
+    "Porque você virou meu pensamento favorito.",
+    "Porque conversar com você nunca é suficiente.",
+    "Porque eu sempre quero mais um minuto ao seu lado.",
+    "Porque você faz meu coração acelerar sem fazer esforço.",
+    "Porque você me faz acreditar que o amor pode ser simples.",
+    "Porque você é a primeira pessoa que eu quero contar qualquer novidade.",
+    "Porque você é meu primeiro pensamento quando acordo.",
+    "Porque você continua sendo meu último pensamento antes de dormir.",
+    "Porque ouvir seu nome já me faz sorrir.",
+    "Porque sua felicidade importa tanto para mim quanto a minha.",
+    "Porque eu amo até seus pequenos defeitos.",
+    "Porque você é linda até nos momentos em que acha que não é.",
+    "Porque você consegue transformar silêncio em conforto.",
+    "Porque você nunca precisa fazer muito para me conquistar de novo.",
+    "Porque eu me sinto completo quando estou ao seu lado.",
+    "Porque eu nunca canso de admirar você.",
+    "Porque você faz meu coração encontrar paz.",
+    "Porque sua risada é uma das coisas mais bonitas que eu já ouvi.",
+    "Porque seu jeito carinhoso me desmonta.",
+    "Porque você me inspira a ser alguém melhor.",
+    "Porque você desperta o melhor de mim.",
+    "Porque você me faz sentir amado.",
+    "Porque você faz tudo parecer mais bonito.",
+    "Porque qualquer momento ao seu lado vira uma lembrança especial.",
+    "Porque você consegue iluminar até meus dias mais escuros.",
+    "Porque você é a melhor parte da minha rotina.",
+    "Porque você faz meu coração sorrir.",
+    "Porque seu carinho vale mais que mil palavras.",
+    "Porque eu amo quando você sorri por minha causa.",
+    "Porque eu faria qualquer coisa para ver esse sorriso todos os dias.",
+    "Porque você me faz sentir em paz só segurando minha mão.",
+    "Porque eu nunca me sinto sozinho quando tenho você.",
+    "Porque você faz meu mundo ter mais cor.",
+    "Porque sua existência já tornou minha vida melhor.",
+    "Porque você me mostrou um amor que eu nem sabia que existia.",
+    "Porque seu abraço consegue consertar um dia inteiro.",
+    "Porque seus olhos contam histórias que eu nunca me canso de ler.",
+    "Porque eu amo descobrir novos detalhes em você.",
+    "Porque você faz meu coração escolher você todos os dias.",
+    "Porque você me faz querer viver o futuro.",
+    "Porque eu amo imaginar minha vida ao seu lado.",
+    "Porque você me faz acreditar em para sempre.",
+    "Porque eu amo cada segundo que passo com você.",
+    "Porque qualquer tempo longe de você parece tempo demais.",
+    "Porque você faz falta até quando acabou de ir embora.",
+    "Porque você é meu lugar favorito no mundo.",
+    "Porque você faz meu coração se sentir em casa.",
+    "Porque eu nunca imaginei encontrar alguém como você.",
+    "Porque você superou todas as expectativas que eu tinha sobre o amor.",
+    "Porque eu admiro sua força.",
+    "Porque eu admiro seu coração.",
+    "Porque você é incrível sem nem perceber.",
+    "Porque você é a pessoa mais especial que já entrou na minha vida.",
+    "Porque você merece todo amor que existe no mundo.",
+    "Porque você faz eu querer cuidar de você para sempre.",
+    "Porque eu amo o jeito que você cuida de mim.",
+    "Porque eu amo ouvir você falando sobre qualquer assunto.",
+    "Porque sua companhia vale mais que qualquer lugar.",
+    "Porque você faz qualquer plano ficar perfeito.",
+    "Porque até o tédio fica divertido com você.",
+    "Porque você me faz rir quando eu mais preciso.",
+    "Porque você conhece lados meus que ninguém conhece.",
+    "Porque você faz meu coração bater diferente.",
+    "Porque você é minha calmaria em meio ao caos.",
+    "Porque eu amo seu jeito único de existir.",
+    "Porque você é exatamente quem eu sempre procurei.",
+    "Porque você faz meus dias valerem a pena.",
+    "Porque você tornou minha vida mais feliz.",
+    "Porque eu amo cada detalhe do seu jeito.",
+    "Porque você faz o tempo passar rápido quando estamos juntos e devagar quando estamos longe.",
+    "Porque você é meu maior motivo para sorrir.",
+    "Porque você me ensinou que amor está nos pequenos detalhes.",
+    "Porque seu carinho é meu lugar favorito.",
+    "Porque eu amo quando nossos olhares se encontram.",
+    "Porque eu sinto saudade de você antes mesmo de ir embora.",
+    "Porque meu coração reconheceu você antes mesmo de eu entender o que sentia.",
+    "Porque eu me apaixono por você um pouco mais todos os dias.",
+    "Porque eu escolheria você em todas as versões da minha vida.",
+    "Porque você transformou um simples 'eu' em um 'nós'.",
+    "Porque, se eu pudesse voltar no tempo, ainda escolheria conhecer você.",
+    "Porque nenhuma distância muda o tamanho do que eu sinto.",
+    "Porque eu encontro paz no som da sua voz.",
+    "Porque você é o sonho que eu nem sabia que tinha.",
+    "Porque amar você aconteceu da forma mais bonita possível.",
+    "Porque você fez meu coração encontrar o lugar onde ele sempre pertenceu.",
+    "Porque eu não consigo imaginar um futuro onde você não esteja.",
+    "Porque cada batida do meu coração parece chamar pelo seu nome.",
+    "Porque, de todas as coincidências da minha vida, você foi a mais bonita.",
+    "Porque, entre bilhões de pessoas no mundo, meu coração teve a sorte de encontrar você.",
+    "Porque você é, e sempre será, meu motivo favorito."
   ];
 
+  // ======================================================
+
+  const contador = document.getElementById("contador");
   const titulo = document.getElementById("titulo");
   const texto = document.getElementById("texto");
   const btn = document.getElementById("btn");
@@ -430,301 +527,206 @@ document.addEventListener("DOMContentLoaded", () => {
   const final = document.getElementById("final");
   const finalBox = document.getElementById("finalBox");
 
-  let indice = -1;
-  let iniciou = false;
+  let indice = 0;
 
-  // =====================================
+  // ======================================================
+  // PRIMEIRO MOTIVO
+  // ======================================================
 
-  function trocarTexto(novoTitulo, novoTexto){
+  contador.innerHTML = "Motivo 1 de 100";
+  titulo.innerHTML = "Motivo #1";
+  texto.innerHTML = motivos[0];
 
-      card.style.opacity = 0;
+  // ======================================================
+  // BOTÃO
+  // ======================================================
 
-      setTimeout(()=>{
-
-          titulo.innerHTML = novoTitulo;
-          texto.innerHTML = novoTexto;
-
-          card.style.opacity = 1;
-
-      },350);
-
-  }
-
-  // =====================================
-
-  function mostrarMotivo(){
+  btn.addEventListener("click", () => {
 
       indice++;
 
-      if(indice >= motivos.length){
-
+      if (indice >= motivos.length) {
           abrirFinal();
-
           return;
-
       }
 
-      trocarTexto(
-
-          `Motivo #${indice+1}`,
-
-          motivos[indice]
-
-      );
-
-      if(indice === 99){
-
-          btn.innerHTML = "Finalizar";
-
-      }
-
-  }
-
-  // =====================================
-
-  btn.addEventListener("click",()=>{
-
-      if(!iniciou){
-
-          iniciou = true;
-
-          btn.innerHTML="Próximo";
-
-          mostrarMotivo();
-
-          return;
-
-      }
-
-      mostrarMotivo();
+      trocarMotivo();
 
   });
 
-  // =====================================
-  // FINAL
-  // =====================================
+  // ======================================================
+  // TROCAR MOTIVO
+  // ======================================================
 
-  function abrirFinal(){
+  function trocarMotivo() {
 
-      card.style.display="none";
+      texto.style.opacity = "0";
+      titulo.style.opacity = "0";
 
-      final.classList.add("ativo");
+      setTimeout(() => {
 
-      iniciarSistema();
+          contador.innerHTML = `Motivo ${indice + 1} de 100`;
+          titulo.innerHTML = `Motivo #${indice + 1}`;
+          texto.innerHTML = motivos[indice];
+
+          titulo.style.opacity = "1";
+          texto.style.opacity = "1";
+
+      }, 250);
 
   }
 
-  // =====================================
+  // ======================================================
+  // ESPERA
+  // ======================================================
 
-  function esperar(ms){
+  function esperar(ms) {
 
-      return new Promise(resolve=>{
+      return new Promise(resolve => {
 
-          setTimeout(resolve,ms);
+          setTimeout(resolve, ms);
 
       });
 
   }
 
-  // =====================================
+  // ======================================================
+  // ESCREVER LETRA POR LETRA
+  // ======================================================
 
-  async function iniciarSistema(){
+  function escrever(textoDigitando) {
 
-      const linhas=[
+      return new Promise(resolve => {
 
-          "Calculando quantidade de motivos...",
+          const p = document.createElement("p");
 
-          "Analisando registros...",
+          finalBox.appendChild(p);
 
-          "Procurando novos motivos...",
+          let i = 0;
 
-          "100 encontrados.",
+          const intervalo = setInterval(() => {
 
-          "Verificando se existem mais...",
+              p.innerHTML += textoDigitando.charAt(i);
 
+              i++;
+
+              if (i >= textoDigitando.length) {
+
+                  clearInterval(intervalo);
+
+                  resolve();
+
+              }
+
+          }, 35);
+
+      });
+
+  }
+
+  // ======================================================
+  // FINAL
+  // ======================================================
+
+  async function abrirFinal() {
+
+      card.style.opacity = "0";
+
+      await esperar(600);
+
+      card.style.display = "none";
+
+      final.classList.add("ativo");
+
+      finalBox.innerHTML = "";
+
+      await escrever("Calculando quantidade de motivos...");
+
+      await esperar(800);
+
+      const numeros = [
+          "101...",
+          "102...",
+          "103...",
+          "104...",
+          "250...",
           "500...",
-
-          "2.000...",
-
+          "999...",
+          "1.000...",
           "10.000...",
-
           "100.000...",
-
-          "1.000.000...",
-
           "∞"
-
       ];
 
-      for(const linha of linhas){
+      for (const numero of numeros) {
 
-          finalBox.innerHTML=
+          finalBox.innerHTML += `<p>${numero}</p>`;
 
-          `<h2>${linha}</h2>`;
+          finalBox.scrollTop = finalBox.scrollHeight;
 
-          await esperar(900);
+          await esperar(450);
 
       }
 
       await esperar(1000);
 
-      mostrarMensagemFinal();
+      finalBox.innerHTML += `
+          <h2 class="erro">
+              ERRO.
+          </h2>
 
-  }
+          <p>
+              Quantidade de motivos excede o limite suportado pelo sistema.
+          </p>
+      `;
 
-  // =====================================
+      finalBox.scrollTop = finalBox.scrollHeight;
 
-  function mostrarMensagemFinal(){
+      await esperar(1800);
 
-      finalBox.innerHTML=`
+      finalBox.innerHTML += `
 
-      <h2 class="erro">
+          <p class="big">
+              Você realmente achou que existiam apenas 100 motivos?
+          </p>
 
-      ERRO
+          <p>...</p>
 
-      </h2>
+          <p>
+              Eu poderia passar o resto da minha vida escrevendo...
+          </p>
 
-      <p>
+          <p>
+              E ainda assim não conseguiria colocar todos aqui.
+          </p>
 
-      Quantidade máxima de motivos excedeu o limite permitido.
+          <br>
 
-      </p>
+          <p class="destaque">
+              Porque todos os dias eu encontro um motivo novo para escolher você.
+          </p>
 
-      <br>
+          <br>
 
-      <p>
+          <h2>
+              ❤️ Eu te amo muito, minha princesa. ❤️
+          </h2>
 
-      Tentando aumentar capacidade...
+          <p>
+              E enquanto eu existir...
+              sempre vou encontrar um motivo novo para amar você.
+          </p>
 
-      </p>
+          <br>
 
-      <p>
-
-      Falha.
-
-      </p>
-
-      <br><br>
-
-      <p class="big">
-
-      Porque o problema nunca foi encontrar motivos.
-
-      </p>
-
-      <br>
-
-      <p>
-
-      O problema...
-
-      </p>
-
-      <p>
-
-      é que eles nunca acabam.
-
-      </p>
-
-      <br>
-
-      <p>
-
-      Todos os dias você me dá um motivo novo.
-
-      </p>
-
-      <p>
-
-      Toda conversa cria outro.
-
-      </p>
-
-      <p>
-
-      Todo sorriso cria mais um.
-
-      </p>
-
-      <p>
-
-      Toda lembrança cria dezenas deles.
-
-      </p>
-
-      <br>
-
-      <p>
-
-      Amanhã essa lista já será maior.
-
-      </p>
-
-      <p>
-
-      Depois de amanhã também.
-
-      </p>
-
-      <br>
-
-      <p>
-
-      Enquanto eu existir...
-
-      </p>
-
-      <p>
-
-      nunca vou conseguir terminar essa página.
-
-      </p>
-
-      <br>
-
-      <p class="destaque">
-
-      Porque amar você nunca vai caber
-
-      </p>
-
-      <p class="destaque">
-
-      em apenas 100 motivos.
-
-      </p>
-
-      <br><br>
-
-      <p>
-
-      Eu poderia passar o resto da minha vida escrevendo...
-
-      </p>
-
-      <p>
-
-      e ainda assim não conseguiria colocar todos aqui.
-
-      </p>
-
-      <br>
-
-      <p class="destaque">
-
-      Porque todos os dias eu encontro um motivo novo para escolher você.
-
-      </p>
-
-      <br><br>
-
-      <h2>
-
-      ❤️ Eu te amo muito, minha princesa. ❤️
-
-      </h2>
+          <p class="big">
+              E a verdade é que...
+              nem o infinito seria suficiente para listar tudo.
+          </p>
 
       `;
+
+      finalBox.scrollTop = finalBox.scrollHeight;
 
   }
 
