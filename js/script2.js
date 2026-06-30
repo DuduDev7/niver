@@ -645,10 +645,10 @@ document.addEventListener("DOMContentLoaded", () => {
       await esperar(800);
 
       const numeros = [
-          "101...",
-          "102...",
           "103...",
           "104...",
+          "105...",
+          "106...",
           "250...",
           "500...",
           "999...",
@@ -729,5 +729,228 @@ document.addEventListener("DOMContentLoaded", () => {
       finalBox.scrollTop = finalBox.scrollHeight;
 
   }
+
+});
+
+// =====================================================
+// CÉU
+// =====================================================
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+if(!document.body.classList.contains("ceu-page")) return;
+
+const canvas=document.getElementById("stars");
+const ctx=canvas.getContext("2d");
+
+function resize(){
+
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+}
+
+resize();
+
+window.addEventListener("resize",resize);
+
+// =====================================================
+// ESTRELAS
+// =====================================================
+
+const estrelas=[];
+
+for(let i=0;i<180;i++){
+
+estrelas.push({
+
+x:Math.random()*canvas.width,
+
+y:Math.random()*canvas.height,
+
+r:Math.random()*2,
+
+a:Math.random(),
+
+v:0.004+Math.random()*0.01
+
+});
+
+}
+
+// =====================================================
+// ESTRELAS CADENTES
+// =====================================================
+
+const shooting=[];
+
+function criarCadente(){
+
+shooting.push({
+
+x:Math.random()*canvas.width,
+
+y:-50,
+
+vx:-8,
+
+vy:8,
+
+life:0
+
+});
+
+}
+
+setInterval(()=>{
+
+if(Math.random()<0.7){
+
+criarCadente();
+
+}
+
+},4000);
+
+// =====================================================
+
+function draw(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+// estrelas
+
+for(const s of estrelas){
+
+s.a+=s.v;
+
+ctx.beginPath();
+
+ctx.fillStyle=`rgba(255,255,255,${0.5+Math.sin(s.a)*0.5})`;
+
+ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+
+ctx.fill();
+
+}
+
+// cadentes
+
+for(let i=shooting.length-1;i>=0;i--){
+
+const st=shooting[i];
+
+ctx.beginPath();
+
+ctx.strokeStyle="rgba(255,255,255,.8)";
+
+ctx.lineWidth=2;
+
+ctx.moveTo(st.x,st.y);
+
+ctx.lineTo(st.x+70,st.y-70);
+
+ctx.stroke();
+
+st.x+=st.vx;
+st.y+=st.vy;
+
+st.life++;
+
+if(st.life>35){
+
+shooting.splice(i,1);
+
+}
+
+}
+
+requestAnimationFrame(draw);
+
+}
+
+draw();
+
+// =====================================================
+
+const titulo=document.getElementById("titulo");
+const texto=document.getElementById("texto");
+const btn=document.getElementById("btn");
+
+setTimeout(()=>{
+
+btn.classList.add("aparecer");
+
+},2500);
+
+// =====================================================
+
+const mensagens=[
+
+{
+titulo:"Olhe para o céu.",
+texto:"Existem milhares de estrelas espalhadas por ele."
+},
+
+{
+titulo:"Mesmo tão distante...",
+texto:"cada uma delas continua brilhando."
+},
+
+{
+titulo:"E sabe...",
+texto:"sempre que você olhar para o céu..."
+},
+
+{
+titulo:"Quero que lembre...",
+texto:"que talvez eu esteja olhando para ele também..."
+},
+
+{
+titulo:"...e pensando em você.",
+texto:"Porque não importa a distância... você sempre encontra um jeito de aparecer nos meus pensamentos."
+},
+
+{
+titulo:"❤️",
+texto:"Sempre que olhar para o céu, lembra que existe alguém olhando para ele... pensando exatamente em você."
+}
+
+];
+
+let etapa=0;
+
+btn.onclick=()=>{
+
+etapa++;
+
+if(etapa>=mensagens.length){
+
+btn.style.display="none";
+return;
+
+}
+
+titulo.style.opacity=0;
+texto.style.opacity=0;
+
+setTimeout(()=>{
+
+titulo.innerHTML=mensagens[etapa].titulo;
+texto.innerHTML=mensagens[etapa].texto;
+
+titulo.style.opacity=1;
+texto.style.opacity=1;
+
+if(etapa===mensagens.length-1){
+
+btn.innerHTML="❤️";
+
+}
+
+},350);
+
+};
 
 });

@@ -1816,6 +1816,8 @@ body.porque-page{
 
   overflow:hidden;
 
+  position:relative;
+
 }
 
 /* ========================= */
@@ -1824,21 +1826,22 @@ body.porque-page{
 
   position:absolute;
 
-  width:100%;
+  inset:0;
 
-  max-width:900px;
+  display:flex;
 
-  padding:10px;
+  justify-content:center;
+  align-items:center;
 
-  box-sizing:border-box;
+  padding:15px;
 
   opacity:0;
 
-  transform:translateY(20px);
+  pointer-events:none;
+
+  transform:translateY(25px);
 
   transition:.8s;
-
-  pointer-events:none;
 
 }
 
@@ -1846,11 +1849,9 @@ body.porque-page{
 
   opacity:1;
 
-  transform:
-  translateY(0)
-  scale(1);
-
   pointer-events:auto;
+
+  transform:translateY(0);
 
 }
 
@@ -2000,73 +2001,31 @@ small{
 /* TELA FINAL */
 /* ========================= */
 
-.final{
+.card-final{
 
-  max-height:85vh;
+  max-height:82vh;
 
   overflow-y:auto;
 
   overflow-x:hidden;
 
-  display:block;
-
-  padding-right:12px;
-
-  text-align:center;
+  padding-right:8px;
 
 }
-
-.final *{
-
-  display:block;
-
-}
-
-.final p{
-
-  display:block;
-
-  width:100%;
-
-  margin:12px auto;
-
-}
-
-.final h2{
-
-  display:block;
-
-  margin-bottom:20px;
-
-}
-
-.final small{
-
-  display:block;
-
-  margin-top:5px;
-
-}
-
-.final::-webkit-scrollbar{
-
+  
+  .card-final::-webkit-scrollbar{
+  
   width:8px;
-
-}
-
-.final::-webkit-scrollbar-thumb{
-
+  
+  }
+  
+  .card-final::-webkit-scrollbar-thumb{
+  
   background:#ff9fd4;
-
-  border-radius:50px;
-
-}
-
-.final::-webkit-scrollbar-track{
-
-  background:transparent;
-
-}
+  
+  border-radius:20px;
+  
+  }
 
 /* ========================= */
 
@@ -2204,16 +2163,28 @@ text-shadow:
   }
   
   .card{
-  
-  width:100%;
-  
-  max-width:100%;
-  
-  padding:22px 18px;
-  
-  border-radius:22px;
-  
-  }
+
+    padding:28px;
+    
+    max-height:82vh;
+    
+    overflow-y:auto;
+    
+    }
+
+    .card::-webkit-scrollbar{
+
+      width:6px;
+      
+      }
+      
+      .card::-webkit-scrollbar-thumb{
+      
+      background:#ff9fd4;
+      
+      border-radius:20px;
+      
+      }
   
   .card h1{
   
@@ -2527,13 +2498,15 @@ transform:none;
 
   inset:0;
 
+  width:100vw;
+
+  height:100dvh;
+
   display:flex;
 
   justify-content:center;
 
   align-items:center;
-
-  padding:20px;
 
   background:#050507;
 
@@ -2542,6 +2515,16 @@ transform:none;
   pointer-events:none;
 
   transition:1s;
+
+  padding:0;
+
+}
+
+.final.ativo{
+
+  opacity:1;
+
+  pointer-events:auto;
 
 }
 
@@ -2557,17 +2540,25 @@ transform:none;
 
 .final-box{
 
-  width:min(760px,96vw);
+  width:100%;
 
-  max-height:90dvh;
+  height:100%;
+
+  display:flex;
+
+  flex-direction:column;
+
+  justify-content:center;
+
+  align-items:center;
+
+  text-align:center;
 
   overflow-y:auto;
 
   overflow-x:hidden;
 
-  text-align:center;
-
-  padding:25px;
+  padding:50px 30px;
 
 }
 
@@ -2650,100 +2641,437 @@ transform:none;
 
 @media(max-width:768px){
 
-.motivos-container{
+  .motivos-container{
+  
+  padding:18px;
+  
+  }
+  
+  .motivos-card{
+  
+  width:100%;
+  
+  padding:30px 22px;
+  
+  border-radius:24px;
+  
+  }
+  
+  #titulo{
+  
+  font-size:1.9rem;
+  
+  }
+  
+  #texto{
+  
+  font-size:1.08rem;
+  
+  line-height:1.8;
+  
+  min-height:110px;
+  
+  }
+  
+  #btn{
+  
+  width:100%;
+  
+  padding:15px;
+  
+  font-size:16px;
+  
+  }
+  
+  .contador{
+  
+  font-size:.9rem;
+  
+  }
+  
+  /* FINAL */
+  
+  .final{
+  
+  width:100vw;
+  
+  height:100dvh;
+  
+  padding:0;
+  
+  }
+  
+  .final-box{
+  
+  width:100%;
+  
+  height:100%;
+  
+  padding:35px 22px;
+  
+  justify-content:center;
+  
+  align-items:center;
+  
+  text-align:center;
+  
+  }
+  
+  .final-box p{
+  
+  font-size:1.08rem;
+  
+  line-height:1.8;
+  
+  width:100%;
+  
+  }
+  
+  .final-box h2{
+  
+  font-size:1.7rem;
+  
+  width:100%;
+  
+  }
+  
+  .big{
+  
+  font-size:1.4rem;
+  
+  }
+  
+  .destaque{
+  
+  font-size:1.5rem;
+  
+  }
+  
+  .erro{
+  
+  font-size:1.5rem;
+  
+  }
+  
+  }
 
-padding:18px;
+/* ===================================================== */
+/* CÉU                                                   */
+/* ===================================================== */
 
-}
+body.ceu-page{
 
-.motivos-card{
-
-width:100%;
-
-padding:30px 22px;
-
-border-radius:24px;
-
-}
-
-#titulo{
-
-font-size:1.9rem;
-
-}
-
-#texto{
-
-font-size:1.08rem;
-
-line-height:1.8;
-
-min-height:110px;
-
-}
-
-#btn{
-
-width:100%;
-
-padding:15px;
-
-font-size:16px;
-
-}
-
-.contador{
-
-font-size:.9rem;
-
-}
-
-.final{
-
-padding:10px;
-
-}
-
-.final-box{
-
-width:100%;
-
-max-height:92dvh;
-
-padding:15px 10px 40px;
-
-}
-
-.final-box p{
-
-font-size:1.08rem;
-
-line-height:1.8;
-
-}
-
-.final-box h2{
-
-font-size:1.7rem;
-
-}
-
-.big{
-
-font-size:1.4rem;
-
-}
-
-.destaque{
-
-font-size:1.5rem;
-
-}
-
-.erro{
-
-font-size:1.5rem;
-
-}
-
-}
+  margin:0;
+  padding:0;
+  
+  overflow:hidden;
+  
+  height:100vh;
+  
+  background:
+  linear-gradient(
+  180deg,
+  #02050d,
+  #071426,
+  #0d1c34,
+  #11182d);
+  
+  font-family:'Segoe UI',sans-serif;
+  
+  color:white;
+  
+  }
+  
+  /* ===================================================== */
+  
+  .ceu-page *{
+  
+  box-sizing:border-box;
+  
+  }
+  
+  /* ===================================================== */
+  
+  #ceuCanvas{
+  
+  position:fixed;
+  
+  inset:0;
+  
+  width:100%;
+  height:100%;
+  
+  display:block;
+  
+  z-index:1;
+  
+  }
+  
+  /* ===================================================== */
+  
+  .bgGlow{
+  
+  position:fixed;
+  
+  inset:0;
+  
+  pointer-events:none;
+  
+  z-index:2;
+  
+  background:
+  
+  radial-gradient(circle at top,
+  rgba(0,170,255,.08),
+  transparent 55%),
+  
+  radial-gradient(circle at bottom,
+  rgba(255,80,180,.06),
+  transparent 60%);
+  
+  }
+  
+  /* ===================================================== */
+  
+  .ceu-container{
+  
+  position:relative;
+  
+  z-index:5;
+  
+  width:100%;
+  height:100vh;
+  
+  display:flex;
+  
+  justify-content:center;
+  align-items:center;
+  
+  padding:20px;
+  
+  }
+  
+  /* ===================================================== */
+  
+  .painel{
+  
+  display:flex;
+  
+  justify-content:center;
+  align-items:center;
+  
+  flex-direction:column;
+  
+  text-align:center;
+  
+  }
+  
+  /* ===================================================== */
+  
+  #mensagem{
+  
+  transition:1s;
+  
+  }
+  
+  #titulo{
+  
+  font-size:3.5rem;
+  
+  margin-bottom:20px;
+  
+  font-weight:700;
+  
+  letter-spacing:2px;
+  
+  text-shadow:
+  
+  0 0 10px rgba(255,255,255,.5),
+  0 0 30px rgba(140,180,255,.4);
+  
+  }
+  
+  /* ===================================================== */
+  
+  #texto{
+  
+  font-size:1.5rem;
+  
+  line-height:1.9;
+  
+  opacity:.95;
+  
+  text-shadow:
+  
+  0 0 10px rgba(255,255,255,.3);
+  
+  }
+  
+  /* ===================================================== */
+  /* EU TE AMO                                             */
+  /* ===================================================== */
+  
+  #euTeAmo{
+  
+  position:absolute;
+  
+  font-size:5rem;
+  
+  font-weight:700;
+  
+  letter-spacing:4px;
+  
+  opacity:0;
+  
+  transform:scale(.5);
+  
+  color:white;
+  
+  text-shadow:
+  
+  0 0 12px #ffffff,
+  0 0 35px #5ec8ff,
+  0 0 70px #5ec8ff,
+  0 0 120px #ff78c8;
+  
+  transition:1.5s;
+  
+  }
+  
+  /* ===================================================== */
+  
+  #euTeAmo.ativo{
+  
+  opacity:1;
+  
+  transform:scale(1);
+  
+  animation:
+  
+  pulseHeart 3s infinite;
+  
+  }
+  
+  /* ===================================================== */
+  
+  @keyframes pulseHeart{
+  
+  0%{
+  
+  transform:scale(1);
+  
+  }
+  
+  50%{
+  
+  transform:scale(1.08);
+  
+  }
+  
+  100%{
+  
+  transform:scale(1);
+  
+  }
+  
+  }
+  
+  /* ===================================================== */
+  
+  #continuar{
+  
+  margin-top:70px;
+  
+  padding:18px 45px;
+  
+  border:none;
+  
+  border-radius:40px;
+  
+  cursor:pointer;
+  
+  font-size:18px;
+  
+  font-weight:700;
+  
+  color:white;
+  
+  background:
+  
+  linear-gradient(
+  135deg,
+  #4fc3ff,
+  #ff6dbb);
+  
+  opacity:0;
+  
+  pointer-events:none;
+  
+  transform:translateY(30px);
+  
+  transition:1s;
+  
+  box-shadow:
+  
+  0 15px 35px rgba(0,0,0,.35);
+  
+  }
+  
+  #continuar.aparecer{
+  
+  opacity:1;
+  
+  pointer-events:auto;
+  
+  transform:translateY(0);
+  
+  }
+  
+  #continuar:hover{
+  
+  transform:
+  
+  translateY(-3px)
+  scale(1.05);
+  
+  }
+  
+  /* ===================================================== */
+  /* RESPONSIVO                                            */
+  /* ===================================================== */
+  
+  @media(max-width:768px){
+  
+  #titulo{
+  
+  font-size:2.2rem;
+  
+  }
+  
+  #texto{
+  
+  font-size:1.15rem;
+  
+  line-height:1.7;
+  
+  }
+  
+  #euTeAmo{
+  
+  font-size:2.9rem;
+  
+  line-height:1.2;
+  
+  padding:0 15px;
+  
+  }
+  
+  #continuar{
+  
+  width:100%;
+  
+  font-size:17px;
+  
+  }
+  
+  }
