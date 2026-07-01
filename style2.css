@@ -2755,6 +2755,333 @@ transform:none;
   
   }
 
+  /* ================================================= */
+/* MAIS MOTIVOS                                      */
+/* ================================================= */
+
+body.mais-motivos-page{
+
+  margin:0;
+  padding:0;
+
+  width:100%;
+  height:100dvh;
+
+  overflow:hidden;
+
+  background:
+  linear-gradient(180deg,#090b12,#171d2e);
+
+  font-family:"Segoe UI",sans-serif;
+
+  color:white;
+
+}
+
+body.mais-motivos-page *{
+
+  box-sizing:border-box;
+
+}
+
+.bg{
+
+  position:fixed;
+  inset:0;
+
+  background:
+  radial-gradient(circle at top,#ff66b8 0%,transparent 60%);
+
+  opacity:.14;
+
+  pointer-events:none;
+
+}
+
+/* ================================================= */
+
+.mais-container{
+
+  width:100%;
+  height:100dvh;
+
+  display:flex;
+
+  flex-direction:column;
+
+  justify-content:center;
+
+  align-items:center;
+
+  gap:35px;
+
+  padding:25px;
+
+}
+
+/* ================================================= */
+
+.intro{
+
+  width:min(750px,95vw);
+
+  text-align:center;
+
+}
+
+.intro h1{
+
+  font-size:2.8rem;
+
+  color:#ffb8dc;
+
+  margin-bottom:30px;
+
+}
+
+.intro p{
+
+  font-size:1.25rem;
+
+  line-height:1.8;
+
+  margin:8px 0;
+
+}
+
+.destaque{
+
+  color:#ffb2d7;
+
+  font-size:1.45rem;
+
+  font-weight:bold;
+
+  text-shadow:
+
+  0 0 15px #ff79bf;
+
+}
+
+/* ================================================= */
+
+.menu-capitulos{
+
+  width:min(650px,95vw);
+
+  display:grid;
+
+  grid-template-columns:
+
+  repeat(2,1fr);
+
+  gap:18px;
+
+}
+
+.menu-capitulos h2{
+
+  grid-column:1/-1;
+
+  text-align:center;
+
+  margin-bottom:10px;
+
+  color:#ffd5eb;
+
+}
+
+.capitulo{
+
+  border:none;
+
+  cursor:pointer;
+
+  padding:18px;
+
+  border-radius:18px;
+
+  color:white;
+
+  font-size:1rem;
+
+  font-weight:700;
+
+  background:
+
+  linear-gradient(135deg,#ff67b4,#b86cff);
+
+  transition:.25s;
+
+}
+
+.capitulo:hover{
+
+  transform:
+
+  translateY(-3px)
+  scale(1.03);
+
+}
+
+/* ================================================= */
+
+.player{
+
+  width:min(760px,95vw);
+
+  display:none;
+
+  padding:35px;
+
+  border-radius:28px;
+
+  text-align:center;
+
+  background:
+
+  rgba(255,255,255,.06);
+
+  backdrop-filter:blur(18px);
+
+  border:
+
+  1px solid rgba(255,255,255,.12);
+
+}
+
+.player.ativo{
+
+  display:block;
+
+}
+
+.contador{
+
+  color:#ffb8da;
+
+  opacity:.8;
+
+}
+
+.player h2{
+
+  margin:25px 0;
+
+  font-size:2rem;
+
+  color:#ffb8da;
+
+}
+
+.player p{
+
+  font-size:1.45rem;
+
+  line-height:1.9;
+
+  min-height:170px;
+
+}
+
+.botoes{
+
+  display:flex;
+
+  gap:15px;
+
+  margin-top:30px;
+
+}
+
+.botoes button{
+
+  flex:1;
+
+  border:none;
+
+  cursor:pointer;
+
+  padding:15px;
+
+  border-radius:35px;
+
+  font-size:17px;
+
+  color:white;
+
+  background:
+
+  linear-gradient(135deg,#ff67b4,#bb67ff);
+
+}
+
+/* ================================================= */
+/* RESPONSIVO                                        */
+/* ================================================= */
+
+@media(max-width:768px){
+
+.mais-container{
+
+justify-content:flex-start;
+
+overflow-y:auto;
+
+padding:25px 18px 40px;
+
+gap:25px;
+
+}
+
+.intro h1{
+
+font-size:2rem;
+
+}
+
+.intro p{
+
+font-size:1.05rem;
+
+}
+
+.menu-capitulos{
+
+grid-template-columns:1fr;
+
+}
+
+.player{
+
+width:100%;
+
+padding:25px 18px;
+
+}
+
+.player h2{
+
+font-size:1.6rem;
+
+}
+
+.player p{
+
+font-size:1.05rem;
+
+min-height:130px;
+
+}
+
+.botoes{
+
+flex-direction:column;
+
+}
+
+}
+
 /* ===================================================== */
 /* CÉU                                                   */
 /* ===================================================== */
