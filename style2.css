@@ -3082,323 +3082,911 @@ flex-direction:column;
 
 }
 
-/* ===================================================== */
-/* CÉU                                                   */
-/* ===================================================== */
+/* ========================================= */
+/* CEU */
+/* ========================================= */
 
-body.ceu-page{
-
+*{
   margin:0;
   padding:0;
-  
-  overflow:hidden;
-  
-  height:100vh;
-  
-  background:
-  linear-gradient(
-  180deg,
-  #02050d,
-  #071426,
-  #0d1c34,
-  #11182d);
-  
-  font-family:'Segoe UI',sans-serif;
-  
-  color:white;
-  
-  }
-  
-  /* ===================================================== */
-  
-  .ceu-page *{
-  
   box-sizing:border-box;
-  
-  }
-  
-  /* ===================================================== */
-  
-  #ceuCanvas{
-  
-  position:fixed;
-  
-  inset:0;
-  
+}
+
+html,
+body{
   width:100%;
   height:100%;
-  
-  display:block;
-  
-  z-index:1;
-  
-  }
-  
-  /* ===================================================== */
-  
-  .bgGlow{
-  
-  position:fixed;
-  
-  inset:0;
-  
-  pointer-events:none;
-  
-  z-index:2;
-  
+  overflow:hidden;
+  font-family:Georgia, serif;
+}
+
+/* ========================================= */
+/* FUNDO */
+/* ========================================= */
+
+body{
+
   background:
-  
-  radial-gradient(circle at top,
-  rgba(0,170,255,.08),
-  transparent 55%),
-  
-  radial-gradient(circle at bottom,
-  rgba(255,80,180,.06),
-  transparent 60%);
-  
-  }
-  
-  /* ===================================================== */
-  
-  .ceu-container{
-  
+  radial-gradient(circle at top,#2f2448 0%,#1b1429 35%,#09090d 100%);
+
   position:relative;
-  
-  z-index:5;
-  
+}
+
+/* leve vinheta */
+
+body::after{
+
+  content:"";
+
+  position:fixed;
+
+  inset:0;
+
+  pointer-events:none;
+
+  background:
+  radial-gradient(circle,
+  transparent 45%,
+  rgba(0,0,0,.45));
+
+}
+
+/* ========================================= */
+/* BRILHO DE FUNDO */
+/* ========================================= */
+
+.background{
+
+  position:fixed;
+
+  inset:0;
+
+  overflow:hidden;
+
+}
+
+.background::before{
+
+  content:"";
+
+  position:absolute;
+
+  width:600px;
+  height:600px;
+
+  left:50%;
+  top:25%;
+
+  transform:translate(-50%,-50%);
+
+  border-radius:50%;
+
+  background:
+
+  radial-gradient(circle,
+  rgba(255,255,255,.08),
+  transparent 70%);
+
+  filter:blur(80px);
+
+}
+
+/* ========================================= */
+/* CANVAS */
+/* ========================================= */
+
+#canvas{
+
+  position:fixed;
+
+  inset:0;
+
+  width:100%;
+  height:100%;
+
+}
+
+/* ========================================= */
+/* TEXTO */
+/* ========================================= */
+
+.texto{
+
+  position:absolute;
+
+  left:50%;
+  top:52%;
+
+  transform:translate(-50%,-50%);
+
+  pointer-events:none;
+
+  text-align:center;
+
+}
+
+#loveText{
+
+  font-size:clamp(34px,5vw,68px);
+
+  color:white;
+
+  opacity:0;
+
+  letter-spacing:2px;
+
+  text-shadow:
+
+  0 0 8px rgba(255,255,255,.9),
+  0 0 20px rgba(255,255,255,.7),
+  0 0 45px rgba(255,255,255,.5);
+
+  animation:aparecer 8s linear infinite;
+
+}
+
+/* ========================================= */
+
+@keyframes aparecer{
+
+  0%{
+
+      opacity:0;
+      transform:translateY(20px);
+
+  }
+
+  30%{
+
+      opacity:0;
+
+  }
+
+  45%{
+
+      opacity:1;
+      transform:translateY(0);
+
+  }
+
+  75%{
+
+      opacity:1;
+
+  }
+
+  100%{
+
+      opacity:0;
+
+  }
+
+}
+
+/* ========================================= */
+/* RESPONSIVO */
+/* ========================================= */
+
+@media(max-width:700px){
+
+  #loveText{
+
+      font-size:38px;
+
+  }
+
+}
+
+@media(max-width:480px){
+
+  #loveText{
+
+      font-size:30px;
+
+  }
+
+}
+
+/* ========================================= */
+/* luz page */
+/* ========================================= */
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html,
+body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:"Segoe UI",sans-serif;
+}
+
+/* ========================================= */
+/* FUNDO */
+/* ========================================= */
+
+body{
+
+  background:#090909;
+
+  position:relative;
+
+  color:white;
+
+}
+
+.bg{
+
+  position:fixed;
+
+  inset:0;
+
+  background:
+  radial-gradient(circle at center,
+  rgba(255,210,120,.05),
+  transparent 65%);
+
+}
+
+/* ========================================= */
+/* BRILHO DO AMBIENTE */
+/* ========================================= */
+
+#lightGlow{
+
+  position:fixed;
+
+  inset:0;
+
+  pointer-events:none;
+
+  opacity:0;
+
+  transition:1.2s;
+
+  background:
+
+  radial-gradient(circle at 50% 18%,
+  rgba(255,218,120,.30),
+  transparent 18%),
+
+  radial-gradient(circle,
+  rgba(255,220,140,.10),
+  transparent 70%);
+
+}
+
+/* ========================================= */
+/* LÂMPADA */
+/* ========================================= */
+
+.lamp-area{
+
+  position:absolute;
+
+  left:50%;
+
+  top:0;
+
+  transform:translateX(-50%);
+
+  display:flex;
+
+  flex-direction:column;
+
+  align-items:center;
+
+  z-index:20;
+
+}
+
+.wire{
+
+  width:4px;
+
+  height:170px;
+
+  background:#333;
+
+}
+
+.pull-string{
+
+  position:absolute;
+
+  top:110px;
+
+  left:70px;
+
+  cursor:pointer;
+
+  transform-origin:top;
+
+  transition:.25s;
+
+}
+
+.pull-string:hover{
+
+  transform:rotate(8deg);
+
+}
+
+.string{
+
+  width:2px;
+
+  height:90px;
+
+  background:#d6c08f;
+
+}
+
+.knob{
+
+  width:16px;
+
+  height:24px;
+
+  border-radius:20px;
+
+  background:#f2cf68;
+
+  margin-left:-7px;
+
+  box-shadow:0 0 10px rgba(255,220,120,.6);
+
+}
+
+.lamp{
+
+  width:160px;
+
+  height:55px;
+
+  background:#202020;
+
+  border-radius:50%;
+
+  position:relative;
+
+  margin-top:-5px;
+
+  box-shadow:
+
+  inset 0 -6px 10px rgba(255,255,255,.08);
+
+}
+
+.lamp-top{
+
+  position:absolute;
+
+  inset:8px;
+
+  border-radius:50%;
+
+  background:#2b2b2b;
+
+}
+
+.lamp-light{
+
+  position:absolute;
+
+  left:50%;
+
+  bottom:8px;
+
+  transform:translateX(-50%);
+
+  width:70px;
+
+  height:14px;
+
+  border-radius:50%;
+
+  background:#222;
+
+  transition:.8s;
+
+}
+
+/* ========================================= */
+/* CONE DE LUZ */
+/* ========================================= */
+
+.light-cone{
+
+  position:absolute;
+
+  left:50%;
+
+  top:190px;
+
+  transform:translateX(-50%);
+
+  width:0;
+
+  height:0;
+
+  opacity:0;
+
+  transition:1s;
+
+  border-left:260px solid transparent;
+
+  border-right:260px solid transparent;
+
+  border-top:520px solid rgba(255,225,140,.18);
+
+  filter:blur(8px);
+
+  pointer-events:none;
+
+}
+
+/* ========================================= */
+/* TEXTO */
+/* ========================================= */
+
+.message{
+
+  position:absolute;
+
+  width:min(850px,88%);
+
+  left:50%;
+
+  top:58%;
+
+  transform:translate(-50%,-50%);
+
+  text-align:center;
+
+  opacity:0;
+
+  transition:1.5s;
+
+  z-index:50;
+
+}
+
+.message.show{
+
+  opacity:1;
+
+}
+
+#btnVoltar{
+
+  opacity:0;
+
+  transform:translateY(25px);
+
+  transition:.7s;
+
+}
+
+#btnVoltar.show{
+
+  opacity:1;
+
+  transform:translateY(0);
+
+}
+
+.message h1{
+
+  font-size:clamp(42px,5vw,72px);
+
+  margin-bottom:25px;
+
+  color:#fff4cf;
+
+  text-shadow:
+
+  0 0 15px rgba(255,230,150,.8),
+
+  0 0 40px rgba(255,220,120,.6);
+
+}
+
+.message h2{
+
+  margin-top:35px;
+
+  color:#ffe18a;
+
+  font-size:clamp(28px,3vw,42px);
+
+  text-shadow:
+
+  0 0 18px rgba(255,220,100,.7);
+
+}
+
+.message p{
+
+  margin:18px auto;
+
+  line-height:1.9;
+
+  max-width:760px;
+
+  font-size:18px;
+
+  color:#f1f1f1;
+
+}
+
+.message button{
+
+  margin-top:40px;
+
+  padding:15px 40px;
+
+  border:none;
+
+  border-radius:40px;
+
+  background:#f3d274;
+
+  color:#111;
+
+  font-size:17px;
+
+  font-weight:bold;
+
+  cursor:pointer;
+
+  transition:.3s;
+
+}
+
+.message button:hover{
+
+  transform:translateY(-4px);
+
+  box-shadow:
+
+  0 0 25px rgba(255,220,120,.6);
+
+}
+
+/* ========================================= */
+/* ESTADO LIGADO */
+/* ========================================= */
+
+body.light-on #lightGlow{
+
+  opacity:1;
+
+}
+
+body.light-on .light-cone{
+
+  opacity:1;
+
+}
+
+body.light-on .lamp-light{
+
+  background:#ffe38d;
+
+  box-shadow:
+
+  0 0 15px #ffe38d,
+
+  0 0 35px #ffd55f,
+
+  0 0 70px #ffd55f;
+
+}
+
+body.light-on .message{
+
+  opacity:1;
+
+}
+
+/* ========================================= */
+/* PARTÍCULAS */
+/* ========================================= */
+
+#particles{
+
+  position:fixed;
+
+  inset:0;
+
+  pointer-events:none;
+
+}
+
+/* ========================================= */
+/* RESPONSIVO */
+/* ========================================= */
+
+@media(max-width:900px){
+
+  .light-cone{
+
+      border-left:180px solid transparent;
+
+      border-right:180px solid transparent;
+
+      border-top:420px solid rgba(255,225,140,.18);
+
+  }
+
+  .lamp{
+
+      width:130px;
+
+  }
+
+}
+
+@media(max-width:600px){
+
+  .wire{
+
+      height:140px;
+
+  }
+
+  .pull-string{
+
+      left:55px;
+
+  }
+
+  .string{
+
+      height:75px;
+
+  }
+
+  .message{
+
+      width:92%;
+
+      top:60%;
+
+  }
+
+  .message p{
+
+      font-size:16px;
+
+  }
+
+  .message button{
+
+      width:100%;
+
+  }
+
+}
+
+/* =======================================================
+  coracao
+======================================================= */
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html,
+body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* =======================================================
+ FUNDO
+======================================================= */
+
+body{
+  background:#040404;
+  color:white;
+}
+
+.background{
+  position:fixed;
+  inset:0;
+  z-index: 1;
+  background:
+  radial-gradient(circle at center,
+  rgba(255,180,220,.08),
+  transparent 65%),
+  linear-gradient(
+  to bottom,
+  #060606,
+  #000000
+  );
+}
+
+/* =======================================================
+ ESTRELAS
+======================================================= */
+
+#stars{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+  z-index: 2;
+}
+
+.star{
+  position:absolute;
+  width:2px;
+  height:2px;
+  border-radius:50%;
+  background:white;
+  opacity:.5;
+  animation:starBlink 4s infinite;
+}
+
+@keyframes starBlink{
+  0%{ opacity:.15; }
+  50%{ opacity:1; }
+  100%{ opacity:.15; }
+}
+
+/* =======================================================
+ CENA
+======================================================= */
+
+#heartScene{
+  position:relative;
   width:100%;
   height:100vh;
-  
   display:flex;
-  
   justify-content:center;
   align-items:center;
-  
-  padding:20px;
-  
-  }
-  
-  /* ===================================================== */
-  
-  .painel{
-  
+  overflow:hidden;
+}
+
+/* =======================================================
+ CONTAINER DAS FRASES (MANTIDO O SEU AJUSTE MANUAL)
+======================================================= */
+
+#heartContainer{
+  position:relative;
+  width:650px;
+  height:650px;
   display:flex;
-  
   justify-content:center;
   align-items:center;
-  
-  flex-direction:column;
-  
-  text-align:center;
-  
-  }
-  
-  /* ===================================================== */
-  
-  #mensagem{
-  
-  transition:1s;
-  
-  }
-  
-  #titulo{
-  
-  font-size:3.5rem;
-  
-  margin-bottom:20px;
-  
-  font-weight:700;
-  
-  letter-spacing:2px;
-  
-  text-shadow:
-  
-  0 0 10px rgba(255,255,255,.5),
-  0 0 30px rgba(140,180,255,.4);
-  
-  }
-  
-  /* ===================================================== */
-  
-  #texto{
-  
-  font-size:1.5rem;
-  
-  line-height:1.9;
-  
-  opacity:.95;
-  
-  text-shadow:
-  
-  0 0 10px rgba(255,255,255,.3);
-  
-  }
-  
-  /* ===================================================== */
-  /* EU TE AMO                                             */
-  /* ===================================================== */
-  
-  #euTeAmo{
-  
+  z-index: 3;
+  /* Deixei exatamente o valor que você configurou na mão */
+  transform: translateY(-75%); 
+}
+
+/* =======================================================
+ FRASES
+======================================================= */
+
+.loveWord{
   position:absolute;
-  
-  font-size:5rem;
-  
-  font-weight:700;
-  
-  letter-spacing:4px;
-  
-  opacity:0;
-  
-  transform:scale(.5);
-  
-  color:white;
-  
-  text-shadow:
-  
-  0 0 12px #ffffff,
-  0 0 35px #5ec8ff,
-  0 0 70px #5ec8ff,
-  0 0 120px #ff78c8;
-  
-  transition:1.5s;
-  
-  }
-  
-  /* ===================================================== */
-  
-  #euTeAmo.ativo{
-  
-  opacity:1;
-  
-  transform:scale(1);
-  
-  animation:
-  
-  pulseHeart 3s infinite;
-  
-  }
-  
-  /* ===================================================== */
-  
-  @keyframes pulseHeart{
-  
-  0%{
-  
-  transform:scale(1);
-  
-  }
-  
-  50%{
-  
-  transform:scale(1.08);
-  
-  }
-  
-  100%{
-  
-  transform:scale(1);
-  
-  }
-  
-  }
-  
-  /* ===================================================== */
-  
-  #continuar{
-  
-  margin-top:70px;
-  
-  padding:18px 45px;
-  
-  border:none;
-  
-  border-radius:40px;
-  
-  cursor:pointer;
-  
-  font-size:18px;
-  
-  font-weight:700;
-  
-  color:white;
-  
-  background:
-  
-  linear-gradient(
-  135deg,
-  #4fc3ff,
-  #ff6dbb);
-  
-  opacity:0;
-  
+  color:#ffbada;
+  font-size:16px;
+  white-space:nowrap;
+  user-select:none;
   pointer-events:none;
-  
-  transform:translateY(30px);
-  
-  transition:1s;
-  
-  box-shadow:
-  
-  0 15px 35px rgba(0,0,0,.35);
-  
+  letter-spacing:0.5px;
+  font-weight:600;
+  text-shadow:
+  0 1px 2px rgba(0, 0, 0, 0.6),
+  0 0 8px rgba(255, 105, 180, 0.6);
+  animation: floatLove 6s ease-in-out infinite;
+}
+
+/* =======================================================
+ ANIMAÇÃO
+======================================================= */
+
+@keyframes floatLove{
+  0%{
+      transform: translateY(0) scale(0.98);
   }
-  
-  #continuar.aparecer{
-  
-  opacity:1;
-  
-  pointer-events:auto;
-  
-  transform:translateY(0);
-  
+  50%{
+      transform: translateY(-8px) scale(1.02);
   }
-  
-  #continuar:hover{
-  
-  transform:
-  
-  translateY(-3px)
-  scale(1.05);
-  
+  100%{
+      transform: translateY(0) scale(0.98);
   }
-  
-  /* ===================================================== */
-  /* RESPONSIVO                                            */
-  /* ===================================================== */
-  
-  @media(max-width:768px){
-  
-  #titulo{
-  
-  font-size:2.2rem;
-  
+}
+
+/* =======================================================
+ TEXTO CENTRAL
+======================================================= */
+
+.centerText{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+  pointer-events:none;
+  z-index:100;
+  width: 90%;
+}
+
+.centerText h1{
+  font-size: clamp(32px, 5vw, 64px);
+  color:white;
+  margin-bottom:12px;
+  font-weight: 700;
+  text-shadow:
+  0 2px 4px rgba(0,0,0,0.6),
+  0 0 15px rgba(255, 110, 196, 0.7);
+}
+
+.centerText p{
+  font-size: clamp(14px, 2vw, 20px);
+  color:#ffffff;
+  opacity: 0.95;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+}
+
+/* =======================================================
+ GLOW GERAL
+======================================================= */
+
+#heartScene::before{
+  content:"";
+  position:absolute;
+  width:650px;
+  height:650px;
+  border-radius:50%;
+  background:
+  radial-gradient(circle,
+  rgba(255,170,220,.12),
+  transparent 70%);
+  filter:blur(60px);
+  z-index: 2;
+}
+
+/* =======================================================
+ RESPONSIVO (Encolhe o container sem perder o seu ajuste)
+======================================================= */
+
+@media(max-width:900px){
+  #heartContainer{
+      /* Mantém a sua altura e reduz o tamanho geral para telas médias */
+      transform: translateY(-75%)  scale(0.8);
   }
-  
-  #texto{
-  
-  font-size:1.15rem;
-  
-  line-height:1.7;
-  
+  .loveWord{
+      font-size:13px;
   }
-  
-  #euTeAmo{
-  
-  font-size:2.9rem;
-  
-  line-height:1.2;
-  
-  padding:0 15px;
-  
+}
+
+@media(max-width:600px){
+  #heartContainer{
+      /* Mantém o seu -75% para cima, o scale para não cortar, e puxa um pouco para a esquerda */
+      transform: translateY(-10%) translateX(-10%) scale(0.55);
   }
-  
-  #continuar{
-  
-  width:100%;
-  
-  font-size:17px;
-  
+  .loveWord{
+      font-size:11px;
   }
-  
+  .centerText h1{
+      font-size:20px;
   }
+  .centerText p{
+      font-size:8px;
+      width:85%;
+      margin:auto;
+  }
+}
