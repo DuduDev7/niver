@@ -3418,7 +3418,7 @@ body{
 
 .string{
 
-  width:2px;
+  width:0px;
 
   height:90px;
 
@@ -3436,7 +3436,7 @@ body{
 
   background:#f2cf68;
 
-  margin-left:-7px;
+  margin-left:1px;
 
   box-shadow:0 0 10px rgba(255,220,120,.6);
 
