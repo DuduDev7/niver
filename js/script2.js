@@ -1537,20 +1537,25 @@ function atualizarPosicoes() {
       word.element.style.transform = `translate(-50%, -50%) rotate(${angle}rad)`;
   });
 
-  // Cria o loop contínuo e suave de 60 FPS
+  // Cria o loop contínuo e suave de 60 FPS interno (esse DEVE continuar aqui dentro)
   requestAnimationFrame(atualizarPosicoes);
 }
 
-// Inicia a animação assim que a página carregar
-requestAnimationFrame(atualizarPosicoes);
+// ==========================================================
+// INICIALIZAÇÃO OTIMIZADA PARA O GITHUB PAGES
+// ==========================================================
+window.addEventListener("load", () => {
+    // Dá um micro-segundo para o navegador respirar após carregar tudo
+    setTimeout(() => {
+        requestAnimationFrame(atualizarPosicoes);
+    }, 100);
+});
 
 /* ==========================================================
  RESPONSIVIDADE
 ========================================================== */
-
-// Evento que recalcula tudo de forma automática se a tela mudar de tamanho (como girar o celular)
 window.addEventListener("resize", () => {
-  // A animação já usa window.innerWidth/Height dinamicamente a cada frame,
-  // garantindo que o coração se adapte instantaneamente ao novo centro.
+    // Se você não mudou o topo do script ainda, use apenas o comentário original ou atualize as variáveis
 });
-}
+
+} // Fecha o "if (document.getElementById('heartContainer'))" do início do arquivo
