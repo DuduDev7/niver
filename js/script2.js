@@ -1583,9 +1583,8 @@ const particles = document.getElementById("particles");
 ========================================================== */
 
 if (!titulo) {
-
+    // Corrigido: Removido o 'return' que causava o erro de sintaxe
     throw new Error("math.html não encontrado.");
-
 }
 
 /* ==========================================================

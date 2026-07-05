@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Julia</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #050005;
+            font-family: 'Arial Black', Gadget, sans-serif;
+        }
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="matrixCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // --- Configurações da Chuva Hacker (Mais Lenta) ---
+        const matrixChars = "EUTEAMOILOVEYOU♥".split("");
+        const fontSize = 16;
+        let columns = Math.floor(canvas.width / fontSize);
+        let rainDrops = Array(columns).fill(1);
+
+        window.addEventListener('resize', () => {
+            columns = Math.floor(canvas.width / fontSize);
+            rainDrops = Array(columns).fill(1);
+        });
+
+        // --- Sequência de Palavras e Controle de Tempo ---
+        const textSequence = ["JULIA", "EU", "TE", "AMO", "HEART_PHASE"];
+        let currentPhaseIndex = 0;
+        let phaseTimer = 0;
+        
+        /* ===================================================================
+           AQUI VOCÊ CONTROLA A VELOCIDADE DAS PALAVRAS:
+           =================================================================== */
+        const TEXT_DURATION = 150; // Tempo que cada palavra fica na tela
+        const FADE_DURATION = 35;  // Suavidade do surgimento/sumiço
+
+        // --- Desenho de um Coração Perfeito e Simétrico ---
+        function drawPerfectHeart(cx, cy, size) {
+            ctx.beginPath();
+            // Ponto superior central interna
+            ctx.moveTo(cx, cy); 
+            // Curva superior esquerda
+            ctx.bezierCurveTo(cx - size / 2, cy - size / 1.5, cx - size, cy - size / 3, cx - size, cy + size / 3);
+            // Curva inferior esquerda até o bico
+            ctx.bezierCurveTo(cx - size, cy + size * 0.9, cx - size / 3, cy + size * 1.3, cx, cy + size * 1.6);
+            // Curva inferior direita subindo do bico
+            ctx.bezierCurveTo(cx + size / 3, cy + size * 1.3, cx + size, cy + size * 0.9, cx + size, cy + size / 3);
+            // Curva superior direita finalizando no centro
+            ctx.bezierCurveTo(cx + size, cy - size / 3, cx + size / 2, cy - size / 1.5, cx, cy);
+            ctx.closePath();
+        }
+
+        // --- Loop Principal ---
+        function draw() {
+            ctx.fillStyle = 'rgba(5, 0, 5, 0.12)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 1. Chuva Hacker de Fundo Desacelerada
+            ctx.font = 'bold ' + fontSize + 'px monospace';
+            for (let i = 0; i < rainDrops.length; i++) {
+                const char = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+                const alpha = Math.random() * 0.22 + 0.08;
+                ctx.fillStyle = `rgba(255, 40, 140, ${alpha})`; 
+                
+                ctx.fillText(char, i * fontSize, rainDrops[i] * fontSize);
+
+                // Diminuído a chance de resetar o drop instantaneamente (deixa o movimento cadenciado e lento)
+                if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.988) {
+                    rainDrops[i] = 0;
+                }
+                
+                // Velocidade reduzida de descida mudando dinamicamente
+                if(Math.random() > 0.3) { 
+                    rainDrops[i]++;
+                }
+            }
+
+            // 2. Fluxo das Palavras
+            phaseTimer++;
+            const currentPhase = textSequence[currentPhaseIndex];
+
+            if (currentPhaseIndex < textSequence.length - 1) {
+                if (phaseTimer >= TEXT_DURATION) {
+                    currentPhaseIndex++;
+                    phaseTimer = 0;
+                }
+            }
+
+            // Opacidade do Fade
+            let opacity = 1;
+            if (currentPhaseIndex < textSequence.length - 1) {
+                if (phaseTimer < FADE_DURATION) {
+                    opacity = phaseTimer / FADE_DURATION;
+                } else if (phaseTimer > TEXT_DURATION - FADE_DURATION) {
+                    opacity = (TEXT_DURATION - phaseTimer) / FADE_DURATION;
+                }
+            } else {
+                if (phaseTimer < FADE_DURATION) opacity = phaseTimer / FADE_DURATION;
+            }
+
+            // 3. Renderização Principal
+            ctx.save();
+            
+            if (currentPhase !== "HEART_PHASE") {
+                // Letras Iniciais bem grossas e centralizadas
+                const dynamicFontSize = Math.min(canvas.width / (currentPhase.length * 0.75), canvas.height * 0.25);
+                ctx.font = `900 ${dynamicFontSize}px 'Arial Black', sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                ctx.shadowBlur = 25;
+                ctx.shadowColor = 'rgba(255, 255, 255, 0.9)';
+                ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+                
+                ctx.fillText(currentPhase, canvas.width / 2, canvas.height / 2);
+            } else {
+                // --- FASE FINAL: Layout Vertical Ajustado ---
+                const pulse = 1 + Math.sin(Date.now() * 0.005) * 0.03;
+                const baseSize = Math.min(canvas.width * 0.12, canvas.height * 0.12);
+                const heartSize = baseSize * pulse;
+                
+                // Mapeamento de posições verticais ordenadas
+                const heartY = canvas.height * 0.30;       // Coração mais para cima
+                const textILoveY = canvas.height * 0.62;   // Frase logo abaixo do coração
+                const subTextY = canvas.height * 0.75;     // Textinho forte embaixo de tudo
+
+                // Desenho do Contorno do Coração (Borda Forte)
+                ctx.lineWidth = 8; 
+                ctx.strokeStyle = `rgba(255, 20, 147, ${opacity})`;
+                ctx.shadowBlur = 25;
+                ctx.shadowColor = '#ff1493';
+                
+                drawPerfectHeart(canvas.width / 2, heartY, heartSize);
+                ctx.stroke(); 
+                ctx.shadowBlur = 0;
+
+                // Texto: I Love ❤️ You
+                const iloveFontSize = Math.min(canvas.width * 0.055, 46);
+                ctx.font = `900 ${iloveFontSize}px 'Arial Black', sans-serif`;
+                ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = '#000';
+                ctx.fillText('I Love ❤️ You', canvas.width / 2, textILoveY);
+
+                // Textinho Forte Adicional (Pequeno e Marcante)
+                const subFontSize = Math.min(canvas.width * 0.03, 22);
+                ctx.font = `900 ${subFontSize}px 'Arial Black', sans-serif`;
+                ctx.fillStyle = `rgba(255, 60, 140, ${opacity})`; // Rosa neon sólido forte
+                ctx.fillText('VOCÊ É O MEU MUNDO!', canvas.width / 2, subTextY);
+            }
+            
+            ctx.restore();
+            requestAnimationFrame(draw);
+        }
+
+        // Iniciar animação
+        requestAnimationFrame(draw);
+    </script>
+</body>
+</html>
