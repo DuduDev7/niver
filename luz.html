@@ -70,7 +70,162 @@
     
     </section>
 
-    <script src="js/script2.js"></script>
+    <script>
+        if (document.getElementById('pullString')) {
+            const body = document.body;
+            const pull = document.getElementById("pullString");
+            const lamp = document.querySelector(".lamp");
+            const lampLight = document.getElementById("lampLight");
+            const cone = document.getElementById("lightCone");
+            const glow = document.getElementById("lightGlow");
+            const particles = document.getElementById("particles");
+            const message = document.getElementById("message");
+            const titulo = document.getElementById("titulo");
+            const linha1 = document.getElementById("linha1");
+            const linha2 = document.getElementById("linha2");
+            const linha3 = document.getElementById("linha3");
+            const linhaFinal = document.getElementById("linhaFinal");
+            const btn = document.getElementById("btnVoltar");
+        
+            function go(page){
+                window.location.href = page;
+            }
+        
+            let ligado = false;
+            let animando = false;
+        
+            const textos = {
+                titulo: "Você é a minha luz.",
+                linha1: "Tem gente que só passa pela nossa vida e não deixa nada. Mas você não. Você chegou e mudou completamente o meu caminho, dando um sentido novo para tudo.",
+                linha2: "Você pegou os meus dias mais comuns e sem graça e os transformou em momentos tão lindos que eu queria que durassem para sempre. Com você, até a rotina vira um abraço.",
+                linha3: "Mesmo quando tudo dá errado e o cansaço aperta, basta eu lembrar do seu sorriso ou ouvir a sua voz para o meu coração se acalmar e eu encontrar paz de novo.",
+                final: "Se o mundo inteiro perder a graça e tudo ficar no escuro... eu não me importo. Eu ainda vou escolher, todos os dias, caminhar bem colado ao seu lado."
+            };
+        
+            pull.addEventListener("click", () => {
+                if(animando) return;
+                if(ligado) return;
+                iniciarAnimacao();
+            });
+        
+            function puxarCordinha(){
+                return pull.animate(
+                    [
+                        { transform:"rotate(0deg)" },
+                        { transform:"rotate(18deg)" },
+                        { transform:"rotate(-10deg)" },
+                        { transform:"rotate(8deg)" },
+                        { transform:"rotate(0deg)" }
+                    ],
+                    { duration:550, easing:"ease-out" }
+                ).finished;
+            }
+        
+            function balancarLampada(){
+                return lamp.animate(
+                    [
+                        { transform:"rotate(0deg)" },
+                        { transform:"rotate(3deg)" },
+                        { transform:"rotate(-3deg)" },
+                        { transform:"rotate(2deg)" },
+                        { transform:"rotate(0deg)" }
+                    ],
+                    { duration:1300, easing:"ease-out" }
+                ).finished;
+            }
+        
+            function esperar(ms){
+                return new Promise(resolve=> setTimeout(resolve,ms));
+            }
+        
+            async function piscarLuz(){
+                for(let i=0; i<2; i++){
+                    lampLight.style.background="#ffe38d";
+                    lampLight.style.boxShadow=`0 0 15px #ffe38d, 0 0 35px #ffd55f, 0 0 70px #ffd55f`;
+                    await esperar(140);
+                    lampLight.style.background="#222";
+                    lampLight.style.boxShadow="none";
+                    await esperar(120);
+                }
+                lampLight.style.background="#ffe38d";
+                lampLight.style.boxShadow=`0 0 15px #ffe38d, 0 0 35px #ffd55f, 0 0 70px #ffd55f`;
+            }
+        
+            function criarParticulas(){
+                if(!particles) return;
+                for(let i=0; i<45; i++){
+                    const p=document.createElement("div");
+                    const size=Math.random()*6+2;
+                    p.style.position="absolute";
+                    p.style.borderRadius="50%";
+                    p.style.background="#ffe28b";
+                    p.style.width=size+"px";
+                    p.style.height=size+"px";
+                    p.style.left=(window.innerWidth/2+(Math.random()-.5)*350)+"px";
+                    p.style.top=(170+Math.random()*220)+"px";
+                    p.style.opacity="1";
+                    p.style.boxShadow="0 0 10px #ffe28b";
+                    particles.appendChild(p);
+        
+                    const x=(Math.random()-.5)*250;
+                    const y=150+Math.random()*200;
+        
+                    p.animate(
+                        [
+                            { transform:"translate(0,0) scale(1)", opacity:1 },
+                            { transform:`translate(${x}px,${y}px) scale(.2)`, opacity:0 }
+                        ],
+                        { duration:2500+Math.random()*1000, easing:"ease-out" }
+                    );
+        
+                    setTimeout(()=>{ p.remove(); }, 3500);
+                }
+            }
+        
+            async function escrever(el, texto){
+                el.textContent="";
+                for(const letra of texto){
+                    el.textContent+=letra;
+                    await esperar(22);
+                }
+            }
+        
+            async function iniciarAnimacao(){
+                animando=true;
+                await puxarCordinha();
+                balancarLampada();
+                await piscarLuz();
+                body.classList.add("light-on");
+                criarParticulas();
+                message.classList.add("show");
+                await esperar(600);
+                await escrever(titulo, textos.titulo);
+                await esperar(400);
+                await escrever(linha1, textos.linha1);
+                await esperar(350);
+                await escrever(linha2, textos.linha2);
+                await esperar(350);
+                await escrever(linha3, textos.linha3);
+                await esperar(500);
+                await escrever(linhaFinal, textos.final);
+                btn.classList.add("show");
+                ligado=true;
+                animando=false;
+            }
+        
+            setInterval(()=>{
+                if(!ligado) return;
+                lampLight.animate(
+                    [
+                        { opacity:.9 },
+                        { opacity:1 },
+                        { opacity:.9 }
+                    ],
+                    { duration:1800, easing:"ease-in-out" }
+                );
+            }, 2200);
+        }
+        </script>
 
 </body>
 </html>

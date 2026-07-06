@@ -54,7 +54,109 @@
         </section>
     </main>
 
-    <script src="js/script2.js" defer></script>
+    <style>
+      .mathParticle {
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        border-radius: 50%;
+        background: #ffffff;
+        opacity: .25;
+        animation: mathFloat linear infinite;
+      }
+      @keyframes mathFloat {
+        0% { transform: translateY(0); opacity: .15; }
+        50% { opacity: .8; }
+        100% { transform: translateY(-70px); opacity: 0; }
+      }
+    </style>
+    
+    <script>
+    if (document.getElementById('btnGeo')) {
+        const titulo = document.getElementById("titulo");
+        const linha1 = document.getElementById("linha1");
+        const linha2 = document.getElementById("linha2");
+        const linha3 = document.getElementById("linha3");
+        const linha4 = document.getElementById("linha4");
+        const linha5 = document.getElementById("linha5");
+        const linha6 = document.getElementById("linha6");
+        const equacao = document.getElementById("equacao");
+        const fraseFinal = document.getElementById("fraseFinal");
+        const btnGeo = document.getElementById("btnGeo");
+        const particles = document.getElementById("particles");
+    
+        const textos = {
+            titulo: "A Matemática Também Ama",
+            l1: "Você sabe que matemática sempre foi minha matéria favorita.",
+            l2: "Talvez porque ela consiga explicar tantas coisas usando apenas lógica, símbolos e números.",
+            l3: "Você nunca gostou muito dela... mas existe algo que acho que você vai gostar de descobrir.",
+            l4: "Existem equações capazes de desenhar um coração perfeito no plano cartesiano.",
+            l5: "Achei incrível perceber que até a matemática consegue desenhar aquilo que eu sinto quando estou com você.",
+            l6: "Mas existe uma diferença importante...",
+            final: "A matemática consegue desenhar um coração. Você conseguiu desenhar o meu."
+        };
+    
+        function sleep(ms){
+            return new Promise(resolve=>setTimeout(resolve,ms));
+        }
+    
+        async function escrever(elemento, texto, vel=28){
+            if(!elemento) return;
+            elemento.textContent="";
+            for(const letra of texto){
+                elemento.textContent+=letra;
+                await sleep(vel);
+            }
+        }
+    
+        const heartEquation = "(x² + y² - 1)³ = x²y³";
+    
+        function criarParticulas(){
+            if(!particles) return;
+            for(let i=0; i<35; i++){
+                const p=document.createElement("span");
+                p.className="mathParticle";
+                p.style.left=Math.random()*100+"%";
+                p.style.top=Math.random()*100+"%";
+                p.style.animationDelay=Math.random()*6+"s";
+                p.style.animationDuration=(4+Math.random()*5)+"s";
+                particles.appendChild(p);
+            }
+        }
+        criarParticulas();
+    
+        async function iniciar(){
+            await sleep(600);
+            await escrever(titulo, textos.titulo, 55);
+            await sleep(600);
+            await escrever(linha1, textos.l1);
+            await sleep(500);
+            await escrever(linha2, textos.l2);
+            await sleep(500);
+            await escrever(linha3, textos.l3);
+            await sleep(600);
+            await escrever(linha4, textos.l4);
+            await sleep(700);
+            if(equacao) equacao.style.opacity="1";
+            await escrever(equacao, heartEquation, 22);
+            await sleep(900);
+            await escrever(linha5, textos.l5);
+            await sleep(700);
+            await escrever(linha6, textos.l6);
+            await sleep(900);
+            await escrever(fraseFinal, textos.final, 34);
+            if(btnGeo) btnGeo.classList.add("show");
+        }
+    
+        iniciar();
+    
+        btnGeo.addEventListener("click",()=>{
+            const eq = "(x^2+y^2-1)^3=x^2*y^3";
+            const url = "https://www.geogebra.org/graphing?command=" + encodeURIComponent(eq);
+            window.open(url, "_blank");
+        });
+    }
+    </script>
 
 </body>
 </html>

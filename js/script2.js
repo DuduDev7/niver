@@ -875,780 +875,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 })
 
-/* =====================================================
-   LUZ
-===================================================== */
-if (document.getElementById('pullString')) {
-  /* ==========================================================
-   UMA LUZ PARA NÓS
-   Parte 1
-========================================================== */
-
-const body = document.body;
-
-const pull = document.getElementById("pullString");
-const lamp = document.querySelector(".lamp");
-const lampLight = document.getElementById("lampLight");
-
-const cone = document.getElementById("lightCone");
-const glow = document.getElementById("lightGlow");
-
-const particles = document.getElementById("particles");
-
-const message = document.getElementById("message");
-
-const titulo = document.getElementById("titulo");
-const linha1 = document.getElementById("linha1");
-const linha2 = document.getElementById("linha2");
-const linha3 = document.getElementById("linha3");
-const linhaFinal = document.getElementById("linhaFinal");
-
-const btn = document.getElementById("btnVoltar");
-
-function go(page){
-
-  window.location.href = page;
-
-}
-
 /* ==========================================================
-   ESTADO
+   JANELA.HTML
+   JS ISOLADO
 ========================================================== */
 
-let ligado = false;
-let animando = false;
-
-/* ==========================================================
-   TEXTO
-========================================================== */
-
-const textos = {
-
-    titulo:
-        "Você é a minha luz.",
-
-    linha1:
-        "Tem gente que só passa pela nossa vida e não deixa nada. Mas você não. Você chegou e mudou completamente o meu caminho, dando um sentido novo para tudo.",
-
-    linha2:
-        "Você pegou os meus dias mais comuns e sem graça e os transformou em momentos tão lindos que eu queria que durassem para sempre. Com você, até a rotina vira um abraço.",
-
-    linha3:
-        "Mesmo quando tudo dá errado e o cansaço aperta, basta eu lembrar do seu sorriso ou ouvir a sua voz para o meu coração se acalmar e eu encontrar paz de novo.",
-
-    final:
-        "Se o mundo inteiro perder a graça e tudo ficar no escuro... eu não me importo. Eu ainda vou escolher, todos os dias, caminhar bem colado ao seu lado."
-
-};
-
-/* ==========================================================
-   CLIQUE
-========================================================== */
-
-pull.addEventListener("click", () => {
-
-    if(animando) return;
-
-    if(ligado) return;
-
-    iniciarAnimacao();
-
-});
-
-/* ==========================================================
-   ANIMAÇÃO DA CORDINHA
-========================================================== */
-
-function puxarCordinha(){
-
-    return pull.animate(
-
-        [
-
-            {
-
-                transform:"rotate(0deg)"
-
-            },
-
-            {
-
-                transform:"rotate(18deg)"
-
-            },
-
-            {
-
-                transform:"rotate(-10deg)"
-
-            },
-
-            {
-
-                transform:"rotate(8deg)"
-
-            },
-
-            {
-
-                transform:"rotate(0deg)"
-
-            }
-
-        ],
-
-        {
-
-            duration:550,
-
-            easing:"ease-out"
-
-        }
-
-    ).finished;
-
-}
-
-/* ==========================================================
-   BALANÇO DA LUMINÁRIA
-========================================================== */
-
-function balancarLampada(){
-
-    return lamp.animate(
-
-        [
-
-            {
-
-                transform:"rotate(0deg)"
-
-            },
-
-            {
-
-                transform:"rotate(3deg)"
-
-            },
-
-            {
-
-                transform:"rotate(-3deg)"
-
-            },
-
-            {
-
-                transform:"rotate(2deg)"
-
-            },
-
-            {
-
-                transform:"rotate(0deg)"
-
-            }
-
-        ],
-
-        {
-
-            duration:1300,
-
-            easing:"ease-out"
-
-        }
-
-    ).finished;
-
-}
-
-/* ==========================================================
-   ESPERA
-========================================================== */
-
-function esperar(ms){
-
-    return new Promise(resolve=>{
-
-        setTimeout(resolve,ms);
-
-    });
-
-}
-
-/* ==========================================================
-   PISCAR A LÂMPADA
-========================================================== */
-
-async function piscarLuz(){
-
-  for(let i=0;i<2;i++){
-
-      lampLight.style.background="#ffe38d";
-
-      lampLight.style.boxShadow=`
-          0 0 15px #ffe38d,
-          0 0 35px #ffd55f,
-          0 0 70px #ffd55f
-      `;
-
-      await esperar(140);
-
-      lampLight.style.background="#222";
-      lampLight.style.boxShadow="none";
-
-      await esperar(120);
-
-  }
-
-  lampLight.style.background="#ffe38d";
-
-  lampLight.style.boxShadow=`
-      0 0 15px #ffe38d,
-      0 0 35px #ffd55f,
-      0 0 70px #ffd55f
-  `;
-
-}
-
-/* ==========================================================
- PARTÍCULAS
-========================================================== */
-
-function criarParticulas(){
-
-  if(!particles) return;
-
-  for(let i=0;i<45;i++){
-
-      const p=document.createElement("div");
-
-      const size=Math.random()*6+2;
-
-      p.style.position="absolute";
-      p.style.borderRadius="50%";
-      p.style.background="#ffe28b";
-
-      p.style.width=size+"px";
-      p.style.height=size+"px";
-
-      p.style.left=
-          (window.innerWidth/2+(Math.random()-.5)*350)+"px";
-
-      p.style.top=
-          (170+Math.random()*220)+"px";
-
-      p.style.opacity="1";
-
-      p.style.boxShadow="0 0 10px #ffe28b";
-
-      particles.appendChild(p);
-
-      const x=(Math.random()-.5)*250;
-      const y=150+Math.random()*200;
-
-      p.animate(
-
-          [
-
-              {
-
-                  transform:"translate(0,0) scale(1)",
-
-                  opacity:1
-
-              },
-
-              {
-
-                  transform:`translate(${x}px,${y}px) scale(.2)`,
-
-                  opacity:0
-
-              }
-
-          ],
-
-          {
-
-              duration:2500+Math.random()*1000,
-
-              easing:"ease-out"
-
-          }
-
-      );
-
-      setTimeout(()=>{
-
-          p.remove();
-
-      },3500);
-
-  }
-
-}
-
-/* ==========================================================
- DIGITAÇÃO
-========================================================== */
-
-async function escrever(el,texto){
-
-  el.textContent="";
-
-  for(const letra of texto){
-
-      el.textContent+=letra;
-
-      await esperar(22);
-
-  }
-
-}
-
-/* ==========================================================
- ANIMAÇÃO PRINCIPAL
-========================================================== */
-
-async function iniciarAnimacao(){
-
-  animando=true;
-
-  await puxarCordinha();
-
-  balancarLampada();
-
-  await piscarLuz();
-
-  body.classList.add("light-on");
-
-  criarParticulas();
-
-  message.classList.add("show");
-
-  await esperar(600);
-
-  await escrever(titulo,textos.titulo);
-
-  await esperar(400);
-
-  await escrever(linha1,textos.linha1);
-
-  await esperar(350);
-
-  await escrever(linha2,textos.linha2);
-
-  await esperar(350);
-
-  await escrever(linha3,textos.linha3);
-
-  await esperar(500);
-
-  await escrever(linhaFinal,textos.final);
-
-  btn.classList.add("show");
-
-  ligado=true;
-
-  animando=false;
-
-}
-
-/* ==========================================================
- RESPIRAÇÃO DA LUZ
-========================================================== */
-
-setInterval(()=>{
-
-  if(!ligado) return;
-
-  lampLight.animate(
-
-      [
-
-          {
-
-              opacity:.9
-
-          },
-
-          {
-
-              opacity:1
-
-          },
-
-          {
-
-              opacity:.9
-
-          }
-
-      ],
-
-      {
-
-          duration:1800,
-
-          easing:"ease-in-out"
-
-      }
-
-  );
-
-},2200);
-
-}
-
-/* ==========================================================
-   HEART ANIMATION
-   Parte 1
-========================================================== */
-
-if (document.getElementById('heartContainer')) {
- /* ==========================================================
-   CORAÇÃO DE FRASES
-   Parte 1
-========================================================== */
-
-const container = document.getElementById("heartContainer");
-const stars = document.getElementById("stars");
-
-/* ==========================================================
-   FRASES
-========================================================== */
-
-const frases = [
-
-    "Eu amo você",
-
-    "Você é meu lar",
-
-    "Meu lugar favorito",
-
-    "Meu porto seguro",
-
-    "Seu sorriso",
-
-    "Seu abraço",
-
-    "Seu olhar",
-
-    "Minha paz",
-
-    "Minha felicidade",
-
-    "Minha pessoa favorita",
-
-    "Meu amor",
-
-    "Nós",
-
-    "Sempre você",
-
-    "Para sempre",
-
-    "Ainda escolheria você",
-
-    "Meu coração escolheu você",
-
-    "Você mudou minha vida",
-
-    "Tudo fica melhor com você",
-
-    "Você ilumina meus dias",
-
-    "Meu futuro",
-
-    "Você vale a pena",
-
-    "Meu motivo favorito",
-
-    "Você é incrível",
-
-    "Meu mundo",
-
-    "Minha melhor coincidência"
-
-];
-
-/* ==========================================================
-   CONFIGURAÇÕES
-========================================================== */
-
-const SCALE = 18;
-
-const TOTAL = 220;
-
-const SPEED = 0.0035;
-
-/* ==========================================================
-   LISTA DAS FRASES
-========================================================== */
-
-const words = [];
-
-/* ==========================================================
-   ESTRELAS
-========================================================== */
-
-function criarEstrelas(){
-
-    if(!stars) return;
-
-    for(let i=0;i<120;i++){
-
-        const star=document.createElement("div");
-
-        star.className="star";
-
-        star.style.left=Math.random()*100+"%";
-
-        star.style.top=Math.random()*100+"%";
-
-        star.style.opacity=.2+Math.random()*.8;
-
-        star.style.animationDelay=Math.random()*5+"s";
-
-        stars.appendChild(star);
-
-    }
-
-}
-
-criarEstrelas();
-
-/* ==========================================================
-   EQUAÇÃO DO CORAÇÃO
-========================================================== */
-
-function heartPoint(t){
-
-    const x =
-        16*Math.pow(Math.sin(t),3);
-
-    const y =
-        13*Math.cos(t)
-        -5*Math.cos(2*t)
-        -2*Math.cos(3*t)
-        -Math.cos(4*t);
-
-    return{
-
-        x,
-
-        y
-
-    };
-
-}
-
-/* ==========================================================
-   FRASE ALEATÓRIA
-========================================================== */
-
-function randomPhrase(){
-
-    return frases[
-        Math.floor(
-            Math.random()*frases.length
-        )
-    ];
-
-}
-
-/* ==========================================================
-   CRIA UMA FRASE
-========================================================== */
-
-function criarWord(indice){
-
-    const div=document.createElement("div");
-
-    div.className="loveWord";
-
-    div.textContent=randomPhrase();
-
-    container.appendChild(div);
-
-    words.push({
-
-        element:div,
-
-        t:(Math.PI*2)*(indice/TOTAL),
-
-        speed:SPEED+(Math.random()*0.0015),
-
-        offset:(Math.random()-0.5)*2
-
-    });
-
-}
-
-/* ==========================================================
-   CRIA TODAS AS FRASES
-========================================================== */
-
-for(let i=0;i<TOTAL;i++){
-
-    criarWord(i);
-
-}
-
-/* ==========================================================
-   ANIMAR CORAÇÃO (Parte 2)
-========================================================== */
-
-function atualizarPosicoes() {
-  // Pega o centro atual da tela para manter o coração sempre no meio
-  const centerX = window.innerWidth / 2;
-  const centerY = window.innerHeight / 2;
-
-  words.forEach((word) => {
-      // Atualiza o ângulo 't' para fazer a frase andar pela curva
-      word.t += word.speed;
-      if (word.t > Math.PI * 2) {
-          word.t -= Math.PI * 2;
-      }
-
-      // Pega as coordenadas X e Y da equação matemática do coração
-      const pos = heartPoint(word.t);
-
-      // Aplica a escala para definir o tamanho real do coração na tela
-      // O eixo Y na matemática é invertido em relação ao topo da tela, por isso o sinal de menos (-)
-      const posX = centerX + pos.x * SCALE;
-      const posY = centerY - pos.y * SCALE;
-
-      /* --------------------------------------------------
-         CÁLCULO DA ROTAÇÃO (ÂNGULO TANGENTE)
-         Derivada da equação do coração para fazer a palavra
-         ficar alinhada perfeitamente com a curva.
-      -------------------------------------------------- */
-      const dx = 48 * Math.pow(Math.sin(word.t), 2) * Math.cos(word.t);
-      const dy = -13 * Math.sin(word.t) + 10 * Math.sin(2 * word.t) + 6 * Math.sin(3 * word.t) + 4 * Math.sin(4 * word.t);
-      
-      let angle = Math.atan2(-dy, dx); // Inverte dy para alinhar com o eixo do browser
-
-      // Aplica os estilos no elemento HTML
-      word.element.style.left = `${posX}px`;
-      word.element.style.top = `${posY}px`;
-      word.element.style.transform = `translate(-50%, -50%) rotate(${angle}rad)`;
-  });
-
-  // Cria o loop contínuo e suave de 60 FPS interno (esse DEVE continuar aqui dentro)
-  requestAnimationFrame(atualizarPosicoes);
-}
-
-// ==========================================================
-// INICIALIZAÇÃO OTIMIZADA PARA O GITHUB PAGES
-// ==========================================================
-window.addEventListener("load", () => {
-    // Dá um micro-segundo para o navegador respirar após carregar tudo
-    setTimeout(() => {
-        requestAnimationFrame(atualizarPosicoes);
-    }, 100);
-});
-
-/* ==========================================================
- RESPONSIVIDADE
-========================================================== */
-window.addEventListener("resize", () => {
-    // Se você não mudou o topo do script ainda, use apenas o comentário original ou atualize as variáveis
-});
-
-} // Fecha o "if (document.getElementById('heartContainer'))" do início do arquivo
-
-/* ==========================================================
-   MATH PAGE
-========================================================== */
-
-const titulo = document.getElementById("titulo");
-const linha1 = document.getElementById("linha1");
-const linha2 = document.getElementById("linha2");
-const linha3 = document.getElementById("linha3");
-const linha4 = document.getElementById("linha4");
-const linha5 = document.getElementById("linha5");
-const linha6 = document.getElementById("linha6");
-
-const equacao = document.getElementById("equacao");
-const fraseFinal = document.getElementById("fraseFinal");
-
-const btnGeo = document.getElementById("btnGeo");
-const particles = document.getElementById("particles");
-
-/* ==========================================================
-   SEGURANÇA
-========================================================== */
-
-if (!titulo) {
-    // Corrigido: Removido o 'return' que causava o erro de sintaxe
-    throw new Error("math.html não encontrado.");
-}
-
-/* ==========================================================
-   TEXTO
-========================================================== */
-
-const textos = {
-
-    titulo:
-        "A Matemática Também Ama",
-
-    l1:
-        "Você sabe que matemática sempre foi minha matéria favorita.",
-
-    l2:
-        "Talvez porque ela consiga explicar tantas coisas usando apenas lógica, símbolos e números.",
-
-    l3:
-        "Você nunca gostou muito dela... mas existe algo que acho que você vai gostar de descobrir.",
-
-    l4:
-        "Existem equações capazes de desenhar um coração perfeito no plano cartesiano.",
-
-    l5:
-        "Achei incrível perceber que até a matemática consegue desenhar aquilo que eu sinto quando estou com você.",
-
-    l6:
-        "Mas existe uma diferença importante...",
-
-    final:
-        "A matemática consegue desenhar um coração. Você conseguiu desenhar o meu."
-
-};
-
-/* ==========================================================
-   DIGITAÇÃO
-========================================================== */
-
-function sleep(ms){
-
-    return new Promise(resolve=>setTimeout(resolve,ms));
-
-}
-
-async function escrever(elemento,texto,vel=28){
-
-    elemento.textContent="";
-
-    for(const letra of texto){
-
-        elemento.textContent+=letra;
-
-        await sleep(vel);
-
-    }
-
-}
-
-/* ==========================================================
-   EQUAÇÃO
-========================================================== */
-
-const heartEquation =
-"(x² + y² - 1)³ = x²y³";
+const janelaFrases = document.querySelectorAll(".janela-frase");
+const janelaParticles = document.getElementById("janelaParticles");
 
 /* ==========================================================
    PARTÍCULAS
@@ -1656,24 +889,31 @@ const heartEquation =
 
 function criarParticulas(){
 
-    if(!particles) return;
+    if(!janelaParticles) return;
 
-    for(let i=0;i<35;i++){
+    for(let i=0;i<45;i++){
 
         const p=document.createElement("span");
 
-        p.className="mathParticle";
+        p.className="janela-particle";
 
         p.style.left=Math.random()*100+"%";
 
         p.style.top=Math.random()*100+"%";
 
-        p.style.animationDelay=Math.random()*6+"s";
-
         p.style.animationDuration=
-            (4+Math.random()*5)+"s";
+        8+Math.random()*10+"s";
 
-        particles.appendChild(p);
+        p.style.animationDelay=
+        Math.random()*8+"s";
+
+        p.style.opacity=
+        .15+Math.random()*.35;
+
+        p.style.transform=
+        `scale(${.4+Math.random()*1.5})`;
+
+        janelaParticles.appendChild(p);
 
     }
 
@@ -1682,124 +922,145 @@ function criarParticulas(){
 criarParticulas();
 
 /* ==========================================================
-   ANIMAÇÃO
+   REVELAR TEXTOS
 ========================================================== */
 
-async function iniciar(){
+const observer=new IntersectionObserver(entries=>{
 
-    await sleep(600);
+    entries.forEach(entry=>{
 
-    await escrever(titulo,textos.titulo,55);
+        if(entry.isIntersecting){
 
-    await sleep(600);
+            entry.target.classList.add("show");
 
-    await escrever(linha1,textos.l1);
+        }
 
-    await sleep(500);
+    });
 
-    await escrever(linha2,textos.l2);
+},{
+    threshold:.2
+});
 
-    await sleep(500);
+janelaFrases.forEach(el=>observer.observe(el));
 
-    await escrever(linha3,textos.l3);
+/* ==========================================================
+   EFEITO PARALLAX
+========================================================== */
 
-    await sleep(600);
+const foto=document.querySelector(".janela-foto img");
 
-    await escrever(linha4,textos.l4);
+window.addEventListener("scroll",()=>{
 
-    await sleep(700);
+    if(!foto) return;
 
-    equacao.style.opacity="1";
+    const y=window.scrollY*.12;
 
-    await escrever(equacao,heartEquation,22);
+    foto.style.transform=
+    `translateY(${y}px) scale(1.03)`;
 
-    await sleep(900);
+});
 
-    await escrever(linha5,textos.l5);
+/* ==========================================================
+   DIGITAÇÃO DO TÍTULO
+========================================================== */
 
-    await sleep(700);
+const titulo=document.getElementById("janelaTitulo");
 
-    await escrever(linha6,textos.l6);
+if(titulo){
 
-    await sleep(900);
+    const texto=titulo.textContent;
 
-    await escrever(fraseFinal,textos.final,34);
+    titulo.textContent="";
 
-    btnGeo.classList.add("show");
+    let i=0;
+
+    function escrever(){
+
+        if(i<texto.length){
+
+            titulo.textContent+=texto.charAt(i);
+
+            i++;
+
+            setTimeout(escrever,55);
+
+        }
+
+    }
+
+    setTimeout(escrever,500);
 
 }
 
-iniciar();
+/* ==========================================================
+   BRILHO NA FOTO
+========================================================== */
+
+const card=document.querySelector(".janela-foto");
+
+if(card){
+
+    card.addEventListener("mousemove",(e)=>{
+
+        const rect=card.getBoundingClientRect();
+
+        const x=e.clientX-rect.left;
+
+        const y=e.clientY-rect.top;
+
+        card.style.setProperty("--x",x+"px");
+
+        card.style.setProperty("--y",y+"px");
+
+    });
+
+}
+
+/* ==========================================================
+   FRASE FINAL
+========================================================== */
+
+const fraseFinal=document.getElementById("janelaFinal");
+
+if(fraseFinal){
+
+    window.addEventListener("scroll",()=>{
+
+        const limite=document.body.scrollHeight-window.innerHeight-80;
+
+        if(window.scrollY>=limite){
+
+            fraseFinal.classList.add("show");
+
+        }
+
+    });
+
+}
+
+/* ==========================================================
+   MÚSICA (caso exista um áudio)
+========================================================== */
+
+const audio=document.getElementById("musicaJanela");
+
+if(audio){
+
+    document.body.addEventListener("click",()=>{
+
+        audio.play().catch(()=>{});
+
+    },{once:true});
+
+}
 
 /* ==========================================================
    BOTÃO
 ========================================================== */
 
-btnGeo.addEventListener("click",()=>{
+function go(page){
 
-    const eq =
-"(x^2+y^2-1)^3=x^2*y^3";
-
-    const url =
-"https://www.geogebra.org/graphing?command=" +
-encodeURIComponent(eq);
-
-    window.open(url,"_blank");
-
-});
-
-/* ==========================================================
-   PARTÍCULAS
-========================================================== */
-
-const style=document.createElement("style");
-
-style.innerHTML=`
-
-.mathParticle{
-
-position:absolute;
-
-width:3px;
-
-height:3px;
-
-border-radius:50%;
-
-background:#ffffff;
-
-opacity:.25;
-
-animation:mathFloat linear infinite;
+    window.location.href=page;
 
 }
 
-@keyframes mathFloat{
-
-0%{
-
-transform:translateY(0);
-
-opacity:.15;
-
-}
-
-50%{
-
-opacity:.8;
-
-}
-
-100%{
-
-transform:translateY(-70px);
-
-opacity:0;
-
-}
-
-}
-
-`;
-
-document.head.appendChild(style);

@@ -42,7 +42,100 @@
 
     </section>
 
-    <script src="js/script2.js"></script>
+    <script>
+      if (document.getElementById('heartContainer')) {
+          const container = document.getElementById("heartContainer");
+          const stars = document.getElementById("stars");
+      
+          const frases = [
+              "Eu amo você", "Você é meu lar", "Meu lugar favorito", "Meu porto seguro",
+              "Seu sorriso", "Seu abraço", "Seu olhar", "Minha paz", "Minha felicidade",
+              "Minha pessoa favorita", "Meu amor", "Nós", "Sempre você", "Para sempre",
+              "Ainda escolheria você", "Meu coração escolheu você", "Você mudou minha vida",
+              "Tudo fica melhor com você", "Você ilumina meus dias", "Meu futuro",
+              "Você vale a pena", "Meu motivo favorito", "Você é incrível", "Meu mundo",
+              "Minha melhor continuidade"
+          ];
+      
+          const SCALE = 18;
+          const TOTAL = 220;
+          const SPEED = 0.0035;
+          const words = [];
+      
+          function criarEstrelas(){
+              if(!stars) return;
+              for(let i=0; i<120; i++){
+                  const star=document.createElement("div");
+                  star.className="star";
+                  star.style.left=Math.random()*100+"%";
+                  star.style.top=Math.random()*100+"%";
+                  star.style.opacity=.2+Math.random()*.8;
+                  star.style.animationDelay=Math.random()*5+"s";
+                  stars.appendChild(star);
+              }
+          }
+          criarEstrelas();
+      
+          function heartPoint(t){
+              const x = 16*Math.pow(Math.sin(t),3);
+              const y = 13*Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t);
+              return { x, y };
+          }
+      
+          function randomPhrase(){
+              return frases[Math.floor(Math.random()*frases.length)];
+          }
+      
+          function criarWord(indice){
+              const div=document.createElement("div");
+              div.className="loveWord";
+              div.textContent=randomPhrase();
+              container.appendChild(div);
+              words.push({
+                  element: div,
+                  t: (Math.PI*2)*(indice/TOTAL),
+                  speed: SPEED+(Math.random()*0.0015),
+                  offset: (Math.random()-0.5)*2
+              });
+          }
+      
+          for(let i=0; i<TOTAL; i++){
+              criarWord(i);
+          }
+      
+          function atualizarPosicoes() {
+              const centerX = window.innerWidth / 2;
+              const centerY = window.innerHeight / 2;
+      
+              words.forEach((word) => {
+                  word.t += word.speed;
+                  if (word.t > Math.PI * 2) {
+                      word.t -= Math.PI * 2;
+                  }
+      
+                  const pos = heartPoint(word.t);
+                  const posX = centerX + pos.x * SCALE;
+                  const posY = centerY - pos.y * SCALE;
+      
+                  const dx = 48 * Math.pow(Math.sin(word.t), 2) * Math.cos(word.t);
+                  const dy = -13 * Math.sin(word.t) + 10 * Math.sin(2 * word.t) + 6 * Math.sin(3 * word.t) + 4 * Math.sin(4 * word.t);
+                  let angle = Math.atan2(-dy, dx);
+      
+                  word.element.style.left = `${posX}px`;
+                  word.element.style.top = `${posY}px`;
+                  word.element.style.transform = `translate(-50%, -50%) rotate(${angle}rad)`;
+              });
+      
+              requestAnimationFrame(atualizarPosicoes);
+          }
+      
+          window.addEventListener("load", () => {
+              setTimeout(() => {
+                  requestAnimationFrame(atualizarPosicoes);
+              }, 100);
+          });
+      }
+      </script>
 
 </body>
 

@@ -4461,3 +4461,383 @@ body{
     }
 
 }
+
+/* ==========================================================
+   JANELA PAGE
+========================================================== */
+
+.janela-page *,
+.janela-page *::before,
+.janela-page *::after{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body.janela-page{
+
+    background:#090909;
+
+    color:#fff;
+
+    font-family:"Segoe UI",sans-serif;
+
+    overflow-x:hidden;
+
+    line-height:1.8;
+
+}
+
+/* ==========================================================
+   HERO
+========================================================== */
+
+.hero{
+
+    position:relative;
+
+    height:100vh;
+
+    overflow:hidden;
+
+}
+
+.hero img{
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:cover;
+
+    animation:zoomHero 25s linear infinite alternate;
+
+}
+
+@keyframes zoomHero{
+
+    from{
+
+        transform:scale(1);
+
+    }
+
+    to{
+
+        transform:scale(1.08);
+
+    }
+
+}
+
+.hero-gradient{
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+
+    linear-gradient(
+    to bottom,
+
+    rgba(0,0,0,.05),
+
+    rgba(0,0,0,.18),
+
+    rgba(0,0,0,.72),
+
+    #090909);
+
+}
+
+.janela-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    pointer-events:none;
+
+    background:
+
+    radial-gradient(circle at top,
+    rgba(255,230,160,.12),
+    transparent 60%);
+
+}
+
+/* ==========================================================
+   CONTEÚDO
+========================================================== */
+
+.janela-content{
+
+    width:min(900px,92%);
+
+    margin:auto;
+
+    padding:100px 0;
+
+}
+
+.titulo{
+
+    text-align:center;
+
+    margin-bottom:80px;
+
+}
+
+.titulo small{
+
+    color:#d2b36f;
+
+    letter-spacing:3px;
+
+    text-transform:uppercase;
+
+}
+
+.titulo h1{
+
+    margin-top:20px;
+
+    font-size:clamp(42px,6vw,72px);
+
+    color:#fff7dc;
+
+    line-height:1.25;
+
+}
+
+/* ==========================================================
+   BLOCOS
+========================================================== */
+
+.texto{
+
+    margin:90px 0;
+
+    opacity:0;
+
+    transform:translateY(70px);
+
+    transition:1s;
+
+}
+
+.texto.show{
+
+    opacity:1;
+
+    transform:none;
+
+}
+
+.texto p{
+
+    font-size:22px;
+
+    color:#ececec;
+
+}
+
+.destaque{
+
+    text-align:center;
+
+}
+
+.destaque h2{
+
+    font-size:clamp(38px,5vw,60px);
+
+    color:#ffd978;
+
+    line-height:1.3;
+
+}
+
+.final{
+
+    text-align:center;
+
+}
+
+.final h2{
+
+    font-size:clamp(36px,5vw,56px);
+
+    color:white;
+
+    line-height:1.5;
+
+}
+
+/* ==========================================================
+   BOTÃO
+========================================================== */
+
+.buttons{
+
+    text-align:center;
+
+    margin-top:80px;
+
+}
+
+.buttons button{
+
+    padding:18px 45px;
+
+    border:none;
+
+    border-radius:40px;
+
+    background:#d8b56a;
+
+    color:#111;
+
+    font-size:18px;
+
+    cursor:pointer;
+
+    transition:.35s;
+
+    font-weight:bold;
+
+}
+
+.buttons button:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:
+
+    0 15px 35px rgba(216,181,106,.4);
+
+}
+
+/* ==========================================================
+   RESPONSIVO
+========================================================== */
+
+@media(max-width:900px){
+
+    .texto{
+
+        margin:70px 0;
+
+    }
+
+    .texto p{
+
+        font-size:20px;
+
+    }
+
+}
+
+@media(max-width:600px){
+
+    .hero{
+
+        height:70vh;
+
+    }
+
+    .janela-content{
+
+        width:90%;
+
+        padding:60px 0;
+
+    }
+
+    .titulo{
+
+        margin-bottom:50px;
+
+    }
+
+    .texto{
+
+        margin:55px 0;
+
+    }
+
+    .texto p{
+
+        font-size:18px;
+
+    }
+
+    .buttons button{
+
+        width:100%;
+
+    }
+
+}
+
+/* ==========================================
+   PARTÍCULAS
+========================================== */
+
+#janelaParticles{
+
+  position:fixed;
+
+  inset:0;
+
+  pointer-events:none;
+
+  overflow:hidden;
+
+}
+
+.janela-particle{
+
+  position:absolute;
+
+  width:4px;
+
+  height:4px;
+
+  border-radius:50%;
+
+  background:#fff4d0;
+
+  filter:blur(.5px);
+
+  animation:janelaFloat linear infinite;
+
+}
+
+@keyframes janelaFloat{
+
+  from{
+
+      transform:translateY(120vh);
+
+  }
+
+  to{
+
+      transform:translateY(-120vh);
+
+  }
+
+}
+
+/* ==========================================
+ FOTO
+========================================== */
+
+.hero img{
+
+  transition:transform .3s linear;
+
+}
+
