@@ -875,192 +875,77 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 })
 
-/* ==========================================================
-   JANELA.HTML
-   JS ISOLADO
-========================================================== */
+/* ================================================= */
+/* JULIA + MISSI (ISOLADO)                           */
+/* ================================================= */
 
-const janelaFrases = document.querySelectorAll(".janela-frase");
-const janelaParticles = document.getElementById("janelaParticles");
+document.addEventListener("DOMContentLoaded", () => {
 
-/* ==========================================================
-   PARTÍCULAS
-========================================================== */
+  if (!document.body.classList.contains("jm-page")) return;
 
-function criarParticulas(){
+  const elementos = document.querySelectorAll(".jm-hidden");
 
-    if(!janelaParticles) return;
+  const observer = new IntersectionObserver((entries) => {
 
-    for(let i=0;i<45;i++){
+      entries.forEach((entry) => {
 
-        const p=document.createElement("span");
+          if (entry.isIntersecting) {
 
-        p.className="janela-particle";
+              entry.target.classList.add("jm-show");
 
-        p.style.left=Math.random()*100+"%";
+              observer.unobserve(entry.target);
 
-        p.style.top=Math.random()*100+"%";
+          }
 
-        p.style.animationDuration=
-        8+Math.random()*10+"s";
+      });
 
-        p.style.animationDelay=
-        Math.random()*8+"s";
+  }, {
 
-        p.style.opacity=
-        .15+Math.random()*.35;
+      threshold: 0.30,
 
-        p.style.transform=
-        `scale(${.4+Math.random()*1.5})`;
+      rootMargin: "0px 0px -80px 0px"
 
-        janelaParticles.appendChild(p);
+  });
 
-    }
+  elementos.forEach((el) => {
 
-}
+      observer.observe(el);
 
-criarParticulas();
-
-/* ==========================================================
-   REVELAR TEXTOS
-========================================================== */
-
-const observer=new IntersectionObserver(entries=>{
-
-    entries.forEach(entry=>{
-
-        if(entry.isIntersecting){
-
-            entry.target.classList.add("show");
-
-        }
-
-    });
-
-},{
-    threshold:.2
-});
-
-janelaFrases.forEach(el=>observer.observe(el));
-
-/* ==========================================================
-   EFEITO PARALLAX
-========================================================== */
-
-const foto=document.querySelector(".janela-foto img");
-
-window.addEventListener("scroll",()=>{
-
-    if(!foto) return;
-
-    const y=window.scrollY*.12;
-
-    foto.style.transform=
-    `translateY(${y}px) scale(1.03)`;
+  });
 
 });
 
-/* ==========================================================
-   DIGITAÇÃO DO TÍTULO
-========================================================== */
+/* ================================================= */
+/* ABRAÇO                                            */
+/* ================================================= */
 
-const titulo=document.getElementById("janelaTitulo");
+document.addEventListener("DOMContentLoaded", () => {
 
-if(titulo){
+  if (!document.body.classList.contains("abraco-page")) return;
 
-    const texto=titulo.textContent;
+  const elementos = document.querySelectorAll(".jm-hidden");
 
-    titulo.textContent="";
+  const observer = new IntersectionObserver((entries) => {
 
-    let i=0;
+      entries.forEach(entry => {
 
-    function escrever(){
+          if (entry.isIntersecting) {
 
-        if(i<texto.length){
+              entry.target.classList.add("jm-show");
 
-            titulo.textContent+=texto.charAt(i);
+              observer.unobserve(entry.target);
 
-            i++;
+          }
 
-            setTimeout(escrever,55);
+      });
 
-        }
+  }, {
 
-    }
+      threshold: 0.25,
+      rootMargin: "0px 0px -80px 0px"
 
-    setTimeout(escrever,500);
+  });
 
-}
+  elementos.forEach(el => observer.observe(el));
 
-/* ==========================================================
-   BRILHO NA FOTO
-========================================================== */
-
-const card=document.querySelector(".janela-foto");
-
-if(card){
-
-    card.addEventListener("mousemove",(e)=>{
-
-        const rect=card.getBoundingClientRect();
-
-        const x=e.clientX-rect.left;
-
-        const y=e.clientY-rect.top;
-
-        card.style.setProperty("--x",x+"px");
-
-        card.style.setProperty("--y",y+"px");
-
-    });
-
-}
-
-/* ==========================================================
-   FRASE FINAL
-========================================================== */
-
-const fraseFinal=document.getElementById("janelaFinal");
-
-if(fraseFinal){
-
-    window.addEventListener("scroll",()=>{
-
-        const limite=document.body.scrollHeight-window.innerHeight-80;
-
-        if(window.scrollY>=limite){
-
-            fraseFinal.classList.add("show");
-
-        }
-
-    });
-
-}
-
-/* ==========================================================
-   MÚSICA (caso exista um áudio)
-========================================================== */
-
-const audio=document.getElementById("musicaJanela");
-
-if(audio){
-
-    document.body.addEventListener("click",()=>{
-
-        audio.play().catch(()=>{});
-
-    },{once:true});
-
-}
-
-/* ==========================================================
-   BOTÃO
-========================================================== */
-
-function go(page){
-
-    window.location.href=page;
-
-}
-
+});
