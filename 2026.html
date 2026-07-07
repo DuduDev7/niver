@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosso 2026</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            /* Fundo escuro com transição suave para as cores do Brasil nas bordas */
+            background: radial-gradient(circle at center, #04140b 0%, #00040c 100%);
+            color: #ffffff;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+            padding: 20px 0;
+        }
+
+        /* Estrelas com as cores do Brasil brilhando ao fundo */
+        .star {
+            position: absolute;
+            border-radius: 50%;
+            animation: pulse 3s infinite ease-in-out;
+            opacity: 0.4;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.2; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.3); }
+        }
+
+        /* Container Principal mais imponente e organizado */
+        .container {
+            width: 90%;
+            max-width: 480px;
+            background: rgba(4, 20, 11, 0.6);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            /* Borda fina em tom de verde esmeralda */
+            border: 1px solid rgba(0, 156, 59, 0.3);
+            padding: 35px 25px;
+            border-radius: 28px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 156, 59, 0.1);
+            z-index: 10;
+            animation: slideUp 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Distintivo de 2026 */
+        .ano-badge {
+            background: linear-gradient(135deg, #009c3b, #002776);
+            color: #ffdf00;
+            padding: 6px 20px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            display: inline-block;
+            margin-bottom: 25px;
+            letter-spacing: 3px;
+            box-shadow: 0 4px 15px rgba(0, 156, 59, 0.3);
+            border: 1px solid rgba(255, 223, 0, 0.4);
+        }
+
+   /* Título Principal */
+   h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 25px;
+            line-height: 1.3;
+            color: #ffdf00; /* Cor de fallback caso o degradê não carregue */
+            background: linear-gradient(135deg, #ffffff 40%, #ffdf00);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Divisores organizados */
+        .section-block {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .section-block p {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: #e2e8f0;
+            margin-bottom: 12px;
+        }
+
+        /* Textos de Destaque Forte */
+        .destaque-verde {
+            color: #00ff5f;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(0, 255, 95, 0.2);
+        }
+
+        .destaque-amarelo {
+            color: #ffdf00;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(255, 223, 0, 0.2);
+        }
+
+        /* Bloco da Citação do Hexa (Estilo Marcante) */
+        .citacao-container {
+            background: linear-gradient(135deg, rgba(0, 39, 118, 0.3), rgba(0, 156, 59, 0.1));
+            border-left: 4px solid #ffdf00;
+            border-right: 1px solid rgba(255, 223, 0, 0.1);
+            border-top: 1px solid rgba(255, 223, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 223, 0, 0.1);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px 16px 16px 4px;
+            box-shadow: inset 0 0 15px rgba(0, 39, 118, 0.2);
+        }
+
+        .citacao-texto {
+            font-size: 1.05rem;
+            font-style: italic;
+            line-height: 1.6;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        /* Fechamento Impactante */
+        .conclusao {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-top: 25px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+        }
+
+        .coracao-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 156, 59, 0.2);
+            border: 1px solid #00ff5f;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 1.8rem;
+            margin-top: 20px;
+            animation: batida 1.4s infinite cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 0 15px rgba(0, 255, 95, 0.3);
+        }
+
+        @keyframes batida {
+            0%, 100% { transform: scale(1); }
+            30% { transform: scale(1.12); }
+            45% { transform: scale(1.05); }
+            60% { transform: scale(1.18); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="starfield"></div>
+
+    <div class="container">
+        <span class="ano-badge">BRASIL • 2026</span>
+        
+        <h1>Esse ano está uma loucura completa...</h1>
+        
+        <div class="section-block">
+            <p>Olho para tudo o que está acontecendo à nossa volta e parece um turbilhão. O mundo correndo, as coisas mudando numa velocidade absurda, uma verdadeira reviravolta.</p>
+            <p>Mas quer saber a real? No meio de todo esse caos, esses foram, sem sombra de dúvidas, os <span class="destaque-verde">7 melhores meses que eu já tive</span> em toda a minha vida.</p>
+        </div>
+
+        <div class="citacao-container">
+            <div class="citacao-texto">
+                "Eu sei que você já falou, mas eu faço questão de repetir: <span class="destaque-amarelo">infelizmente o Brasil não foi hexa mesmo...</span> mas eu não dou a mínima importância para isso, porque a verdade é que eu já ganhei absurdamente muito este ano."
+            </div>
+        </div>
+
+        <div class="section-block">
+            <p>Nenhum título mundial ou taça de ouro chegaria perto do valor real do que a gente construiu nesse tempo.</p>
+            
+            <p class="conclusao">
+                Você me entende perfeitamente, não é? <br>
+                <span class="destaque-amarelo">Meu melhor campeonato já está ganho.</span>
+            </p>
+        </div>
+        
+        <div class="coracao-badge">💚</div>
+    </div>
+
+    <script>
+      function criarEstrelasTematicas() {
+          const starfield = document.getElementById('starfield');
+          const numEstrelas = window.innerWidth < 768 ? 45 : 90;
+          
+          // Cores baseadas na bandeira do Brasil para as estrelas de fundo
+          const cores = ['#009c3b', '#ffdf00', '#002776', '#ffffff'];
+
+          for (let i = 0; i < numEstrelas; i++) {
+              const star = document.createElement('div');
+              star.className = 'star';
+              
+              const tamanho = Math.random() * 3.5 + 1;
+              star.style.width = `${tamanho}px`;
+              star.style.height = `${tamanho}px`;
+              star.style.left = `${Math.random() * 100}%`;
+              star.style.top = `${Math.random() * 100}%`;
+              
+              // Escolhe uma cor aleatória da paleta brasileira
+              star.style.backgroundColor = cores[Math.floor(Math.random() * cores.length)];
+              
+              star.style.animationDelay = `${Math.random() * 3}s`;
+              star.style.animationDuration = `${Math.random() * 3 + 2}s`;
+
+              starfield.appendChild(star);
+          }
+      }
+
+      window.addEventListener('DOMContentLoaded', criarEstrelasTematicas);
+  </script>
+</body>
+</html>
