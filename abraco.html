@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>O Abraço</title>
+
+    <link rel="stylesheet" href="style2.css" />
+  </head>
+
+  <body class="abraco-page">
+    <main class="abraco">
+      <!-- HERO -->
+
+      <section class="hero">
+        <img src="imgs/bestImg.jpeg" alt="Nosso abraço" class="hero-img" />
+
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+          <span class="mini"> Um abraço... </span>
+
+          <h1>...que fez o mundo inteiro desaparecer.</h1>
+
+          <span class="scroll"> role devagar ↓ </span>
+        </div>
+      </section>
+
+      <!-- CARDS -->
+
+      <section class="card reveal">
+        <p>Dizem...</p>
+      </section>
+
+      <section class="card reveal">
+        <p>que um abraço dura</p>
+
+        <p>apenas alguns segundos.</p>
+      </section>
+
+      <section class="card reveal">
+        <p>Mas...</p>
+
+        <p>alguns ficam</p>
+
+        <p class="destaque">para sempre.</p>
+      </section>
+
+      <section class="card reveal">
+        <h2>Naquele instante...</h2>
+
+        <p>eu não pensava</p>
+
+        <p>em absolutamente nada.</p>
+      </section>
+
+      <section class="card reveal">
+        <p>Nem no tempo.</p>
+
+        <p>Nem nas pessoas.</p>
+
+        <p>Nem no mundo.</p>
+      </section>
+
+      <section class="card reveal">
+        <p>Eu só queria...</p>
+
+        <p class="destaque">que aquele abraço</p>
+
+        <p>nunca terminasse.</p>
+      </section>
+
+      <section class="card reveal">
+        <h2>Porque...</h2>
+
+        <p>pela primeira vez...</p>
+
+        <p>eu senti...</p>
+
+        <p class="destaque">que estava exatamente</p>
+
+        <p>onde eu queria estar.</p>
+      </section>
+
+      <section class="card reveal">
+        <p>Nos seus braços...</p>
+
+        <p>todo o barulho</p>
+
+        <p>simplesmente...</p>
+
+        <p class="destaque">desapareceu.</p>
+      </section>
+
+      <section class="card reveal">
+        <h2>Foi ali...</h2>
+
+        <p>que eu descobri</p>
+
+        <p>que paz...</p>
+
+        <p>tem calor.</p>
+
+        <p>tem abraço.</p>
+
+        <p>tem o seu cheiro.</p>
+      </section>
+
+      <section class="card reveal">
+        <p>Talvez...</p>
+
+        <p>você nunca saiba</p>
+
+        <p>o quanto</p>
+
+        <p class="destaque">esse momento</p>
+
+        <p>significou para mim.</p>
+      </section>
+
+      <section class="card reveal">
+        <p>Mas eu lembro...</p>
+
+        <p>de cada detalhe.</p>
+
+        <p>Da luz.</p>
+
+        <p>Do jeito que você me abraçou.</p>
+
+        <p>Do jeito que meu coração desacelerou.</p>
+      </section>
+
+      <section class="card reveal">
+        <h2>E então...</h2>
+
+        <p>eu entendi...</p>
+
+        <p>que amor</p>
+
+        <p>não é encontrar</p>
+
+        <p>alguém perfeito.</p>
+      </section>
+
+      <section class="card reveal">
+        <p>Amor...</p>
+
+        <p>é encontrar</p>
+
+        <p class="destaque">um lugar</p>
+
+        <p>onde a alma</p>
+
+        <p>finalmente descansa.</p>
+      </section>
+
+      <!-- FINAL -->
+
+      <section class="card reveal">
+        <h1>❤️</h1>
+
+        <p>E se um dia...</p>
+
+        <p>a vida me perguntasse</p>
+
+        <p>qual foi</p>
+
+        <p>o momento</p>
+
+        <p>em que eu fui</p>
+
+        <p class="destaque">mais feliz...</p>
+
+        <br />
+
+        <p>eu mostraria</p>
+
+        <p>essa foto.</p>
+
+        <br />
+
+        <h2>Porque...</h2>
+
+        <br />
+      </section>
+
+      <!-- FINAL -->
+
+      <section class="card final reveal">
+        <p class="destaque">o mundo inteiro</p>
+
+        <p class="destaque">poderia desaparecer...</p>
+
+        <br />
+
+        <p>e eu ainda estaria bem...</p>
+
+        <br />
+
+        <p class="destaque">desde que</p>
+
+        <p class="destaque">esse abraço</p>
+
+        <p class="destaque">continuasse existindo.</p>
+
+        <img src="imgs/bestImg.jpeg">
+      </section>
+
+      <section class="card final reveal">
+        <p class="destaque">EU TE AMO MUITO</p>
+
+        <p class="destaque">E QUERO ESSE ABRAÇO E VOCÊ PARA SEMPRE</p>
+
+        <p class="destaque">❤️</p>
+      </section>
+    </main>
+
+    <!-- O SCRIPT VAI FICAR AQUI -->
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const cards = document.querySelectorAll('.card.reveal')
+
+        const observerOptions = {
+          root: null,
+          threshold: 0.15 /* Ativa assim que o topo do card entra na tela */
+        }
+
+        const cardObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const card = entry.target
+              card.classList.add('show')
+
+              const textLines = card.querySelectorAll('h1, h2, p')
+              textLines.forEach((line, index) => {
+                setTimeout(() => {
+                  line.classList.add('line-show')
+                }, index * 400)
+              })
+
+              observer.unobserve(card)
+            }
+          })
+        }, observerOptions)
+
+        cards.forEach(card => {
+          cardObserver.observe(card)
+        })
+      })
+    </script>
+  </body>
+</html>
