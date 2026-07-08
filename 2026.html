@@ -1,235 +1,514 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nosso 2026</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            /* Fundo escuro com transição suave para as cores do Brasil nas bordas */
-            background: radial-gradient(circle at center, #04140b 0%, #00040c 100%);
-            color: #ffffff;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow-x: hidden;
-            position: relative;
-            padding: 20px 0;
-        }
+      body {
+        /* Fundo escuro com transição suave para as cores do Brasil nas bordas */
+        background: radial-gradient(circle at center, #04140b 0%, #00040c 100%);
+        color: #ffffff;
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow-x: hidden;
+        position: relative;
+        padding: 40px 0;
+      }
 
-        /* Estrelas com as cores do Brasil brilhando ao fundo */
-        .star {
-            position: absolute;
-            border-radius: 50%;
-            animation: pulse 3s infinite ease-in-out;
-            opacity: 0.4;
-        }
+      /* Estrelas com as cores do Brasil brilhando ao fundo */
+      .star {
+        position: absolute;
+        border-radius: 50%;
+        animation: pulse 3s infinite ease-in-out;
+        opacity: 0.4;
+        z-index: 1;
+      }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 0.2; transform: scale(0.8); }
-            50% { opacity: 1; transform: scale(1.3); }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 0.2;
+          transform: scale(0.8);
         }
+        50% {
+          opacity: 1;
+          transform: scale(1.3);
+        }
+      }
 
-        /* Container Principal mais imponente e organizado */
-        .container {
-            width: 90%;
-            max-width: 480px;
-            background: rgba(4, 20, 11, 0.6);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            /* Borda fina em tom de verde esmeralda */
-            border: 1px solid rgba(0, 156, 59, 0.3);
-            padding: 35px 25px;
-            border-radius: 28px;
-            text-align: center;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 156, 59, 0.1);
-            z-index: 10;
-            animation: slideUp 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+      #starfield {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        pointer-events: none;
+      }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+      /* Container Principal mais imponente e organizado */
+      .container {
+        width: 90%;
+        max-width: 520px;
+        background: rgba(4, 20, 11, 0.65);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        /* Borda fina em tom de verde esmeralda */
+        border: 1px solid rgba(0, 156, 59, 0.35);
+        padding: 40px 25px;
+        border-radius: 32px;
+        text-align: center;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7),
+          0 0 40px rgba(0, 156, 59, 0.15);
+        z-index: 10;
+        animation: slideUp 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+      }
 
-        /* Distintivo de 2026 */
-        .ano-badge {
-            background: linear-gradient(135deg, #009c3b, #002776);
-            color: #ffdf00;
-            padding: 6px 20px;
-            border-radius: 50px;
-            font-size: 0.95rem;
-            font-weight: 800;
-            display: inline-block;
-            margin-bottom: 25px;
-            letter-spacing: 3px;
-            box-shadow: 0 4px 15px rgba(0, 156, 59, 0.3);
-            border: 1px solid rgba(255, 223, 0, 0.4);
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(40px);
         }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-   /* Título Principal */
-   h1 {
-            font-size: 2rem;
-            font-weight: 800;
-            margin-bottom: 25px;
-            line-height: 1.3;
-            color: #ffdf00; /* Cor de fallback caso o degradê não carregue */
-            background: linear-gradient(135deg, #ffffff 40%, #ffdf00);
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+      /* Distintivo de 2026 */
+      .ano-badge {
+        background: linear-gradient(135deg, #009c3b, #002776);
+        color: #ffdf00;
+        padding: 6px 22px;
+        border-radius: 50px;
+        font-size: 0.95rem;
+        font-weight: 800;
+        display: inline-block;
+        margin-bottom: 25px;
+        letter-spacing: 3px;
+        box-shadow: 0 4px 15px rgba(0, 156, 59, 0.3);
+        border: 1px solid rgba(255, 223, 0, 0.4);
+      }
 
-        /* Divisores organizados */
-        .section-block {
-            margin-bottom: 25px;
-            text-align: left;
-        }
+      /* Título Principal */
+      h1 {
+        font-size: 2.1rem;
+        font-weight: 800;
+        margin-bottom: 25px;
+        line-height: 1.3;
+        color: #ffdf00; /* Cor de fallback */
+        background: linear-gradient(135deg, #ffffff 40%, #ffdf00);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
 
-        .section-block p {
-            font-size: 1.05rem;
-            line-height: 1.6;
-            color: #e2e8f0;
-            margin-bottom: 12px;
-        }
+      /* Divisores organizados */
+      .section-block {
+        margin-bottom: 25px;
+        text-align: left;
+      }
 
-        /* Textos de Destaque Forte */
-        .destaque-verde {
-            color: #00ff5f;
-            font-weight: 700;
-            text-shadow: 0 0 10px rgba(0, 255, 95, 0.2);
-        }
+      .section-block p {
+        font-size: 1.05rem;
+        line-height: 1.65;
+        color: #e2e8f0;
+        margin-bottom: 16px;
+      }
 
-        .destaque-amarelo {
-            color: #ffdf00;
-            font-weight: 700;
-            text-shadow: 0 0 10px rgba(255, 223, 0, 0.2);
-        }
+      /* Textos de Destaque Forte */
+      .destaque-verde {
+        color: #00ff5f;
+        font-weight: 700;
+        text-shadow: 0 0 10px rgba(0, 255, 95, 0.2);
+      }
 
-        /* Bloco da Citação do Hexa (Estilo Marcante) */
-        .citacao-container {
-            background: linear-gradient(135deg, rgba(0, 39, 118, 0.3), rgba(0, 156, 59, 0.1));
-            border-left: 4px solid #ffdf00;
-            border-right: 1px solid rgba(255, 223, 0, 0.1);
-            border-top: 1px solid rgba(255, 223, 0, 0.1);
-            border-bottom: 1px solid rgba(255, 223, 0, 0.1);
-            padding: 20px;
-            margin: 30px 0;
-            border-radius: 4px 16px 16px 4px;
-            box-shadow: inset 0 0 15px rgba(0, 39, 118, 0.2);
-        }
+      .destaque-amarelo {
+        color: #ffdf00;
+        font-weight: 700;
+        text-shadow: 0 0 10px rgba(255, 223, 0, 0.2);
+      }
 
-        .citacao-texto {
-            font-size: 1.05rem;
-            font-style: italic;
-            line-height: 1.6;
-            color: #ffffff;
-            text-align: left;
-        }
+      /* Bloco da Citação do Hexa (Estilo Marcante) */
+      .citacao-container {
+        background: linear-gradient(
+          135deg,
+          rgba(0, 39, 118, 0.25),
+          rgba(0, 156, 59, 0.15)
+        );
+        border-left: 4px solid #ffdf00;
+        border-right: 1px solid rgba(255, 223, 0, 0.1);
+        border-top: 1px solid rgba(255, 223, 0, 0.1);
+        border-bottom: 1px solid rgba(255, 223, 0, 0.1);
+        padding: 22px;
+        margin: 30px 0;
+        border-radius: 8px;
+        box-shadow: inset 0 0 15px rgba(0, 39, 118, 0.2);
+      }
 
-        /* Fechamento Impactante */
-        .conclusao {
-            font-size: 1.15rem;
-            font-weight: 600;
-            color: #ffffff;
-            margin-top: 25px;
-            text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 20px;
-        }
+      .citacao-texto {
+        font-size: 1.05rem;
+        font-style: italic;
+        line-height: 1.65;
+        color: #ffffff;
+        text-align: left;
+      }
 
-        .coracao-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0, 156, 59, 0.2);
-            border: 1px solid #00ff5f;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            font-size: 1.8rem;
-            margin-top: 20px;
-            animation: batida 1.4s infinite cubic-bezier(0.25, 0.8, 0.25, 1);
-            box-shadow: 0 0 15px rgba(0, 255, 95, 0.3);
-        }
+      /* Container do Vídeo */
+      .video-container {
+        margin: 30px 0;
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid rgba(0, 255, 95, 0.3);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5),
+          0 0 20px rgba(0, 255, 95, 0.1);
+        background: #000000;
+        position: relative;
+      }
 
-        @keyframes batida {
-            0%, 100% { transform: scale(1); }
-            30% { transform: scale(1.12); }
-            45% { transform: scale(1.05); }
-            60% { transform: scale(1.18); }
+      .video-container video {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      /* Fechamento Impactante */
+      .conclusao {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #ffffff;
+        margin-top: 30px;
+        text-align: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+        padding-top: 25px;
+        line-height: 1.6;
+      }
+
+      .coracao-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 156, 59, 0.2);
+        border: 1px solid #00ff5f;
+        width: 65px;
+        height: 65px;
+        border-radius: 50%;
+        font-size: 1.9rem;
+        margin-top: 25px;
+        animation: batida 1.4s infinite cubic-bezier(0.25, 0.8, 0.25, 1);
+        box-shadow: 0 0 20px rgba(0, 255, 95, 0.3);
+      }
+
+      @keyframes batida {
+        0%,
+        100% {
+          transform: scale(1);
         }
+        30% {
+          transform: scale(1.12);
+        }
+        45% {
+          transform: scale(1.05);
+        }
+        60% {
+          transform: scale(1.18);
+        }
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <div id="starfield"></div>
 
     <div class="container">
-        <span class="ano-badge">BRASIL • 2026</span>
-        
-        <h1>Esse ano está uma loucura completa...</h1>
-        
-        <div class="section-block">
-            <p>Olho para tudo o que está acontecendo à nossa volta e parece um turbilhão. O mundo correndo, as coisas mudando numa velocidade absurda, uma verdadeira reviravolta.</p>
-            <p>Mas quer saber a real? No meio de todo esse caos, esses foram, sem sombra de dúvidas, os <span class="destaque-verde">7 melhores meses que eu já tive</span> em toda a minha vida.</p>
-        </div>
+      <span class="ano-badge">BRASIL • 2026</span>
 
-        <div class="citacao-container">
-            <div class="citacao-texto">
-                "Eu sei que você já falou, mas eu faço questão de repetir: <span class="destaque-amarelo">infelizmente o Brasil não foi hexa mesmo...</span> mas eu não dou a mínima importância para isso, porque a verdade é que eu já ganhei absurdamente muito este ano."
-            </div>
-        </div>
+      <h1>Esse ano está uma loucura completa...</h1>
 
-        <div class="section-block">
-            <p>Nenhum título mundial ou taça de ouro chegaria perto do valor real do que a gente construiu nesse tempo.</p>
-            
-            <p class="conclusao">
-                Você me entende perfeitamente, não é? <br>
-                <span class="destaque-amarelo">Meu melhor campeonato já está ganho.</span>
-            </p>
+      <div class="section-block">
+        <p>
+          Eu olho para tudo o que aconteceu nesses últimos meses e parece que o
+          mundo inteiro resolveu acelerar ao mesmo tempo. Todo dia existe uma
+          notícia nova, uma preocupação diferente, uma mudança inesperada.
+          Parece que ninguém consegue acompanhar a velocidade com que a vida
+          está passando.
+        </p>
+
+        <p>Mas existe uma coisa curiosa...</p>
+
+        <p>
+          Enquanto muita gente olha para 2026 e enxerga um ano caótico, eu olho
+          para ele e vejo o ano que mais mudou a minha vida.
+        </p>
+
+        <p>
+          Porque, no meio de toda essa confusão...
+          <span class="destaque-verde">eu encontrei você.</span>
+        </p>
+
+        <p>E isso fez absolutamente tudo ganhar outro significado.</p>
+
+        <p>
+          Esses últimos sete meses não foram apenas bons... eles foram, sem
+          exagero nenhum,
+          <span class="destaque-verde"
+            >os sete melhores meses que eu já vivi.</span
+          >
+        </p>
+      </div>
+
+      <div class="section-block">
+        <p>
+            O mais engraçado é que, olhando de fora, talvez nada pareça tão extraordinário.
+        </p>
+    
+        <p>
+          Ainda não consegui te dar aquela bolsa bonita.<br>
+          Ainda não consegui te presentear com uma roupa que você merecia.<br>
+          Ainda não consegui te levar para um jantar especial.<br>
+          Ainda não consegui fazer muitas das coisas que eu gostaria de fazer por você.<br>
+      </p>
+    
+        <p>
+            Nós apenas fomos...
+            nós.
+        </p>
+    
+        <p>
+            Conversamos por horas.
+            Rimos até perder o fôlego.
+            Nos abraçamos.
+            Dividimos nossos dias.
+            Fizemos planos.
+            Criamos lembranças que talvez pareçam pequenas para qualquer outra pessoa...
+            mas que, para mim, valem uma vida inteira.
+        </p>
+    
+        <p>
+            E tem uma coisa que eu preciso te dizer...
+        </p>
+    
+        <p>
+            Me desculpa por ainda não conseguir te proporcionar tudo aquilo que eu sonho em te dar.
+        </p>
+    
+        <p>
+            Eu sei que você merece muito mais.<br>
+            Merece flores sem motivo.<br>
+            Brownie todos os dias.<br>
+            Presentes inesperados.<br>
+            Jantares.<br>
+            Passeios.<br>
+            Viagens.<br>
+            Pequenas surpresas só para ver o seu sorriso aparecer.<br>
+        </p>
+    
+        <p>
+            Às vezes isso me dói...
+            porque eu queria poder transformar cada vontade minha em realidade para você.
+        </p>
+    
+        <p>
+            Infelizmente, hoje eu ainda não consigo.
+            E, de verdade...
+            me desculpa por isso.
+        </p>
+    
+        <p class="conclusao">
+            obrigado por permanecer aqui.
+            Obrigado por nunca medir o meu valor pelo que eu posso comprar.
+            Porque isso só faz eu ter ainda mais certeza...
+            que eu nao errei, e é você que eu quero para sempre ao meu lado
+        </p>
+    </div>
+
+      <div class="video-container">
+        <video controls poster="" preload="metadata">
+          <source src="zvideo.mp4" type="video/mp4" />
+          Seu navegador não suporta a reprodução de vídeos.
+        </video>
+      </div>
+
+      <div class="citacao-container">
+        <div class="citacao-texto">
+          <p>"Eu sei que você já falou isso algumas vezes...</p>
+
+          <p>e mesmo assim eu faço questão de repetir."</p>
+
+          <br />
+
+          <p>
+            "<span class="destaque-amarelo"
+              >Infelizmente o Brasil não foi hexa mesmo...</span
+            >"
+          </p>
+
+          <br />
+
+          <p>Mas, sinceramente...</p>
+
+          <p>eu não consigo me importar nem um pouco.</p>
+
+          <br />
+
+          <p>
+            Porque enquanto milhões de pessoas ficaram tristes por causa de um
+            título...
+          </p>
+
+          <p>eu vivi a maior conquista da minha vida.</p>
+
+          <br />
+
+          <p>
+            <span class="destaque-amarelo"> Eu encontrei você. </span>
+          </p>
         </div>
-        
-        <div class="coracao-badge">💚</div>
+      </div>
+
+      <div class="section-block">
+        <p>
+          Nenhuma taça de ouro conseguiria representar o valor do que a gente
+          construiu.
+        </p>
+
+        <p>
+          Existem vitórias que aparecem nos jornais... e existem aquelas que só
+          o coração conhece.
+        </p>
+
+        <p>A nossa nunca precisou de plateia.</p>
+
+        <p>Nunca precisou de aplausos.</p>
+
+        <p>
+          Ela acontece toda vez que você sorri. Toda vez que segura minha mão.
+          Toda vez que me abraça.
+        </p>
+      </div>
+
+      <div class="section-block">
+        <p>E tem uma coisa que eu nunca te contei...</p>
+
+        <p>O mundo pode estar completamente barulhento.</p>
+
+        <p>
+          Pode existir preocupação. Ansiedade. Problemas. Gente falando. Tudo
+          acontecendo ao mesmo tempo.
+        </p>
+
+        <p>Mas...</p>
+
+        <p class="destaque-verde">quando você me abraça...</p>
+
+        <p>parece que alguém aperta o botão de silêncio no universo inteiro.</p>
+
+        <p>Não existe mais correria.</p>
+
+        <p>Não existe mais medo.</p>
+
+        <p>Não existe mais confusão.</p>
+
+        <p>Só existe você.</p>
+
+        <p>
+          E, por alguns segundos... isso já é suficiente para fazer tudo ficar
+          bem outra vez.
+        </p>
+      </div>
+
+      <div class="section-block">
+        <p>Talvez seja exatamente isso que chamam de paz.</p>
+
+        <p>Não um lugar.</p>
+
+        <p>Não um momento.</p>
+
+        <p>Mas uma pessoa.</p>
+
+        <p>E, sem perceber...</p>
+
+        <p class="destaque-verde">você acabou se tornando a minha.</p>
+      </div>
+
+      <div class="section-block">
+        <p>Então, quando alguém perguntar como foi o meu ano de 2026...</p>
+
+        <p>talvez eu nem fale sobre tudo o que aconteceu no mundo.</p>
+
+        <p>
+          Eu vou lembrar das nossas conversas. Dos nossos abraços. Das nossas
+          fotos. Das nossas risadas. Dos momentos simples que, juntos, acabaram
+          se tornando extraordinários.
+        </p>
+
+        <p>Porque foi exatamente aí... que meu ano aconteceu de verdade.</p>
+
+        <p class="conclusao">
+          Você me entende perfeitamente, não é?<br /><br />
+
+          O Brasil talvez realmente não tenha sido hexa...<br /><br />
+
+          <span class="destaque-amarelo">
+            mas eu ganhei algo que vale infinitamente mais do que qualquer Copa
+            do Mundo.
+          </span>
+
+          <br /><br />
+
+          Eu ganhei você <br /><br />
+
+          <span class="destaque-amarelo">EU TE AMO MUITO JULIA</span> <br /><br />
+
+          Muito obrigado por estar comigo essa parte de 2026... espero que fique
+          pra sempre comigo
+        </p>
+      </div>
+
+      <div class="coracao-badge">💚</div>
     </div>
 
     <script>
       function criarEstrelasTematicas() {
-          const starfield = document.getElementById('starfield');
-          const numEstrelas = window.innerWidth < 768 ? 45 : 90;
-          
-          // Cores baseadas na bandeira do Brasil para as estrelas de fundo
-          const cores = ['#009c3b', '#ffdf00', '#002776', '#ffffff'];
+        const starfield = document.getElementById('starfield')
+        if (!starfield) return
 
-          for (let i = 0; i < numEstrelas; i++) {
-              const star = document.createElement('div');
-              star.className = 'star';
-              
-              const tamanho = Math.random() * 3.5 + 1;
-              star.style.width = `${tamanho}px`;
-              star.style.height = `${tamanho}px`;
-              star.style.left = `${Math.random() * 100}%`;
-              star.style.top = `${Math.random() * 100}%`;
-              
-              // Escolhe uma cor aleatória da paleta brasileira
-              star.style.backgroundColor = cores[Math.floor(Math.random() * cores.length)];
-              
-              star.style.animationDelay = `${Math.random() * 3}s`;
-              star.style.animationDuration = `${Math.random() * 3 + 2}s`;
+        const numEstrelas = window.innerWidth < 768 ? 45 : 90
 
-              starfield.appendChild(star);
-          }
+        // Cores baseadas na bandeira do Brasil para as estrelas de fundo
+        const cores = ['#009c3b', '#ffdf00', '#002776', '#ffffff']
+
+        for (let i = 0; i < numEstrelas; i++) {
+          const star = document.createElement('div')
+          star.className = 'star'
+
+          const tamanho = Math.random() * 3.5 + 1
+          star.style.width = `${tamanho}px`
+          star.style.height = `${tamanho}px`
+          star.style.left = `${Math.random() * 100}%`
+          star.style.top = `${Math.random() * 100}%`
+
+          // Escolhe uma cor aleatória da paleta brasileira
+          star.style.backgroundColor =
+            cores[Math.floor(Math.random() * cores.length)]
+
+          star.style.animationDelay = `${Math.random() * 3}s`
+          star.style.animationDuration = `${Math.random() * 3 + 2}s`
+
+          starfield.appendChild(star)
+        }
       }
 
-      window.addEventListener('DOMContentLoaded', criarEstrelasTematicas);
-  </script>
-</body>
+      window.addEventListener('DOMContentLoaded', criarEstrelasTematicas)
+    </script>
+  </body>
 </html>
