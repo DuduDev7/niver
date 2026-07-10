@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Birthday Heart Animation</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #ffeef2;
+        font-family: 'Segoe UI', sans-serif;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
+      #main {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 1400px;
+        min-height: 100vh;
+        padding: 40px;
+        gap: 40px;
+      }
+
+      #text-container {
+        flex: 0.9;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+
+        max-height: 85vh;
+        overflow-y: auto;
+
+        padding: 35px;
+
+        border-radius: 24px;
+
+        background: rgba(255, 255, 255, 0.55);
+
+        backdrop-filter: blur(18px);
+
+        box-shadow: 0 20px 60px rgba(214, 51, 132, 0.12);
+
+        opacity: 0;
+        transform: translateX(40px);
+        transition: 1.5s;
+      }
+
+      #text-container::-webkit-scrollbar {
+        width: 7px;
+      }
+
+      #text-container::-webkit-scrollbar-thumb {
+        background: #d63384;
+        border-radius: 20px;
+      }
+
+      .canvas-container {
+        flex: 1.2;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+      }
+
+      canvas {
+        max-width: 100%;
+        max-height: 100%;
+        display: block;
+      }
+
+      #text-container.mostrar {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      #code {
+        font-size: 1.2rem;
+        line-height: 1.8;
+        color: #555;
+        margin-bottom: 25px;
+      }
+
+      .say {
+        display: block;
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      .say.revelar {
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+      }
+
+      .say:nth-child(1) {
+        font-weight: 800;
+        color: #d63384;
+        font-size: 1.4rem;
+      }
+
+      #clock-box {
+        font-size: 1.05rem;
+        color: #444;
+        border-top: 1px solid rgba(214, 51, 132, 0.2);
+        padding-top: 20px;
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      #clock-box.revelar {
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity 1s ease, transform 1s ease;
+      }
+
+      #clock {
+        font-weight: 700;
+        color: #d63384;
+        display: block;
+        font-size: 1.25rem;
+        margin-top: 5px;
+      }
+
+      @media (max-width: 850px) {
+        #main {
+          flex-direction: column;
+          overflow-y: auto;
+          height: auto;
+          gap: 10px;
+        }
+        .canvas-container {
+          height: 450px;
+          width: 100%;
+        }
+        #text-container {
+          padding-right: 0;
+          text-align: center;
+          width: 100%;
+          padding-bottom: 40px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="main">
+      <audio autoplay="autoplay" id="myAudio">
+        <source src="aud.mp3" type="audio/mp3" />
+      </audio>
+
+      <div class="canvas-container">
+        <canvas id="canvas" width="650" height="680"></canvas>
+      </div>
+
+      <div id="text-container">
+        <div id="code">
+
+          <span class="say">Ei... ❤️</span><br>
+          
+          <span class="say">
+          Sabe...
+          </span><br>
+          
+          <span class="say">
+          Às vezes eu fico pensando em como a vida consegue mudar completamente sem fazer barulho.
+          </span><br>
+          
+          <span class="say">
+          Ela simplesmente coloca uma pessoa no nosso caminho...
+          </span><br>
+          
+          <span class="say">
+          ...e, sem que a gente perceba, tudo começa a fazer muito mais sentido.
+          </span><br>
+          
+          <span class="say">
+          Foi exatamente isso que aconteceu quando você apareceu.
+          </span><br>
+          
+          <span class="say">
+          Você não mudou apenas alguns dias...
+          </span><br>
+          
+          <span class="say">
+          Você mudou a forma como eu enxergo a vida inteira.
+          </span><br>
+          
+          <span class="say">
+          Hoje eu sorrio por coisas que antes nem reparava.
+          </span><br>
+          
+          <span class="say">
+          Espero mensagens.
+          </span><br>
+          
+          <span class="say">
+          Releio conversas.
+          </span><br>
+          
+          <span class="say">
+          Volto em fotos.
+          </span><br>
+          
+          <span class="say">
+          Escuto músicas...
+          </span><br>
+          
+          <span class="say">
+          ...e automaticamente penso em você.
+          </span><br>
+          
+          <span class="say">
+          É estranho...
+          </span><br>
+          
+          <span class="say">
+          Porque eu nunca imaginei que alguém pudesse ocupar tanto espaço dentro de mim.
+          </span><br>
+          
+          <span class="say">
+          Mas você conseguiu.
+          </span><br>
+          
+          <span class="say">
+          Sem esforço.
+          </span><br>
+          
+          <span class="say">
+          Sem pedir.
+          </span><br>
+          
+          <span class="say">
+          Sem nem perceber.
+          </span><br>
+          
+          <span class="say">
+          Você virou o meu lugar favorito.
+          </span><br>
+          
+          <span class="say">
+          Meu pensamento favorito.
+          </span><br>
+          
+          <span class="say">
+          Minha notificação favorita.
+          </span><br>
+          
+          <span class="say">
+          Meu abraço favorito.
+          </span><br>
+          
+          <span class="say">
+          Minha paz.
+          </span><br>
+          
+          <span class="say">
+          E sabe qual é a melhor parte?
+          </span><br>
+          
+          <span class="say">
+          É que tudo isso aconteceu sendo apenas você.
+          </span><br>
+          
+          <span class="say">
+          Sem tentar impressionar.
+          </span><br>
+          
+          <span class="say">
+          Sem fingir ser alguém diferente.
+          </span><br>
+          
+          <span class="say">
+          Você simplesmente foi...
+          </span><br>
+          
+          <span class="say">
+          ...você.
+          </span><br>
+          
+          <span class="say">
+          Eu ainda tenho muitos sonhos.
+          </span><br>
+          
+          <span class="say">
+          Muitas metas.
+          </span><br>
+          
+          <span class="say">
+          Muita coisa para conquistar.
+          </span><br>
+          
+          <span class="say">
+          Mas, sinceramente...
+          </span><br>
+          
+          <span class="say">
+          Nenhuma delas faria sentido se eu não pudesse dividir tudo isso com você.
+          </span><br>
+          
+          <span class="say">
+          Porque quando eu penso no futuro...
+          </span><br>
+          
+          <span class="say">
+          ...você está em todos os planos.
+          </span><br>
+          
+          <span class="say">
+          Em todas as versões da minha vida.
+          </span><br>
+          
+          <span class="say">
+          Em todos os sonhos que eu ainda quero realizar.
+          </span><br>
+          
+          <span class="say">
+          E mesmo que o tempo passe...
+          </span><br>
+          
+          <span class="say">
+          Mesmo que a vida continue mudando...
+          </span><br>
+          
+          <span class="say">
+          Tem uma coisa que eu espero que nunca mude.
+          </span><br>
+          
+          <span class="say">
+          O jeito que eu olho para você.
+          </span><br>
+          
+          <span class="say">
+          Porque até hoje...
+          </span><br>
+          
+          <span class="say">
+          ...eu continuo tendo a mesma certeza.
+          </span><br>
+          
+          <span class="say">
+          Entre todas as pessoas do mundo...
+          </span><br>
+          
+          <span class="say">
+          ...foi você quem fez meu coração encontrar um lugar onde finalmente se sentiu em casa.
+          </span><br>
+          
+          <span class="say">
+          E, se um dia você esquecer o quanto é especial...
+          </span><br>
+          
+          <span class="say">
+          ...volta aqui.
+          </span><br>
+          
+          <span class="say">
+          Lê tudo de novo.
+          </span><br>
+          
+          <span class="say">
+          Porque cada palavra foi escrita pensando exatamente em você.
+          </span><br>
+          
+          <span class="say">
+          E nenhuma delas consegue explicar completamente...
+          </span><br>
+          
+          <span class="say">
+          ...o tamanho do amor que eu sinto.
+          </span><br>
+          
+          </div>
+        <div id="clock-box">
+          Tempo total compartilhado:
+          <span id="clock">0 dias 0 horas 0 minutes 0 segundos</span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // --- CONTADOR ---
+      function atualizarContador() {
+        const dataInicial = new Date(2025, 0, 1, 0, 0, 0)
+        const agora = new Date()
+        const diferenca = agora - dataInicial
+
+        const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24))
+        const horas = Math.floor(
+          (diferenca % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        )
+        const minutos = Math.floor((diferenca % (1000 * 60 * 60)) / (1000 * 60))
+        const segundos = Math.floor((diferenca % (1000 * 60)) / 1000)
+
+        document.getElementById(
+          'clock'
+        ).innerHTML = `${dias} dias, ${horas}h ${minutos}m ${segundos}s`
+      }
+      setInterval(atualizarContador, 1000)
+      atualizarContador()
+
+      // --- GATILHO INDEPENDENTE DO TEXTO (4 SEGUNDOS APÓS CARREGAR) ---
+      function dispararSurgimentoDoTexto() {
+        const containerTexto = document.getElementById('text-container')
+        containerTexto.classList.add('mostrar')
+
+        const linhas = document.querySelectorAll('.say')
+        linhas.forEach((linha, indice) => {
+          setTimeout(() => {
+            linha.classList.add('revelar')
+          }, indice * 550)
+        })
+
+        setTimeout(() => {
+          document.getElementById('clock-box').classList.add('revelar')
+        }, linhas.length * 550 + 300)
+      }
+
+      // Executa o cronômetro de 4000ms (4 segundos) totalmente separado da árvore
+      window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(dispararSurgimentoDoTexto, 4000)
+      })
+
+      // --- ÁRVORE (CANVAS) ---
+      const canvas = document.getElementById('canvas')
+      const ctx = canvas.getContext('2d')
+
+      class Point {
+        constructor(x, y) {
+          this.x = x
+          this.y = y
+        }
+      }
+
+      function obterPontosCoracao() {
+        let points = []
+        for (let i = 10; i < 30; i += 0.02) {
+          let t = i * Math.PI
+          let x = 16 * Math.pow(Math.sin(t), 3)
+          let y =
+            13 * Math.cos(t) -
+            5 * Math.cos(2 * t) -
+            2 * Math.cos(3 * t) -
+            Math.cos(4 * t)
+          points.push(new Point(x, y))
+        }
+        return points
+      }
+
+      const pontosModelo = obterPontosCoracao()
+      const folhas = []
+      const coresFolhas = [
+        '#ff2a54',
+        '#ff4d73',
+        '#ff7191',
+        '#ff94b0',
+        '#ffb7cc',
+        '#ffdbe6',
+        '#e63956',
+        '#ff527b',
+        '#ff6b95',
+        '#ff8aa3',
+        '#ffa4ba',
+        '#ffccd8'
+      ]
+
+      function gerarCopa() {
+        const centerX = canvas.width / 2
+        const centerY = canvas.height / 2 - 60
+
+        // Mantido o volume alto que você configurou
+        const quantidadeFolhas = 20000
+
+        for (let i = 0; i < quantidadeFolhas; i++) {
+          const pontoAleatorio =
+            pontosModelo[Math.floor(Math.random() * pontosModelo.length)]
+
+          const fatorEscala = Math.random() * 12.5 + 1
+          const posX =
+            centerX + pontoAleatorio.x * fatorEscala + (Math.random() * 44 - 22)
+          const posY =
+            centerY - pontoAleatorio.y * fatorEscala + (Math.random() * 44 - 22)
+
+          folhas.push({
+            x: posX,
+            y: posY,
+            tamanhoMax: Math.random() * 3.5 + 1.5,
+            tamanhoAtual: 0,
+            cor: coresFolhas[Math.floor(Math.random() * coresFolhas.length)],
+            delay: Math.random() * 250
+          })
+        }
+      }
+
+      function desenharFolhaCoracao(ctx, x, y, tamanho, cor) {
+        ctx.save()
+        ctx.beginPath()
+        ctx.translate(x, y)
+        ctx.fillStyle = cor
+        ctx.moveTo(0, 0)
+        ctx.bezierCurveTo(
+          -tamanho,
+          -tamanho,
+          -tamanho * 2,
+          tamanho / 2,
+          0,
+          tamanho * 2
+        )
+        ctx.bezierCurveTo(tamanho * 2, tamanho / 2, tamanho, -tamanho, 0, 0)
+        ctx.fill()
+        ctx.restore()
+      }
+
+      function desenharEstruturaTronco(progresso) {
+        ctx.save()
+        ctx.fillStyle = '#4a2c2a'
+        ctx.beginPath()
+
+        const baseX = canvas.width / 2
+        const baseY = canvas.height
+        const topoY = canvas.height - 250
+
+        const atualY = baseY - (baseY - topoY) * Math.min(progresso, 1)
+
+        ctx.moveTo(baseX - 22, baseY)
+        ctx.quadraticCurveTo(baseX - 14, baseY - 110, baseX - 8, atualY)
+        ctx.lineTo(baseX + 8, atualY)
+        ctx.quadraticCurveTo(baseX + 14, baseY - 110, baseX + 22, baseY)
+
+        ctx.closePath()
+        ctx.fill()
+        ctx.restore()
+      }
+
+      let frame = 0
+      const duracaoTronco = 40
+
+      function loopAnimacao() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+        const progressoTronco = frame / duracaoTronco
+        desenharEstruturaTronco(progressoTronco)
+
+        if (frame >= duracaoTronco) {
+          for (let i = 0; i < folhas.length; i++) {
+            const f = folhas[i]
+            const frameRelativo = frame - duracaoTronco
+
+            if (frameRelativo > f.delay) {
+              if (f.tamanhoAtual < f.tamanhoMax) {
+                f.tamanhoAtual += 0.3
+              }
+              desenharFolhaCoracao(ctx, f.x, f.y, f.tamanhoAtual, f.cor)
+            }
+          }
+        }
+
+        frame++
+        requestAnimationFrame(loopAnimacao)
+      }
+
+      gerarCopa()
+      loopAnimacao()
+    </script>
+  </body>
+</html>
