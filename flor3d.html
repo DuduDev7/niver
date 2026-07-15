@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Flowers & Story</title>
+    <style>
+        :root {
+            --bg-color: #0b1522;
+            --stem-color: #0d4f34;
+            --leaf-color: #159faa;
+            --petal-color: #e91598;
+            --core-color: #dd0c75;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            overflow-y: auto; /* Permite o scroll vertical */
+            color: #fff;
+        }
+
+        /* --- Container Principal (Primeira Tela) --- */
+        #main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* --- Bloco de Texto (Aparece Primeiro) --- */
+        #text-overlay {
+            position: absolute;
+            top: 10%;
+            text-align: center;
+            z-index: 10;
+            width: 90%;
+            pointer-events: none;
+        }
+
+        .say {
+            display: block;
+            font-size: 1.5rem;
+            color: #bbf7f7;
+            text-shadow: 0 0 10px rgba(146, 230, 230, 0.5);
+            opacity: 0;
+            transform: translateY(20px);
+            margin-bottom: 15px;
+            transition: opacity 1.5s ease, transform 1.5s ease;
+        }
+
+        .say.revelar {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- Área das Flores --- */
+        .flower-sandbox {
+            position: relative;
+            width: 100%;
+            max-width: 800px; /* Aumentado para comportar mais flores nas laterais */
+            height: 500px;
+            margin-top: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        /* Estilo das Flores Individuais crescidas via JS */
+        .flower-wrapper {
+            position: absolute;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform-origin: bottom center;
+        }
+
+        /* Haste (Stem) */
+        .stem {
+            width: 6px;
+            height: 0px; /* Será animado pelo JS */
+            background-color: var(--stem-color);
+            border-radius: 4px;
+            position: relative;
+            transform-origin: bottom center;
+            transition: height 3s ease-out;
+        }
+
+        /* Folhas (Leaves) */
+        .leaf {
+            position: absolute;
+            width: 40px;
+            height: 25px;
+            background-color: var(--leaf-color);
+            border-radius: 40px 0;
+            opacity: 0;
+            transform: scale(0);
+            transform-origin: left bottom;
+            transition: transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 1.5s;
+        }
+
+        .leaf.esquerda {
+            left: -35px;
+            transform: scale(0) rotate(-30deg);
+            transform-origin: right bottom;
+        }
+
+        .leaf.direita {
+            right: -35px;
+            transform: scale(0) rotate(30deg);
+            transform-origin: left bottom;
+            border-radius: 0 40px;
+        }
+
+        .leaf.mostrar {
+            opacity: 0.9;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* Botão / Flor principal */
+        .flower-head {
+            position: absolute;
+            top: -20px;
+            width: 50px;
+            height: 50px;
+            transform: scale(0);
+            opacity: 0;
+            transition: transform 2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 2s;
+        }
+
+        .flower-head.mostrar {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        /* Pétalas geométricas */
+        .petal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 35px;
+            background: linear-gradient(to top, var(--petal-color), #ffffff);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            transform-origin: bottom center;
+            opacity: 0.85;
+            box-shadow: 0 0 15px rgba(146, 230, 230, 0.6);
+        }
+
+        /* Miolo Brilhante */
+        .core {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 16px;
+            height: 16px;
+            background-color: var(--core-color);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 20px 8px var(--core-color);
+            z-index: 5;
+        }
+
+        /* Partículas de Luz Flutuantes */
+        .light-glow {
+            position: absolute;
+            background-color: var(--core-color);
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+            animation: floatUp 6s infinite linear;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(0.5);
+                opacity: 0;
+            }
+            30% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-250px) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        /* --- Indicador de Rolagem --- */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 20px;
+            font-size: 0.9rem;
+            color: #bbf7f7;
+            opacity: 0.7;
+            animation: bounce 2s infinite;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* --- Nova Seção de Conteúdo (Texto que aparece ao rolar) --- */
+        .content-section {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 20px;
+            background: linear-gradient(to bottom, var(--bg-color), #050a11);
+        }
+
+        .text-container {
+            max-width: 650px;
+            text-align: center;
+            background: rgba(11, 21, 34, 0.6);
+            padding: 40px 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(146, 230, 230, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+        }
+
+        .text-container h2 {
+            font-size: 2rem;
+            color: #bbf7f7;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(146, 230, 230, 0.3);
+        }
+
+        .text-container p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #d1e5e5;
+            margin-bottom: 15px;
+        }
+
+        .text-container p:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="main-container">
+        <audio autoplay="autoplay" id="myAudio">
+            <source src="aud.mp3" type="audio/mp3">
+        </audio>
+
+        <div id="text-overlay">
+          <span class="say">Algumas flores apenas florescem...</span>
+          <span class="say">Outras carregam pessoas inteiras dentro delas. 🤍</span>
+      </div>
+
+        <div class="flower-sandbox" id="sandbox"></div>
+
+        <div class="scroll-indicator" onclick="document.querySelector('.content-section').scrollIntoView();">
+            <span>Role para ver mais</span>
+            <span>▼</span>
+        </div>
+    </div>
+
+    <section class="content-section">
+
+      <div class="text-container">
+  
+          <h2>Se eu pudesse te comparar a algo... 🌸</h2>
+  
+          <p>
+  
+              Talvez eu escolhesse um lírio.
+  
+              Não apenas pela beleza, mas porque algumas flores conseguem
+              transformar completamente o lugar onde florescem.
+  
+              Elas não fazem barulho.
+              Não pedem atenção.
+              Apenas existem...
+              e deixam tudo mais bonito ao redor.
+  
+          </p>
+  
+          <p>
+  
+              Você faz exatamente isso.
+  
+              Tornou dias comuns em lembranças especiais,
+              conversas simples em momentos que eu gostaria de reviver,
+              e pequenos detalhes em coisas que eu guardo com carinho.
+  
+              Assim como um jardim precisa de tempo para florescer,
+              alguns sentimentos também.
+              E, sem perceber, você fez nascer em mim algo que palavras
+              nunca conseguiram explicar completamente.
+  
+          </p>
+  
+          <p>
+  
+              Talvez seja por isso que eu gosto tanto de lírios.
+  
+              Porque, toda vez que vejo um,
+              lembro que existem pessoas que conseguem florescer
+              até mesmo dentro do coração de alguém.
+  
+              E, para mim...
+              essa pessoa sempre será você.
+  
+          </p>
+  
+      </div>
+  
+  </section>
+
+    <script>
+        // --- 1. SCRIPT DE SUCESSÃO DE TEXTOS (APARECE PRIMEIRO) ---
+        const frases = document.querySelectorAll('.say');
+        
+        function mostrarTextos() {
+            frases.forEach((frase, i) => {
+                setTimeout(() => {
+                    frase.classList.add('revelar');
+                }, i * 1800);
+            });
+
+            // Inicia o crescimento das flores 4 segundos depois que o texto começar
+            setTimeout(iniciarCrescimentoDasFlores, 4000);
+        }
+
+        // --- 2. SCRIPT DE ANIMAÇÃO DE CRESCIMENTO DAS FLORES (JS) ---
+        function criarFlor(id, posicaoX, alturaMaxima, delay, rotacao) {
+            const sandbox = document.getElementById('sandbox');
+
+            // Cria o container da flor
+            const wrapper = document.createElement('div');
+            wrapper.className = 'flower-wrapper';
+            wrapper.style.left = `${posicaoX}%`;
+            wrapper.style.transform = `rotate(${rotacao}deg)`;
+
+            // Cria a haste (Stem)
+            const stem = document.createElement('div');
+            stem.className = 'stem';
+            wrapper.appendChild(stem);
+
+            // Cria as folhas anexadas à haste em alturas diferentes
+            const leaf1 = document.createElement('div');
+            leaf1.className = 'leaf esquerda';
+            leaf1.style.bottom = '30%';
+            stem.appendChild(leaf1);
+
+            const leaf2 = document.createElement('div');
+            leaf2.className = 'leaf direita';
+            leaf2.style.bottom = '55%';
+            stem.appendChild(leaf2);
+
+            // Cria o botão da flor
+            const head = document.createElement('div');
+            head.className = 'flower-head';
+            head.style.bottom = `${alturaMaxima}px`;
+
+            // Adiciona as pétalas baseadas em rotação circular
+            const totalPetalas = 6;
+            for (let i = 0; i < totalPetalas; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                const angulo = (360 / totalPetalas) * i;
+                petal.style.transform = `translate(-50%, -100%) rotate(${angulo}deg)`;
+                head.appendChild(petal);
+            }
+
+            // Adiciona o miolo brilhante
+            const core = document.createElement('div');
+            core.className = 'core';
+            head.appendChild(core);
+
+            wrapper.appendChild(head);
+            sandbox.appendChild(wrapper);
+
+            // --- ESTÁGIOS DE CRESCIMENTO ---
+            // Passo 1: Crescer a haste
+            setTimeout(() => {
+                stem.style.height = `${alturaMaxima}px`;
+            }, delay);
+
+            // Passo 2: Brotar as folhas no meio do caminho
+            setTimeout(() => {
+                leaf1.classList.add('mostrar');
+                leaf2.classList.add('mostrar');
+            }, delay + 1500);
+
+            // Passo 3: Desabrochar a flor no topo
+            setTimeout(() => {
+                head.classList.add('mostrar');
+                // Começa a soltar partículas de luz desta flor
+                setInterval(() => gerarParticula(posicaoX, alturaMaxima), 800);
+            }, delay + 2500);
+        }
+
+        // Função para gerar as partículas de luz brilhante flutuando a partir do miolo
+        function gerarParticula(posX, altura) {
+            const sandbox = document.getElementById('sandbox');
+            const particle = document.createElement('div');
+            particle.className = 'light-glow';
+            
+            // Tamanhos aleatórios para as partículas
+            const tamanho = Math.random() * 8 + 4;
+            particle.style.width = `${tamanho}px`;
+            particle.style.height = `${tamanho}px`;
+            
+            // Posiciona a partir da cabeça da flor
+            particle.style.left = `calc(${posX}% + ${Math.random() * 40 - 20}px)`;
+            particle.style.bottom = `${altura + 10}px`;
+            
+            sandbox.appendChild(particle);
+
+            // Remove a partícula após a animação acabar
+            setTimeout(() => {
+                particle.remove();
+            }, 6000);
+        }
+
+        // Executa a criação do jardim expandido (mais flores!)
+        function iniciarCrescimentoDasFlores() {
+            // Parâmetros: criarFlor(id, posicaoX, alturaMaxima, delay, rotacao)
+
+            // --- LADO ESQUERDO ---
+            criarFlor(1, 15, 130, 200, -22);  // Pequena e inclinada na ponta esquerda
+            criarFlor(1, 23, 200, 500, -12);  // Flor intermediária esquerda
+            criarFlor(1, 32, 250, 0, -6);     // Flor original esquerda alta
+            criarFlor(1, 38, 160, 800, 4);    // Flor mais baixa de preenchimento
+
+            // --- CENTRO ---
+            criarFlor(2, 45, 290, 400, -3);   // Flor alta de suporte ao centro
+            criarFlor(2, 50, 320, 900, 0);    // Flor central principal (a mais alta)
+            criarFlor(2, 56, 260, 1200, 5);   // Flor média direita central
+
+            // --- LADO DIREITO ---
+            criarFlor(3, 64, 170, 700, -6);   // Flor mais baixa de preenchimento
+            criarFlor(3, 70, 270, 1600, 8);   // Flor original direita alta
+            criarFlor(3, 78, 210, 1100, 14);  // Flor intermediária direita
+            criarFlor(3, 85, 140, 1800, 22);  // Pequena e inclinada na ponta direita
+        }
+
+        // Inicializa tudo quando a página abre
+        window.addEventListener('DOMContentLoaded', mostrarTextos);
+    </script>
+</body>
+</html>

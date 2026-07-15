@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Galeria Interactiva - Explorer</title>
+    <style>
+      /* --- Variáveis de Cores --- */
+      :root {
+        --bg-color: #050a12;
+        --text-primary: #ffffff;
+        --text-secondary: #8fa0b5;
+        --accent-color: #92e6e6;
+        --nav-bg: rgba(11, 21, 34, 0.6);
+        --card-border: rgba(146, 230, 230, 0.15);
+      }
+
+      /* --- Reset Geral --- */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: var(--bg-color);
+        color: var(--text-primary);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+      }
+
+      /* --- Container Principal --- */
+      .explorer-container {
+        display: flex;
+        width: 100%;
+        height: 100vh;
+        position: relative;
+      }
+
+      /* --- Barra de Navegação Lateral (Navbar) --- */
+      .nav-sidebar {
+        width: 250px;
+        height: 100%;
+        background: linear-gradient(
+          to right,
+          rgba(5, 10, 18, 0.95),
+          rgba(5, 10, 18, 0.7)
+        );
+        border-right: 1px solid var(--card-border);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 20px;
+        z-index: 10;
+        backdrop-filter: blur(10px);
+        transition: all 0.4s ease;
+      }
+
+      .nav-title {
+        font-size: 0.8rem;
+        letter-spacing: 3px;
+        color: var(--accent-color);
+        text-transform: uppercase;
+        margin-bottom: 30px;
+        padding-left: 10px;
+        opacity: 0.8;
+      }
+
+      .nav-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 12px 15px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+      }
+
+      /* Miniaturas na Nav */
+      .nav-thumb {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 1px solid var(--text-secondary);
+        transition: transform 0.3s ease;
+      }
+
+      .nav-name {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        font-weight: 500;
+        letter-spacing: 1px;
+        transition: color 0.3s ease;
+      }
+
+      /* Hover e Estado Ativo na Nav */
+      .nav-item:hover {
+        background: rgba(146, 230, 230, 0.05);
+      }
+
+      .nav-item:hover .nav-thumb {
+        transform: scale(1.1);
+      }
+
+      .nav-item.active {
+        background: rgba(146, 230, 230, 0.1);
+        border-color: rgba(146, 230, 230, 0.3);
+      }
+
+      .nav-item.active .nav-name {
+        color: var(--accent-color);
+        text-shadow: 0 0 10px rgba(146, 230, 230, 0.4);
+      }
+
+      .nav-item.active .nav-thumb {
+        border-color: var(--accent-color);
+        box-shadow: 0 0 10px rgba(146, 230, 230, 0.5);
+      }
+
+      /* --- Área de Exibição Principal (Viewer) --- */
+      .display-viewer {
+        flex: 1;
+        position: relative;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+      }
+
+      /* Imagem de Fundo/Destaque */
+      .main-image-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+      }
+
+      .main-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        transform: scale(1.05);
+        transition: opacity 1s ease, transform 1.2s ease;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      .main-image.active {
+        opacity: 0.45; /* Deixei mais escura para destacar o texto, estilo o print */
+        transform: scale(1);
+      }
+
+      /* Overlay de Gradiente para dar profundidade de cinema */
+      .overlay-vignette {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle,
+          transparent 20%,
+          var(--bg-color) 90%
+        );
+        z-index: 2;
+        pointer-events: none;
+      }
+
+      /* --- Painel de Informações (Textos) --- */
+      .info-panel {
+        position: relative;
+        z-index: 3;
+        max-width: 600px;
+        text-align: center;
+        padding: 20px;
+        pointer-events: none;
+      }
+
+      .info-subtitle {
+        font-size: 0.8rem;
+        letter-spacing: 5px;
+        color: var(--accent-color);
+        text-transform: uppercase;
+        margin-bottom: 15px;
+        opacity: 0;
+        transform: translateY(-20px);
+        transition: all 0.8s ease;
+      }
+
+      .info-title {
+        font-size: 3.5rem;
+        font-weight: 300;
+        letter-spacing: 8px;
+        text-transform: uppercase;
+        margin-bottom: 25px;
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        opacity: 0;
+        transform: scale(0.95);
+        transition: all 0.8s ease 0.2s;
+      }
+
+      .info-description {
+        font-size: 1rem;
+        line-height: 1.8;
+        color: var(--text-secondary);
+        letter-spacing: 1px;
+        margin-bottom: 30px;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.8s ease 0.4s;
+      }
+
+      /* Ativadores de Animação de Texto */
+      .info-panel.active .info-subtitle {
+        opacity: 0.8;
+        transform: translateY(0);
+      }
+
+      .info-panel.active .info-title {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      .info-panel.active .info-description {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* --- RESPONSIVIDADE (Telas menores/Celulares) --- */
+      @media (max-width: 768px) {
+        .explorer-container {
+          flex-direction: column-reverse; /* Menu vai para baixo no celular */
+        }
+
+        .nav-sidebar {
+          width: 100%;
+          height: auto;
+          border-right: none;
+          border-top: 1px solid var(--card-border);
+          padding: 15px;
+          background: rgba(5, 10, 18, 0.95);
+        }
+
+        .nav-title {
+          display: none; /* Esconde o título do menu no celular para poupar espaço */
+        }
+
+        .nav-list {
+          flex-direction: row;
+          overflow-x: auto;
+          justify-content: flex-start;
+          padding-bottom: 5px;
+          scroll-behavior: smooth;
+        }
+
+        /* Estilização básica da barra de rolagem horizontal do celular */
+        .nav-list::-webkit-scrollbar {
+          height: 4px;
+        }
+        .nav-list::-webkit-scrollbar-thumb {
+          background: var(--card-border);
+          border-radius: 10px;
+        }
+
+        .nav-item {
+          flex-shrink: 0;
+          padding: 8px 12px;
+        }
+
+        .info-title {
+          font-size: 2.2rem;
+          letter-spacing: 4px;
+        }
+
+        .info-description {
+          font-size: 0.9rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="explorer-container">
+      <nav class="nav-sidebar">
+        <h2 class="nav-title">Coleção Explorer</h2>
+        <ul class="nav-list" id="navList"></ul>
+      </nav>
+
+      <main class="display-viewer">
+        <div class="main-image-container" id="imageContainer"></div>
+
+        <div class="overlay-vignette"></div>
+
+        <div class="info-panel" id="infoPanel">
+          <h4 class="info-subtitle" id="infoSubtitle">Subtítulo do Item</h4>
+          <h1 class="info-title" id="infoTitle">Título Principal</h1>
+          <p class="info-description" id="infoDesc">
+            Este é um texto de exemplo que descreve a imagem selecionada no menu
+            ao lado. Você pode alterar toda essa descrição facilmente no arquivo
+            JS.
+          </p>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // --- CONFIGURAÇÃO DE DADOS (Aqui você altera imagens e textos) ---
+      const itensGaleria = [
+        {
+          id: 'item1',
+
+          nome: 'Capítulo 01',
+
+          subtitulo: 'MOMENTOS QUE VIRAM LAR',
+
+          titulo: 'JULIA & MISSI',
+
+          descricao:
+            'Talvez essa seja apenas uma fotografia para qualquer outra pessoa. Para mim, ela sempre será muito mais do que isso. Eu vejo paz. Vejo carinho. Vejo alguém que consegue tornar qualquer lugar mais leve apenas por existir. A luz entrando pela janela ilumina a cena, mas a verdade é que ela nunca foi a coisa mais bonita dessa foto.',
+
+          imgSrc: 'imgs/juliaEmissi.jpeg'
+        },
+
+        {
+          id: 'item2',
+
+          nome: 'Capítulo 02',
+
+          subtitulo: 'ONDE O MUNDO PAROU',
+
+          titulo: 'O MELHOR ABRAÇO',
+
+          descricao:
+            'Naquele momento o mundo continuava girando, as pessoas continuavam passando e o tempo seguia normalmente. Mas, por alguns segundos, nada disso importava. Eu descobri que o meu lugar favorito nunca foi uma cidade, uma casa ou um endereço. Sempre foi exatamente ali, entre os seus braços.',
+
+          imgSrc: 'imgs/bestImg.jpeg'
+        },
+
+        {
+          id: 'item3',
+
+          nome: 'Capítulo 03',
+
+          subtitulo: 'PORQUE NEM TUDO PRECISA SER SÉRIO',
+
+          titulo: 'RISADAS',
+
+          descricao:
+            'Eu amo os momentos bonitos. Mas também amo aqueles completamente aleatórios, onde a gente simplesmente esquece do resto do mundo e ri até faltar ar. São essas pequenas loucuras que fazem qualquer história valer a pena ser lembrada.',
+
+          imgSrc: 'imgs/kkk.jpeg'
+        },
+
+        {
+          id: 'item4',
+
+          nome: 'Capítulo 04',
+
+          subtitulo: 'O ESPORTE QUE ME DEU VOCÊ',
+
+          titulo: 'FUTEVÔLEI',
+
+          descricao:
+            'Muita gente olha para uma quadra e enxerga apenas areia, bola e rede. Eu enxergo muito mais do que isso. Foi naquele ambiente que começaram conversas, brincadeiras, memórias e sentimentos que hoje fazem parte da minha vida. O esporte me deu medalhas... mas também me deu a oportunidade de conhecer você.',
+
+          imgSrc: 'imgs/podio.jpeg'
+        },
+
+        {
+          id: 'item5',
+
+          nome: 'Capítulo 05',
+
+          subtitulo: 'PEQUENAS COISAS',
+
+          titulo: 'DETALHES',
+
+          descricao:
+            'Engraçado como nunca foram os grandes acontecimentos que fizeram você ser especial para mim. Foi o jeito que você sorri quando está feliz. O jeito que cuida de quem ama. O jeito que conversa. O jeito que me acalma sem nem perceber. No fim das contas, foram os detalhes que construíram tudo.',
+
+          imgSrc: 'imgs/carro.jpeg'
+        },
+
+        {
+          id: 'item6',
+
+          nome: 'Capítulo 06',
+
+          subtitulo: 'SE EU PUDESSE ESCOLHER',
+
+          titulo: 'VOCÊ',
+
+          descricao:
+            'Se eu tivesse a oportunidade de voltar no tempo e reviver toda a minha história, mudando absolutamente qualquer coisa... eu só teria um pedido: encontrar você outra vez. Porque existem milhares de caminhos diferentes na vida, mas, depois que conheci você, todos eles passaram a parecer incompletos sem a sua presença.',
+
+          imgSrc: 'imgs/perfil.jpeg'
+        },
+
+        {
+          id: 'item8',
+
+          nome: 'Capítulo 07',
+
+          subtitulo: 'UM MOMENTO QUE FICOU',
+
+          titulo: 'A BANDEIRA',
+
+          descricao:
+            'Talvez, para quem olhe de fora, seja apenas uma foto com uma bandeira. Mas eu nunca consegui enxergar só isso. Eu vejo duas pessoas vivendo um momento que nunca vai acontecer exatamente da mesma forma outra vez. É estranho pensar que um simples clique conseguiu guardar algo que o tempo jamais conseguiria devolver. Sempre que volto para essa foto, não lembro apenas do lugar ou do dia... lembro da felicidade de estar vivendo aquele instante ao seu lado. Existem memórias que o coração escolhe guardar para sempre. Essa é uma delas.',
+
+          imgSrc: 'imgs/bandeira.jpeg'
+        },
+
+        {
+          id: 'item7',
+
+          nome: 'Capítulo Final',
+
+          subtitulo: 'O QUE NENHUMA FOTO CONSEGUE MOSTRAR',
+
+          titulo: 'NÓS',
+
+          descricao:
+            'Fotografias congelam segundos. Mas nenhuma delas consegue registrar o que eu senti em cada um desses momentos. Nenhuma mostra o som da sua risada, a tranquilidade de um abraço, o jeito que você faz qualquer dia ruim melhorar ou a paz que existe quando você está por perto. Talvez seja por isso que eu continue tirando fotos. Não para guardar imagens... mas para tentar guardar um pedacinho daquilo que eu nunca quero esquecer.',
+
+          imgSrc: 'imgs/peugeot.jpeg'
+        }
+      ]
+
+      const navList = document.getElementById('navList')
+      const imageContainer = document.getElementById('imageContainer')
+      const infoPanel = document.getElementById('infoPanel')
+
+      const infoSubtitle = document.getElementById('infoSubtitle')
+      const infoTitle = document.getElementById('infoTitle')
+      const infoDesc = document.getElementById('infoDesc')
+
+      // --- INICIALIZAÇÃO DA PÁGINA ---
+      function construirGaleria() {
+        itensGaleria.forEach((item, index) => {
+          // 1. Criar itens na barra lateral
+          const li = document.createElement('li')
+          li.className = `nav-item ${index === 0 ? 'active' : ''}`
+          li.setAttribute('data-target', item.id)
+          li.onclick = () => alternarSlide(item.id)
+
+          li.innerHTML = `
+                    <img src="${item.imgSrc}" alt="${item.nome}" class="nav-thumb" onerror="this.src='https://placehold.co/100x100/159faa/ffffff?text=Image'">
+                    <span class="nav-name">${item.nome}</span>
+                `
+          navList.appendChild(li)
+
+          // 2. Criar tags de imagens de fundo no visualizador
+          const img = document.createElement('img')
+          img.src = item.imgSrc
+          img.alt = item.titulo
+          img.id = `img-${item.id}`
+          img.className = `main-image ${index === 0 ? 'active' : ''}`
+          // Fallback caso a imagem local ainda não exista no seu PC
+          img.onerror = function () {
+            this.src =
+              'https://placehold.co/1200x800/0b1522/92e6e6?text=' + item.titulo
+          }
+          imageContainer.appendChild(img)
+        })
+
+        // Setar textos iniciais
+        atualizarTextos(itensGaleria[0])
+      }
+
+      // --- ALTERNAR SLIDES ---
+      function alternarSlide(idTarget) {
+        // Remove a classe ativa de todos os botões e imagens
+        document
+          .querySelectorAll('.nav-item')
+          .forEach(btn => btn.classList.remove('active'))
+        document
+          .querySelectorAll('.main-image')
+          .forEach(img => img.classList.remove('active'))
+
+        // Adiciona classe ativa para o botão clicado
+        const activeBtn = document.querySelector(`[data-target="${idTarget}"]`)
+        if (activeBtn) activeBtn.classList.add('active')
+
+        // Adiciona classe ativa na imagem de fundo correspondente
+        const activeImg = document.getElementById(`img-${idTarget}`)
+        if (activeImg) activeImg.classList.add('active')
+
+        // Retira a animação dos textos para dar o efeito "fade out"
+        infoPanel.classList.remove('active')
+
+        // Busca os dados do item clicado
+        const dadosItem = itensGaleria.find(item => item.id === idTarget)
+
+        // Aguarda o fade out dos textos antigos e atualiza para os novos
+        setTimeout(() => {
+          atualizarTextos(dadosItem)
+        }, 400) // Tempo correspondente à transição do CSS
+      }
+
+      function atualizarTextos(dados) {
+        infoSubtitle.textContent = dados.subtitulo
+        infoTitle.textContent = dados.titulo
+        infoDesc.textContent = dados.descricao
+
+        // Ativa os textos novos com animação de subida e entrada
+        infoPanel.classList.add('active')
+      }
+
+      // Inicia a aplicação
+      window.addEventListener('DOMContentLoaded', construirGaleria)
+    </script>
+  </body>
+</html>

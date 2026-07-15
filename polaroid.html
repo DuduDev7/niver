@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uma Lembrança Revelada</title>
+    <style>
+        :root {
+            --bg-color: #080a0f;
+            --polaroid-white: #f4f3ef;
+            --camera-body: #323639;
+            --camera-dark: #1d1f21;
+            --accent-rainbow: linear-gradient(90deg, #ff4b4b, #ffb03a, #ffd43a, #4eff70, #3a97ff, #a63aff);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace; /* Fonte nostálgica */
+            min-height: 100vh;
+            height: 100dvh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            perspective: 1000px;
+            position: relative;
+        }
+
+        /* --- Poeira Cinematográfica / Granulado de Filme --- */
+        .dust-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+            opacity: 0.4;
+        }
+
+        .dust-particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            filter: blur(1px);
+            animation: floatDust 12s infinite linear;
+        }
+
+        @keyframes floatDust {
+            0% {
+                transform: translateY(105vh) translateX(0) scale(0.5);
+                opacity: 0;
+            }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% {
+                transform: translateY(-5vh) translateX(100px) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        /* Vinheta de filme antigo */
+        .vignette {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 30%, rgba(0, 0, 0, 0.95) 100%);
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        /* --- Flash de Luz --- */
+        .flash-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.1s ease-out;
+        }
+
+        .flash-overlay.active {
+            opacity: 1;
+            transition: none; /* Pisca instantaneamente */
+        }
+
+        /* --- Estrutura da Cena --- */
+        .scene {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 450px;
+            height: 100%;
+            position: relative;
+            z-index: 10;
+            padding: 20px;
+        }
+
+        /* --- CÂMERA POLAROID VINTAGE --- */
+        .camera-wrapper {
+            position: relative;
+            width: 260px;
+            height: 230px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            z-index: 12;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .camera-wrapper:hover {
+            transform: scale(1.03) translateY(-5px);
+        }
+
+        .camera-body {
+            width: 100%;
+            height: 180px;
+            background-color: var(--camera-body);
+            border-radius: 20px 20px 10px 10px;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 2px 5px rgba(255,255,255,0.1);
+            border-bottom: 5px solid var(--camera-dark);
+            z-index: 15;
+            overflow: hidden;
+        }
+
+        /* Linha Arco-Íris Clássica da Polaroid */
+        .rainbow-stripe {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 35px;
+            height: 100%;
+            background: var(--accent-rainbow);
+            opacity: 0.85;
+            z-index: 16;
+        }
+
+        /* Lente da Câmera */
+        .lens-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 110px;
+            height: 110px;
+            background-color: var(--camera-dark);
+            border-radius: 50%;
+            border: 6px solid #4a5056;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 17;
+        }
+
+        .lens-glass {
+            width: 70px;
+            height: 70px;
+            background: radial-gradient(circle, #0e1e2d 10%, #03060a 80%);
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid #111;
+        }
+
+        /* Reflexo realista de vidro na lente */
+        .lens-glass::after {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+        }
+
+        /* Botão de Disparo (Gatilho) */
+        .shutter-btn {
+            position: absolute;
+            top: 25px;
+            left: 30px;
+            width: 32px;
+            height: 32px;
+            background-color: #ff4b4b;
+            border-radius: 50%;
+            border: 3px solid #b72727;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.3);
+            cursor: pointer;
+            z-index: 18;
+            transition: transform 0.1s;
+        }
+
+        .shutter-btn:active {
+            transform: scale(0.9) translateY(2px);
+        }
+
+        /* Visor Analógico */
+        .viewfinder {
+            position: absolute;
+            top: 25px;
+            right: 35px;
+            width: 25px;
+            height: 18px;
+            background-color: #15181b;
+            border-radius: 3px;
+            border: 2px solid #5a6065;
+            z-index: 18;
+            position: relative;
+        }
+
+        /* Fenda por onde a foto sai (Slot) */
+        .photo-slot {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 12px;
+            background-color: #0b0c0d;
+            border-radius: 10px 10px 0 0;
+            z-index: 14; /* Atrás do corpo principal para a foto deslizar por trás */
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.8);
+        }
+
+        /* --- FOTO POLAROID --- */
+        .polaroid-photo {
+            position: absolute;
+            bottom: 5px; /* Começa escondida atrás do slot da câmera */
+            width: 180px;
+            height: 215px;
+            background-color: var(--polaroid-white);
+            padding: 12px 12px 35px 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            border-radius: 2px;
+            display: flex;
+            flex-direction: column;
+            z-index: 11;
+            transform-origin: top center;
+            transform: translateY(0) scale(0.9); /* Oculto inicialmente */
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        /* Estados de Animação da Foto */
+        .polaroid-photo.ejecting {
+            opacity: 1;
+            transform: translateY(210px) scale(1);
+            transition: transform 4s cubic-bezier(0.1, 0.4, 0.25, 1), opacity 0.5s;
+        }
+
+        /* Quando a foto estiver pendurada e revelada */
+        .polaroid-photo.hanging {
+            pointer-events: auto;
+            cursor: pointer;
+            animation: gentleSway 5s ease-in-out infinite alternate;
+        }
+
+        /* Quando clicada para aproximar */
+        .polaroid-photo.focused {
+            transform: translateY(80px) scale(1.4) rotate(0deg) !important;
+            animation: none !important;
+            z-index: 50;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+            transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        /* Área interna da imagem */
+        .photo-frame {
+            width: 100%;
+            height: 100%;
+            background-color: #111; /* Fundo preto simulando o papel fotográfico virgem */
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.15);
+        }
+
+        /* A imagem real */
+        .real-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            filter: contrast(1.1) saturate(0.9) sepia(0.25) blur(5px); /* Estilo Vintage inicial */
+            transition: opacity 12s cubic-bezier(0.25, 0.1, 0.25, 1), filter 12s ease;
+        }
+
+        /* Química de Revelação */
+        .polaroid-photo.revealing .real-image {
+            opacity: 1;
+            filter: contrast(1) saturate(1) sepia(0.1) blur(0); /* Filtro nostálgico final */
+        }
+
+        /* Balanço sutil pendurado */
+        @keyframes gentleSway {
+            0% { transform: translateY(210px) rotate(-1deg); }
+            100% { transform: translateY(210px) rotate(1.5deg); }
+        }
+
+        /* --- TEXTOS E LEGENDAS --- */
+        .instruction-text {
+            margin-top: 40px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 2px;
+            text-align: center;
+            transition: opacity 0.5s;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            animation: pulseText 2s infinite;
+        }
+
+        @keyframes pulseText {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.9; }
+        }
+
+        /* Bloco Dinâmico de Legendas */
+        .subtitle-box {
+            position: absolute;
+            bottom: -150px;
+            width: 100%;
+            min-height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 10px;
+            z-index: 10;
+        }
+
+        .typewriter-text {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            letter-spacing: 1.5px;
+            color: #d8e3ed;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.8);
+            border-right: 2px solid rgba(255,255,255,0.75);
+            white-space: nowrap;
+            overflow: hidden;
+            display: none;
+        }
+
+        .typewriter-text.active {
+            display: inline-block;
+            animation: blinkCursor 0.75s step-end infinite;
+        }
+
+        @keyframes blinkCursor {
+            from, to { border-color: transparent }
+            50% { border-color: rgba(255,255,255,0.75); }
+        }
+
+        /* --- TEXTO FINAL & BOTÃO DE CONTINUAR --- */
+        .final-panel {
+            position: absolute;
+            bottom: -240px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1.5s ease, transform 1.5s ease;
+            z-index: 60;
+            pointer-events: none;
+            width: 100%;
+            text-align: center;
+        }
+
+        .final-panel.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .final-message {
+            font-size: 0.95rem;
+            color: #b0c4de;
+            line-height: 1.6;
+            max-width: 320px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .continue-btn {
+            background: transparent;
+            border: 1px solid rgba(146, 230, 230, 0.4);
+            color: #92e6e6;
+            padding: 12px 30px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            letter-spacing: 3px;
+            border-radius: 4px;
+            box-shadow: 0 4px 15px rgba(146, 230, 230, 0.1);
+            transition: all 0.4s ease;
+            text-transform: uppercase;
+        }
+
+        .continue-btn:hover {
+            background: rgba(146, 230, 230, 0.1);
+            box-shadow: 0 4px 20px rgba(146, 230, 230, 0.3);
+            border-color: rgba(146, 230, 230, 0.8);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="vignette"></div>
+
+    <div class="dust-container" id="dustContainer"></div>
+
+    <div class="flash-overlay" id="flashOverlay"></div>
+
+    <div class="scene">
+        <div class="camera-wrapper" id="cameraWrapper" onclick="dispararCamera()">
+            <div class="camera-body">
+                <div class="shutter-btn"></div>
+                <div class="viewfinder"></div>
+                <div class="rainbow-stripe"></div>
+                <div class="lens-ring">
+                    <div class="lens-glass"></div>
+                </div>
+            </div>
+            <div class="photo-slot"></div>
+
+            <div class="polaroid-photo" id="polaroidPhoto" onclick="focarFoto(event)">
+                <div class="photo-frame">
+                    <img src="imgs/bestImg.jpeg" alt="Lembrança Especial" class="real-image" id="realImage" onerror="fallbackPlaceholder(this)">
+                </div>
+            </div>
+        </div>
+
+        <p class="instruction-text" id="instruction">Clique para capturar uma lembrança.</p>
+
+        <div class="subtitle-box">
+            <span class="typewriter-text" id="legendText"></span>
+        </div>
+
+        <div class="final-panel" id="finalPanel">
+            <p class="final-message">
+                [TEXTO FINAL: Escreva aqui sua mensagem definitiva e emocionante, que guarde de forma inesquecível este momento.]
+            </p>
+            <button class="continue-btn" onclick="proximaPagina()">Continuar →</button>
+        </div>
+    </div>
+
+    <script>
+        // --- CONFIGURAÇÃO DOS TEXTOS CURINGA (Sincronizados com a Revelação) ---
+        const frasesRevelacao = [
+            "[TEXTO 1: Um momento capturado no tempo...]",
+            "[TEXTO 2: Onde os sentimentos ganham forma...]",
+            "[TEXTO 3: E as melhores lembranças nunca desaparecem...]",
+            "[TEXTO 4: Feche os olhos, sinta e clique na foto para abrir.]"
+        ];
+
+        let cameraDisparada = false;
+        let fotoFocada = false;
+
+        // --- GERADOR DE POEIRA CINEMATOGRÁFICA ---
+        function gerarPoeira() {
+            const container = document.getElementById('dustContainer');
+            const totalParticulas = 25;
+
+            for (let i = 0; i < totalParticulas; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'dust-particle';
+                
+                const tamanho = Math.random() * 4 + 1.5;
+                particle.style.width = `${tamanho}px`;
+                particle.style.height = `${tamanho}px`;
+                
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Distribuição uniforme de delays
+                particle.style.animationDelay = `${Math.random() * 12}s`;
+                particle.style.animationDuration = `${Math.random() * 8 + 8}s`;
+                
+                container.appendChild(particle);
+            }
+        }
+
+        // --- DISPARO DA CÂMERA ---
+        function dispararCamera() {
+            if (cameraDisparada) return;
+            cameraDisparada = true;
+
+            // Esconde texto de instrução
+            document.getElementById('instruction').style.opacity = '0';
+
+            // 1. Efeito Flash
+            const flash = document.getElementById('flashOverlay');
+            flash.classList.add('active');
+            
+            setTimeout(() => {
+                flash.classList.remove('active');
+            }, 150);
+
+            // 2. Ejeção da Foto (Começa a deslizar para fora)
+            setTimeout(() => {
+                const foto = document.getElementById('polaroidPhoto');
+                foto.classList.add('ejecting');
+            }, 400);
+
+            // 3. Início da Revelação Química da Foto
+            // A foto termina de sair fisicamente por volta dos 4 segundos (4000ms)
+            setTimeout(() => {
+                const foto = document.getElementById('polaroidPhoto');
+                foto.classList.add('revealing');
+                
+                // Iniciar sucessão de textos sincronizados com a revelação
+                revelarFrasesGradualmente();
+            }, 4400);
+        }
+
+        // --- MÁQUINA DE ESCREVER SUAVE ---
+        function escreverTexto(texto, elemento, velocidade = 50, callback = null) {
+            elemento.textContent = "";
+            elemento.classList.add('active');
+            let index = 0;
+
+            function digitar() {
+                if (index < texto.length) {
+                    elemento.textContent += texto.charAt(index);
+                    index++;
+                    setTimeout(digitar, velocidade);
+                } else if (callback) {
+                    // Espera 2.5 segundos com o texto visível antes de chamar o callback para a próxima frase
+                    setTimeout(callback, 2500);
+                }
+            }
+            digitar();
+        }
+
+        // Controla a passagem de cada frase
+        function revelarFrasesGradualmente() {
+            const caixaTexto = document.getElementById('legendText');
+            let fraseAtual = 0;
+
+            function proximaFrase() {
+                if (fraseAtual < frasesRevelacao.length) {
+                    // Fade out suave no texto anterior limpando para o próximo
+                    caixaTexto.style.opacity = '0';
+                    caixaTexto.style.transition = 'opacity 0.5s';
+                    
+                    setTimeout(() => {
+                        caixaTexto.style.opacity = '1';
+                        escreverTexto(frasesRevelacao[fraseAtual], caixaTexto, 60, () => {
+                            fraseAtual++;
+                            proximaFrase();
+                        });
+                    }, 500);
+                } else {
+                    // Concluiu todas as frases de revelação: a foto ganha o efeito de balanço
+                    caixaTexto.classList.remove('active');
+                    caixaTexto.style.display = 'none';
+                    
+                    const foto = document.getElementById('polaroidPhoto');
+                    foto.classList.add('hanging');
+                }
+            }
+            
+            proximaFrase();
+        }
+
+        // --- INTERAÇÃO EXTRA: CLICAR NA FOTO REVELADA ---
+        function focarFoto(event) {
+            // Evita disparar novamente se clicar na foto enquanto dentro da câmera
+            event.stopPropagation();
+            
+            const foto = document.getElementById('polaroidPhoto');
+            if (!foto.classList.contains('hanging') || fotoFocada) return;
+            fotoFocada = true;
+
+            // Transição suave para aproximar
+            foto.classList.remove('hanging');
+            foto.classList.add('focused');
+
+            // Afasta suavemente a câmera do fundo para dar mais destaque
+            document.getElementById('cameraWrapper').style.transform = 'scale(0.9) translateY(-40px)';
+            document.getElementById('cameraWrapper').style.pointerEvents = 'none';
+
+            // Mostra o painel com o texto final e o botão para avançar
+            setTimeout(() => {
+                document.getElementById('finalPanel').classList.add('show');
+            }, 1200);
+        }
+
+        // --- REDIRECIONAMENTO ---
+        function proximaPagina() {
+            window.location.href = "proximaPagina.html";
+        }
+
+        // --- FALLBACK IMAGEM RESERVA ---
+        // Se a sua foto local ainda não existir, o sistema exibe um placeholder cinematográfico para teste automático
+        function fallbackPlaceholder(img) {
+            img.src = 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1000&auto=format&fit=crop';
+        }
+
+        // Inicializa partículas de poeira ambiental na abertura da página
+        window.addEventListener('DOMContentLoaded', gerarPoeira);
+    </script>
+</body>
+</html>
