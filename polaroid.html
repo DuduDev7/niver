@@ -458,20 +458,59 @@
         </div>
 
         <div class="final-panel" id="finalPanel">
-            <p class="final-message">
-                [TEXTO FINAL: Escreva aqui sua mensagem definitiva e emocionante, que guarde de forma inesquecível este momento.]
-            </p>
-            <button class="continue-btn" onclick="proximaPagina()">Continuar →</button>
-        </div>
+
+          <p class="final-message">
+      
+              Se um dia me perguntarem qual foi o lugar onde eu mais me senti em paz,
+              talvez esperem que eu responda uma cidade, uma praia ou algum lugar bonito.
+      
+              Mas a verdade é muito mais simples.
+      
+              O meu lugar favorito nunca foi um lugar.
+      
+              Sempre foi um momento.
+      
+              Sempre foi aquele instante em que o mundo inteiro parecia desaparecer
+              porque eu estava exatamente onde queria estar.
+      
+              Existem milhares de fotografias espalhadas pelo mundo.
+              Algumas registram paisagens.
+              Outras mostram viagens, festas ou grandes acontecimentos.
+      
+              Essa não.
+      
+              Essa guarda algo muito mais raro.
+      
+              Ela guarda a sensação de estar perto da pessoa que, sem perceber,
+              conseguiu transformar dias comuns nas melhores lembranças da minha vida.
+      
+              Talvez, daqui a muitos anos, eu nem consiga lembrar de todos os detalhes daquele dia.
+      
+              Mas tenho certeza de uma coisa:
+      
+              Eu nunca vou esquecer como eu me senti quando esse abraço aconteceu.
+      
+              Porque existem momentos que passam...
+      
+              E existem momentos que passam a morar para sempre dentro da gente.
+      
+          </p>
+      
+      </div>
     </div>
 
     <script>
         // --- CONFIGURAÇÃO DOS TEXTOS CURINGA (Sincronizados com a Revelação) ---
         const frasesRevelacao = [
-            "[TEXTO 1: Um momento capturado no tempo...]",
-            "[TEXTO 2: Onde os sentimentos ganham forma...]",
-            "[TEXTO 3: E as melhores lembranças nunca desaparecem...]",
-            "[TEXTO 4: Feche os olhos, sinta e clique na foto para abrir.]"
+
+          "Dizem que fotografias congelam um instante... mas essa conseguiu guardar um pedaço do meu coração.",
+
+          "Sempre que eu volto para esse momento, percebo que existem abraços que não aquecem apenas o corpo... eles fazem a alma inteira se sentir em casa.",
+
+          "O tempo continua passando, os dias mudam, as pessoas envelhecem... mas existem segundos que simplesmente se recusam a ir embora.",
+
+          "Agora... toque na fotografia. Talvez ela consiga mostrar um pouco daquilo que eu nunca consegui colocar completamente em palavras."
+
         ];
 
         let cameraDisparada = false;
@@ -493,7 +532,6 @@
                 particle.style.left = `${Math.random() * 100}%`;
                 particle.style.top = `${Math.random() * 100}%`;
                 
-                // Distribuição uniforme de delays
                 particle.style.animationDelay = `${Math.random() * 12}s`;
                 particle.style.animationDuration = `${Math.random() * 8 + 8}s`;
                 
@@ -506,7 +544,7 @@
             if (cameraDisparada) return;
             cameraDisparada = true;
 
-            // Esconde texto de instrução
+            // Esconde texto de instrução inicial
             document.getElementById('instruction').style.opacity = '0';
 
             // 1. Efeito Flash
@@ -523,21 +561,24 @@
                 foto.classList.add('ejecting');
             }, 400);
 
-            // 3. Início da Revelação Química da Foto
-            // A foto termina de sair fisicamente por volta dos 4 segundos (4000ms)
+            // 3. Início da Revelação e dos Textos (Sincronizados)
+            // A foto começa a revelar aos 4.4 segundos
             setTimeout(() => {
                 const foto = document.getElementById('polaroidPhoto');
                 foto.classList.add('revealing');
                 
-                // Iniciar sucessão de textos sincronizados com a revelação
+                // Força a exibição da caixa de texto e inicia as frases
+                const caixaTexto = document.getElementById('legendText');
+                caixaTexto.style.display = 'inline-block';
+                caixaTexto.classList.add('active');
+                
                 revelarFrasesGradualmente();
             }, 4400);
         }
 
-        // --- MÁQUINA DE ESCREVER SUAVE ---
+        // --- MÁQUINA DE ESCREVER AJUSTADA ---
         function escreverTexto(texto, elemento, velocidade = 50, callback = null) {
             elemento.textContent = "";
-            elemento.classList.add('active');
             let index = 0;
 
             function digitar() {
@@ -546,33 +587,31 @@
                     index++;
                     setTimeout(digitar, velocidade);
                 } else if (callback) {
-                    // Espera 2.5 segundos com o texto visível antes de chamar o callback para a próxima frase
+                    // Tempo que o texto fica exposto na tela antes de ir para o próximo (2.5 segundos)
                     setTimeout(callback, 2500);
                 }
             }
             digitar();
         }
 
-        // Controla a passagem de cada frase
+        // Controla a passagem automática e limpa de cada frase
         function revelarFrasesGradualmente() {
             const caixaTexto = document.getElementById('legendText');
             let fraseAtual = 0;
 
             function proximaFrase() {
                 if (fraseAtual < frasesRevelacao.length) {
-                    // Fade out suave no texto anterior limpando para o próximo
                     caixaTexto.style.opacity = '0';
-                    caixaTexto.style.transition = 'opacity 0.5s';
                     
                     setTimeout(() => {
                         caixaTexto.style.opacity = '1';
-                        escreverTexto(frasesRevelacao[fraseAtual], caixaTexto, 60, () => {
+                        escreverTexto(frasesRevelacao[fraseAtual], caixaTexto, 50, () => {
                             fraseAtual++;
                             proximaFrase();
                         });
-                    }, 500);
+                    }, 400);
                 } else {
-                    // Concluiu todas as frases de revelação: a foto ganha o efeito de balanço
+                    // Quando todas as frases terminam, esconde o bloco de digitação e ativa o balanço da foto
                     caixaTexto.classList.remove('active');
                     caixaTexto.style.display = 'none';
                     
@@ -586,25 +625,26 @@
 
         // --- INTERAÇÃO EXTRA: CLICAR NA FOTO REVELADA ---
         function focarFoto(event) {
-            // Evita disparar novamente se clicar na foto enquanto dentro da câmera
-            event.stopPropagation();
+            event.stopPropagation(); // Evita bugar cliques múltiplos
             
             const foto = document.getElementById('polaroidPhoto');
+            
+            // Só permite focar se a foto já foi revelada (possui a animação hanging)
             if (!foto.classList.contains('hanging') || fotoFocada) return;
             fotoFocada = true;
 
-            // Transição suave para aproximar
+            // Remove o balanço e aplica o zoom
             foto.classList.remove('hanging');
             foto.classList.add('focused');
 
-            // Afasta suavemente a câmera do fundo para dar mais destaque
-            document.getElementById('cameraWrapper').style.transform = 'scale(0.9) translateY(-40px)';
+            // Afasta a câmera ao fundo
+            document.getElementById('cameraWrapper').style.transform = 'scale(0.85) translateY(-40px)';
             document.getElementById('cameraWrapper').style.pointerEvents = 'none';
 
             // Mostra o painel com o texto final e o botão para avançar
             setTimeout(() => {
                 document.getElementById('finalPanel').classList.add('show');
-            }, 1200);
+            }, 1000);
         }
 
         // --- REDIRECIONAMENTO ---
@@ -612,14 +652,13 @@
             window.location.href = "proximaPagina.html";
         }
 
-        // --- FALLBACK IMAGEM RESERVA ---
-        // Se a sua foto local ainda não existir, o sistema exibe um placeholder cinematográfico para teste automático
+        // Fallback caso a foto local não seja encontrada
         function fallbackPlaceholder(img) {
             img.src = 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1000&auto=format&fit=crop';
         }
 
-        // Inicializa partículas de poeira ambiental na abertura da página
+        // Inicializa as partículas ao abrir a página
         window.addEventListener('DOMContentLoaded', gerarPoeira);
-    </script>
+        </script>
 </body>
 </html>
