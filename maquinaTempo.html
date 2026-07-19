@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chronos — Máquina do Tempo</title>
+    <style>
+      /* --- DESIGN SYSTEM DE CINEMA --- */
+      :root {
+        --bg-color: #000000;
+        --text-color: #ffffff;
+        --text-muted: rgba(255, 255, 255, 0.4);
+        --accent-gold: #f39c12;
+        --accent-rose: #ff7597;
+        --neon-glow: rgba(255, 255, 255, 0.08);
+        --font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont,
+          'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        --font-mono: 'SF Mono', 'Courier New', Courier, monospace;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        background-color: var(--bg-color);
+        overflow-x: hidden;
+      }
+
+      body {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: var(--font-family);
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* --- BACKGROUND CINEMATOGRÁFICO ATIVO (PARTÍCULAS & ESTRELAS) --- */
+      #space-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 1;
+        pointer-events: none;
+        transition: filter 2s ease, background 3s ease;
+        background-color: #000000; /* Garante fundo preto caso o canvas demore a iniciar */
+      }
+
+      /* Vinheta de Câmera IMAX */
+      .vignette {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 2;
+        background: radial-gradient(
+          circle at center,
+          transparent 20%,
+          rgba(0, 0, 0, 0.95) 100%
+        );
+        pointer-events: none;
+      }
+
+      /* --- ELEMENTOS DE TRANSIÇÃO DO SCROLL --- */
+      section {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 20px;
+        z-index: 5;
+        overflow: hidden;
+      }
+
+      /* --- 1. INTRODUÇÃO (INICIALIZAÇÃO) --- */
+      .intro-section {
+        height: 100vh; /* Corrigido de '100h' para '100vh' */
+        justify-content: center;
+      }
+
+      .digital-clock {
+        font-family: var(--font-mono);
+        font-size: 5rem;
+        font-weight: 300;
+        letter-spacing: -2px;
+        color: var(--text-color);
+        text-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
+        margin-bottom: 30px;
+        animation: clockBlink 1.5s infinite steps(1);
+      }
+
+      @keyframes clockBlink {
+        0%,
+        100% {
+          opacity: 1;
+          filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.4));
+        }
+        50% {
+          opacity: 0.7;
+          filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.1));
+        }
+      }
+
+      .terminal-loader {
+        font-family: var(--font-mono);
+        font-size: 0.9rem;
+        letter-spacing: 4px;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        height: 24px;
+        text-align: center;
+      }
+
+      /* Efeito tremor de decolagem na viagem */
+      .warp-shake {
+        animation: warpShake 0.15s infinite alternate;
+      }
+
+      @keyframes warpShake {
+        0% {
+          transform: translate(1px, 1px) rotate(0deg);
+        }
+        100% {
+          transform: translate(-1px, -1px) rotate(0.1deg);
+        }
+      }
+
+      /* --- 2. OS ANOS (LINHA DO TEMPO VERTICAL) --- */
+      .year-section {
+        perspective: 1000px;
+      }
+
+      .year-container {
+        text-align: center;
+        transform-style: preserve-3d;
+        will-change: transform, opacity, filter;
+        opacity: 0;
+        transform: translateZ(-200px) scale(0.7);
+        filter: blur(20px);
+        transition: all 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      /* Ativado via IntersectionObserver */
+      .year-container.reveal {
+        opacity: 1;
+        transform: translateZ(0) scale(1);
+        filter: blur(0px);
+      }
+
+      .year-number {
+        font-size: 15vw;
+        font-weight: 900;
+        line-height: 1;
+        letter-spacing: -10px;
+        background: linear-gradient(
+          180deg,
+          #ffffff 30%,
+          rgba(255, 255, 255, 0.15) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 20px;
+      }
+
+      .year-text {
+        font-size: 1.2rem;
+        max-width: 450px;
+        margin: 0 auto;
+        color: var(--text-muted);
+        line-height: 1.8;
+        font-weight: 300;
+        letter-spacing: 1px;
+        padding: 0 15px;
+      }
+
+      /* --- 3. REVELAÇÃO DO PRESENTE (2026) --- */
+      .climax-section {
+        background: transparent;
+        transition: background 3s ease;
+      }
+
+      .climax-container {
+        text-align: center;
+        max-width: 700px;
+      }
+
+      .climax-line {
+        font-size: 1.8rem;
+        font-weight: 300;
+        line-height: 2;
+        color: #ffffff;
+        margin-bottom: 40px;
+        opacity: 0;
+        filter: blur(10px);
+        transform: translateY(30px);
+        transition: all 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .climax-line.reveal {
+        opacity: 1;
+        filter: blur(0);
+        transform: translateY(0);
+      }
+
+      /* Delay sequencial para as frases do Clímax */
+      .climax-line:nth-child(1) {
+        transition-delay: 0.2s;
+      }
+      .climax-line:nth-child(2) {
+        transition-delay: 1.2s;
+      }
+      .climax-line:nth-child(3) {
+        transition-delay: 2.2s;
+      }
+      .climax-line:nth-child(4) {
+        transition-delay: 3.2s;
+      }
+      .climax-line:nth-child(5) {
+        transition-delay: 4.2s;
+        font-size: 2.2rem;
+        color: var(--accent-rose);
+        text-shadow: 0 0 30px rgba(255, 117, 151, 0.3);
+        font-weight: 400;
+      }
+
+      /* --- 4. LINHA DO TEMPO HORIZONTAL INTERATIVA --- */
+      .timeline-section {
+        justify-content: center;
+      }
+
+      .timeline-wrapper {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        padding: 40px 10px;
+      }
+
+      .timeline-axis {
+        position: relative;
+        height: 2px;
+        background: rgba(255, 255, 255, 0.15);
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .timeline-progress {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(
+          90deg,
+          var(--accent-gold),
+          var(--accent-rose)
+        );
+        transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .timeline-node {
+        width: 16px;
+        height: 16px;
+        background: #111111;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        cursor: pointer;
+        z-index: 10;
+        position: relative;
+        transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+
+      .timeline-node::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 30px;
+        height: 30px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        transition: transform 0.3s;
+      }
+
+      .timeline-node:hover::after,
+      .timeline-node.active::after {
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      .timeline-node.active {
+        background: var(--accent-gold);
+        border-color: #ffffff;
+        box-shadow: 0 0 15px var(--accent-gold);
+        transform: scale(1.2);
+      }
+
+      .timeline-node.heart {
+        border-color: var(--accent-rose);
+      }
+
+      .timeline-node.heart.active {
+        background: var(--accent-rose);
+        box-shadow: 0 0 20px var(--accent-rose);
+      }
+
+      .timeline-card {
+        margin-top: 40px;
+        min-height: 100px;
+        text-align: center;
+        opacity: 0;
+        transform: translateY(15px);
+        transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .timeline-card.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .timeline-card h3 {
+        font-size: 1.1rem;
+        letter-spacing: 3px;
+        color: var(--accent-gold);
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+
+      .timeline-card p {
+        color: var(--text-muted);
+        line-height: 1.6;
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      /* --- 5. CALENDÁRIO FOLHEANDO SOZINHO --- */
+      .calendar-section {
+        justify-content: center;
+      }
+
+      .calendar-box {
+        width: 240px;
+        height: 260px;
+        background: #111111;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+        display: flex;
+        flex-direction: column;
+        transform: scale(0.9);
+        opacity: 0;
+        transition: all 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .calendar-box.reveal {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      .calendar-header {
+        background: #ff3b30;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        letter-spacing: 2px;
+        color: #fff;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      }
+
+      .calendar-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+      }
+
+      .calendar-month {
+        font-size: 2.2rem;
+        font-weight: 300;
+        letter-spacing: -1px;
+        color: #ffffff;
+        opacity: 1;
+        transition: transform 0.15s ease-in, opacity 0.15s ease-in;
+      }
+
+      .calendar-day {
+        font-size: 4rem;
+        font-weight: 800;
+        color: rgba(255, 255, 255, 0.9);
+        margin-top: 5px;
+      }
+
+      /* --- 6. RELÓGIO ANALÓGICO ACELERADO --- */
+      .clock-section {
+        justify-content: center;
+      }
+
+      .analog-clock-wrapper {
+        opacity: 0;
+        transform: scale(0.85);
+        transition: all 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .analog-clock-wrapper.reveal {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      .analog-clock {
+        width: 200px;
+        height: 200px;
+        border: 3px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        position: relative;
+        margin-bottom: 40px;
+        box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.05),
+          0 0 30px rgba(0, 0, 0, 0.5);
+      }
+
+      .analog-clock::after {
+        content: '';
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: #ffffff;
+        border-radius: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+      }
+
+      .hand {
+        position: absolute;
+        bottom: 50%;
+        left: 50%;
+        transform-origin: bottom center;
+        background: #ffffff;
+        border-radius: 4px;
+        transform: rotate(0deg);
+      }
+
+      .hour-hand {
+        width: 4px;
+        height: 50px;
+        margin-left: -2px;
+        background: rgba(255, 255, 255, 0.8);
+      }
+
+      .minute-hand {
+        width: 3px;
+        height: 75px;
+        margin-left: -1.5px;
+        background: rgba(255, 255, 255, 0.5);
+      }
+
+      .second-hand {
+        width: 1.5px;
+        height: 85px;
+        margin-left: -0.75px;
+        background: var(--accent-rose);
+      }
+
+      .clock-message {
+        text-align: center;
+        max-width: 500px;
+        padding: 0 15px;
+      }
+
+      .clock-message h4 {
+        font-size: 1.4rem;
+        font-weight: 300;
+        line-height: 1.8;
+        color: #ffffff;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .clock-message h4.reveal {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .clock-message h4:nth-child(2) {
+        transition-delay: 0.8s;
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        margin-top: 15px;
+      }
+
+      /* --- 7. PARTE EMOCIONAL --- */
+      .emotional-section {
+        padding: 120px 20px;
+      }
+
+      .emotional-text-container {
+        max-width: 600px;
+        width: 100%;
+      }
+
+      .reveal-p {
+        font-size: 1.35rem;
+        font-weight: 300;
+        line-height: 2;
+        color: var(--text-muted);
+        margin-bottom: 80px;
+        opacity: 0;
+        filter: blur(10px);
+        transform: translateY(40px);
+        transition: all 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .reveal-p.reveal {
+        opacity: 1;
+        filter: blur(0);
+        transform: translateY(0);
+        color: #ffffff;
+      }
+
+      .reveal-p span {
+        color: var(--accent-gold);
+        font-weight: 400;
+      }
+
+      /* --- 8. FINAL CINEMATOGRÁFICO --- */
+      .final-section {
+        height: 100vh;
+      }
+
+      .final-container {
+        text-align: center;
+        max-width: 750px;
+      }
+
+      .final-line {
+        font-size: 1.6rem;
+        font-weight: 300;
+        line-height: 2.2;
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 30px;
+        opacity: 0;
+        filter: blur(12px);
+        transform: translateY(30px) scale(0.95);
+        transition: all 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .final-line.reveal {
+        opacity: 1;
+        filter: blur(0);
+        transform: translateY(0) scale(1);
+      }
+
+      .final-line:nth-child(1) {
+        transition-delay: 0.2s;
+      }
+      .final-line:nth-child(2) {
+        transition-delay: 1.4s;
+      }
+      .final-line:nth-child(3) {
+        transition-delay: 2.6s;
+      }
+      .final-line:nth-child(4) {
+        transition-delay: 3.8s;
+        font-size: 2.4rem;
+        font-weight: 400;
+        color: #ffffff;
+        text-shadow: 0 0 40px rgba(255, 255, 255, 0.4);
+      }
+
+      /* Botão Final */
+      .action-button-container {
+        margin-top: 50px;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 1.5s cubic-bezier(0.16, 1, 0.3, 1) 5.2s;
+      }
+
+      .action-button-container.reveal {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .btn-continue {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        color: #ffffff;
+        padding: 16px 36px;
+        font-size: 0.95rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn-continue::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        transition: all 0.6s ease;
+      }
+
+      .btn-continue:hover {
+        border-color: #ffffff;
+        box-shadow: 0 0 30px rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+      }
+
+      .btn-continue:hover::before {
+        left: 100%;
+      }
+
+      /* --- RESPONSIVIDADE EM CELULARES --- */
+      @media (max-width: 768px) {
+        .digital-clock {
+          font-size: 3.5rem;
+        }
+        .year-number {
+          font-size: 24vw;
+          letter-spacing: -4px;
+        }
+        .year-text {
+          font-size: 1rem;
+        }
+        .climax-line {
+          font-size: 1.3rem;
+          line-height: 1.8;
+        }
+        .climax-line:nth-child(5) {
+          font-size: 1.7rem;
+        }
+        .reveal-p {
+          font-size: 1.15rem;
+        }
+        .final-line {
+          font-size: 1.25rem;
+          line-height: 1.8;
+        }
+        .final-line:nth-child(4) {
+          font-size: 1.8rem;
+        }
+        .btn-continue {
+          padding: 14px 28px;
+          font-size: 0.85rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="space-canvas"></canvas>
+    <div class="vignette"></div>
+
+    <section class="intro-section" id="intro">
+      <div class="digital-clock" id="main-clock">00:00:00</div>
+      <div class="terminal-loader" id="loader-text">
+        Inicializando Máquina do Tempo...
+      </div>
+    </section>
+
+    <section class="year-section">
+      <div class="year-container">
+        <div class="year-number">2022</div>
+        <p class="year-text">
+          Melhor deixar para lá né.... eu terminando o 9° e você um ano formada
+          no ensino médio kskkskk.... vamo logo para onde a gente se conheceu
+          né?
+        </p>
+      </div>
+    </section>
+
+    <section class="year-section">
+      <div class="year-container">
+        <div class="year-number">2025</div>
+        <p class="year-text">
+          Foi nesse ano que, sem que eu imaginasse, a minha história começou a
+          mudar. Você entrou para a ALOB onde eu dava aula de futevôlei e, naquele
+          momento, era apenas mais uma aluna entre tantas outras. Eu ainda não
+          fazia ideia de que, algum tempo depois, aquele simples encontro
+          mudaria completamente a minha vida. Hoje eu olho para trás e percebo
+          que aquele foi o primeiro capítulo da nossa história.
+        </p>
+      </div>
+    </section>
+
+    <section class="year-section">
+      <div class="year-container" id="target-2026">
+        <div class="year-number">2026</div>
+        <p class="year-text">
+          Então chegou 2026... O ano em que tudo realmente começou. Foi quando
+          as conversas deixaram de ser apenas cumprimentos, quando as mensagens
+          passaram a durar horas, quando eu comecei a descobrir quem você
+          realmente era. Sem perceber, cada conversa fazia eu querer a próxima.
+          Foi ali que você deixou de ser apenas alguém que treinava comigo e
+          passou a ocupar um lugar que hoje ninguém mais conseguiria ocupar.
+        </p>
+      </div>
+    </section>
+
+    <section class="climax-section" id="climax">
+      <div class="climax-container">
+        <div class="climax-line">O tempo passou...</div>
+        <div class="climax-line">e eu vivi muitas coisas...</div>
+        <div class="climax-line">mas nenhuma...</div>
+        <div class="climax-line">mudou minha vida...</div>
+        <div class="climax-line">como você.</div>
+      </div>
+    </section>
+
+    <section class="timeline-section">
+      <div class="timeline-wrapper">
+        <div class="timeline-axis">
+          <div class="timeline-progress" id="timeProgress"></div>
+          <div
+            class="timeline-node active"
+            onclick="selecionarNo(0, this)"
+          ></div>
+          <div class="timeline-node" onclick="selecionarNo(1, this)"></div>
+          <div class="timeline-node" onclick="selecionarNo(2, this)"></div>
+          <div
+            class="timeline-node heart"
+            onclick="selecionarNo(3, this)"
+          ></div>
+        </div>
+
+        <div class="timeline-card show" id="timelineCard">
+          <h3 id="cardTitle">Momento 1</h3>
+          <p id="cardDesc">
+            O primeiro marco para mim foi o copa laje verão, foi você que me
+            ajudou, foi você que me deu uma carona pros melhores afters ksksk
+            (na frente ainda ne), foi você que me disse que não era ATUM e sim
+            ATENUM kskskks, so faltou a carona mesmo kk... mais você é
+            competitiva e não quis né, mais foi la que eu começei a sentir algo
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="calendar-section" id="calendarSection">
+      <div class="calendar-box" id="calendarBox">
+        <div class="calendar-header">MEMÓRIA</div>
+        <div class="calendar-body">
+          <div class="calendar-month" id="monthDisplay">Janeiro</div>
+          <div class="calendar-day">28</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="clock-section" id="clockSection">
+      <div class="analog-clock-wrapper" id="analogClockWrapper">
+        <div class="analog-clock">
+          <div class="hand hour-hand" id="hourHand"></div>
+          <div class="hand minute-hand" id="minHand"></div>
+          <div class="hand second-hand" id="secHand"></div>
+        </div>
+      </div>
+      <div class="clock-message">
+        <h4 class="clock-reveal">"Existem momentos..."</h4>
+        <h4 class="clock-reveal">
+          "...que fazem o tempo perder completamente o sentido."
+        </h4>
+      </div>
+    </section>
+
+    <section class="emotional-section">
+      <div class="emotional-text-container">
+        <p class="reveal-p">
+          Antes de você, os dias simplesmente passavam. Eu estudava, trabalhava,
+          treinava, ria... mas tudo parecia seguir exatamente o mesmo roteiro.
+          Era como assistir ao tempo correr sem realmente perceber que ele
+          estava indo embora.
+        </p>
+
+        <p class="reveal-p">
+          Então você apareceu. E, de alguma forma,
+          <span>todos os relógios do universo</span> pareceram perder o sentido.
+          Os dias começaram a ficar mais leves, as horas passaram a voar quando
+          estávamos juntos e, pela primeira vez, eu senti que estava vivendo o
+          presente de verdade.
+        </p>
+
+        <p class="reveal-p">
+          O mais bonito é que não foram grandes acontecimentos que fizeram tudo
+          mudar. Foram as pequenas conversas, as risadas sem motivo, os abraços,
+          os olhares, os momentos simples que, sem fazer barulho, acabaram se
+          tornando as melhores lembranças da minha vida. Você transformou o
+          comum em algo extraordinário.
+        </p>
+
+        <p class="reveal-p">
+          Hoje eu percebo que o tempo nunca foi apenas uma sequência de dias.
+          Ele foi preparando cada detalhe para que nossos caminhos se
+          encontrassem. E se existe alguma coisa que eu realmente quero para o
+          futuro, é continuar vivendo novos capítulos dessa história... sempre
+          ao seu lado.
+        </p>
+      </div>
+    </section>
+
+    <section class="final-section">
+      <div class="final-container">
+        <div class="final-line">Se eu pudesse voltar no tempo...</div>
+        <div class="final-line">eu faria exatamente tudo igual...</div>
+        <div class="final-line">porque foi cada segundo...</div>
+        <div class="final-line">que me trouxe até você.</div>
+
+      </div>
+    </section>
+
+    <script>
+      // --- CONFIGURAÇÃO DE TEXTOS DA LINHA DO TEMPO HORIZONTAL ---
+      const dadosTimeline = [
+        {
+          titulo: 'Copa Laje de Verão ✧',
+          desc: 'O primeiro marco para mim foi a Copa Laje de Verão. Foi você quem me ajudou, quem me deu carona pros melhores afters (na frente ainda, né?), quem me corrigiu dizendo que não era ATUM e sim ATENUM kkkk. Ali eu comecei a sentir algo especial bater mais forte.'
+        },
+        {
+          titulo: 'Primeira Risada ✦',
+          desc: 'O momento em que descobrimos que nossa sintonia era única. A risada fácil e espontânea que confirmou para mim que eu escolhi a pessoa certa e percebi que a minha vida estava mudando de rumo de um jeito lindo.'
+        },
+        {
+          titulo: 'A Grande Descoberta ☼',
+          desc: 'O dia em que percebemos que as conversas de horas nas madrugadas não eram por acaso. Nossas vidas começaram a se conectar em uma frequência que só a gente entendia.'
+        },
+        {
+          titulo: 'O Amor Floresce ❤️',
+          desc: 'O ponto em que percebi que não dava mais para negar: o melhor lugar do mundo inteiro é aqui, exatamente ao seu lado.'
+        }
+      ]
+
+      const meses = [
+        'Janeiro',
+        'Fevereiro',
+        'Março',
+        'Abril',
+        'Maio',
+        'Junho',
+        'Julho',
+        'Agosto',
+        'Setembro',
+        'Outubro',
+        'Novembro',
+        'Dezembro'
+      ]
+      const mesLimiteParaParar = 5 // Para em Novembro
+
+      // --- CANVAS DE ESTRELAS/PARTÍCULAS CINEMATOGRÁFICAS ---
+      const canvas = document.getElementById('space-canvas')
+      const ctx = canvas.getContext('2d')
+      let particles = []
+      let numParticles = 120
+      let starSpeed = 0.5
+
+      function resizeCanvas() {
+        canvas.width = window.innerWidth
+        canvas.height = window.innerHeight
+      }
+      window.addEventListener('resize', resizeCanvas)
+      resizeCanvas()
+
+      class Particle {
+        constructor() {
+          this.reset()
+        }
+        reset() {
+          this.x = Math.random() * canvas.width
+          this.y = Math.random() * canvas.height
+          this.size = Math.random() * 2 + 0.5
+          this.baseAlpha = Math.random() * 0.5 + 0.3
+          this.alpha = this.baseAlpha
+          this.fadeSpeed = Math.random() * 0.02 + 0.005
+          this.speedX = (Math.random() - 0.5) * 0.1
+          this.speedY = -Math.random() * starSpeed - 0.2
+        }
+        update() {
+          this.y += this.speedY
+          this.x += this.speedX
+
+          this.alpha += this.fadeSpeed
+          if (this.alpha > 1 || this.alpha < 0.2) {
+            this.fadeSpeed = -this.fadeSpeed
+          }
+
+          if (this.y < -10 || this.x < -10 || this.x > canvas.width + 10) {
+            this.reset()
+            this.y = canvas.height + 5
+          }
+        }
+        draw() {
+          ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`
+          ctx.beginPath()
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
+          ctx.fill()
+        }
+      }
+
+      function initStars() {
+        particles = []
+        for (let i = 0; i < numParticles; i++) {
+          particles.push(new Particle())
+        }
+      }
+
+      function animateStars() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        particles.forEach(p => {
+          p.update()
+          p.draw()
+        })
+        requestAnimationFrame(animateStars)
+      }
+
+      initStars()
+      animateStars()
+
+      // --- SISTEMA DE INICIALIZAÇÃO DA MÁQUINA ---
+      let startSequenceCompleted = false
+
+      function runIntroSequence() {
+        const clock = document.getElementById('main-clock')
+        const loaderText = document.getElementById('loader-text')
+        const body = document.body
+
+        body.style.overflowY = 'hidden'
+
+        let clockInterval = setInterval(() => {
+          let hh = String(Math.floor(Math.random() * 24)).padStart(2, '0')
+          let mm = String(Math.floor(Math.random() * 60)).padStart(2, '0')
+          let ss = String(Math.floor(Math.random() * 60)).padStart(2, '0')
+          clock.textContent = `${hh}:${mm}:${ss}`
+        }, 50)
+
+        setTimeout(() => {
+          loaderText.textContent = 'Calculando coordenadas...'
+        }, 1500)
+        setTimeout(() => {
+          loaderText.textContent = 'Destino encontrado: 2022-2026'
+        }, 3000)
+
+        setTimeout(() => {
+          document.getElementById('intro').classList.add('warp-shake')
+          starSpeed = 6
+          particles.forEach(p => (p.speedY = -Math.random() * starSpeed - 2))
+        }, 3800)
+
+        setTimeout(() => {
+          document.getElementById('intro').classList.remove('warp-shake')
+          clearInterval(clockInterval)
+
+          const agora = new Date()
+          clock.textContent = `${String(agora.getHours()).padStart(
+            2,
+            '0'
+          )}:${String(agora.getMinutes()).padStart(2, '0')}:${String(
+            agora.getSeconds()
+          ).padStart(2, '0')}`
+          loaderText.textContent = 'Sincronização Concluída. Role para baixo.'
+
+          body.style.overflowY = 'auto'
+          startSequenceCompleted = true
+        }, 5200)
+      }
+
+      window.onload = runIntroSequence
+
+      // --- INTERSECTION OBSERVER ---
+      const observerOptions = {
+        threshold: 0.25,
+        rootMargin: '0px 0px -10% 0px'
+      }
+
+      const generalObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('reveal')
+          }
+        })
+      }, observerOptions)
+
+      document
+        .querySelectorAll(
+          '.year-container, .climax-line, .calendar-box, .analog-clock-wrapper, .clock-reveal, .reveal-p, .final-line, #finalAction'
+        )
+        .forEach(el => {
+          generalObserver.observe(el)
+        })
+
+      // --- INTERAÇÃO DA LINHA DO TEMPO HORIZONTAL ---
+      function selecionarNo(index, elemento) {
+        const nodes = document.querySelectorAll('.timeline-node')
+        nodes.forEach(n => n.classList.remove('active'))
+        elemento.classList.add('active')
+
+        const progresso = (index / (nodes.length - 1)) * 100
+        document.getElementById('timeProgress').style.width = `${progresso}%`
+
+        const card = document.getElementById('timelineCard')
+        card.classList.remove('show')
+
+        setTimeout(() => {
+          document.getElementById('cardTitle').textContent =
+            dadosTimeline[index].titulo
+          document.getElementById('cardDesc').textContent =
+            dadosTimeline[index].desc
+          card.classList.add('show')
+        }, 400)
+      }
+
+      // --- CONTROLE DE ANIMAÇÃO DO CALENDÁRIO ---
+      let calendarAnimated = false
+      const calendarObserver = new IntersectionObserver(
+        entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting && !calendarAnimated) {
+              calendarAnimated = true
+              rodarCalendario()
+            }
+          })
+        },
+        { threshold: 0.5 }
+      )
+
+      calendarObserver.observe(document.getElementById('calendarSection'))
+
+      function rodarCalendario() {
+        const mesDisplay = document.getElementById('monthDisplay')
+        let i = 0
+        let tempo = 100
+
+        function ciclo() {
+          mesDisplay.style.opacity = 0
+          mesDisplay.style.transform = 'translateY(-10px)'
+
+          setTimeout(() => {
+            mesDisplay.textContent = meses[i]
+            mesDisplay.style.opacity = 1
+            mesDisplay.style.transform = 'translateY(0)'
+
+            if (i < mesLimiteParaParar) {
+              i++
+              tempo += 30 // Desaceleração gradual cinematográfica
+              setTimeout(ciclo, tempo)
+            }
+          }, 150)
+        }
+        ciclo()
+      }
+
+      // --- RELÓGIO ANALÓGICO ACELERADO ---
+      let clockInterval
+      const clockObserver = new IntersectionObserver(
+        entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              iniciarRelogioAcelerado()
+            } else {
+              clearInterval(clockInterval)
+            }
+          })
+        },
+        { threshold: 0.5 }
+      )
+
+      clockObserver.observe(document.getElementById('clockSection'))
+
+      function iniciarRelogioAcelerado() {
+        const hrHand = document.getElementById('hourHand')
+        const minHand = document.getElementById('minHand')
+        const secHand = document.getElementById('secHand')
+        let totalSegundos = 0
+
+        clockInterval = setInterval(() => {
+          totalSegundos += 45 // Avanço hiper acelerado
+
+          const grausSegundos = (totalSegundos % 60) * 6
+          const grausMinutos = ((totalSegundos / 60) % 60) * 6
+          const grausHoras = ((totalSegundos / 3600) % 12) * 30
+
+          secHand.style.transform = `rotate(${grausSegundos}deg)`
+          minHand.style.transform = `rotate(${grausMinutos}deg)`
+          hrHand.style.transform = `rotate(${grausHoras}deg)`
+        }, 30)
+      }
+
+      // --- BOTÃO FINAL DE AÇÃO ---
+      function avancarHistoria() {
+        alert(
+          'A máquina do tempo guardou essa história para sempre. ❤️ O seu futuro começa agora!'
+        )
+      }
+    </script>
+  </body>
+</html>

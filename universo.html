@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>O Universo Escolheu Você</title>
+    <style>
+      /* --- DESIGN SYSTEM MINIMALISTA & CINEMATOGRÁFICO --- */
+      :root {
+        --bg-deep: #020205;
+        --text-pure: #ffffff;
+        --text-muted: rgba(255, 255, 255, 0.45);
+        --star-white: #ffffff;
+        --star-pink: #ff7ebb;
+        --gold-glow: #f39c12;
+        --cosmic-blue: rgba(10, 25, 50, 0.5);
+        --font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont,
+          'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        --font-mono: 'SF Mono', 'Courier New', monospace;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        background-color: #020205; /* Cor de segurança imediata */
+        background: var(--bg-deep);
+        color: var(--text-pure);
+        font-family: var(--font-family);
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+        -webkit-font-smoothing: antialiased;
+        width: 100%;
+      }
+
+      /* --- CANVAS INTERATIVO INDESTRUTÍVEL --- */
+      #universe-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 1;
+        pointer-events: none;
+        transition: filter 1.5s ease;
+      }
+
+      /* Vinheta Cinematográfica (Efeito Lente IMAX) */
+      .vignette {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: radial-gradient(
+          circle at center,
+          transparent 30%,
+          rgba(2, 2, 5, 0.95) 100%
+        );
+        z-index: 2;
+        pointer-events: none;
+      }
+
+      /* --- SEÇÕES E FLUXO --- */
+      section {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 60px 24px;
+        z-index: 5;
+        overflow: hidden;
+        text-align: center;
+      }
+
+      /* --- 1. ABERTURA EM SILÊNCIO & DADOS --- */
+      .intro-section {
+        height: 100vh;
+      }
+
+      .data-display {
+        opacity: 0;
+        transform: translateY(40px) scale(0.98);
+        filter: blur(10px);
+        transition: all 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+        max-width: 800px;
+      }
+
+      .data-display.reveal {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+      }
+
+      .data-label {
+        font-family: var(--font-mono);
+        font-size: 1.1rem;
+        letter-spacing: 6px;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        margin-bottom: 20px;
+      }
+
+      .data-big-number {
+        font-size: 11vw;
+        font-weight: 800;
+        letter-spacing: -6px;
+        line-height: 1;
+        background: linear-gradient(
+          180deg,
+          #ffffff 40%,
+          rgba(255, 255, 255, 0.2) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 25px;
+        filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.15));
+      }
+
+      .data-sub {
+        font-size: 1.4rem;
+        font-weight: 300;
+        letter-spacing: 2px;
+        color: var(--text-pure);
+      }
+
+      /* --- 2. A VIAGEM DAS DUAS ESTRELAS --- */
+      .journey-section {
+        min-height: 250vh; /* Seção estendida para simular a viagem no scroll */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+      }
+
+      .journey-card {
+        max-width: 550px;
+        opacity: 0;
+        filter: blur(10px);
+        transform: translateY(50px);
+        transition: all 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+        margin: 150px auto;
+      }
+
+      .journey-card.reveal {
+        opacity: 1;
+        filter: blur(0);
+        transform: translateY(0);
+      }
+
+      .journey-card p {
+        font-size: 1.35rem;
+        font-weight: 300;
+        line-height: 1.8;
+        color: #d2d2d9;
+        letter-spacing: 1px;
+      }
+
+      /* --- 3. REVELAÇÃO DO SCROLL (TEXTOS EMOCIONAIS) --- */
+      .scrolling-text-section {
+        padding: 150px 24px;
+      }
+
+      .scrolling-container {
+        max-width: 650px;
+        width: 100%;
+      }
+
+      .reveal-text {
+        font-size: 1.8rem;
+        font-weight: 300;
+        line-height: 2;
+        color: var(--text-muted);
+        margin-bottom: 120px;
+        opacity: 0;
+        filter: blur(8px);
+        transform: translateY(40px);
+        transition: all 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .reveal-text.reveal {
+        opacity: 1;
+        filter: blur(0);
+        transform: translateY(0);
+        color: var(--text-pure);
+      }
+
+      .reveal-text span {
+        color: var(--star-pink);
+        font-weight: 400;
+        text-shadow: 0 0 15px rgba(255, 126, 187, 0.4);
+      }
+
+      /* --- 4. O MERGULHO NO CORAÇÃO (ZOOM) --- */
+      .zoom-section {
+        height: 120vh;
+      }
+
+      .zoom-message {
+        font-size: 2.2rem;
+        font-weight: 300;
+        letter-spacing: 4px;
+        max-width: 700px;
+        opacity: 0;
+        transform: scale(0.9);
+        filter: blur(10px);
+        transition: all 2s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .zoom-message.reveal {
+        opacity: 1;
+        transform: scale(1);
+        filter: blur(0);
+      }
+
+      /* --- 5. CONSTELAÇÃO --- */
+      .constellation-section {
+        height: 120vh;
+      }
+
+      /* --- 6. A ESTRELA GUIA ("VOCÊ") --- */
+      .guiding-star-section {
+        height: 120vh;
+      }
+
+      .guide-box {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .guide-box.reveal {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .guide-title {
+        font-size: 6rem;
+        font-weight: 200;
+        letter-spacing: 12px;
+        margin-bottom: 20px;
+        color: #ffffff;
+        text-shadow: 0 0 40px rgba(255, 255, 255, 0.6);
+      }
+
+      .guide-subtitle {
+        font-size: 1.4rem;
+        font-weight: 300;
+        letter-spacing: 3px;
+        color: var(--text-muted);
+      }
+
+      /* --- 7. FINAL POÉTICO E BOTÃO --- */
+      .final-section {
+        min-height: 100vh;
+        justify-content: center;
+      }
+
+      .final-container {
+        max-width: 800px;
+      }
+
+      .final-paragraph {
+        font-size: 1.5rem;
+        font-weight: 300;
+        line-height: 2.2;
+        color: rgba(255, 255, 255, 0.75);
+        margin-bottom: 50px;
+        opacity: 0;
+        filter: blur(10px);
+        transform: translateY(30px);
+        transition: all 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .final-paragraph.reveal {
+        opacity: 1;
+        filter: blur(0);
+        transform: translateY(0);
+      }
+
+      /* Sequenciamento do bloco final */
+      .final-paragraph:nth-child(1) {
+        transition-delay: 0.2s;
+      }
+      .final-paragraph:nth-child(2) {
+        transition-delay: 1.5s;
+      }
+      .final-paragraph:nth-child(3) {
+        transition-delay: 2.8s;
+        font-size: 1.7rem;
+        color: #ffffff;
+        font-weight: 400;
+      }
+
+      .action-container {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 1.5s cubic-bezier(0.16, 1, 0.3, 1) 4.2s; /* Delay para carregar após os textos */
+      }
+
+      .action-container.reveal {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .btn-continue {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: var(--text-pure);
+        padding: 16px 40px;
+        font-size: 0.9rem;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn-continue::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        transition: all 0.6s ease;
+      }
+
+      .btn-continue:hover {
+        border-color: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 0 35px rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+      }
+
+      .btn-continue:hover::before {
+        left: 100%;
+      }
+
+      /* --- RESPONSIVIDADE --- */
+      @media (max-width: 768px) {
+        .data-big-number {
+          font-size: 18vw;
+          letter-spacing: -2px;
+        }
+        .data-sub {
+          font-size: 1.1rem;
+        }
+        .journey-card p {
+          font-size: 1.1rem;
+        }
+        .reveal-text {
+          font-size: 1.35rem;
+        }
+        .zoom-message {
+          font-size: 1.6rem;
+        }
+        .guide-title {
+          font-size: 4rem;
+          letter-spacing: 6px;
+        }
+        .final-paragraph {
+          font-size: 1.15rem;
+          line-height: 1.8;
+        }
+        .final-paragraph:nth-child(3) {
+          font-size: 1.3rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="universe-canvas"></canvas>
+
+    <div class="vignette"></div>
+
+    <section class="intro-section" id="intro-data-1">
+      <div class="data-display" id="data-block-1">
+        <div class="data-label">Cosmologia</div>
+        <div class="data-big-number">200B</div>
+        <div class="data-sub">
+          de estrelas espalhadas pela Via Láctea, cada uma queimando em silêncio há milhões de anos.
+        </div>
+      </div>
+    </section>
+
+    <section class="intro-section" id="intro-data-2">
+      <div class="data-display" id="data-block-2">
+        <div class="data-label">Existência humana</div>
+        <div class="data-big-number">8B</div>
+        <div class="data-sub">
+          de pessoas vivendo ao mesmo tempo, sonhando, errando, procurando alguém sem saber quem.
+        </div>
+      </div>
+    </section>
+
+    <section class="intro-section" id="intro-data-3">
+      <div class="data-display" id="data-block-3">
+        <div class="data-label">Probabilidade</div>
+        <div class="data-big-number">∞</div>
+        <div class="data-sub">
+          de caminhos diferentes, escolhas improváveis e encontros que jamais deveriam acontecer.
+        </div>
+      </div>
+    </section>
+
+    <section class="journey-section">
+      <div class="journey-card">
+        <p>
+          Muito antes de eu saber o seu nome, muito antes de você imaginar a minha existência,
+          algo já estava acontecendo. Como duas partículas perdidas no meio do universo,
+          nossos caminhos começaram a se aproximar sem que nenhum de nós percebesse.
+        </p>
+      </div>
+
+      <div class="journey-card">
+        <p>
+          Nós atravessamos anos diferentes, pessoas diferentes, medos diferentes.
+          Passamos por dias ruins, mudanças, dúvidas e escolhas que pareciam aleatórias,
+          mas que, olhando agora, eram apenas curvas levando exatamente ao mesmo lugar.
+        </p>
+      </div>
+
+      <div class="journey-card">
+        <p>
+          E quando finalmente nos encontramos, tudo ficou estranhamente familiar.
+          Como se o universo inteiro tivesse passado anos organizando estrelas,
+          horários e coincidências apenas para que, em algum momento,
+          eu pudesse olhar para você e sentir: <span>"era você."</span>
+        </p>
+      </div>
+    </section>
+
+    <section class="scrolling-text-section">
+      <div class="scrolling-container">
+        <p class="reveal-text">
+          Talvez todas as galáxias estejam em movimento...
+        </p>
+
+        <p class="reveal-text">
+          ...porque o universo inteiro nunca para de procurar conexões.
+        </p>
+
+        <p class="reveal-text">
+          Talvez as estrelas brilhem tanto...
+        </p>
+
+        <p class="reveal-text">
+          ...para lembrar que até no escuro existe alguém destinado a iluminar a nossa vida.
+        </p>
+
+        <p class="reveal-text">
+          E talvez toda essa imensidão exista apenas para provar...
+        </p>
+
+        <p class="reveal-text">
+          ...que <span>o universo nunca errou quando colocou você no meu caminho.</span>
+        </p>
+      </div>
+    </section>
+
+    <section class="zoom-section">
+      <div class="zoom-message">
+        Eu achava que conhecia o significado de infinito.
+        Até descobrir que ele pode caber dentro de um abraço,
+        de uma conversa à noite, de um olhar que faz o tempo esquecer de passar.
+      </div>
+    </section>
+
+    <section class="constellation-section"></section>
+
+    <section class="guiding-star-section">
+      <div class="guide-box">
+        <div class="guide-title">Você.</div>
+
+        <div class="guide-subtitle">
+          Entre bilhões de estrelas, bilhões de pessoas e infinitas possibilidades...
+          eu ainda encontraria você.
+        </div>
+      </div>
+    </section>
+
+    <section class="final-section">
+      <div class="final-container">
+
+        <p class="final-paragraph">
+          Talvez tenha sido destino.
+          Talvez coincidência.
+          Talvez apenas o acaso mais bonito que já aconteceu comigo.
+        </p>
+
+        <p class="final-paragraph">
+          Eu só sei que, entre todos os lugares do mundo,
+          entre todas as pessoas que eu poderia ter conhecido,
+          foi você quem transformou o meu tempo em algo precioso.
+        </p>
+
+        <p class="final-paragraph">
+          Antes de você, os dias passavam.
+          Depois de você, eles começaram a significar alguma coisa.
+        </p>
+
+        <p class="final-paragraph">
+          E se existirem infinitos universos,
+          infinitas versões da realidade
+          e infinitas histórias possíveis...
+        </p>
+
+        <p class="final-paragraph">
+          eu continuaria escolhendo exatamente esta:
+          a que me trouxe até você.
+        </p>
+
+        <p class="final-paragraph">
+          Porque de todas as probabilidades absurdas do cosmos,
+          a mais bonita foi a nossa.
+        </p>
+
+
+      </div>
+    </section>
+
+    <script>
+      // --- MOTOR DE CANVAS CINEMATOGRÁFICO ---
+      const canvas = document.getElementById('universe-canvas')
+      const ctx = canvas.getContext('2d')
+
+      let stars = []
+      let numStars = 150
+
+      // Estrelas Viajantes (O Encontro)
+      let starPink = {
+        x: 0,
+        y: 0,
+        targetX: 0,
+        targetY: 0,
+        size: 4,
+        color: '#ff7ebb',
+        glow: '#ff7ebb',
+        particles: []
+      }
+      let starWhite = {
+        x: 0,
+        y: 0,
+        targetX: 0,
+        targetY: 0,
+        size: 4,
+        color: '#ffffff',
+        glow: '#a2d2ff',
+        particles: []
+      }
+      let journeyProgress = 0
+      let starsMet = false
+      let explosionGlow = 0
+      let systemRotation = 0
+
+      // Coração de Partículas
+      let heartParticles = []
+      let heartSizeFactor = 0.001 // Usado para dar o efeito de zoom
+
+      // Constelação
+      let constellationStars = []
+      let constellationProgress = 0
+
+      // Controle de Estado de Scroll Global
+      let currentScrollY = 0
+      let windowHeight = window.innerHeight
+
+      function resize() {
+        canvas.width = window.innerWidth
+        canvas.height = window.innerHeight
+        windowHeight = window.innerHeight
+        initConstellation()
+      }
+      window.addEventListener('resize', resize)
+
+      // --- SISTEMA DE ESTRELAS DE FUNDO ---
+      class BackgroundStar {
+        constructor() {
+          this.x = Math.random() * canvas.width
+          this.y = Math.random() * canvas.height
+          this.size = Math.random() * 1.5 + 0.5
+          this.alpha = Math.random()
+          this.speed = Math.random() * 0.02 + 0.005
+          this.color = Math.random() > 0.8 ? '#ffdfef' : '#ffffff'
+        }
+        draw() {
+          this.alpha += this.speed
+          if (this.alpha > 1 || this.alpha < 0.1) this.speed = -this.speed
+
+          ctx.fillStyle = this.color
+          ctx.globalAlpha = Math.abs(this.alpha)
+          ctx.beginPath()
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
+          ctx.fill()
+        }
+      }
+
+      function initStars() {
+        stars = []
+        for (let i = 0; i < numStars; i++) {
+          stars.push(new BackgroundStar())
+        }
+      }
+
+      // --- GERADOR DE PARTÍCULAS EM RASTRO ---
+      function emitTrail(star, color) {
+        if (Math.random() > 0.4) {
+          star.particles.push({
+            x: star.x,
+            y: star.y,
+            vx: (Math.random() - 0.5) * 1,
+            vy: (Math.random() - 0.5) * 1,
+            size: Math.random() * 2 + 0.5,
+            alpha: 1,
+            life: 1
+          })
+        }
+      }
+
+      function updateTrail(star, color) {
+        for (let i = star.particles.length - 1; i >= 0; i--) {
+          let p = star.particles[i]
+          p.x += p.vx
+          p.y += p.vy
+          p.life -= 0.02
+          if (p.life <= 0) {
+            star.particles.splice(i, 1)
+          } else {
+            ctx.fillStyle = color
+            ctx.globalAlpha = p.life
+            ctx.beginPath()
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
+            ctx.fill()
+          }
+        }
+      }
+
+      // --- CRIAÇÃO DO CORAÇÃO DE CANVAS ---
+      function getHeartPoint(t) {
+        // Equação matemática elegante do coração cartesiano
+        let x = 16 * Math.sin(t) ** 3
+        let y =
+          13 * Math.cos(t) -
+          5 * Math.cos(2 * t) -
+          2 * Math.cos(3 * t) -
+          Math.cos(4 * t)
+        return { x: x * 12, y: -y * 12 } // Escala base
+      }
+
+      function initHeart() {
+        heartParticles = []
+        let steps = 180
+        for (let i = 0; i < steps; i++) {
+          let t = (i / steps) * Math.PI * 2
+          let targetPos = getHeartPoint(t)
+          heartParticles.push({
+            x: (Math.random() - 0.5) * canvas.width * 0.5,
+            y: (Math.random() - 0.5) * canvas.height * 0.5,
+            targetX: targetPos.x,
+            targetY: targetPos.y,
+            size: Math.random() * 2 + 0.6,
+            speed: Math.random() * 0.02 + 0.01,
+            pulsePhase: Math.random() * Math.PI * 2,
+            color: Math.random() > 0.6 ? '#ffffff' : '#ff7ebb'
+          })
+        }
+      }
+
+      // --- CRIAÇÃO DA CONSTELAÇÃO (INFINITY OU HEART) ---
+      function initConstellation() {
+        constellationStars = []
+        let points = []
+        // Desenha a equação do infinito (Lemniscata de Bernoulli)
+        for (let t = 0; t < Math.PI * 2; t += 0.15) {
+          let scale = 160 / (3 - Math.cos(2 * t))
+          let x = scale * Math.cos(t)
+          let y = (scale * Math.sin(2 * t)) / 2
+          points.push({ x: x, y: y })
+        }
+
+        points.forEach(p => {
+          constellationStars.push({
+            currentX: p.x + (Math.random() - 0.5) * 80,
+            currentY: p.y + (Math.random() - 0.5) * 80,
+            targetX: p.x,
+            targetY: p.y,
+            size: Math.random() * 2 + 1
+          })
+        })
+      }
+
+      // --- LOOP PRINCIPAL DO UNIVERSO (MOTOR RENDERIZADOR) ---
+      function animateUniverse() {
+        ctx.fillStyle = '#020205'
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+        ctx.globalAlpha = 1
+
+        // 1. Renderiza estrelas de fundo
+        stars.forEach(s => s.draw())
+
+        // --- ESTÁGIO 1: A VIAGEM DAS DUAS ESTRELAS ---
+        let scrollFactor = currentScrollY / (windowHeight * 3.5)
+        if (scrollFactor < 0) scrollFactor = 0
+        if (scrollFactor > 1.2) scrollFactor = 1.2
+
+        if (scrollFactor < 1) {
+          starsMet = false
+          explosionGlow = 0
+
+          starPink.x = canvas.width * 0.1 + canvas.width * 0.4 * scrollFactor
+          starPink.y =
+            canvas.height * 0.3 +
+            canvas.height * 0.2 * scrollFactor +
+            Math.sin(scrollFactor * 10) * 30
+
+          starWhite.x = canvas.width * 0.9 - canvas.width * 0.4 * scrollFactor
+          starWhite.y =
+            canvas.height * 0.75 -
+            canvas.height * 0.25 * scrollFactor +
+            Math.cos(scrollFactor * 8) * 40
+
+          emitTrail(starPink, starPink.color)
+          emitTrail(starWhite, starWhite.color)
+
+          ctx.globalAlpha = 1
+          ctx.shadowBlur = 15
+          ctx.shadowColor = starPink.color
+          ctx.fillStyle = starPink.color
+          ctx.beginPath()
+          ctx.arc(starPink.x, starPink.y, starPink.size, 0, Math.PI * 2)
+          ctx.fill()
+
+          ctx.shadowColor = starWhite.color
+          ctx.fillStyle = starWhite.color
+          ctx.beginPath()
+          ctx.arc(starWhite.x, starWhite.y, starWhite.size, 0, Math.PI * 2)
+          ctx.fill()
+          ctx.shadowBlur = 0
+        }
+        // --- ESTÁGIO 2: ENCONTRO E SISTEMA BINÁRIO ---
+        else if (scrollFactor >= 1 && scrollFactor < 1.35) {
+          let centerTargetX = canvas.width * 0.5
+          let centerTargetY = canvas.height * 0.5
+
+          if (!starsMet) {
+            starsMet = true
+            explosionGlow = 1
+          }
+
+          if (explosionGlow > 0.01) {
+            ctx.fillStyle = `rgba(255, 240, 245, ${explosionGlow})`
+            ctx.fillRect(0, 0, canvas.width, canvas.height)
+            explosionGlow *= 0.94
+          }
+
+          systemRotation += 0.04
+          let radius = 40 * (1.35 - scrollFactor) * 3
+
+          starPink.x = centerTargetX + Math.cos(systemRotation) * radius
+          starPink.y = centerTargetY + Math.sin(systemRotation) * radius
+
+          starWhite.x =
+            centerTargetX + Math.cos(systemRotation + Math.PI) * radius
+          starWhite.y =
+            centerTargetY + Math.sin(systemRotation + Math.PI) * radius
+
+          emitTrail(starPink, starPink.color)
+          emitTrail(starWhite, starWhite.color)
+
+          ctx.shadowBlur = 20
+          ctx.shadowColor = starPink.color
+          ctx.fillStyle = starPink.color
+          ctx.beginPath()
+          ctx.arc(starPink.x, starPink.y, starPink.size, 0, Math.PI * 2)
+          ctx.fill()
+
+          ctx.shadowColor = starWhite.color
+          ctx.fillStyle = starWhite.color
+          ctx.beginPath()
+          ctx.arc(starWhite.x, starWhite.y, starWhite.size, 0, Math.PI * 2)
+          ctx.fill()
+          ctx.shadowBlur = 0
+        }
+
+        updateTrail(starPink, starPink.color)
+        updateTrail(starWhite, starWhite.color)
+
+        // --- ESTÁGIO 3: CORAÇÃO DE PARTÍCULAS E SEU ZOOM ---
+        let heartScrollStart = windowHeight * 3.4
+        let heartScrollEnd = windowHeight * 4.9
+
+        if (currentScrollY >= heartScrollStart) {
+          let heartProgress =
+            (currentScrollY - heartScrollStart) /
+            (heartScrollEnd - heartScrollStart)
+          if (heartProgress < 0) heartProgress = 0
+          if (heartProgress > 1.3) heartProgress = 1.3
+
+          let zoomScale = 1 + heartProgress * 15
+
+          ctx.save()
+          ctx.translate(canvas.width * 0.5, canvas.height * 0.5)
+          ctx.shadowBlur = 10
+
+          heartParticles.forEach(p => {
+            p.pulsePhase += 0.03
+            let breathing = Math.sin(p.pulsePhase) * 1.5
+
+            let currentX =
+              p.x +
+              (p.targetX * zoomScale - p.x) * Math.min(1, heartProgress * 1.5)
+            let currentY =
+              p.y +
+              (p.targetY * zoomScale - p.y) * Math.min(1, heartProgress * 1.5)
+
+            ctx.fillStyle = p.color
+            ctx.shadowColor = p.color
+            ctx.globalAlpha = Math.max(0, 1 - heartProgress * 0.8)
+
+            ctx.beginPath()
+            ctx.arc(currentX, currentY + breathing, p.size, 0, Math.PI * 2)
+            ctx.fill()
+          })
+          ctx.restore()
+          ctx.shadowBlur = 0
+          ctx.globalAlpha = 1
+        }
+
+        // --- ESTÁGIO 4: CONSTELAÇÃO ---
+        let constellationStart = windowHeight * 4.7
+        let constellationEnd = windowHeight * 5.9
+
+        if (currentScrollY >= constellationStart) {
+          let constProg =
+            (currentScrollY - constellationStart) /
+            (constellationEnd - constellationStart)
+          if (constProg < 0) constProg = 0
+          if (constProg > 1) constProg = 1
+
+          ctx.save()
+          ctx.translate(canvas.width * 0.5, canvas.height * 0.5)
+          ctx.strokeStyle = 'rgba(255, 126, 187, 0.25)'
+          ctx.shadowBlur = 15
+          ctx.shadowColor = '#ff7ebb'
+          ctx.lineWidth = 1
+
+          ctx.beginPath()
+          constellationStars.forEach((star, index) => {
+            let curX =
+              star.currentX + (star.targetX - star.currentX) * constProg
+            let curY =
+              star.currentY + (star.targetY - star.currentY) * constProg
+
+            if (index === 0) {
+              ctx.moveTo(curX, curY)
+            } else if (index < constellationStars.length * constProg) {
+              ctx.lineTo(curX, curY)
+            }
+
+            ctx.fillStyle = '#ffffff'
+            ctx.beginPath()
+            ctx.arc(curX, curY, star.size, 0, Math.PI * 2)
+            ctx.fill()
+          })
+          ctx.stroke()
+          ctx.restore()
+          ctx.shadowBlur = 0
+        }
+
+        // --- ESTÁGIO 5: SINALIZAÇÃO DE SUCESSO ("VOCÊ") ---
+        let starFocusStart = windowHeight * 5.8
+        if (currentScrollY >= starFocusStart) {
+          ctx.save()
+          ctx.translate(canvas.width * 0.5, canvas.height * 0.35)
+          let pulse = 10 + Math.sin(Date.now() * 0.003) * 20
+
+          ctx.shadowBlur = pulse
+          ctx.shadowColor = '#ffffff'
+          ctx.fillStyle = '#ffffff'
+          ctx.beginPath()
+          ctx.arc(0, 0, 4, 0, Math.PI * 2)
+          ctx.fill()
+          ctx.restore()
+          ctx.shadowBlur = 0
+        }
+
+        requestAnimationFrame(animateUniverse)
+      }
+
+      // --- SISTEMA DE CAPTURA DO SCROLL REAL ---
+      window.addEventListener('scroll', () => {
+        currentScrollY = window.scrollY
+      })
+
+      // --- CONFIGURAÇÃO DO OBSERVER PARA ELEMENTOS DO DOM ---
+      const configObserver = {
+        threshold: 0.25,
+        rootMargin: '0px 0px -15% 0px'
+      }
+
+      const documentObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('reveal')
+          }
+        })
+      }, configObserver)
+
+      document
+        .querySelectorAll(
+          '.data-display, .journey-card, .reveal-text, .zoom-message, .guide-box, .final-paragraph, .action-container'
+        )
+        .forEach(el => {
+          documentObserver.observe(el)
+        })
+
+      // --- REDIRECIONAMENTO FINAL ---
+      function proximaEtapa() {
+        window.location.href = 'proximaPagina.html'
+      }
+
+      // --- EXECUTOR INICIAL ---
+      window.addEventListener('DOMContentLoaded', () => {
+        resize()
+        initStars()
+        initHeart()
+        animateUniverse()
+      })
+    </script>
+  </body>
+</html>
