@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Montando Nossa História</title>
+    <style>
+      /* ==========================================================================
+       RESET & VARIÁVEIS GLOBAIS
+       ========================================================================== */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      :root {
+        --bg-color: #050508;
+        --accent-color: #ffd700;
+        --glass-bg: rgba(255, 255, 255, 0.05);
+        --glass-border: rgba(255, 255, 255, 0.15);
+        --glass-glow: rgba(255, 215, 0, 0.3);
+        --font-family: 'Georgia', serif;
+      }
+
+      body {
+        background-color: var(--bg-color);
+        color: #ffffff;
+        font-family: var(--font-family);
+        min-height: 100vh;
+        overflow-x: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+      }
+
+      /* ==========================================================================
+       CANVAS DE PARTÍCULAS (FUNDO)
+       ========================================================================== */
+      #particles-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        pointer-events: none;
+        transition: opacity 2s ease;
+      }
+
+      /* ==========================================================================
+       INTRODUÇÃO (TEXTOS NARRATIVOS)
+       ========================================================================== */
+      .intro-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 10;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 20px;
+        text-align: center;
+        pointer-events: none;
+      }
+
+      .intro-text {
+        font-size: 1.8rem;
+        font-weight: 300;
+        letter-spacing: 2px;
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.9);
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 2s ease, transform 2s ease;
+        position: absolute;
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      }
+
+      .intro-text.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* ==========================================================================
+       TELA DO QUEBRA-CABEÇA
+       ========================================================================== */
+      .game-container {
+        position: relative;
+        z-index: 5;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        opacity: 0;
+        transition: opacity 2.5s ease;
+        width: 100%;
+        max-width: 900px;
+        padding: 20px;
+      }
+
+      .game-container.visible {
+        opacity: 1;
+      }
+
+      .almost-message {
+        font-size: 1.1rem;
+        color: var(--accent-color);
+        font-style: italic;
+        text-align: center;
+        min-height: 30px;
+        opacity: 0;
+        transition: opacity 1.5s ease;
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+      }
+
+      .almost-message.visible {
+        opacity: 1;
+      }
+
+      .puzzle-layout {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+        width: 100%;
+      }
+
+      @media (min-width: 768px) {
+        .puzzle-layout {
+          flex-direction: row;
+          justify-content: center;
+          align-items: flex-start;
+        }
+      }
+
+      /* Tabuleiro Onde se Encaixam as Peças */
+      .board {
+        position: relative;
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8),
+          inset 0 0 15px rgba(255, 255, 255, 0.05);
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        overflow: hidden;
+        transition: all 1s ease;
+      }
+
+      /* Slots de Guia no Tabuleiro */
+      .board-slot {
+        border: 1px dashed rgba(255, 255, 255, 0.08);
+        position: relative;
+      }
+
+      /* Banco de Peças Embaralhadas */
+      .pieces-bank {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        align-items: center;
+        min-height: 150px;
+        padding: 15px;
+        background: var(--glass-bg);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        max-width: 400px;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+      }
+
+      /* Estilo das Peças */
+      .piece {
+        position: relative;
+        cursor: grab;
+        border-radius: 6px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        touch-action: none;
+        z-index: 2;
+      }
+
+      .piece::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        pointer-events: none;
+      }
+
+      .piece:active {
+        cursor: grabbing;
+        transform: scale(1.05);
+        z-index: 100 !important;
+      }
+
+      /* Animações e Estados da Peça */
+      .piece.placed {
+        cursor: default;
+        box-shadow: none;
+        animation: fitSnap 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+
+      .piece.placed::after {
+        border: none;
+      }
+
+      @keyframes fitSnap {
+        0% {
+          transform: scale(1.15);
+          filter: brightness(1.8);
+        }
+        50% {
+          filter: brightness(1.4);
+        }
+        100% {
+          transform: scale(1);
+          filter: brightness(1);
+        }
+      }
+
+      .piece.glow {
+        box-shadow: 0 0 20px var(--accent-color);
+      }
+
+      /* Unificação Final das Peças */
+      .board.completed {
+        border-color: rgba(255, 215, 0, 0.5);
+        box-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
+      }
+
+      .board.completed .piece {
+        border-radius: 0;
+      }
+
+      /* Varredura de Brilho (Shine Effect) */
+      .board-shine {
+        position: absolute;
+        top: 0;
+        left: -150%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.4),
+          transparent
+        );
+        transform: skewX(-25deg);
+        pointer-events: none;
+        z-index: 20;
+      }
+
+      .board-shine.animate {
+        animation: shinePass 1.8s ease-in-out forwards;
+      }
+
+      @keyframes shinePass {
+        0% {
+          left: -150%;
+        }
+        100% {
+          left: 150%;
+        }
+      }
+
+      /* ==========================================================================
+       OUTRO & MENSAGEM FINAL
+       ========================================================================== */
+      .outro-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        margin-top: 25px;
+        text-align: center;
+        width: 100%;
+      }
+
+      .outro-text {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.85);
+        opacity: 0;
+        transform: translateY(15px);
+        transition: opacity 1.5s ease, transform 1.5s ease;
+      }
+
+      .outro-text.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .outro-text.highlight {
+        color: var(--accent-color);
+        font-weight: 500;
+      }
+
+      /* Botão Glassmorphism Final */
+      .continue-btn {
+        margin-top: 20px;
+        padding: 14px 36px;
+        font-size: 1.1rem;
+        font-family: var(--font-family);
+        color: #ffffff;
+        background: var(--glass-bg);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--glass-border);
+        border-radius: 50px;
+        cursor: pointer;
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+        transition: all 0.5s ease;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        outline: none;
+      }
+
+      .continue-btn.visible {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+
+      .continue-btn:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 215, 0, 0.5);
+        box-shadow: 0 0 25px var(--glass-glow);
+        transform: translateY(-3px) scale(1.02);
+      }
+
+      .continue-btn:active {
+        transform: translateY(1px) scale(0.98);
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="particles-canvas"></canvas>
+
+    <div class="intro-container">
+      <div class="intro-text" id="intro-1">
+        Algumas lembranças chegam completas...
+      </div>
+      <div class="intro-text" id="intro-2">As mais importantes...</div>
+      <div class="intro-text" id="intro-3">...nós montamos juntos.</div>
+    </div>
+
+    <div class="game-container" id="game-container">
+      <div class="almost-message" id="almost-message">
+        "Você está quase vendo aquilo que eu nunca consegui esquecer..."
+      </div>
+
+      <div class="puzzle-layout">
+        <div class="board" id="board">
+          <div class="board-shine" id="board-shine"></div>
+        </div>
+
+        <div class="pieces-bank" id="pieces-bank"></div>
+      </div>
+
+      <div class="outro-container" id="outro-container">
+        <div class="outro-text" id="text-placeholder-1">
+          Engraçado como as melhores lembranças nunca avisam que vão se tornar
+          especiais. Elas começam de um jeito completamente comum. Uma conversa
+          qualquer. Um sorriso. Um olhar. Um momento que, naquele instante,
+          parece apenas mais um. Mas, sem perceber, aquele pequeno segundo passa
+          a morar para sempre dentro da gente. Hoje, quando penso nas memórias
+          que mais gosto de revisitar, quase todas têm uma coisa em comum. Você.
+        </div>
+
+        <div class="outro-text" id="text-placeholder-2">
+          Dizem que o tempo apaga muita coisa. Talvez ele realmente apague
+          datas. Lugares. Pequenos detalhes. Mas existe uma coisa que ele nunca
+          conseguiu apagar de mim: A forma como você me fez sentir. Porque
+          algumas pessoas entram na nossa vida apenas para passar. Outras chegam
+          sem fazer barulho... e acabam mudando completamente a maneira como
+          enxergamos o mundo. Você nunca foi apenas mais uma lembrança. Você se
+          tornou parte daquilo que eu nunca quero esquecer.
+        </div>
+
+        <div class="outro-text" id="text-placeholder-3">
+          Se eu pudesse desmontar todas as minhas memórias como um enorme
+          quebra-cabeça, descobriria que as peças mais bonitas sempre levam até
+          você. Cada risada. Cada abraço. Cada conversa. Cada silêncio
+          confortável. Cada momento em que simplesmente estar ao seu lado já era
+          suficiente. Talvez seja por isso que eu gosto tanto da ideia de montar
+          um quebra-cabeça. Porque ele me lembra a vida. No começo tudo parece
+          confuso. As peças não fazem sentido. Algumas parecem não encaixar em
+          lugar nenhum. Mas, quando a última peça finalmente encontra o seu
+          lugar, percebemos que cada pequena parte era importante para formar
+          algo muito maior. E, olhando para tudo o que vivi até hoje... Eu
+          percebi que as minhas melhores memórias nunca foram os lugares por
+          onde passei. Nem as viagens que fiz. Nem os dias perfeitos. As minhas
+          melhores memórias sempre foram aquelas em que você estava presente.
+          Porque, no fim das contas... você nunca foi apenas uma peça da minha
+          história. Você se tornou uma das razões pelas quais ela passou a fazer
+          sentido.
+        </div>
+
+        <div class="outro-text highlight" id="outro-1">
+          Nem toda memória nasce pronta.
+        </div>
+        <div class="outro-text" id="outro-2">Algumas...</div>
+        <div class="outro-text highlight" id="outro-3">
+          ...a gente constrói peça por peça.
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* ==========================================================================
+       CONFIGURAÇÕES E ESTADO GLOBAL
+       ========================================================================== */
+      const CONFIG = {
+        cols: 4,
+        rows: 3,
+        totalPieces: 12,
+        imageSrc: 'imgs/bestImg.jpeg' // Placeholder configurável
+      }
+
+      let state = {
+        placedCount: 0,
+        boardWidth: 0,
+        boardHeight: 0,
+        pieceWidth: 0,
+        pieceHeight: 0,
+        activePiece: null,
+        dragOffset: { x: 0, y: 0 },
+        particleIntensity: 0.2
+      }
+
+      /* ==========================================================================
+       SISTEMA DE PARTÍCULAS (CANVAS)
+       ========================================================================== */
+      const canvas = document.getElementById('particles-canvas')
+      const ctx = canvas.getContext('2d')
+      let particles = []
+
+      function resizeCanvas() {
+        canvas.width = window.innerWidth
+        canvas.height = window.innerHeight
+      }
+
+      class Particle {
+        constructor() {
+          this.reset()
+        }
+
+        reset() {
+          this.x = Math.random() * canvas.width
+          this.y = Math.random() * canvas.height
+          this.size = Math.random() * 2 + 0.5
+          this.speedX = (Math.random() - 0.5) * 0.5
+          this.speedY = (Math.random() - 0.8) * 0.5
+          this.alpha = Math.random() * 0.5 + 0.1
+          this.maxAlpha = Math.random() * 0.7 + 0.3
+        }
+
+        update() {
+          this.x += this.speedX
+          this.y += this.speedY
+
+          if (this.y < 0 || this.x < 0 || this.x > canvas.width) {
+            this.reset()
+            this.y = canvas.height
+          }
+        }
+
+        draw() {
+          ctx.save()
+          ctx.globalAlpha = this.alpha * state.particleIntensity
+          ctx.fillStyle = '#ffd700'
+          ctx.beginPath()
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
+          ctx.fill()
+          ctx.shadowBlur = 8
+          ctx.shadowColor = '#ffd700'
+          ctx.restore()
+        }
+      }
+
+      function initParticles() {
+        resizeCanvas()
+        window.addEventListener('resize', resizeCanvas)
+        particles = []
+        for (let i = 0; i < 90; i++) {
+          particles.push(new Particle())
+        }
+        animateParticles()
+      }
+
+      function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        particles.forEach(p => {
+          p.update()
+          p.draw()
+        })
+        requestAnimationFrame(animateParticles)
+      }
+
+      /* ==========================================================================
+       FLUXO CINEMATOGRÁFICO DE INTRODUÇÃO
+       ========================================================================== */
+      const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
+
+      async function runSequence() {
+        await sleep(1000)
+
+        // Frase 1
+        const t1 = document.getElementById('intro-1')
+        t1.classList.add('visible')
+        await sleep(3000)
+        t1.classList.remove('visible')
+        await sleep(1500)
+
+        // Frase 2
+        const t2 = document.getElementById('intro-2')
+        t2.classList.add('visible')
+        await sleep(2500)
+        t2.classList.remove('visible')
+        await sleep(1500)
+
+        // Frase 3
+        const t3 = document.getElementById('intro-3')
+        t3.classList.add('visible')
+        await sleep(2500)
+        t3.classList.remove('visible')
+        await sleep(2000)
+
+        // Revela o jogo
+        document.getElementById('game-container').classList.add('visible')
+      }
+
+      /* ==========================================================================
+       LÓGICA DO QUEBRA-CABEÇA
+       ========================================================================== */
+      const board = document.getElementById('board')
+      const piecesBank = document.getElementById('pieces-bank')
+
+      function calculateDimensions() {
+        // Cálculo responsivo adaptável a telas móveis e desktop
+        const maxWidth = Math.min(window.innerWidth - 40, 500)
+        state.boardWidth = maxWidth
+        state.boardHeight = (maxWidth / CONFIG.cols) * CONFIG.rows
+
+        state.pieceWidth = state.boardWidth / CONFIG.cols
+        state.pieceHeight = state.boardHeight / CONFIG.rows
+
+        board.style.width = `${state.boardWidth}px`
+        board.style.height = `${state.boardHeight}px`
+      }
+
+      function createPuzzle() {
+        calculateDimensions()
+
+        // Criação das slots do tabuleiro
+        board.querySelectorAll('.board-slot').forEach(s => s.remove())
+        for (let i = 0; i < CONFIG.totalPieces; i++) {
+          const slot = document.createElement('div')
+          slot.classList.add('board-slot')
+          slot.dataset.index = i
+          board.appendChild(slot)
+        }
+
+        // Criação das Peças
+        const pieces = []
+        for (let r = 0; r < CONFIG.rows; r++) {
+          for (let c = 0; c < CONFIG.cols; c++) {
+            const index = r * CONFIG.cols + c
+            const piece = document.createElement('div')
+            piece.classList.add('piece')
+            piece.dataset.index = index
+
+            // Configuração das dimensões e imagem de fundo
+            piece.style.width = `${state.pieceWidth}px`
+            piece.style.height = `${state.pieceHeight}px`
+            piece.style.backgroundImage = `url(${CONFIG.imageSrc})`
+            piece.style.backgroundSize = `${state.boardWidth}px ${state.boardHeight}px`
+
+            const bgX = -(c * state.pieceWidth)
+            const bgY = -(r * state.pieceHeight)
+            piece.style.backgroundPosition = `${bgX}px ${bgY}px`
+
+            // Eventos de arrastar/soltar (Mouse e Touch)
+            addDragEvents(piece)
+
+            pieces.push(piece)
+          }
+        }
+
+        // Embaralhamento das peças
+        pieces.sort(() => Math.random() - 0.5)
+        piecesBank.innerHTML = ''
+        pieces.forEach(p => piecesBank.appendChild(p))
+      }
+
+      /* ==========================================================================
+       SISTEMA DE ARRASTAR E SOLTAR (MOUSE & TOUCH)
+       ========================================================================== */
+      function addDragEvents(piece) {
+        // Eventos de Mouse
+        piece.addEventListener('mousedown', startDrag)
+
+        // Eventos de Touch
+        piece.addEventListener('touchstart', startDrag, { passive: false })
+      }
+
+      function startDrag(e) {
+        if (this.classList.contains('placed')) return
+
+        state.activePiece = this
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY
+
+        const rect = this.getBoundingClientRect()
+        state.dragOffset.x = clientX - rect.left
+        state.dragOffset.y = clientY - rect.top
+
+        // Move a peça para o corpo para permitir deslocamento livre
+        this.style.position = 'fixed'
+        this.style.left = `${clientX - state.dragOffset.x}px`
+        this.style.top = `${clientY - state.dragOffset.y}px`
+        this.style.zIndex = 1000
+
+        document.addEventListener('mousemove', onDrag)
+        document.addEventListener('touchmove', onDrag, { passive: false })
+        document.addEventListener('mouseup', stopDrag)
+        document.addEventListener('touchend', stopDrag)
+      }
+
+      function onDrag(e) {
+        if (!state.activePiece) return
+        e.preventDefault()
+
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY
+
+        state.activePiece.style.left = `${clientX - state.dragOffset.x}px`
+        state.activePiece.style.top = `${clientY - state.dragOffset.y}px`
+      }
+
+      function stopDrag() {
+        if (!state.activePiece) return
+
+        const piece = state.activePiece
+        const pieceIndex = piece.dataset.index
+        const targetSlot = board.querySelector(
+          `.board-slot[data-index="${pieceIndex}"]`
+        )
+        const slotRect = targetSlot.getBoundingClientRect()
+        const pieceRect = piece.getBoundingClientRect()
+
+        // Margem de tolerância para o encaixe automático (em pixels)
+        const tolerance = 40
+
+        const isCorrectX = Math.abs(pieceRect.left - slotRect.left) < tolerance
+        const isCorrectY = Math.abs(pieceRect.top - slotRect.top) < tolerance
+
+        if (isCorrectX && isCorrectY) {
+          // Encaixe Correto
+          snapPiece(piece, targetSlot)
+        } else {
+          // Retorno ao Banco de Peças
+          resetPieceToBank(piece)
+        }
+
+        document.removeEventListener('mousemove', onDrag)
+        document.removeEventListener('touchmove', onDrag)
+        document.removeEventListener('mouseup', stopDrag)
+        document.removeEventListener('touchend', stopDrag)
+
+        state.activePiece = null
+      }
+
+      function snapPiece(piece, slot) {
+        piece.classList.add('placed')
+        piece.style.position = 'absolute'
+        piece.style.left = '0'
+        piece.style.top = '0'
+        piece.style.zIndex = 1
+
+        slot.appendChild(piece)
+
+        // Animação e Brilho de Encaixe
+        piece.classList.add('glow')
+        setTimeout(() => piece.classList.remove('glow'), 800)
+
+        state.placedCount++
+        onPiecePlacedProgress()
+      }
+
+      function resetPieceToBank(piece) {
+        piece.style.position = 'relative'
+        piece.style.left = 'auto'
+        piece.style.top = 'auto'
+        piece.style.zIndex = 2
+        piecesBank.appendChild(piece)
+      }
+
+      /* ==========================================================================
+       PROGRESSO DO JOGO & FINALIZAÇÃO
+       ========================================================================== */
+      function onPiecePlacedProgress() {
+        // Aumenta gradualmente a intensidade das partículas no fundo
+        state.particleIntensity =
+          0.2 + (state.placedCount / CONFIG.totalPieces) * 0.8
+
+        // Mensagem especial ao faltar apenas 1 peça
+        if (state.placedCount === CONFIG.totalPieces - 1) {
+          document.getElementById('almost-message').classList.add('visible')
+        }
+
+        // Conclusão do Quebra-Cabeça
+        if (state.placedCount === CONFIG.totalPieces) {
+          document.getElementById('almost-message').classList.remove('visible')
+          completeGame()
+        }
+      }
+
+      async function completeGame() {
+        await sleep(500)
+
+        // Animação de união
+        board.classList.add('completed')
+        piecesBank.style.display = 'none'
+
+        // Efeito de brilho cruzando a foto
+        await sleep(600)
+        document.getElementById('board-shine').classList.add('animate')
+
+        await sleep(1500)
+
+        // Exibição sequencial dos textos finais
+        const outroSequence = [
+          'text-placeholder-1',
+          'text-placeholder-2',
+          'text-placeholder-3',
+          'outro-1',
+          'outro-2',
+          'outro-3'
+        ]
+
+        for (let id of outroSequence) {
+          const el = document.getElementById(id)
+          if (el) {
+            el.classList.add('visible')
+            await sleep(1800)
+          }
+        }
+
+        // Exibição do Botão Final
+        await sleep(500)
+        const btn = document.getElementById('continue-btn')
+        btn.classList.add('visible')
+        btn.addEventListener('click', () => {
+          alert('Redirecionando para o próximo capítulo...')
+        })
+      }
+
+      /* ==========================================================================
+       INICIALIZAÇÃO
+       ========================================================================== */
+      window.addEventListener('DOMContentLoaded', () => {
+        initParticles()
+        createPuzzle()
+        runSequence()
+      })
+
+      // Ajuste responsivo na mudança de tamanho de tela
+      window.addEventListener('resize', () => {
+        if (state.placedCount < CONFIG.totalPieces) {
+          calculateDimensions()
+          // Atualização dinâmica dos tamanhos das peças encaixadas
+          document.querySelectorAll('.piece').forEach(piece => {
+            const c = piece.dataset.index % CONFIG.cols
+            const r = Math.floor(piece.dataset.index / CONFIG.cols)
+
+            piece.style.width = `${state.pieceWidth}px`
+            piece.style.height = `${state.pieceHeight}px`
+            piece.style.backgroundSize = `${state.boardWidth}px ${state.boardHeight}px`
+            piece.style.backgroundPosition = `${-(c * state.pieceWidth)}px ${-(
+              r * state.pieceHeight
+            )}px`
+          })
+        }
+      })
+    </script>
+  </body>
+</html>

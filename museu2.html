@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Museu das Nossas Memórias</title>
+    <style>
+      /* ==========================================================================
+       RESET E VARIÁVEIS GLOBAIS
+       ========================================================================== */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      :root {
+        --bg-dark: #030305;
+        --gold-primary: #d4af37;
+        --gold-light: #f3e5ab;
+        --gold-dim: rgba(212, 175, 55, 0.25);
+        --wall-color: #0a0a0e;
+        --frame-border: #1a1610;
+        --font-serif: 'Cinzel', 'Georgia', serif;
+        --font-sans: 'Cormorant Garamond', 'Georgia', serif;
+      }
+
+      @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap');
+
+      html,
+      body {
+        background-color: var(--bg-dark);
+        color: #e2e2e2;
+        font-family: var(--font-sans);
+        overflow-x: hidden;
+        width: 100%;
+        scroll-behavior: smooth;
+      }
+
+      /* ==========================================================================
+       TELA INICIAL DE TRANSIÇÃO (LUZES ACENDENDO)
+       ========================================================================== */
+      #curtain {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: #000;
+        z-index: 9999;
+        pointer-events: none;
+        transition: opacity 3.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      #curtain.lights-on {
+        opacity: 0;
+      }
+
+      /* Canvas de Poeira Flutuante */
+      #dust-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        pointer-events: none;
+        opacity: 0.6;
+      }
+
+      /* Luz de Fundo Dourada */
+      .ambient-gold-glow {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80vw;
+        height: 80vh;
+        background: radial-gradient(
+          circle,
+          var(--gold-dim) 0%,
+          transparent 70%
+        );
+        z-index: 1;
+        pointer-events: none;
+        filter: blur(60px);
+        opacity: 0.7;
+      }
+
+      /* ==========================================================================
+       CORREDOR DO MUSEU (EFEITO 3D)
+       ========================================================================== */
+      .museum-viewport {
+        position: relative;
+        width: 100%;
+        min-height: 100vh;
+        perspective: 1200px;
+        z-index: 5;
+        padding-bottom: 20vh;
+      }
+
+      .museum-corridor {
+        position: relative;
+        width: 100%;
+        max-width: 1000px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 25vh;
+        padding: 15vh 20px 0 20px;
+        transform-style: preserve-3d;
+        transition: transform 1s ease-out;
+      }
+
+      /* Linhas de perspectiva do chão/parede */
+      .corridor-lines {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+        background: linear-gradient(
+            to bottom,
+            rgba(3, 3, 5, 0.9) 0%,
+            transparent 20%,
+            transparent 80%,
+            rgba(3, 3, 5, 0.9) 100%
+          ),
+          radial-gradient(
+            ellipse at center,
+            transparent 40%,
+            rgba(0, 0, 0, 0.8) 100%
+          );
+      }
+
+      /* ==========================================================================
+       ESTILIZAÇÃO DOS QUADROS E ILUMINAÇÃO
+       ========================================================================== */
+      .artwork-container {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 650px;
+        opacity: 0;
+        transform: translateY(60px) scale(0.92) rotateX(8deg);
+        transition: opacity 1.4s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: transform, opacity;
+      }
+
+      .artwork-container.in-spotlight {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotateX(0deg);
+      }
+
+      /* Foco de Luz (Spotlight) */
+      .spotlight-beam {
+        position: absolute;
+        top: -140px;
+        width: 220px;
+        height: 160px;
+        background: radial-gradient(
+          ellipse at top,
+          rgba(255, 245, 215, 0.45) 0%,
+          rgba(212, 175, 55, 0.1) 50%,
+          transparent 80%
+        );
+        clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%);
+        pointer-events: none;
+        z-index: 2;
+        opacity: 0.8;
+        filter: blur(2px);
+      }
+
+      .lamp-fixture {
+        position: absolute;
+        top: -145px;
+        width: 60px;
+        height: 8px;
+        background: linear-gradient(90deg, #555, var(--gold-primary), #555);
+        border-radius: 4px;
+        box-shadow: 0 0 15px var(--gold-primary);
+        z-index: 3;
+      }
+
+      /* Moldura Elegante */
+      .frame-outer {
+        position: relative;
+        background: linear-gradient(
+          135deg,
+          #2c2419 0%,
+          #15120d 50%,
+          #2c2419 100%
+        );
+        padding: 16px;
+        border-radius: 4px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9),
+          0 0 30px rgba(212, 175, 55, 0.15), inset 0 0 10px rgba(0, 0, 0, 0.8);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        overflow: hidden;
+        width: 100%;
+        max-width: 520px;
+        transition: transform 0.8s ease, box-shadow 0.8s ease;
+      }
+
+      .frame-inner {
+        position: relative;
+        border: 12px solid #0d0d11;
+        background-color: #000;
+        box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.9);
+        overflow: hidden;
+        aspect-ratio: 4 / 3;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .artwork-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.85) contrast(1.05);
+        transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+          filter 1.2s ease;
+      }
+
+      .artwork-container.in-spotlight .artwork-image {
+        filter: brightness(1) contrast(1.1);
+      }
+
+      /* Efeito de Reflexo de Luz Passeando na Foto */
+      .glass-glare {
+        position: absolute;
+        top: -100%;
+        left: -100%;
+        width: 300%;
+        height: 300%;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0) 42%,
+          rgba(255, 255, 255, 0.12) 50%,
+          rgba(255, 255, 255, 0) 58%,
+          rgba(255, 255, 255, 0) 100%
+        );
+        pointer-events: none;
+        transform: rotate(25deg);
+        transition: transform 1.5s ease;
+      }
+
+      .artwork-container.in-spotlight .glass-glare {
+        transform: translate(30%, 30%) rotate(25deg);
+      }
+
+      /* Plaqueta Informativa */
+      .plaque {
+        margin-top: 24px;
+        text-align: center;
+        max-width: 480px;
+        padding: 12px 24px;
+        background: rgba(15, 15, 20, 0.7);
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        border-radius: 2px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+      }
+
+      .plaque-title {
+        font-family: var(--font-serif);
+        font-size: 1.3rem;
+        letter-spacing: 2px;
+        color: var(--gold-light);
+        text-transform: uppercase;
+        margin-bottom: 6px;
+        text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+      }
+
+      .plaque-desc {
+        font-size: 1.05rem;
+        line-height: 1.5;
+        color: #a0a0a8;
+        font-style: italic;
+        font-weight: 300;
+      }
+
+      /* ==========================================================================
+       FINAL CINEMATOGRÁFICO
+       ========================================================================== */
+      #final-stage {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: radial-gradient(circle at center, #0a090d 0%, #000000 100%);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 2.5s ease;
+        padding: 30px;
+        text-align: center;
+      }
+
+      #final-stage.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .final-quote {
+        font-family: var(--font-serif);
+        font-size: 1.6rem;
+        line-height: 1.8;
+        color: #f0f0f5;
+        max-width: 750px;
+        letter-spacing: 1px;
+        opacity: 0;
+        transform: scale(0.95) translateY(20px);
+        transition: opacity 2s ease, transform 2s ease;
+        text-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+      }
+
+      .final-quote.line-2 {
+        color: var(--gold-light);
+        margin-top: 15px;
+        font-style: italic;
+      }
+
+      .final-quote.visible {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+
+      /* Botão Continuar */
+      .btn-continue {
+        margin-top: 50px;
+        padding: 14px 40px;
+        font-family: var(--font-serif);
+        font-size: 1rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--gold-light);
+        background: rgba(212, 175, 55, 0.05);
+        border: 1px solid var(--gold-primary);
+        border-radius: 2px;
+        cursor: pointer;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.8s ease;
+        box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+        outline: none;
+      }
+
+      .btn-continue.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .btn-continue:hover {
+        background: var(--gold-primary);
+        color: #000;
+        box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+      }
+
+      /* ==========================================================================
+       RESPONSIVIDADE
+       ========================================================================== */
+      @media (max-width: 600px) {
+        .museum-corridor {
+          gap: 20vh;
+          padding-top: 10vh;
+        }
+
+        .frame-outer {
+          max-width: 90vw;
+          padding: 10px;
+        }
+
+        .frame-inner {
+          border-width: 8px;
+        }
+
+        .plaque-title {
+          font-size: 1.1rem;
+        }
+
+        .plaque-desc {
+          font-size: 0.95rem;
+        }
+
+        .final-quote {
+          font-size: 1.25rem;
+          line-height: 1.6;
+        }
+
+        .spotlight-beam {
+          top: -110px;
+          width: 170px;
+          height: 120px;
+        }
+
+        .lamp-fixture {
+          top: -115px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="curtain"></div>
+
+    <canvas id="dust-canvas"></canvas>
+
+    <div class="ambient-gold-glow"></div>
+    <div class="corridor-lines"></div>
+
+    <div class="museum-viewport">
+      <div class="museum-corridor" id="corridor">
+        <article class="artwork-container">
+          <div class="lamp-fixture"></div>
+          <div class="spotlight-beam"></div>
+
+          <div class="frame-outer">
+            <div class="frame-inner">
+              <img
+                src="imgs/juliaEmissi.jpeg"
+                alt="O começo"
+                class="artwork-image"
+              />
+              <div class="glass-glare"></div>
+            </div>
+          </div>
+
+          <div class="plaque">
+            <h2 class="plaque-title">1. Onde Tudo Começou</h2>
+
+            <p class="plaque-desc">
+              Toda grande história começa de um jeito simples. Ninguém percebe
+              que está vivendo um momento que, alguns meses depois, será
+              lembrado com um sorriso no rosto. Naquele instante eu ainda não
+              imaginava, mas estava dando o primeiro passo em direção a uma das
+              pessoas mais especiais que a vida colocaria no meu caminho.
+            </p>
+          </div>
+        </article>
+
+        <article class="artwork-container">
+          <div class="lamp-fixture"></div>
+          <div class="spotlight-beam"></div>
+
+          <div class="frame-outer">
+            <div class="frame-inner">
+              <img
+                src="imgs/carro.jpeg"
+                alt="As primeiras conversas"
+                class="artwork-image"
+              />
+              <div class="glass-glare"></div>
+            </div>
+          </div>
+
+          <div class="plaque">
+            <h2 class="plaque-title">2. Conversas que Viraram Lar</h2>
+
+            <p class="plaque-desc">
+              Existem conversas que terminam quando a tela do celular apaga. As
+              nossas nunca foram assim. Cada mensagem construía um pouco mais da
+              confiança, do carinho e da vontade de continuar descobrindo quem
+              você era. Sem perceber, aquelas conversas deixaram de ocupar
+              apenas a tela... e começaram a ocupar um espaço enorme dentro de
+              mim.
+            </p>
+          </div>
+        </article>
+
+        <article class="artwork-container">
+          <div class="lamp-fixture"></div>
+          <div class="spotlight-beam"></div>
+
+          <div class="frame-outer">
+            <div class="frame-inner">
+              <img
+                src="imgs/especial.jpeg"
+                alt="As risadas"
+                class="artwork-image"
+              />
+              <div class="glass-glare"></div>
+            </div>
+          </div>
+
+          <div class="plaque">
+            <h2 class="plaque-title">3. O Som da Felicidade</h2>
+
+            <p class="plaque-desc">
+              Talvez o que eu mais goste nas nossas lembranças seja que quase
+              todas elas têm uma risada no meio. Porque rir com você sempre foi
+              diferente. Era como esquecer completamente do resto do mundo, como
+              se por alguns minutos nada pudesse dar errado. Algumas pessoas
+              deixam lembranças. Você deixou felicidade.
+            </p>
+          </div>
+        </article>
+
+        <article class="artwork-container">
+          <div class="lamp-fixture"></div>
+          <div class="spotlight-beam"></div>
+
+          <div class="frame-outer">
+            <div class="frame-inner">
+              <img
+                src="imgs/perfil.jpeg"
+                alt="O abraço"
+                class="artwork-image"
+              />
+              <div class="glass-glare"></div>
+            </div>
+          </div>
+
+          <div class="plaque">
+            <h2 class="plaque-title">4. O Lugar Onde Encontrei Paz</h2>
+
+            <p class="plaque-desc">
+              Algumas pessoas procuram paz em viagens, outras em lugares
+              silenciosos. Eu encontrei a minha em um abraço. Naquele instante o
+              tempo pareceu desacelerar, o barulho desapareceu e tudo o que
+              realmente importava estava exatamente ali. Descobri que o meu
+              lugar favorito nunca foi um lugar. Sempre foi você.
+            </p>
+          </div>
+        </article>
+
+        <article class="artwork-container">
+          <div class="lamp-fixture"></div>
+          <div class="spotlight-beam"></div>
+
+          <div class="frame-outer">
+            <div class="frame-inner">
+              <img
+                src="imgs/preto.jpeg"
+                alt="Os pequenos detalhes"
+                class="artwork-image"
+              />
+              <div class="glass-glare"></div>
+            </div>
+          </div>
+
+          <div class="plaque">
+            <h2 class="plaque-title">5. As Coisas que Ninguém Percebe</h2>
+
+            <p class="plaque-desc">
+              Não foram os grandes acontecimentos que fizeram você se tornar tão
+              importante para mim. Foi o jeito que você sorri sem perceber. O
+              jeito que cuida das pessoas. A forma como consegue transformar um
+              dia comum em uma lembrança bonita. No fim das contas, foram
+              justamente os pequenos detalhes que fizeram nascer o maior dos
+              sentimentos.
+            </p>
+          </div>
+        </article>
+
+        <article class="artwork-container" id="last-artwork">
+          <div class="lamp-fixture"></div>
+          <div class="spotlight-beam"></div>
+
+          <div class="frame-outer">
+            <div class="frame-inner">
+              <img
+                src="imgs/bestImg.jpeg"
+                alt="O futuro"
+                class="artwork-image"
+              />
+              <div class="glass-glare"></div>
+            </div>
+          </div>
+
+          <div class="plaque">
+            <h2 class="plaque-title">
+              6. O Capítulo que Ainda Está Sendo Escrito
+            </h2>
+
+            <p class="plaque-desc">
+              Esse quadro ainda não representa uma lembrança. Representa tudo
+              aquilo que eu ainda sonho em viver ao seu lado. Novas fotografias.
+              Novas viagens. Novas risadas. Novos abraços. Porque, depois de
+              tudo o que vivemos até aqui, a única certeza que eu tenho é que as
+              melhores páginas dessa história ainda nem foram escritas.
+            </p>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div id="final-stage">
+      <p class="final-quote line-1" id="q1">
+        "Museus costumam guardar obras que fizeram história."
+      </p>
+
+      <p class="final-quote line-2" id="q2">
+        "O meu preferido guardaria apenas os momentos em que eu tive você ao meu
+        lado... porque nenhuma obra de arte seria tão bonita quanto as
+        lembranças que construímos juntos."
+      </p>
+    </div>
+
+    <script>
+      /* ==========================================================================
+       INICIALIZAÇÃO & LUZES DO MUSEU ACENDENDO
+       ========================================================================== */
+      window.addEventListener('load', () => {
+        // Pequeno atraso estratégico para o início no escuro
+        setTimeout(() => {
+          const curtain = document.getElementById('curtain')
+          curtain.classList.add('lights-on')
+        }, 600)
+
+        initDustParticles()
+        setupObserver()
+      })
+
+      /* ==========================================================================
+       SISTEMA DE PARTÍCULAS DE POEIRA FLUTUANTE
+       ========================================================================== */
+      function initDustParticles() {
+        const canvas = document.getElementById('dust-canvas')
+        const ctx = canvas.getContext('2d')
+
+        let width = (canvas.width = window.innerWidth)
+        let height = (canvas.height = window.innerHeight)
+
+        window.addEventListener('resize', () => {
+          width = canvas.width = window.innerWidth
+          height = canvas.height = window.innerHeight
+        })
+
+        const particleCount = 45
+        const particles = []
+
+        for (let i = 0; i < particleCount; i++) {
+          particles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            radius: Math.random() * 1.8 + 0.4,
+            alpha: Math.random() * 0.6 + 0.2,
+            vx: (Math.random() - 0.5) * 0.3,
+            vy: -Math.random() * 0.4 - 0.1
+          })
+        }
+
+        function render() {
+          ctx.clearRect(0, 0, width, height)
+
+          particles.forEach(p => {
+            p.x += p.vx
+            p.y += p.vy
+
+            if (p.y < 0) p.y = height
+            if (p.x < 0) p.x = width
+            if (p.x > width) p.x = 0
+
+            ctx.beginPath()
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2)
+            ctx.fillStyle = `rgba(243, 229, 171, ${p.alpha})`
+            ctx.shadowBlur = 6
+            ctx.shadowColor = 'rgba(212, 175, 55, 0.4)'
+            ctx.fill()
+          })
+
+          requestAnimationFrame(render)
+        }
+
+        render()
+      }
+
+      /* ==========================================================================
+       INTERSECTION OBSERVER PARA REVELAÇÃO DOS QUADROS
+       ========================================================================== */
+      function setupObserver() {
+        const artworks = document.querySelectorAll('.artwork-container')
+
+        const observerOptions = {
+          root: null,
+          rootMargin: '-10% 0px -15% 0px',
+          threshold: 0.3
+        }
+
+        const observer = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('in-spotlight')
+            } else {
+              // Mantém sutilmente reduzido ao sair de foco
+              entry.target.classList.remove('in-spotlight')
+            }
+          })
+        }, observerOptions)
+
+        artworks.forEach(art => observer.observe(art))
+
+        // Monitor de rolagem para disparar a cena final ao chegar ao fim
+        window.addEventListener('scroll', checkFinalTrigger)
+      }
+
+      /* ==========================================================================
+       MONITORAMENTO DA CENA FINAL
+       ========================================================================== */
+      let finalTriggered = false
+
+      function checkFinalTrigger() {
+        if (finalTriggered) return
+
+        const lastArtwork = document.getElementById('last-artwork')
+        const rect = lastArtwork.getBoundingClientRect()
+
+        // Quando o último quadro passa da metade da tela para cima
+        if (rect.top < window.innerHeight * 0.35) {
+          finalTriggered = true
+          triggerFinalStage()
+        }
+      }
+
+      function triggerFinalStage() {
+        const corridor = document.getElementById('corridor')
+        const finalStage = document.getElementById('final-stage')
+        const q1 = document.getElementById('q1')
+        const q2 = document.getElementById('q2')
+        const btn = document.getElementById('btn-next')
+
+        // Desaparece o corredor e desacelera/aproxima a câmera
+        corridor.style.transition = 'opacity 2s ease, transform 2.5s ease'
+        corridor.style.opacity = '0'
+        corridor.style.transform = 'translateZ(200px)'
+
+        // Ativa a tela final
+        setTimeout(() => {
+          finalStage.classList.add('active')
+
+          // Sequência de frases
+          setTimeout(() => q1.classList.add('visible'), 800)
+          setTimeout(() => q2.classList.add('visible'), 2800)
+          setTimeout(() => btn.classList.add('visible'), 4800)
+        }, 1200)
+      }
+
+      function onContinue() {
+        // Ação do botão continuar (Redirecionamento ou Ação personalizada)
+        alert('Avançando para a próxima lembrança...')
+      }
+    </script>
+  </body>
+</html>
