@@ -290,6 +290,29 @@
         font-weight: 300;
       }
 
+      /* Botão para finalizar a visita do museu */
+      .btn-finish-museum {
+        margin-top: 20px;
+        padding: 12px 30px;
+        font-family: var(--font-serif);
+        font-size: 0.9rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--gold-light);
+        background: rgba(212, 175, 55, 0.08);
+        border: 1px solid var(--gold-primary);
+        border-radius: 2px;
+        cursor: pointer;
+        transition: all 0.4s ease;
+        box-shadow: 0 0 10px rgba(212, 175, 55, 0.1);
+      }
+
+      .btn-finish-museum:hover {
+        background: var(--gold-primary);
+        color: #000;
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+      }
+
       /* ==========================================================================
        FINAL CINEMATOGRÁFICO
        ========================================================================== */
@@ -595,6 +618,10 @@
               melhores páginas dessa história ainda nem foram escritas.
             </p>
           </div>
+
+          <button class="btn-finish-museum" onclick="triggerFinalStage()">
+            Concluir Visita
+          </button>
         </article>
       </div>
     </div>
@@ -609,6 +636,7 @@
         lado... porque nenhuma obra de arte seria tão bonita quanto as
         lembranças que construímos juntos."
       </p>
+
     </div>
 
     <script>
@@ -616,7 +644,6 @@
        INICIALIZAÇÃO & LUZES DO MUSEU ACENDENDO
        ========================================================================== */
       window.addEventListener('load', () => {
-        // Pequeno atraso estratégico para o início no escuro
         setTimeout(() => {
           const curtain = document.getElementById('curtain')
           curtain.classList.add('lights-on')
@@ -697,42 +724,26 @@
             if (entry.isIntersecting) {
               entry.target.classList.add('in-spotlight')
             } else {
-              // Mantém sutilmente reduzido ao sair de foco
               entry.target.classList.remove('in-spotlight')
             }
           })
         }, observerOptions)
 
         artworks.forEach(art => observer.observe(art))
-
-        // Monitor de rolagem para disparar a cena final ao chegar ao fim
-        window.addEventListener('scroll', checkFinalTrigger)
       }
 
       /* ==========================================================================
-       MONITORAMENTO DA CENA FINAL
+       ACIONAMENTO MANUAL DA CENA FINAL
        ========================================================================== */
-      let finalTriggered = false
-
-      function checkFinalTrigger() {
-        if (finalTriggered) return
-
-        const lastArtwork = document.getElementById('last-artwork')
-        const rect = lastArtwork.getBoundingClientRect()
-
-        // Quando o último quadro passa da metade da tela para cima
-        if (rect.top < window.innerHeight * 0.35) {
-          finalTriggered = true
-          triggerFinalStage()
-        }
-      }
-
       function triggerFinalStage() {
         const corridor = document.getElementById('corridor')
         const finalStage = document.getElementById('final-stage')
         const q1 = document.getElementById('q1')
         const q2 = document.getElementById('q2')
         const btn = document.getElementById('btn-next')
+
+        // Sobe o scroll suavemente para focar na transição se necessário
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
 
         // Desaparece o corredor e desacelera/aproxima a câmera
         corridor.style.transition = 'opacity 2s ease, transform 2.5s ease'
@@ -751,7 +762,6 @@
       }
 
       function onContinue() {
-        // Ação do botão continuar (Redirecionamento ou Ação personalizada)
         alert('Avançando para a próxima lembrança...')
       }
     </script>

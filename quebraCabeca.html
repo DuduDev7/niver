@@ -6,8 +6,8 @@
     <title>Montando Nossa História</title>
     <style>
       /* ==========================================================================
-       RESET & VARIÁVEIS GLOBAIS
-       ========================================================================== */
+        RESET & VARIÁVEIS GLOBAIS
+        ========================================================================== */
       * {
         box-sizing: border-box;
         margin: 0;
@@ -38,8 +38,8 @@
       }
 
       /* ==========================================================================
-       CANVAS DE PARTÍCULAS (FUNDO)
-       ========================================================================== */
+        CANVAS DE PARTÍCULAS (FUNDO)
+        ========================================================================== */
       #particles-canvas {
         position: fixed;
         top: 0;
@@ -52,8 +52,8 @@
       }
 
       /* ==========================================================================
-       INTRODUÇÃO (TEXTOS NARRATIVOS)
-       ========================================================================== */
+        INTRODUÇÃO (TEXTOS NARRATIVOS)
+        ========================================================================== */
       .intro-container {
         position: fixed;
         top: 0;
@@ -89,8 +89,8 @@
       }
 
       /* ==========================================================================
-       TELA DO QUEBRA-CABEÇA
-       ========================================================================== */
+        TELA DO QUEBRA-CABEÇA
+        ========================================================================== */
       .game-container {
         position: relative;
         z-index: 5;
@@ -187,8 +187,7 @@
         cursor: grab;
         border-radius: 6px;
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        touch-action: none;
+        touch-action: none; /* Bloqueia ações de scroll no mobile enquanto arrasta */
         z-index: 2;
       }
 
@@ -206,8 +205,6 @@
 
       .piece:active {
         cursor: grabbing;
-        transform: scale(1.05);
-        z-index: 100 !important;
       }
 
       /* Animações e Estados da Peça */
@@ -281,8 +278,8 @@
       }
 
       /* ==========================================================================
-       OUTRO & MENSAGEM FINAL
-       ========================================================================== */
+        OUTRO & MENSAGEM FINAL
+        ========================================================================== */
       .outro-container {
         display: flex;
         flex-direction: column;
@@ -419,18 +416,20 @@
         <div class="outro-text highlight" id="outro-3">
           ...a gente constrói peça por peça.
         </div>
+
+        <button class="continue-btn" id="continue-btn">Continuar</button>
       </div>
     </div>
 
     <script>
       /* ==========================================================================
-       CONFIGURAÇÕES E ESTADO GLOBAL
-       ========================================================================== */
+        CONFIGURAÇÕES E ESTADO GLOBAL
+        ========================================================================== */
       const CONFIG = {
         cols: 4,
         rows: 3,
         totalPieces: 12,
-        imageSrc: 'imgs/bestImg.jpeg' // Placeholder configurável
+        imageSrc: 'imgs/bestImg.jpeg'
       }
 
       let state = {
@@ -445,8 +444,8 @@
       }
 
       /* ==========================================================================
-       SISTEMA DE PARTÍCULAS (CANVAS)
-       ========================================================================== */
+        SISTEMA DE PARTÍCULAS (CANVAS)
+        ========================================================================== */
       const canvas = document.getElementById('particles-canvas')
       const ctx = canvas.getContext('2d')
       let particles = []
@@ -514,8 +513,8 @@
       }
 
       /* ==========================================================================
-       FLUXO CINEMATOGRÁFICO DE INTRODUÇÃO
-       ========================================================================== */
+        FLUXO CINEMATOGRÁFICO DE INTRODUÇÃO
+        ========================================================================== */
       const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
       async function runSequence() {
@@ -547,13 +546,12 @@
       }
 
       /* ==========================================================================
-       LÓGICA DO QUEBRA-CABEÇA
-       ========================================================================== */
+        LÓGICA DO QUEBRA-CABEÇA
+        ========================================================================== */
       const board = document.getElementById('board')
       const piecesBank = document.getElementById('pieces-bank')
 
       function calculateDimensions() {
-        // Cálculo responsivo adaptável a telas móveis e desktop
         const maxWidth = Math.min(window.innerWidth - 40, 500)
         state.boardWidth = maxWidth
         state.boardHeight = (maxWidth / CONFIG.cols) * CONFIG.rows
@@ -568,7 +566,6 @@
       function createPuzzle() {
         calculateDimensions()
 
-        // Criação das slots do tabuleiro
         board.querySelectorAll('.board-slot').forEach(s => s.remove())
         for (let i = 0; i < CONFIG.totalPieces; i++) {
           const slot = document.createElement('div')
@@ -577,7 +574,6 @@
           board.appendChild(slot)
         }
 
-        // Criação das Peças
         const pieces = []
         for (let r = 0; r < CONFIG.rows; r++) {
           for (let c = 0; c < CONFIG.cols; c++) {
@@ -586,7 +582,6 @@
             piece.classList.add('piece')
             piece.dataset.index = index
 
-            // Configuração das dimensões e imagem de fundo
             piece.style.width = `${state.pieceWidth}px`
             piece.style.height = `${state.pieceHeight}px`
             piece.style.backgroundImage = `url(${CONFIG.imageSrc})`
@@ -596,136 +591,133 @@
             const bgY = -(r * state.pieceHeight)
             piece.style.backgroundPosition = `${bgX}px ${bgY}px`
 
-            // Eventos de arrastar/soltar (Mouse e Touch)
             addDragEvents(piece)
 
             pieces.push(piece)
           }
         }
 
-        // Embaralhamento das peças
         pieces.sort(() => Math.random() - 0.5)
         piecesBank.innerHTML = ''
         pieces.forEach(p => piecesBank.appendChild(p))
       }
 
       /* ==========================================================================
-       SISTEMA DE ARRASTAR E SOLTAR (MOUSE & TOUCH)
-       ========================================================================== */
-      function addDragEvents(piece) {
-        // Eventos de Mouse
-        piece.addEventListener('mousedown', startDrag)
+  SISTEMA DE ARRASTAR E SOLTAR CORRIGIDO
+  ========================================================================== */
+function addDragEvents(piece) {
+  piece.addEventListener('pointerdown', startDrag)
+}
 
-        // Eventos de Touch
-        piece.addEventListener('touchstart', startDrag, { passive: false })
-      }
+function startDrag(e) {
+  if (this.classList.contains('placed')) return
 
-      function startDrag(e) {
-        if (this.classList.contains('placed')) return
+  state.activePiece = this
 
-        state.activePiece = this
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY
+  // 1. Pega a posição exata da peça na tela antes de desanexar
+  const rect = this.getBoundingClientRect()
+  
+  // 2. Calcula onde o dedo/mouse tocou dentro da peça
+  state.dragOffset.x = e.clientX - rect.left
+  state.dragOffset.y = e.clientY - rect.top
 
-        const rect = this.getBoundingClientRect()
-        state.dragOffset.x = clientX - rect.left
-        state.dragOffset.y = clientY - rect.top
+  // 3. Salva de onde a peça veio (caso precise voltar)
+  this.dataset.originalParent = 'bank'
 
-        // Move a peça para o corpo para permitir deslocamento livre
-        this.style.position = 'fixed'
-        this.style.left = `${clientX - state.dragOffset.x}px`
-        this.style.top = `${clientY - state.dragOffset.y}px`
-        this.style.zIndex = 1000
+  // 4. IMPORTANTE: Move a peça diretamente para o <body> 
+  // Isso cancela a interferência do 'backdrop-filter' dos containers!
+  document.body.appendChild(this)
 
-        document.addEventListener('mousemove', onDrag)
-        document.addEventListener('touchmove', onDrag, { passive: false })
-        document.addEventListener('mouseup', stopDrag)
-        document.addEventListener('touchend', stopDrag)
-      }
+  // 5. Aplica os estilos de arrasto
+  this.style.position = 'fixed'
+  this.style.width = `${state.pieceWidth}px`
+  this.style.height = `${state.pieceHeight}px`
+  this.style.left = `${e.clientX - state.dragOffset.x}px`
+  this.style.top = `${e.clientY - state.dragOffset.y}px`
+  this.style.zIndex = '9999'
 
-      function onDrag(e) {
-        if (!state.activePiece) return
-        e.preventDefault()
+  // Captura o ponteiro
+  this.setPointerCapture(e.pointerId)
 
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY
+  this.addEventListener('pointermove', onDrag)
+  this.addEventListener('pointerup', stopDrag)
+  this.addEventListener('pointercancel', stopDrag)
+}
 
-        state.activePiece.style.left = `${clientX - state.dragOffset.x}px`
-        state.activePiece.style.top = `${clientY - state.dragOffset.y}px`
-      }
+function onDrag(e) {
+  if (!state.activePiece || state.activePiece !== this) return
 
-      function stopDrag() {
-        if (!state.activePiece) return
+  // A peça agora segue 100% cravada no seu dedo/cursor
+  this.style.left = `${e.clientX - state.dragOffset.x}px`
+  this.style.top = `${e.clientY - state.dragOffset.y}px`
+}
 
-        const piece = state.activePiece
-        const pieceIndex = piece.dataset.index
-        const targetSlot = board.querySelector(
-          `.board-slot[data-index="${pieceIndex}"]`
-        )
-        const slotRect = targetSlot.getBoundingClientRect()
-        const pieceRect = piece.getBoundingClientRect()
+function stopDrag(e) {
+  if (!state.activePiece || state.activePiece !== this) return
 
-        // Margem de tolerância para o encaixe automático (em pixels)
-        const tolerance = 40
+  this.releasePointerCapture(e.pointerId)
+  this.removeEventListener('pointermove', onDrag)
+  this.removeEventListener('pointerup', stopDrag)
+  this.removeEventListener('pointercancel', stopDrag)
 
-        const isCorrectX = Math.abs(pieceRect.left - slotRect.left) < tolerance
-        const isCorrectY = Math.abs(pieceRect.top - slotRect.top) < tolerance
+  const piece = state.activePiece
+  const pieceIndex = piece.dataset.index
+  const targetSlot = board.querySelector(
+    `.board-slot[data-index="${pieceIndex}"]`
+  )
+  
+  const slotRect = targetSlot.getBoundingClientRect()
+  const pieceRect = piece.getBoundingClientRect()
 
-        if (isCorrectX && isCorrectY) {
-          // Encaixe Correto
-          snapPiece(piece, targetSlot)
-        } else {
-          // Retorno ao Banco de Peças
-          resetPieceToBank(piece)
-        }
+  const tolerance = 45
 
-        document.removeEventListener('mousemove', onDrag)
-        document.removeEventListener('touchmove', onDrag)
-        document.removeEventListener('mouseup', stopDrag)
-        document.removeEventListener('touchend', stopDrag)
+  const isCorrectX = Math.abs(pieceRect.left - slotRect.left) < tolerance
+  const isCorrectY = Math.abs(pieceRect.top - slotRect.top) < tolerance
 
-        state.activePiece = null
-      }
+  if (isCorrectX && isCorrectY) {
+    snapPiece(piece, targetSlot)
+  } else {
+    resetPieceToBank(piece)
+  }
 
-      function snapPiece(piece, slot) {
-        piece.classList.add('placed')
-        piece.style.position = 'absolute'
-        piece.style.left = '0'
-        piece.style.top = '0'
-        piece.style.zIndex = 1
+  state.activePiece = null
+}
 
-        slot.appendChild(piece)
+function snapPiece(piece, slot) {
+  piece.classList.add('placed')
+  piece.style.position = 'absolute'
+  piece.style.left = '0'
+  piece.style.top = '0'
+  piece.style.zIndex = '1'
 
-        // Animação e Brilho de Encaixe
-        piece.classList.add('glow')
-        setTimeout(() => piece.classList.remove('glow'), 800)
+  slot.appendChild(piece)
 
-        state.placedCount++
-        onPiecePlacedProgress()
-      }
+  piece.classList.add('glow')
+  setTimeout(() => piece.classList.remove('glow'), 800)
 
-      function resetPieceToBank(piece) {
-        piece.style.position = 'relative'
-        piece.style.left = 'auto'
-        piece.style.top = 'auto'
-        piece.style.zIndex = 2
-        piecesBank.appendChild(piece)
-      }
+  state.placedCount++
+  onPiecePlacedProgress()
+}
+
+function resetPieceToBank(piece) {
+  piece.style.position = 'relative'
+  piece.style.left = 'auto'
+  piece.style.top = 'auto'
+  piece.style.zIndex = '2'
+  piecesBank.appendChild(piece)
+}
 
       /* ==========================================================================
-       PROGRESSO DO JOGO & FINALIZAÇÃO
-       ========================================================================== */
+        PROGRESSO DO JOGO & FINALIZAÇÃO
+        ========================================================================== */
       function onPiecePlacedProgress() {
-        // Aumenta gradualmente a intensidade das partículas no fundo
         state.particleIntensity =
           0.2 + (state.placedCount / CONFIG.totalPieces) * 0.8
 
-        // Mensagem especial ao faltar apenas 1 peça
         if (state.placedCount === CONFIG.totalPieces - 1) {
           document.getElementById('almost-message').classList.add('visible')
         }
 
-        // Conclusão do Quebra-Cabeça
         if (state.placedCount === CONFIG.totalPieces) {
           document.getElementById('almost-message').classList.remove('visible')
           completeGame()
@@ -735,17 +727,14 @@
       async function completeGame() {
         await sleep(500)
 
-        // Animação de união
         board.classList.add('completed')
         piecesBank.style.display = 'none'
 
-        // Efeito de brilho cruzando a foto
         await sleep(600)
         document.getElementById('board-shine').classList.add('animate')
 
         await sleep(1500)
 
-        // Exibição sequencial dos textos finais
         const outroSequence = [
           'text-placeholder-1',
           'text-placeholder-2',
@@ -763,7 +752,6 @@
           }
         }
 
-        // Exibição do Botão Final
         await sleep(500)
         const btn = document.getElementById('continue-btn')
         btn.classList.add('visible')
@@ -773,19 +761,17 @@
       }
 
       /* ==========================================================================
-       INICIALIZAÇÃO
-       ========================================================================== */
+        INICIALIZAÇÃO
+        ========================================================================== */
       window.addEventListener('DOMContentLoaded', () => {
         initParticles()
         createPuzzle()
         runSequence()
       })
 
-      // Ajuste responsivo na mudança de tamanho de tela
       window.addEventListener('resize', () => {
         if (state.placedCount < CONFIG.totalPieces) {
           calculateDimensions()
-          // Atualização dinâmica dos tamanhos das peças encaixadas
           document.querySelectorAll('.piece').forEach(piece => {
             const c = piece.dataset.index % CONFIG.cols
             const r = Math.floor(piece.dataset.index / CONFIG.cols)
