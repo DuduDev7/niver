@@ -2,7 +2,7 @@ async function login() {
 
   const senhaDigitada = document.getElementById("senha").value;
 
-  const senhaHash = "a605387aab9fabfb4cc4ca9d55bb1551a84722885e43554d8a9b038682d16d6f";
+  const senhaHash = "eutomtobravo";
 
   const encoder = new TextEncoder();
 
