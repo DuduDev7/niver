@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Um Detalhe Escondido</title>
+    <style>
+        /* Reset e Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            background-color: #000000;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        /* Container da Fotografia */
+        .photo-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            overflow: hidden;
+            transition: filter 1.5s ease, opacity 2s ease;
+            cursor: pointer;
+        }
+
+        .hero-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scale(1);
+            animation: liveCamera 25s infinite alternate ease-in-out;
+            pointer-events: none; /* Garante que o clique passe para o container */
+        }
+
+        @keyframes liveCamera {
+            0% { transform: scale(1) translate(0, 0); }
+            50% { transform: scale(1.08) translate(-0.5%, -0.5%); }
+            100% { transform: scale(1.03) translate(0.5%, 0.2%); }
+        }
+
+        /* Vinheta */
+        .vignette {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.8) 100%);
+            pointer-events: none;
+        }
+
+        /* Instruções Iniciais */
+        .intro-text {
+            position: fixed;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+            pointer-events: none; /* Bloqueio removido para não interferir no clique */
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
+
+        .intro-text p.line1 {
+            font-size: 1.1rem;
+            font-weight: 300;
+            letter-spacing: 0.08em;
+            color: #e0e0e0;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.9);
+        }
+
+        .intro-text p.line2 {
+            font-size: 0.95rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            color: #a0a0a0;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.9);
+        }
+
+        /* Toast de Erro */
+        .error-toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+            font-size: 1.2rem;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(0, 0, 0, 0.6);
+            padding: 12px 24px;
+            border-radius: 30px;
+            backdrop-filter: blur(5px);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .shake {
+            animation: screenShake 0.3s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes screenShake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        /* Canvas do Coração */
+        #heartCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 5;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+
+        /* Fundo Escuro */
+        .dark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000000;
+            z-index: 3;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 2s ease;
+        }
+
+        /* Seção de Textos Narrativos */
+        .narrative-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 15;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            cursor: pointer;
+            pointer-events: none; /* Desativado no início para permitir o clique na foto */
+        }
+
+        .narrative-container.active {
+            pointer-events: auto; /* Ativado após acertar o coração */
+        }
+
+        .narrative-block {
+            max-width: 750px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease, transform 1s ease;
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .narrative-block.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .narrative-block p {
+            font-size: 1.15rem;
+            font-weight: 300;
+            line-height: 1.7;
+            color: #f0f0f0;
+            margin-bottom: 1.2rem;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.9);
+            letter-spacing: 0.02em;
+        }
+
+        .narrative-block p:last-of-type {
+            margin-bottom: 0;
+        }
+
+        .click-hint {
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 0.1em;
+            animation: pulseHint 2s infinite ease-in-out;
+        }
+
+        @keyframes pulseHint {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Epílogo */
+        .epilogue-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 30;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            pointer-events: none;
+            background: #000;
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
+
+        .epilogue-text {
+            font-size: 1.8rem;
+            font-weight: 300;
+            letter-spacing: 0.12em;
+            color: #ffffff;
+            opacity: 0;
+            transform: scale(0.98);
+            transition: opacity 2s ease, transform 2s ease;
+            text-align: center;
+            position: absolute;
+        }
+
+        .epilogue-text.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Botão Final */
+        .btn-continue {
+            position: absolute;
+            bottom: 80px;
+            padding: 14px 32px;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 30px;
+            font-size: 0.95rem;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 1.5s ease;
+        }
+
+        .btn-continue.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .btn-continue:hover {
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .narrative-block p {
+                font-size: 0.98rem;
+                line-height: 1.6;
+                margin-bottom: 1rem;
+            }
+
+            .epilogue-text {
+                font-size: 1.4rem;
+            }
+
+            .intro-text p.line1 { font-size: 1rem; }
+            .intro-text p.line2 { font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="photo-container" id="photoContainer">
+        <img src="imgs/gol.jpeg" alt="Fotografia do Gol" class="hero-photo" id="heroPhoto">
+        <div class="vignette"></div>
+    </div>
+
+    <div class="dark-overlay" id="darkOverlay"></div>
+    <canvas id="heartCanvas"></canvas>
+
+    <div class="intro-text" id="introText">
+        <p class="line1">Existe um detalhe escondido nesta fotografia.</p>
+        <p class="line2">Toque onde você acha que está meu coração.</p>
+    </div>
+
+    <div class="error-toast" id="errorToast">Ainda não...</div>
+
+    <div class="narrative-container" id="narrativeContainer">
+        
+        <div class="narrative-block" id="text1">
+            <p>
+              Todo mundo olhou para o gol. A torcida levantou ao mesmo tempo. Meus
+              companheiros correram na minha direção. O ginásio explodiu em gritos.
+              O placar mudou. Os narradores provavelmente falaram sobre a jogada. As
+              pessoas comemoravam porque, para elas, aquilo significava apenas mais
+              um ponto. Mas ninguém ali fazia ideia do que realmente estava
+              acontecendo. Enquanto todos enxergavam um simples gol, existia uma
+              história inteira escondida naquele instante. Eu estava longe de casa.
+              Longe da minha rotina. E, principalmente... longe de você. A saudade
+              já não cabia mais dentro de mim. Ela aparecia nos momentos mais
+              inesperados. Durante a viagem. No aquecimento. Entre uma partida e
+              outra. E até mesmo quando tudo o que eu deveria pensar era apenas no
+              jogo. O ginásio estava completamente tomado pelo barulho. Pessoas
+              gritavam. Apitos ecoavam. A bola batia na quadra. Mas, por mais
+              estranho que pareça... dentro de mim existia apenas silêncio. Porque,
+              em meio a centenas de pessoas, havia apenas uma cuja presença
+              realmente fazia falta.
+            </p>
+            <div class="click-hint">(Toque na tela para continuar)</div>
+        </div>
+
+        <div class="narrative-block" id="text2">
+            <p>
+              Quando a bola entrou... o tempo fez exatamente aquilo que eu sempre
+              achei impossível. Ele parou. Não porque o campeonato era importante.
+              Não porque aquele gol decidiria alguma coisa. Mas porque, naquele
+              segundo, eu finalmente encontrei uma forma de diminuir um pouco a
+              distância que existia entre nós.
+            </p>
+
+            <p>
+              Enquanto todos comemoravam olhando para o placar... eu pensava em
+              você. Enquanto meus amigos corriam para me abraçar... eu lembrava do
+              abraço que realmente queria. Enquanto diziam que aquele era o melhor
+              momento da partida... eu só conseguia imaginar como seria muito melhor
+              se você estivesse ali.
+            </p>
+
+            <p>
+              Foi então que, quase sem pensar... minha mão encontrou a aliança. Não
+              foi uma comemoração ensaiada. Não foi para aparecer. Não foi para as
+              câmeras. Foi apenas o jeito mais sincero que encontrei de dizer, mesmo
+              a quilômetros de distância: "Eu estou pensando em você."
+            </p>
+            <div class="click-hint">(Toque na tela para continuar)</div>
+        </div>
+
+        <div class="narrative-block" id="text3">
+            <p>
+              O fotógrafo fez exatamente o trabalho dele. Ajustou a câmera. Calculou
+              a velocidade. Esperou o momento perfeito. Apertou o disparador. Para
+              ele... aquela era apenas uma fotografia esportiva.
+            </p>
+
+            <p>
+              Mas existe uma coisa curiosa sobre as fotografias. Elas registram
+              muito mais do que a própria câmera consegue entender. Sem querer...
+              ele congelou um sentimento. Congelou um instante em que a saudade
+              falou mais alto do que qualquer comemoração. Congelou o exato momento
+              em que um beijo em uma pequena aliança dizia muito mais do que
+              qualquer legenda conseguiria explicar.
+            </p>
+
+            <p>
+              Sempre que olho para essa imagem... eu não vejo um atleta comemorando.
+              Eu vejo alguém tentando fazer com que uma pessoa especial sentisse,
+              mesmo de longe, que nunca deixou de estar presente naquele momento.
+            </p>
+            <div class="click-hint">(Toque na tela para continuar)</div>
+        </div>
+
+        <div class="narrative-block" id="text4">
+            <p>
+              Talvez ninguém tenha percebido. Talvez todos tenham pensado que era
+              apenas um gesto qualquer. E tudo bem. Porque algumas demonstrações de
+              amor não precisam ser compreendidas pelo mundo inteiro. Basta que uma
+              única pessoa entenda.
+            </p>
+
+            <p>
+              Naquele ginásio havia centenas de pessoas. Companheiros. Adversários.
+              Árbitros. Torcedores. Fotógrafos. Mas, por alguns segundos... todos
+              desapareceram. Restou apenas a imagem que eu fazia de você dentro da
+              minha cabeça.
+            </p>
+
+            <p>
+              A distância dizia que você estava em outra cidade. A saudade dizia
+              exatamente o contrário. Porque, mesmo sem estar ali fisicamente...
+              você era a única pessoa que ocupava todos os meus pensamentos naquele
+              instante.
+            </p>
+
+            <p>
+              Hoje essa fotografia continua existindo. Algumas pessoas enxergam um
+              gol. Outras enxergam uma comemoração. Eu enxergo muito mais do que
+              isso. Eu enxergo uma saudade que encontrou um jeito de atravessar
+              quilômetros. Um beijo que nunca foi para uma aliança. Sempre foi para
+              você.
+            </p>
+            <div class="click-hint">(Toque na tela para continuar)</div>
+        </div>
+
+    </div>
+
+    <div class="epilogue-container" id="epilogueContainer">
+        <div class="epilogue-text" id="epi1">Era para você.</div>
+        <div class="epilogue-text" id="epi2">Sempre foi.</div>
+        <div class="epilogue-text" id="epi3">Obrigado por existir.</div>
+        <button class="btn-continue" id="btnContinue" onclick="proximaPagina()">CONTINUAR</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const photoContainer = document.getElementById('photoContainer');
+            const introText = document.getElementById('introText');
+            const errorToast = document.getElementById('errorToast');
+            const darkOverlay = document.getElementById('darkOverlay');
+            const heartCanvas = document.getElementById('heartCanvas');
+            const narrativeContainer = document.getElementById('narrativeContainer');
+            const ctx = heartCanvas.getContext('2d');
+
+            const textBlocks = [
+                document.getElementById('text1'),
+                document.getElementById('text2'),
+                document.getElementById('text3'),
+                document.getElementById('text4')
+            ];
+
+            const epilogueContainer = document.getElementById('epilogueContainer');
+            const epi1 = document.getElementById('epi1');
+            const epi2 = document.getElementById('epi2');
+            const epi3 = document.getElementById('epi3');
+            const btnContinue = document.getElementById('btnContinue');
+
+            function resizeCanvas() {
+                heartCanvas.width = window.innerWidth;
+                heartCanvas.height = window.innerHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            let audioCtx = null;
+
+            function initAudio() {
+                if (!audioCtx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    audioCtx = new AudioContext();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+            }
+
+            function playHeartSound(intensity = 1.0, pitch = 60) {
+                if (!audioCtx) return;
+                try {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(pitch, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(30, audioCtx.currentTime + 0.15);
+
+                    gain.gain.setValueAtTime(0.6 * intensity, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.18);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.2);
+                } catch (e) {}
+            }
+
+            setTimeout(() => {
+                introText.style.opacity = '1';
+            }, 2000);
+
+            let isFound = false;
+            let errorTimeout = null;
+
+            // Evento de clique capturado direto no Container Principal para evitar falhas
+            photoContainer.addEventListener('click', handlePhotoClick);
+
+            function handlePhotoClick(e) {
+                if (isFound) return;
+                initAudio();
+
+                // Calcula percentual exato do ponto clicado na janela (0.00 até 1.00)
+                const x = e.clientX / window.innerWidth;
+                const y = e.clientY / window.innerHeight;
+
+                /* =========================================================
+                   ÁREA DO CORAÇÃO (BEM NO MEIO DA TELA)
+                   25% a 75% da largura (X)
+                   25% a 75% da altura (Y)
+                   ========================================================= */
+                const targetMinX = 0.25; 
+                const targetMaxX = 0.75; 
+                const targetMinY = 0.25; 
+                const targetMaxY = 0.75; 
+
+                if (x >= targetMinX && x <= targetMaxX && y >= targetMinY && y <= targetMaxY) {
+                    isFound = true;
+                    startSequence(e.clientX, e.clientY);
+                } else {
+                    playHeartSound(0.4, 50);
+                    
+                    if (navigator.vibrate) {
+                        navigator.vibrate(50);
+                    }
+
+                    document.body.classList.remove('shake');
+                    void document.body.offsetWidth;
+                    document.body.classList.add('shake');
+
+                    errorToast.style.opacity = '1';
+                    clearTimeout(errorTimeout);
+                    errorTimeout = setTimeout(() => {
+                        errorToast.style.opacity = '0';
+                    }, 1200);
+                }
+            }
+
+            let heartX = 0;
+            let heartY = 0;
+            let heartScale = 0.2;
+            let heartGlow = 10;
+
+            function drawHeart(cx, cy, scale, glow) {
+                ctx.clearRect(0, 0, heartCanvas.width, heartCanvas.height);
+                ctx.save();
+                ctx.translate(cx, cy);
+                ctx.scale(scale, scale);
+
+                ctx.beginPath();
+                for (let t = 0; t <= Math.PI * 2; t += 0.02) {
+                    const hx = 16 * Math.pow(Math.sin(t), 3);
+                    const hy = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+                    if (t === 0) ctx.moveTo(hx, hy);
+                    else ctx.lineTo(hx, hy);
+                }
+                ctx.closePath();
+
+                ctx.fillStyle = 'rgba(255, 40, 80, 0.85)';
+                ctx.shadowColor = 'rgba(255, 60, 100, 1)';
+                ctx.shadowBlur = glow;
+                ctx.fill();
+
+                ctx.restore();
+            }
+
+            function startSequence(startX, startY) {
+                heartX = startX;
+                heartY = startY;
+
+                introText.style.opacity = '0';
+                darkOverlay.style.opacity = '0.7';
+                photoContainer.style.filter = 'contrast(1.1) brightness(0.3) grayscale(60%)';
+                heartCanvas.style.opacity = '1';
+
+                // Libera a camada de clique dos textos
+                narrativeContainer.classList.add('active');
+
+                drawHeart(heartX, heartY, heartScale, heartGlow);
+
+                runBeatSequence();
+            }
+
+            let currentTextIndex = 0;
+            let bpm = 50;
+            let beatInterval = null;
+            let textCanAdvance = false;
+
+            function pulseOnce(intensity = 1.0) {
+                playHeartSound(intensity, 50 + (bpm * 0.2));
+                
+                let startScale = heartScale;
+                let targetScale = heartScale * 1.25;
+                let duration = 200;
+                let startTime = performance.now();
+
+                function animateBeat(now) {
+                    let elapsed = now - startTime;
+                    let p = elapsed / duration;
+
+                    if (p < 0.5) {
+                        let current = startScale + (targetScale - startScale) * (p * 2);
+                        drawHeart(heartX, heartY, current, heartGlow * 1.5);
+                        requestAnimationFrame(animateBeat);
+                    } else if (p <= 1.0) {
+                        let current = targetScale - (targetScale - startScale) * ((p - 0.5) * 2);
+                        drawHeart(heartX, heartY, current, heartGlow);
+                        requestAnimationFrame(animateBeat);
+                    } else {
+                        drawHeart(heartX, heartY, heartScale, heartGlow);
+                    }
+                }
+                requestAnimationFrame(animateBeat);
+            }
+
+            function runBeatSequence() {
+                function scheduleNextBeat() {
+                    pulseOnce(Math.min(1.5, 0.8 + (currentTextIndex * 0.2)));
+
+                    heartScale += 0.01;
+                    heartGlow += 1;
+
+                    let delay = (60 / bpm) * 1000;
+                    beatInterval = setTimeout(scheduleNextBeat, delay);
+                }
+
+                scheduleNextBeat();
+                showCurrentText();
+            }
+
+            function showCurrentText() {
+                textBlocks.forEach(b => b.classList.remove('active'));
+
+                if (currentTextIndex < textBlocks.length) {
+                    const currentBlock = textBlocks[currentTextIndex];
+                    currentBlock.classList.add('active');
+                    textCanAdvance = true;
+                } else {
+                    clearTimeout(beatInterval);
+                    expandHeartToMax();
+                }
+            }
+
+            // Clique na tela para avançar o texto
+            narrativeContainer.addEventListener('click', () => {
+                if (!isFound || !textCanAdvance) return;
+
+                textCanAdvance = false;
+                textBlocks[currentTextIndex].classList.remove('active');
+                
+                currentTextIndex++;
+                bpm += 25;
+
+                setTimeout(() => {
+                    showCurrentText();
+                }, 500);
+            });
+
+            function expandHeartToMax() {
+                let duration = 3000;
+                let startTime = performance.now();
+                let initialScale = heartScale;
+                let targetScale = Math.max(window.innerWidth, window.innerHeight) / 10;
+
+                function animateExpansion(now) {
+                    let elapsed = now - startTime;
+                    let progress = Math.min(elapsed / duration, 1);
+                    let easeProgress = Math.pow(progress, 3);
+                    let currentScale = initialScale + (targetScale - initialScale) * easeProgress;
+
+                    drawHeart(heartX, heartY, currentScale, heartGlow * (1 + progress));
+
+                    if (progress < 1) {
+                        requestAnimationFrame(animateExpansion);
+                    } else {
+                        setTimeout(startEpilogue, 1000);
+                    }
+                }
+                requestAnimationFrame(animateExpansion);
+            }
+
+            function startEpilogue() {
+                heartCanvas.style.opacity = '0';
+                photoContainer.style.opacity = '0';
+                darkOverlay.style.opacity = '1';
+
+                epilogueContainer.style.opacity = '1';
+
+                setTimeout(() => {
+                    epi1.classList.add('visible');
+                }, 1500);
+
+                setTimeout(() => {
+                    epi1.classList.remove('visible');
+                    setTimeout(() => {
+                        epi2.classList.add('visible');
+                    }, 1500);
+                }, 5500);
+
+                setTimeout(() => {
+                    epi2.classList.remove('visible');
+                    setTimeout(() => {
+                        epi3.classList.add('visible');
+                    }, 1500);
+                }, 9500);
+
+                setTimeout(() => {
+                    btnContinue.classList.add('visible');
+                }, 13500);
+            }
+        });
+
+        function proximaPagina() {
+            // Reservado para ação final
+        }
+    </script>
+</body>
+</html>
