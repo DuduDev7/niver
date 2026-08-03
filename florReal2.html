@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cuide da Flor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Dancing+Script:wght@500;700&family=Montserrat:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-night: #090a10;
+        --gold: #dfb15b;
+        --gold-glow: rgba(223, 177, 91, 0.4);
+        --rose: #e65c7b;
+        --stem: #2d5a27;
+        --leaf: #48823f;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: var(--bg-night);
+        color: #e0e0e0;
+        font-family: 'Montserrat', sans-serif;
+        min-height: 100vh;
+        overflow-x: hidden;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        position: relative;
+        transition: background 1.5s ease;
+      }
+
+      /* --- Canvas de Partículas --- */
+      #particles-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      /* --- Iluminação de Fundo Sintetizada --- */
+      .ambient-light {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 60vw;
+        height: 60vw;
+        background: radial-gradient(
+          circle,
+          rgba(223, 177, 91, 0.05) 0%,
+          rgba(0, 0, 0, 0) 70%
+        );
+        border-radius: 50%;
+        pointer-events: none;
+        transition: all 1s ease;
+        z-index: 0;
+      }
+
+      /* --- Estrutura Principal --- */
+      .main-container {
+        width: 100%;
+        max-width: 900px;
+        padding: 2rem 2rem 5rem 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 2;
+      }
+
+      header {
+        text-align: center;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      h1 {
+        font-family: 'Cinzel', serif;
+        font-size: 2.2rem;
+        color: var(--gold);
+        letter-spacing: 2px;
+        margin-bottom: 0.8rem;
+        text-shadow: 0 0 15px var(--gold-glow);
+      }
+
+      .subtitle {
+        font-style: italic;
+        color: #a0a0a0;
+        font-weight: 300;
+        font-size: 1.1rem;
+      }
+
+      /* --- Palco da Flor --- */
+      .flower-stage {
+        position: relative;
+        width: 300px;
+        height: 380px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        margin: 1rem 0;
+        transition: transform 1s ease;
+      }
+
+      /* Vaso e Terra */
+      .pot {
+        position: absolute;
+        bottom: 0;
+        width: 120px;
+        height: 90px;
+        background: linear-gradient(135deg, #2c1d11, #180f08);
+        clip-path: polygon(0 0, 100% 0, 85% 100%, 15% 100%);
+        border-radius: 0 0 10px 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+        z-index: 10;
+      }
+
+      .soil {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        height: 20px;
+        background: #1a0f07;
+        border-radius: 50%;
+        transition: background 1s ease, filter 1s ease;
+      }
+
+      .soil.wet {
+        background: #0d0703;
+        filter: drop-shadow(0 0 5px #3a2312);
+      }
+
+      /* Caule e Folhas */
+      .stem {
+        position: absolute;
+        bottom: 80px;
+        width: 8px;
+        height: 40px;
+        background: linear-gradient(to right, #20401b, var(--stem), #183014);
+        border-radius: 4px;
+        transition: height 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        transform-origin: bottom center;
+        z-index: 5;
+      }
+
+      .leaf {
+        position: absolute;
+        width: 24px;
+        height: 12px;
+        background: var(--leaf);
+        border-radius: 20px 0 20px 0;
+        opacity: 0;
+        transform: scale(0);
+        transition: all 0.8s ease;
+      }
+
+      .leaf.left {
+        left: -20px;
+        top: 40%;
+        transform-origin: right center;
+      }
+
+      .leaf.right {
+        right: -20px;
+        top: 60%;
+        border-radius: 0 20px 0 20px;
+        transform-origin: left center;
+      }
+
+      /* Flor e Pétalas (Conectada perfeitamente ao caule) */
+      .flower-head {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.4);
+        width: 60px;
+        height: 60px;
+        transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        z-index: 6;
+      }
+
+      .center-bud {
+        position: absolute;
+        width: 24px;
+        height: 24px;
+        background: #4a0d18;
+        border-radius: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 4;
+        box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.8);
+        transition: background 1s ease, box-shadow 1s ease;
+      }
+
+      .petal {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 22px;
+        height: 40px;
+        background: linear-gradient(to top, #800c24, var(--rose));
+        border-radius: 20px 20px 5px 5px;
+        transform-origin: bottom center;
+        opacity: 0.7;
+        transition: all 0.8s ease;
+      }
+
+      /* Estágios de Abertura das Pétalas */
+      .petal:nth-child(1) {
+        transform: translate(-50%, -100%) rotate(0deg);
+      }
+      .petal:nth-child(2) {
+        transform: translate(-50%, -100%) rotate(60deg);
+      }
+      .petal:nth-child(3) {
+        transform: translate(-50%, -100%) rotate(120deg);
+      }
+      .petal:nth-child(4) {
+        transform: translate(-50%, -100%) rotate(180deg);
+      }
+      .petal:nth-child(5) {
+        transform: translate(-50%, -100%) rotate(240deg);
+      }
+      .petal:nth-child(6) {
+        transform: translate(-50%, -100%) rotate(300deg);
+      }
+
+      /* --- Interface de Progresso --- */
+      .progress-box {
+        width: 100%;
+        max-width: 400px;
+        margin: 1.5rem 0;
+        text-align: center;
+      }
+
+      .progress-label {
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+        color: #b0b0b0;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .progress-bar-bg {
+        width: 100%;
+        height: 12px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 6px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        position: relative;
+      }
+
+      .progress-bar-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #d4af37, #f3e5ab);
+        box-shadow: 0 0 10px var(--gold-glow);
+        transition: width 0.5s ease;
+      }
+
+      /* --- Controles --- */
+      .controls {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .btn-action {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(223, 177, 91, 0.3);
+        color: #e0e0e0;
+        padding: 12px 24px;
+        border-radius: 30px;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        backdrop-filter: blur(5px);
+      }
+
+      .btn-action:hover {
+        background: rgba(223, 177, 91, 0.15);
+        border-color: var(--gold);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .btn-action:active {
+        transform: translateY(0);
+      }
+
+      .btn-action:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .btn-love-special {
+        background: rgba(230, 92, 123, 0.2);
+        border-color: var(--rose);
+        color: #fff;
+        animation: pulseGlow 1.5s infinite alternate;
+      }
+
+      @keyframes pulseGlow {
+        from {
+          box-shadow: 0 0 5px rgba(230, 92, 123, 0.4);
+        }
+        to {
+          box-shadow: 0 0 20px rgba(230, 92, 123, 0.8);
+        }
+      }
+
+      /* --- Seção Revelada (Memória) --- */
+      .memory-section {
+        width: 100%;
+        display: none;
+        opacity: 0;
+        transition: opacity 1.5s ease;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .memory-section.visible {
+        display: flex;
+        opacity: 1;
+        margin-top: 3rem;
+      }
+
+      .unlock-title {
+        font-family: 'Cinzel', serif;
+        font-size: 1.8rem;
+        color: var(--gold);
+        text-align: center;
+        margin-bottom: 2.5rem;
+        text-shadow: 0 0 20px var(--gold-glow);
+        animation: fadeIn 2s ease;
+      }
+
+      /* Galeria de Fotos */
+      .photo-gallery {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+        margin-bottom: 2rem;
+        width: 100%;
+      }
+
+      .photo-card {
+        background: #ffffff;
+        padding: 15px 15px 40px 15px;
+        border-radius: 4px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+        transform: rotate(-2deg) scale(0.95);
+        transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+        max-width: 320px;
+        width: 100%;
+      }
+
+      .photo-card:nth-child(even) {
+        transform: rotate(3deg) scale(0.95);
+      }
+
+      .photo-card:hover {
+        transform: rotate(0deg) scale(1.03);
+        z-index: 10;
+        box-shadow: 0 20px 40px rgba(223, 177, 91, 0.3);
+      }
+
+      .photo-card img {
+        width: 100%;
+        height: 320px;
+        object-fit: cover;
+        border-radius: 2px;
+        filter: sepia(10%) contrast(105%);
+      }
+
+      /* Carta de Texto Longo */
+      .carta {
+        background: linear-gradient(to bottom, #15161e, #0d0e14);
+        border: 1px solid rgba(223, 177, 91, 0.2);
+        border-radius: 8px;
+        padding: 4rem 3rem;
+        max-width: 750px;
+        width: 100%;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8),
+          inset 0 0 100px rgba(0, 0, 0, 0.5);
+        margin-bottom: 4rem;
+        position: relative;
+      }
+
+      .carta::before {
+        content: '';
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        right: 15px;
+        bottom: 15px;
+        border: 1px dashed rgba(223, 177, 91, 0.15);
+        pointer-events: none;
+      }
+
+      .carta p {
+        font-family: 'Dancing Script', cursive;
+        font-size: 1.6rem;
+        line-height: 2.2rem;
+        color: #ece6d8;
+        margin-bottom: 2rem;
+        text-align: justify;
+        text-justify: inter-word;
+      }
+
+      .carta p:last-child {
+        margin-bottom: 0;
+      }
+
+      /* --- Efeitos Flutuantes --- */
+      .floating-effect {
+        position: absolute;
+        pointer-events: none;
+        animation: floatUp 1.5s ease-out forwards;
+        font-size: 1.5rem;
+        z-index: 20;
+      }
+
+      @keyframes floatUp {
+        0% {
+          opacity: 1;
+          transform: translateY(0) scale(0.8);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-100px) scale(1.3);
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 600px) {
+        .carta {
+          padding: 2.5rem 1.5rem;
+        }
+        .carta p {
+          font-size: 1.3rem;
+          line-height: 1.8rem;
+        }
+        h1 {
+          font-size: 1.7rem;
+        }
+        .photo-gallery {
+          gap: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="particles-canvas"></canvas>
+    <div class="ambient-light" id="ambientLight"></div>
+
+    <div class="main-container">
+      <header>
+        <h1>Cuide da Flor</h1>
+        <p class="subtitle">
+          Algumas coisas precisam de cuidado para florescer.
+        </p>
+      </header>
+
+      <div class="flower-stage" id="stage">
+        <div class="stem" id="stem">
+          <div class="leaf left" id="leafLeft"></div>
+          <div class="leaf right" id="leafRight"></div>
+          <div class="flower-head" id="flowerHead">
+            <div class="center-bud" id="centerBud"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+          </div>
+        </div>
+        <div class="pot">
+          <div class="soil" id="soil"></div>
+        </div>
+      </div>
+
+      <div class="progress-box">
+        <div class="progress-label">
+          <span>Cuidado da flor</span>
+          <span id="progressText">0%</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressBar"></div>
+        </div>
+      </div>
+
+      <div class="controls" id="controls">
+        <button class="btn-action" onclick="interact('water')">💧 Regar</button>
+        <button class="btn-action" onclick="interact('light')">
+          ☀️ Dar Luz
+        </button>
+        <button
+          class="btn-action btn-love-special"
+          id="btnLove"
+          style="display: none"
+          onclick="interact('love')"
+        >
+          ❤️ Dar Carinho
+        </button>
+      </div>
+
+      <div class="memory-section" id="memorySection">
+        <h2 class="unlock-title">A memória floresceu.</h2>
+
+        <section class="carta">
+          <p>
+            Existe um momento muito específico na vida em que algo simples deixa
+            de ser apenas um objeto e passa a carregar um pedaço inteiro do
+            coração de alguém. Foi exatamente isso que aconteceu naquele dia em
+            que eu segurei aquela flor nas mãos. Talvez, para qualquer outra
+            pessoa, ela fosse apenas um lírio rosa. Bonito, delicado, perfumado.
+            Mas, para mim, ela já era muito mais do que isso antes mesmo de
+            chegar até você.
+          </p>
+
+          <p>
+            Eu sabia o quanto você amava lírios. Sabia que, entre tantas flores
+            espalhadas pelo mundo, eram justamente eles que faziam seus olhos
+            brilharem de um jeito diferente. E foi então que eu percebi que
+            aquela não seria apenas a primeira flor que eu te entregaria. Ela
+            carregava um significado que nenhuma palavra conseguiria explicar
+            completamente.
+          </p>
+
+          <p>Naquele instante, eu não estava apenas oferecendo uma flor.</p>
+
+          <p>Eu estava entregando um pedaço daquilo que eu sentia por você.</p>
+
+          <p>
+            Porque flores vivem pouco. Elas desabrocham, perfumam o ambiente,
+            encantam quem as observa... e, inevitavelmente, um dia suas pétalas
+            caem. Mas eu queria acreditar que existia algo que pudesse durar
+            muito mais do que qualquer jardim. Eu queria que, sempre que você
+            olhasse para um lírio rosa, lembrasse daquele momento. Lembrasse de
+            nós. Lembrasse de como um gesto tão pequeno podia esconder um
+            sentimento tão grande.
+          </p>
+
+          <p>
+            E talvez seja justamente isso que torna algumas lembranças eternas.
+            Não é o tamanho do presente. Não é o preço. Não é o lugar onde
+            aconteceu. É a intenção que fica guardada para sempre.
+          </p>
+
+          <p>
+            Porque eu poderia ter escolhido qualquer outra coisa. Poderia ter
+            dado qualquer outro presente. Mas, no fundo, eu só queria ver aquele
+            sorriso aparecer no seu rosto quando você percebesse que alguém
+            prestou atenção em um detalhe que talvez muita gente nunca tivesse
+            percebido: o quanto você ama lírios.
+          </p>
+
+          <p>Desde aquele dia, essa flor deixou de ser apenas uma flor.</p>
+
+          <p>Ela virou símbolo.</p>
+
+          <p>Símbolo do começo.</p>
+
+          <p>Do cuidado.</p>
+
+          <p>Da vontade de fazer você feliz, mesmo nas coisas mais simples.</p>
+
+          <p>
+            E sabe... às vezes eu penso que a gente se parece um pouco com um
+            jardim. Nada floresce de um dia para o outro. Existe tempo. Existe
+            dedicação. Existem dias de chuva, dias de sol e dias em que parece
+            que nada está acontecendo. Mas, mesmo quando não percebemos, as
+            raízes continuam crescendo em silêncio.
+          </p>
+
+          <p>Foi exatamente assim com a gente.</p>
+
+          <p>Sem pressa.</p>
+
+          <p>Sem precisar forçar nada.</p>
+
+          <p>Cada conversa.</p>
+
+          <p>Cada risada.</p>
+
+          <p>Cada abraço.</p>
+
+          <p>
+            Cada momento vivido foi como uma pequena gota de água alimentando
+            algo que, aos poucos, criava raízes dentro de mim.
+          </p>
+
+          <p>
+            E hoje eu entendo que aquela primeira flor nunca foi sobre pétalas.
+          </p>
+
+          <p>Ela era uma promessa silenciosa.</p>
+
+          <p>A promessa de continuar escolhendo você todos os dias.</p>
+
+          <p>
+            De continuar encontrando motivos para colocar um sorriso no seu
+            rosto.
+          </p>
+
+          <p>
+            De continuar cuidando daquilo que nós estamos construindo,
+            exatamente da mesma forma que se cuida da flor mais bonita de um
+            jardim.
+          </p>
+
+          <p>Porque algumas pessoas recebem flores.</p>
+
+          <p>Você...</p>
+
+          <p>me ensinou o significado delas.</p>
+
+          <p>
+            E se um dia todas aquelas pétalas desaparecerem, se o tempo levar
+            embora sua cor e seu perfume, ainda assim existirá algo que nunca
+            poderá ser arrancado.
+          </p>
+
+          <p>A lembrança daquele momento.</p>
+
+          <p>Do primeiro lírio.</p>
+
+          <p>Do primeiro "eu pensei em você".</p>
+
+          <p>Do primeiro gesto que carregava, escondido entre as pétalas...</p>
+
+          <p>
+            um amor que ainda estava aprendendo a encontrar as palavras certas.
+          </p>
+
+          <p>Porque, no fim...</p>
+
+          <p>não foi apenas a primeira flor que eu te dei.</p>
+
+          <p>
+            Foi a primeira de muitas maneiras que encontrei para dizer, sem
+            precisar falar...
+          </p>
+
+          <p><strong>"EU TE AMO MUITO."</strong></p>
+        </section>
+
+        <div class="photo-gallery">
+          <div class="photo-card">
+            <img
+              src="imgs/juliaEflor1.jpeg"
+              alt="Memória Especial 1"
+              onerror="this.src='https://via.placeholder.com/400x500/1a1a2e/dfb15b?text=juliaEflor1.jpeg'"
+            />
+          </div>
+          <div class="photo-card">
+            <img
+              src="imgs/juliaEflor2.jpeg"
+              alt="Memória Especial 2"
+              onerror="this.src='https://via.placeholder.com/400x500/1a1a2e/dfb15b?text=juliaEflor2.jpeg'"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // --- Estado da Aplicação ---
+      let clicks = 0
+      const totalRequired = 10
+      let loveStage = 0 // 0 = sem carinho, 1 = dar carinho, 2 = dar muito carinho
+      let isCompleted = false
+
+      // --- Elementos do DOM ---
+      const progressBar = document.getElementById('progressBar')
+      const progressText = document.getElementById('progressText')
+      const stem = document.getElementById('stem')
+      const flowerHead = document.getElementById('flowerHead')
+      const leafLeft = document.getElementById('leafLeft')
+      const leafRight = document.getElementById('leafRight')
+      const soil = document.getElementById('soil')
+      const ambientLight = document.getElementById('ambientLight')
+      const stage = document.getElementById('stage')
+      const petals = document.querySelectorAll('.petal')
+      const centerBud = document.getElementById('centerBud')
+      const memorySection = document.getElementById('memorySection')
+      const btnLove = document.getElementById('btnLove')
+
+      // Initial alignment
+      updatePlantGrowth(0)
+
+      // --- Partículas Ambientais ---
+      const canvas = document.getElementById('particles-canvas')
+      const ctx = canvas.getContext('2d')
+      let particles = []
+
+      function resizeCanvas() {
+        canvas.width = window.innerWidth
+        canvas.height = window.innerHeight
+      }
+      window.addEventListener('resize', resizeCanvas)
+      resizeCanvas()
+
+      class Particle {
+        constructor() {
+          this.reset()
+        }
+        reset() {
+          this.x = Math.random() * canvas.width
+          this.y = Math.random() * canvas.height
+          this.size = Math.random() * 2 + 0.5
+          this.speedX = (Math.random() - 0.5) * 0.5
+          this.speedY = -Math.random() * 0.5 - 0.2
+          this.opacity = Math.random() * 0.5 + 0.1
+        }
+        update() {
+          this.x += this.speedX
+          this.y += this.speedY
+          if (this.y < 0 || this.x < 0 || this.x > canvas.width) {
+            this.reset()
+            this.y = canvas.height
+          }
+        }
+        draw() {
+          ctx.fillStyle = `rgba(223, 177, 91, ${this.opacity})`
+          ctx.beginPath()
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
+          ctx.fill()
+        }
+      }
+
+      for (let i = 0; i < 50; i++) particles.push(new Particle())
+
+      function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        particles.forEach(p => {
+          p.update()
+          p.draw()
+        })
+        requestAnimationFrame(animateParticles)
+      }
+      animateParticles()
+
+      // --- Lógica Interativa ---
+      function interact(type) {
+        if (isCompleted) return
+
+        if (type === 'water' || type === 'light') {
+          if (clicks < totalRequired) {
+            clicks++
+            const percentage = Math.round((clicks / totalRequired) * 100)
+            progressBar.style.width = percentage + '%'
+            progressText.innerText = percentage + '%'
+            updatePlantGrowth(percentage)
+
+            if (clicks === totalRequired) {
+              btnLove.style.display = 'flex'
+              loveStage = 1
+            }
+          }
+          createFloatingEffect(type)
+          applyVisualReaction(type)
+        } else if (type === 'love') {
+          createFloatingEffect('love')
+          applyVisualReaction('love')
+
+          if (loveStage === 1) {
+            // Primeiro clique no carinho -> Muda botão para "Dar Muito Carinho"
+            btnLove.innerHTML = '💖 Dar Muito Carinho'
+            loveStage = 2
+          } else if (loveStage === 2) {
+            // Segundo clique no carinho -> Conclui e revela as fotos e a carta
+            isCompleted = true
+            disableButtons()
+            triggerFullBloom()
+          }
+        }
+      }
+
+      function applyVisualReaction(type) {
+        if (type === 'water') {
+          soil.classList.add('wet')
+        } else if (type === 'light') {
+          ambientLight.style.background = `radial-gradient(circle, rgba(223, 177, 91, ${
+            0.1 + clicks * 0.03
+          }) 0%, rgba(0,0,0,0) 70%)`
+        } else if (type === 'love') {
+          stage.style.transform = 'scale(1.05)'
+          setTimeout(() => (stage.style.transform = 'scale(1)'), 300)
+        }
+      }
+
+      function updatePlantGrowth(percentage) {
+        // Caule cresce de 40px até 180px
+        const stemHeight = 40 + percentage * 1.4
+        stem.style.height = stemHeight + 'px'
+
+        // Folhas aparecem
+        if (percentage >= 30) {
+          leafLeft.style.opacity = '1'
+          leafLeft.style.transform = 'scale(1)'
+        }
+        if (percentage >= 50) {
+          leafRight.style.opacity = '1'
+          leafRight.style.transform = 'scale(1)'
+        }
+
+        // O botão de flor cresce conforme o progresso
+        const headScale = 0.4 + percentage * 0.006
+        flowerHead.style.transform = `translate(-50%, -50%) scale(${headScale})`
+
+        // Pétalas vão se expandindo levemente
+        const petalSpread = percentage / 100
+        petals.forEach((petal, index) => {
+          const angle = index * 60
+          const distance = petalSpread * 10
+          petal.style.transform = `translate(-50%, -100%) rotate(${angle}deg) translateY(-${distance}px)`
+          petal.style.opacity = 0.5 + petalSpread * 0.3
+        })
+      }
+
+      function createFloatingEffect(type) {
+        const elem = document.createElement('div')
+        elem.className = 'floating-effect'
+
+        const stageRect = stage.getBoundingClientRect()
+        elem.style.left =
+          stageRect.left +
+          stageRect.width / 2 +
+          (Math.random() * 60 - 30) +
+          'px'
+        elem.style.top = stageRect.top + 100 + 'px'
+
+        if (type === 'water') elem.innerText = '💧'
+        else if (type === 'light') elem.innerText = '✨'
+        else if (type === 'love') elem.innerText = loveStage === 2 ? '💖' : '❤️'
+
+        document.body.appendChild(elem)
+        setTimeout(() => elem.remove(), 1500)
+      }
+
+      function disableButtons() {
+        const buttons = document.querySelectorAll('.btn-action')
+        buttons.forEach(btn => (btn.disabled = true))
+      }
+
+      // --- Animação de Florescimento Total ---
+      function triggerFullBloom() {
+        // Pétalas se abrem completamente
+        petals.forEach((petal, index) => {
+          const angle = index * 60
+          petal.style.transform = `translate(-50%, -100%) rotate(${angle}deg) translateY(-18px)`
+          petal.style.opacity = '1'
+        })
+
+        // Mudar cor do miolo
+        centerBud.style.background = '#d4af37'
+        centerBud.style.boxShadow = '0 0 25px #dfb15b'
+
+        // Iluminação máxima do ambiente
+        ambientLight.style.background =
+          'radial-gradient(circle, rgba(223, 177, 91, 0.4) 0%, rgba(0,0,0,0) 75%)'
+
+        // Animação do Palco
+        stage.style.transition = 'transform 2s ease-in-out'
+        stage.style.transform = 'scale(1.15)'
+
+        setTimeout(() => {
+          stage.style.transform = 'scale(1)'
+
+          // Exibir a seção de fotos e história
+          memorySection.classList.add('visible')
+
+          // Rolar suavemente para a memória
+          setTimeout(() => {
+            memorySection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          }, 300)
+        }, 1500)
+      }
+    </script>
+  </body>
+</html>
