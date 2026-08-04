@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>O Tempo Parado</title>
+    <style>
+      :root {
+        --bg-color: #08070b;
+        --gold-main: #d4af37;
+        --gold-glow: #ffdf73;
+        --brass-dark: #3a2e19;
+        --text-muted: #8c8275;
+        --glass-crack: rgba(255, 255, 255, 0.4);
+        --target-guide: rgba(
+          255,
+          223,
+          115,
+          0.18
+        ); /* Cor clarinha do fundo guia */
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        user-select: none;
+      }
+
+      body {
+        background-color: var(--bg-color);
+        color: #e6e1d5;
+        font-family: 'Georgia', 'Times New Roman', serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        overflow-x: hidden;
+        padding: 40px 20px;
+        transition: background 3s ease;
+      }
+
+      /* Ambient Background FX */
+      .bg-glow {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(
+          circle,
+          rgba(212, 175, 55, 0.05) 0%,
+          rgba(0, 0, 0, 0) 70%
+        );
+        border-radius: 50%;
+        z-index: 0;
+        pointer-events: none;
+        transition: all 2.5s ease-out;
+      }
+
+      body.fixed .bg-glow {
+        width: 1000px;
+        height: 1000px;
+        background: radial-gradient(
+          circle,
+          rgba(212, 175, 55, 0.25) 0%,
+          rgba(212, 175, 55, 0.05) 50%,
+          rgba(0, 0, 0, 0) 80%
+        );
+        animation: pulseGlow 4s infinite alternate;
+      }
+
+      @keyframes pulseGlow {
+        0% {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 0.8;
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(1.1);
+          opacity: 1;
+        }
+      }
+
+      /* Intro Narrative Section */
+      .intro-container {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        max-width: 650px;
+        margin-bottom: 50px;
+        line-height: 1.8;
+      }
+
+      .intro-text {
+        font-size: 1.3rem;
+        font-style: italic;
+        color: var(--text-muted);
+        opacity: 0;
+        transform: translateY(15px);
+        animation: fadeIn 2s forwards;
+        margin-bottom: 12px;
+      }
+
+      .intro-text:nth-child(1) {
+        animation-delay: 0.5s;
+      }
+      .intro-text:nth-child(2) {
+        animation-delay: 2.5s;
+      }
+      .intro-text:nth-child(3) {
+        animation-delay: 4.5s;
+      }
+      .intro-text:nth-child(4) {
+        animation-delay: 7s;
+        color: #a89880;
+      }
+      .intro-text:nth-child(5) {
+        animation-delay: 9s;
+        color: #a89880;
+      }
+      .intro-text:nth-child(6) {
+        animation-delay: 11.5s;
+        color: var(--gold-glow);
+        font-size: 1.5rem;
+        font-weight: bold;
+        text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+      }
+
+      @keyframes fadeIn {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Target Date Banner */
+      .target-date {
+        position: relative;
+        z-index: 2;
+        font-size: 0.95rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--gold-main);
+        margin-bottom: 25px;
+        opacity: 0.8;
+        transition: all 1s ease;
+      }
+
+      /* Clock Stage & Machinery */
+      .clock-stage {
+        position: relative;
+        width: 340px;
+        height: 340px;
+        z-index: 2;
+        margin-bottom: 60px;
+      }
+
+      @media (min-width: 600px) {
+        .clock-stage {
+          width: 420px;
+          height: 420px;
+        }
+      }
+
+      .clock-body {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: radial-gradient(circle, #1c1813 0%, #0a0806 100%);
+        border: 8px solid var(--brass-dark);
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.9),
+          inset 0 0 40px rgba(0, 0, 0, 0.8);
+        transition: all 2.5s ease;
+      }
+
+      /* Target Visual Guides (Ponteiros Fantasma / Dica Visual) */
+      .target-guide-hand {
+        position: absolute;
+        bottom: 50%;
+        left: 50%;
+        transform-origin: bottom center;
+        background: var(--target-guide);
+        box-shadow: 0 0 12px var(--target-guide);
+        border-radius: 10px;
+        pointer-events: none;
+        z-index: 3;
+        transition: opacity 1.5s ease;
+      }
+
+      .guide-hour {
+        width: 16px;
+        height: 28%;
+        margin-left: -8px;
+        transform: rotate(148.5deg); /* 16:57 */
+        border: 1px dashed rgba(255, 223, 115, 0.4);
+      }
+
+      .guide-minute {
+        width: 12px;
+        height: 38%;
+        margin-left: -6px;
+        transform: rotate(342deg); /* 57m */
+        border: 1px dashed rgba(255, 223, 115, 0.4);
+      }
+
+      .guide-second {
+        width: 6px;
+        height: 44%;
+        margin-left: -3px;
+        transform: rotate(0deg); /* 00s */
+        border: 1px dashed rgba(255, 100, 100, 0.5);
+        background: rgba(255, 100, 100, 0.2);
+      }
+
+      body.fixed .target-guide-hand {
+        opacity: 0;
+      }
+
+      /* Gears Container */
+      .gears-layer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 50%;
+        overflow: hidden;
+        opacity: 0.25;
+        transition: opacity 2s ease;
+      }
+
+      .gear {
+        position: absolute;
+        border: 4px dashed #614f33;
+        border-radius: 50%;
+      }
+
+      .gear-1 {
+        width: 180px;
+        height: 180px;
+        top: 20px;
+        left: 30px;
+        animation: spinGear 12s linear infinite;
+      }
+
+      .gear-2 {
+        width: 130px;
+        height: 130px;
+        bottom: 30px;
+        right: 40px;
+        animation: spinGearRev 9s linear infinite;
+      }
+
+      @keyframes spinGear {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes spinGearRev {
+        100% {
+          transform: rotate(-360deg);
+        }
+      }
+
+      /* Clock Face Details */
+      .clock-dial {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+      }
+
+      .number {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        font-family: 'Cinzel', 'Times New Roman', serif;
+        font-size: 1.2rem;
+        color: #6e614f;
+        padding: 12px;
+        transition: color 2s ease;
+      }
+
+      .number-12 {
+        transform: rotate(0deg);
+      }
+      .number-3 {
+        transform: rotate(90deg);
+      }
+      .number-6 {
+        transform: rotate(180deg);
+      }
+      .number-9 {
+        transform: rotate(270deg);
+      }
+
+      .number span {
+        display: inline-block;
+      }
+      .number-3 span {
+        transform: rotate(-90deg);
+      }
+      .number-6 span {
+        transform: rotate(-180deg);
+      }
+      .number-9 span {
+        transform: rotate(-270deg);
+      }
+
+      /* Hands */
+      .hand {
+        position: absolute;
+        bottom: 50%;
+        left: 50%;
+        transform-origin: bottom center;
+        border-radius: 4px;
+        cursor: grab;
+        z-index: 5;
+      }
+
+      .hand:active {
+        cursor: grabbing;
+      }
+
+      .hand-hour {
+        width: 8px;
+        height: 28%;
+        background: #7a6a53;
+        margin-left: -4px;
+      }
+
+      .hand-minute {
+        width: 5px;
+        height: 38%;
+        background: #99876d;
+        margin-left: -2.5px;
+      }
+
+      .hand-second {
+        width: 2px;
+        height: 44%;
+        background: #a33b3b;
+        margin-left: -1px;
+      }
+
+      .center-cap {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 16px;
+        height: 16px;
+        margin-top: -8px;
+        margin-left: -8px;
+        background: var(--brass-dark);
+        border: 2px solid var(--gold-main);
+        border-radius: 50%;
+        z-index: 6;
+      }
+
+      /* Cracks SVG Layer */
+      .cracks-svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 7;
+        pointer-events: none;
+        transition: opacity 2s ease, transform 2s ease;
+      }
+
+      .crack-line {
+        stroke: var(--glass-crack);
+        stroke-width: 1.5;
+        fill: none;
+        stroke-linecap: round;
+        filter: drop-shadow(0px 0px 2px rgba(0, 0, 0, 0.8));
+      }
+
+      /* Fixed / Repaired State */
+      body.fixed .clock-body {
+        border-color: var(--gold-main);
+        box-shadow: 0 0 50px rgba(212, 175, 55, 0.6),
+          inset 0 0 30px rgba(212, 175, 55, 0.4);
+      }
+
+      body.fixed .gears-layer {
+        opacity: 0.6;
+      }
+
+      body.fixed .gear {
+        border-color: var(--gold-glow);
+        animation-play-state: paused !important;
+      }
+
+      body.fixed .number {
+        color: var(--gold-glow);
+        text-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+      }
+
+      body.fixed .hand-hour,
+      body.fixed .hand-minute {
+        background: var(--gold-glow);
+        box-shadow: 0 0 10px var(--gold-glow);
+      }
+
+      body.fixed .hand-second {
+        background: #fff;
+        box-shadow: 0 0 10px #fff;
+      }
+
+      body.fixed .cracks-svg {
+        opacity: 0;
+        transform: scale(1.05);
+      }
+
+      /* Big Flash Light FX */
+      .flash-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: #fff;
+        z-index: 99;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.1s ease-out;
+      }
+
+      .flash-overlay.active {
+        opacity: 1;
+      }
+
+      /* Revealed Content */
+      .revealed-content {
+        position: relative;
+        z-index: 2;
+        max-width: 800px;
+        width: 100%;
+        opacity: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: opacity 3s ease 1s, max-height 1s ease 0.5s;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      body.fixed .revealed-content {
+        opacity: 1;
+        max-height: 20000px;
+      }
+
+      .story-title {
+        font-size: 2.2rem;
+        color: var(--gold-glow);
+        text-align: center;
+        margin-bottom: 40px;
+        text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        letter-spacing: 2px;
+      }
+
+      .story-paragraph {
+        font-size: 1.15rem;
+        line-height: 2;
+        color: #d1c7bd;
+        margin-bottom: 30px;
+        text-indent: 2px;
+        text-align: justify;
+      }
+
+      .story-paragraph::first-letter {
+        font-size: 2.2rem;
+        color: var(--gold-main);
+        float: left;
+        line-height: 1;
+        padding-right: 8px;
+      }
+
+      .final-section {
+        margin-top: 60px;
+        margin-bottom: 40px;
+        text-align: center;
+        width: 100%;
+      }
+
+      .final-quote {
+        font-size: 1.6rem;
+        font-style: italic;
+        color: var(--gold-glow);
+        line-height: 2;
+        margin-bottom: 40px;
+        text-shadow: 0 0 12px rgba(212, 175, 55, 0.3);
+      }
+
+      .final-quote span {
+        display: block;
+      }
+
+      .final-image-container {
+        width: 100%;
+        max-width: 650px;
+        margin: 0 auto;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 2px solid var(--gold-main);
+        box-shadow: 0 0 35px rgba(212, 175, 55, 0.3);
+        background-color: #120f0a;
+      }
+
+      .final-image-container img {
+        width: 100%;
+        height: auto;
+        display: block;
+        filter: sepia(20%) contrast(105%);
+        transition: filter 0.5s ease;
+      }
+
+      .final-image-container img:hover {
+        filter: sepia(0%) contrast(100%);
+      }
+
+      .audio-hint {
+        position: fixed;
+        bottom: 15px;
+        right: 15px;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        z-index: 10;
+        letter-spacing: 1px;
+        opacity: 0.6;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="flash-overlay" id="flash"></div>
+    <div class="bg-glow"></div>
+
+    <div class="intro-container">
+      <div class="intro-text">Às vezes...</div>
+      <div class="intro-text">existe um momento...</div>
+      <div class="intro-text">que merece durar para sempre.</div>
+      <div class="intro-text" style="margin-top: 25px">Infelizmente...</div>
+      <div class="intro-text">o tempo nunca para.</div>
+      <div class="intro-text" style="margin-top: 25px">
+        ...ou será que para?
+      </div>
+    </div>
+
+    <div class="target-date">26 de junho de 2026 &mdash; 16:57</div>
+
+    <div class="clock-stage">
+      <div class="clock-body" id="clockBody">
+        <div class="target-guide-hand guide-hour"></div>
+        <div class="target-guide-hand guide-minute"></div>
+        <div class="target-guide-hand guide-second"></div>
+
+        <div class="gears-layer">
+          <div class="gear gear-1"></div>
+          <div class="gear gear-2"></div>
+        </div>
+
+        <div class="clock-dial">
+          <div class="number number-12"><span>XII</span></div>
+          <div class="number number-3"><span>III</span></div>
+          <div class="number number-6"><span>VI</span></div>
+          <div class="number number-9"><span>IX</span></div>
+        </div>
+
+        <div class="hand hand-hour" id="handHour"></div>
+        <div class="hand hand-minute" id="handMinute"></div>
+        <div class="hand hand-second" id="handSecond"></div>
+
+        <div class="center-cap"></div>
+
+        <svg class="cracks-svg" viewBox="0 0 100 100">
+          <path class="crack-line" d="M 50,50 L 30,20 L 15,22 M 30,20 L 38,5" />
+          <path
+            class="crack-line"
+            d="M 50,50 L 75,35 L 85,15 M 75,35 L 92,42"
+          />
+          <path
+            class="crack-line"
+            d="M 50,50 L 60,80 L 52,95 M 60,80 L 80,85"
+          />
+          <path class="crack-line" d="M 50,50 L 25,70 L 10,85 M 25,70 L 8,60" />
+          <path class="crack-line" d="M 30,20 L 75,35" />
+        </svg>
+      </div>
+    </div>
+
+    <div class="revealed-content" id="revealedContent">
+      <h1 class="story-title">O instante em que o tempo decidiu esperar.</h1>
+
+      <p class="story-paragraph">
+        Existem momentos que não fazem barulho quando chegam. Eles simplesmente
+        acontecem. Não vêm acompanhados de fogos, músicas ou qualquer aviso de
+        que a vida inteira está prestes a mudar. Naquele dia, o relógio
+        continuou funcionando para todo mundo. As pessoas seguiram caminhando,
+        os carros continuaram passando, o céu permaneceu exatamente no mesmo
+        lugar. Mas, para mim... tudo parou. Porque foi naquele instante que, sem
+        perceber, eu encontrei você. E desde então, nenhum segundo voltou a ser
+        apenas um segundo.
+      </p>
+
+      <p class="story-paragraph">
+        Às vezes eu fico imaginando quantas versões diferentes da minha vida
+        poderiam ter existido. Bastava uma decisão diferente. Um atraso de
+        alguns minutos. Um caminho alternativo. Um simples "não". Talvez nós
+        nunca tivéssemos nos encontrado. E pensar nisso sempre me arrepia,
+        porque basta imaginar um mundo onde você não existe na minha história
+        para perceber o quanto ele seria vazio. O universo precisou alinhar
+        bilhões de acontecimentos para colocar nós dois exatamente no mesmo
+        lugar. E conseguiu.
+      </p>
+
+      <p class="story-paragraph">
+        Dizem que o tempo nunca para. Que ele continua seguindo em frente,
+        indiferente aos sentimentos de qualquer pessoa. Mas eu descobri que isso
+        não é totalmente verdade. Porque existe um pedaço de mim que ainda mora
+        naquele momento. Existe uma parte do meu coração que nunca foi embora
+        dali. Enquanto os ponteiros insistem em continuar girando, minha memória
+        permanece visitando aquele segundo como se ele tivesse acabado de
+        acontecer.
+      </p>
+
+      <p class="story-paragraph">
+        É estranho perceber como uma lembrança consegue desafiar toda a lógica
+        do tempo. Fecho os olhos e consigo sentir exatamente o mesmo frio na
+        barriga, a mesma ansiedade, a mesma felicidade silenciosa. Consigo
+        lembrar do ambiente, dos pequenos detalhes, das cores, da atmosfera...
+        como se o universo tivesse fotografado aquele instante e decidido
+        guardá-lo apenas para mim.
+      </p>
+
+      <p class="story-paragraph">
+        Existem lembranças que envelhecem. Elas perdem a nitidez com os anos,
+        ficam borradas e acabam se misturando com tantas outras. Mas essa não.
+        Essa permanece intacta. Ela continua brilhando exatamente como no
+        primeiro dia. Porque algumas memórias não são feitas para serem
+        esquecidas. Elas existem para lembrar quem nós somos e por que
+        continuamos seguindo em frente.
+      </p>
+
+      <p class="story-paragraph">
+        Se eu pudesse possuir um único superpoder, eu não escolheria voar,
+        voltar no tempo ou conhecer o futuro. Eu escolheria apenas a capacidade
+        de reviver aquele instante sempre que sentisse saudade. Poder olhar
+        novamente para você pela primeira vez. Poder sentir novamente aquele
+        momento em que, sem perceber, tudo começou a fazer sentido.
+      </p>
+
+      <p class="story-paragraph">
+        Porque foi ali que eu entendi uma coisa que jamais imaginei compreender
+        tão cedo: algumas pessoas não entram na nossa vida apenas para fazer
+        parte dela. Algumas chegam para mudar completamente a forma como
+        enxergamos o mundo. Antes de você, os dias apenas aconteciam. Depois de
+        você, eles passaram a ter significado.
+      </p>
+
+      <p class="story-paragraph">
+        Hoje eu olho para aquele relógio quebrado e percebo que talvez ele nunca
+        tenha realmente parado de funcionar. Talvez ele apenas tenha escolhido
+        guardar, dentro de cada engrenagem, o segundo mais importante da minha
+        vida. Enquanto todos os outros relógios do mundo contam horas... aquele
+        guarda uma lembrança.
+      </p>
+
+      <p class="story-paragraph">
+        E isso faz toda a diferença. Porque horas passam. Dias acabam. Meses
+        desaparecem. Anos se tornam fotografias antigas. Mas alguns segundos...
+        alguns poucos segundos... conseguem carregar uma vida inteira dentro
+        deles. Um único instante pode ser maior do que décadas inteiras de
+        existência.
+      </p>
+
+      <p class="story-paragraph">
+        Talvez ninguém que estivesse ao nosso redor tenha percebido que algo
+        extraordinário estava acontecendo. Para eles era apenas mais um dia
+        comum. Apenas mais uma tarde. Apenas mais alguns minutos qualquer. Mas,
+        sem saber, todos estavam presentes exatamente no momento em que a minha
+        história mudava completamente de direção.
+      </p>
+
+      <p class="story-paragraph">
+        Desde então, eu passei a entender que o amor não acontece de forma
+        explosiva como mostram nos filmes. Ele nasce devagar, silenciosamente,
+        quase escondido. E quando percebemos... ele já tomou conta de tudo. Ele
+        transforma a rotina em expectativa. Os dias comuns em lembranças. Os
+        detalhes mais simples nos maiores tesouros que alguém poderia guardar.
+      </p>
+
+      <p class="story-paragraph">
+        Se um dia a memória falhar... se um dia os anos levarem embora partes
+        das lembranças... existe uma coisa que eu tenho certeza de que jamais
+        desaparecerá: a sensação daquele instante. Porque ela não ficou gravada
+        apenas na minha cabeça. Ela encontrou um lugar muito mais seguro para
+        morar.
+      </p>
+
+      <p class="story-paragraph">
+        Ela ficou gravada no meu coração. E é justamente por isso que, para mim,
+        aquele relógio nunca mais voltou a marcar as horas. Ele passou a marcar
+        o começo da melhor parte da minha vida. Porque foi exatamente naquele
+        segundo... que eu comecei a encontrar o meu lugar no mundo. E, sem
+        perceber, esse lugar... sempre foi ao seu lado.
+      </p>
+
+      <div class="final-section">
+        <div class="final-quote">
+          <span>Se eu pudesse escolher...</span>
+          <span>pararia o universo inteiro</span>
+          <span>exatamente</span>
+          <span>às 16:57.</span>
+        </div>
+
+        <div class="final-image-container">
+          <img
+            src="imgs/bestImg.jpeg"
+            alt="Momento Eternizado"
+            onerror="this.style.display='none'; this.parentNode.innerHTML='<div style=\'padding: 40px; color: var(--gold-main); border: 1px dashed var(--gold-main);\'>[ Imagem em imgs/bestImg.jpeg ]</div>';"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="audio-hint">Sons gerados via Web Audio API</div>
+
+    <script>
+      const AudioCtx = window.AudioContext || window.webkitAudioContext
+      let audioCtx = null
+
+      function initAudio() {
+        if (!audioCtx) {
+          audioCtx = new AudioCtx()
+        }
+      }
+
+      function playTickSound() {
+        if (!audioCtx) return
+        try {
+          const osc = audioCtx.createOscillator()
+          const gain = audioCtx.createGain()
+          osc.type = 'triangle'
+          osc.frequency.setValueAtTime(
+            120 + Math.random() * 40,
+            audioCtx.currentTime
+          )
+          gain.gain.setValueAtTime(0.05, audioCtx.currentTime)
+          gain.gain.exponentialRampToValueAtTime(
+            0.001,
+            audioCtx.currentTime + 0.05
+          )
+          osc.connect(gain)
+          gain.connect(audioCtx.destination)
+          osc.start()
+          osc.stop(audioCtx.currentTime + 0.05)
+        } catch (e) {}
+      }
+
+      function playErraticGearSound() {
+        if (!audioCtx || isFixed) return
+        try {
+          const osc = audioCtx.createOscillator()
+          const gain = audioCtx.createGain()
+          osc.type = 'sawtooth'
+          osc.frequency.setValueAtTime(
+            40 + Math.random() * 30,
+            audioCtx.currentTime
+          )
+          gain.gain.setValueAtTime(0.02, audioCtx.currentTime)
+          gain.gain.exponentialRampToValueAtTime(
+            0.001,
+            audioCtx.currentTime + 0.08
+          )
+          osc.connect(gain)
+          gain.connect(audioCtx.destination)
+          osc.start()
+          osc.stop(audioCtx.currentTime + 0.08)
+        } catch (e) {}
+      }
+
+      function playSolveSound() {
+        if (!audioCtx) return
+        try {
+          const osc = audioCtx.createOscillator()
+          const gain = audioCtx.createGain()
+          osc.type = 'sine'
+          osc.frequency.setValueAtTime(150, audioCtx.currentTime)
+          osc.frequency.exponentialRampToValueAtTime(
+            30,
+            audioCtx.currentTime + 1.5
+          )
+          gain.gain.setValueAtTime(0.8, audioCtx.currentTime)
+          gain.gain.exponentialRampToValueAtTime(
+            0.001,
+            audioCtx.currentTime + 1.5
+          )
+          osc.connect(gain)
+          gain.connect(audioCtx.destination)
+          osc.start()
+          osc.stop(audioCtx.currentTime + 1.5)
+
+          const osc2 = audioCtx.createOscillator()
+          const gain2 = audioCtx.createGain()
+          osc2.type = 'triangle'
+          osc2.frequency.setValueAtTime(520, audioCtx.currentTime)
+          osc2.frequency.exponentialRampToValueAtTime(
+            130,
+            audioCtx.currentTime + 0.8
+          )
+          gain2.gain.setValueAtTime(0.5, audioCtx.currentTime)
+          gain2.gain.exponentialRampToValueAtTime(
+            0.001,
+            audioCtx.currentTime + 0.8
+          )
+          osc2.connect(gain2)
+          gain2.connect(audioCtx.destination)
+          osc2.start()
+          osc2.stop(audioCtx.currentTime + 0.8)
+        } catch (e) {}
+      }
+
+      const handHour = document.getElementById('handHour')
+      const handMinute = document.getElementById('handMinute')
+      const handSecond = document.getElementById('handSecond')
+      const clockBody = document.getElementById('clockBody')
+      const flash = document.getElementById('flash')
+
+      let hourAngle = Math.random() * 360
+      let minAngle = Math.random() * 360
+      let secAngle = Math.random() * 360
+
+      let isFixed = false
+      let activeHand = null
+
+      const TARGET_HOUR_ANG = 148.5
+      const TARGET_MIN_ANG = 342
+      const TARGET_SEC_ANG = 0
+      const TOLERANCE = 12
+
+      function updateHandTransforms() {
+        handHour.style.transform = `rotate(${hourAngle}deg)`
+        handMinute.style.transform = `rotate(${minAngle}deg)`
+        handSecond.style.transform = `rotate(${secAngle}deg)`
+      }
+
+      function glitchLoop() {
+        if (isFixed) return
+
+        if (!activeHand) {
+          secAngle = (secAngle + Math.random() * 6) % 360
+          minAngle = (minAngle + Math.random() * 0.4) % 360
+          hourAngle = (hourAngle + Math.random() * 0.1) % 360
+
+          updateHandTransforms()
+
+          if (Math.random() > 0.7) {
+            playErraticGearSound()
+          }
+        }
+
+        setTimeout(glitchLoop, 120 + Math.random() * 100)
+      }
+
+      function getAngleFromCenter(e) {
+        const rect = clockBody.getBoundingClientRect()
+        const centerX = rect.left + rect.width / 2
+        const centerY = rect.top + rect.height / 2
+
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY
+
+        const x = clientX - centerX
+        const y = clientY - centerY
+
+        let deg = Math.atan2(y, x) * (180 / Math.PI) + 90
+        if (deg < 0) deg += 360
+        return deg
+      }
+
+      function startDrag(hand, e) {
+        if (isFixed) return
+        initAudio()
+        activeHand = hand
+        e.preventDefault()
+      }
+
+      handHour.addEventListener('mousedown', e => startDrag('hour', e))
+      handMinute.addEventListener('mousedown', e => startDrag('minute', e))
+      handSecond.addEventListener('mousedown', e => startDrag('second', e))
+
+      handHour.addEventListener('touchstart', e => startDrag('hour', e))
+      handMinute.addEventListener('touchstart', e => startDrag('minute', e))
+      handSecond.addEventListener('touchstart', e => startDrag('second', e))
+
+      function moveDrag(e) {
+        if (!activeHand || isFixed) return
+
+        const deg = getAngleFromCenter(e)
+        playTickSound()
+
+        if (activeHand === 'hour') hourAngle = deg
+        if (activeHand === 'minute') minAngle = deg
+        if (activeHand === 'second') secAngle = deg
+
+        updateHandTransforms()
+        checkSolution()
+      }
+
+      function stopDrag() {
+        activeHand = null
+      }
+
+      window.addEventListener('mousemove', moveDrag)
+      window.addEventListener('mouseup', stopDrag)
+      window.addEventListener('touchmove', moveDrag)
+      window.addEventListener('touchend', stopDrag)
+
+      function isAngleClose(actual, target) {
+        let diff = Math.abs((actual % 360) - (target % 360))
+        if (diff > 180) diff = 360 - diff
+        return diff <= TOLERANCE
+      }
+
+      function checkSolution() {
+        const hourCorrect = isAngleClose(hourAngle, TARGET_HOUR_ANG)
+        const minCorrect = isAngleClose(minAngle, TARGET_MIN_ANG)
+        const secCorrect =
+          isAngleClose(secAngle, TARGET_SEC_ANG) || isAngleClose(secAngle, 360)
+
+        if (hourCorrect && minCorrect && secCorrect && !isFixed) {
+          triggerFreezeEvent()
+        }
+      }
+
+      function triggerFreezeEvent() {
+        isFixed = true
+        playSolveSound()
+
+        hourAngle = TARGET_HOUR_ANG
+        minAngle = TARGET_MIN_ANG
+        secAngle = 0
+        updateHandTransforms()
+
+        flash.classList.add('active')
+        setTimeout(() => {
+          flash.classList.remove('active')
+        }, 300)
+
+        document.body.classList.add('fixed')
+
+        setTimeout(() => {
+          document.getElementById('revealedContent').scrollIntoView({
+            behavior: 'smooth'
+          })
+        }, 1800)
+      }
+
+      updateHandTransforms()
+      glitchLoop()
+    </script>
+  </body>
+</html>
