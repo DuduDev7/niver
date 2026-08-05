@@ -963,9 +963,116 @@ document.addEventListener('DOMContentLoaded', () => {
     '❤️ Porque, no fim de toda essa jornada, de cada linha escrita e de cada batida do meu peito... sempre foi e sempre será você. ❤️'
   ]
 
+  const cap1001 = [
+    "Porque, antes de você existir na minha vida, eu nunca tinha entendido que uma única pessoa poderia transformar completamente a maneira como alguém enxerga o mundo. Hoje, cada lugar bonito que eu conheço imediatamente me faz pensar que seria ainda mais bonito se você estivesse ao meu lado. É como se a felicidade tivesse deixado de ser um lugar e passado a ter o seu nome.",
+    "Porque eu amo imaginar que, daqui a muitos anos, quando a vida já tiver mudado completamente as nossas rotinas, ainda vamos olhar um para o outro com aquele mesmo brilho nos olhos de quem continua encontrando o amor da própria vida todos os dias.",
+    "Porque existem momentos em que eu simplesmente paro o que estou fazendo para lembrar que você existe, e um sorriso aparece no meu rosto sem que eu perceba. É uma felicidade tão espontânea que nem precisa de motivo; basta lembrar de você.",
+    "Porque eu nunca quero que você esqueça que, entre todas as pessoas que passaram pela minha vida, foi você quem conseguiu fazer o meu coração encontrar um lugar onde finalmente sentiu vontade de permanecer para sempre.",
+    "Porque eu adoro imaginar como seria voltar ao primeiro dia em que nos conhecemos sabendo de tudo o que viveríamos juntos. Tenho certeza de que eu caminharia exatamente na mesma direção, porque encontrar você foi a melhor consequência que qualquer escolha poderia me dar.",
+    "Porque o seu abraço nunca foi apenas um abraço. Ele sempre foi aquele lugar silencioso onde todas as minhas preocupações parecem perder completamente a força, como se o mundo inteiro deixasse de existir por alguns segundos.",
+    "Porque eu amo perceber que, sem fazer esforço algum, você se tornou a pessoa para quem eu tenho vontade de contar absolutamente tudo. As maiores conquistas, os medos mais bobos, os sonhos mais malucos e até os pensamentos que nunca contei para ninguém.",
+    "Porque você me ensinou que amar não é apenas sentir saudade quando a pessoa vai embora. Amar é sentir a presença dela até quando ela não está ali, porque ela passou a morar em cada lembrança bonita que ficou dentro do coração.",
+    "Porque, quando penso no futuro, eu não sonho apenas com viagens, conquistas ou uma casa bonita. Eu sonho com o simples privilégio de acordar e saber que você continua do meu lado, porque isso já faria qualquer lugar parecer o melhor do mundo.",
+    "Porque você conseguiu fazer uma coisa que eu nunca imaginei ser possível: transformar dias comuns em lembranças que eu quero guardar para o resto da minha vida. Com você, até os momentos mais simples se tornam especiais.",
+    "Porque existe uma tranquilidade indescritível em saber que o meu coração encontrou exatamente a pessoa para quem ele sempre pertenceu, mesmo antes de eu perceber isso.",
+    "Porque eu admiro a forma como você consegue ser delicada sem deixar de ser forte. Você enfrenta a vida com uma coragem tão bonita que me inspira todos os dias a querer ser uma versão melhor de mim mesmo.",
+    "Porque, às vezes, eu fico observando você em silêncio e penso que, se alguém me perguntasse como é a paz, eu provavelmente apontaria para você. Você se tornou a definição mais bonita de tudo aquilo que faz bem para a minha alma.",
+    "Porque você me faz acreditar que algumas pessoas realmente entram na nossa vida para mudar completamente o rumo da nossa história, e eu nunca vou deixar de agradecer por você ter sido essa pessoa para mim.",
+    "Porque eu gosto de imaginar que, quando estivermos velhinhos, vamos rir dessas lembranças enquanto seguramos as mãos um do outro, percebendo que tudo valeu a pena porque sempre tivemos um ao outro.",
+    "Porque o seu jeito de cuidar das pessoas revela um coração tão bonito que, quanto mais eu conheço você, mais motivos eu encontro para me apaixonar novamente.",
+    "Porque você faz com que eu tenha vontade de viver uma vida longa, não por medo do tempo acabar, mas porque sinto que uma única vida ainda seria pequena demais para amar você do jeito que eu gostaria.",
+    "Porque eu nunca vou conseguir explicar completamente o tamanho da felicidade que sinto quando vejo uma mensagem sua aparecer, mesmo que seja apenas para perguntar como foi o meu dia.",
+    "Porque você trouxe calma para uma parte de mim que viveu muito tempo acreditando que precisava enfrentar tudo sozinho. Hoje eu sei que dividir a vida com você torna qualquer dificuldade muito menor.",
+    "Porque eu amo pensar que, entre bilhões de pessoas espalhadas pelo mundo, foi justamente você quem encontrou o caminho até o meu coração. Isso faz o nosso encontro parecer um daqueles milagres silenciosos que a vida prepara sem avisar ninguém.",
+    "Porque você nunca precisou tentar ser perfeita para me conquistar. Foi justamente o seu jeito verdadeiro, humano e cheio de pequenas imperfeições que fez eu me apaixonar ainda mais profundamente por quem você é.",
+    "Porque cada plano que faço para o futuro parece incompleto quando você não está nele. É como se todos os meus sonhos tivessem aprendido que só fazem sentido quando podem ser compartilhados com você.",
+    "Porque eu amo imaginar que um dia vamos olhar para trás e perceber que todas as dificuldades que enfrentamos serviram apenas para fortalecer ainda mais aquilo que construímos juntos.",
+    "Porque você conseguiu transformar o amor em algo extremamente simples. Não porque ele seja pequeno, mas porque estar com você faz tudo parecer natural, leve e exatamente do jeito que sempre deveria ter sido.",
+    "Porque, se algum dia alguém me perguntasse qual foi o maior presente que a vida já me deu, eu responderia sem pensar duas vezes que foi permitir que o meu caminho cruzasse com o seu, porque desde então eu nunca mais fui a mesma pessoa.",
+    "Porque, desde que você chegou, eu comecei a entender que o amor verdadeiro não acontece apenas nos grandes momentos que parecem cenas de filme. Ele mora nas pequenas rotinas, nas conversas sem assunto, nos silêncios confortáveis, nas risadas inesperadas e na felicidade de simplesmente dividir mais um dia com você.",
+    "Porque eu tenho a impressão de que, mesmo se o tempo apagasse todas as minhas lembranças, ainda existiria alguma parte da minha alma capaz de reconhecer você imediatamente, como se o meu coração soubesse exatamente onde sempre pertenceu.",
+    "Porque existem dias em que eu paro por alguns segundos apenas para agradecer, em silêncio, por você existir. Talvez você nunca perceba isso, mas o simples fato de saber que você faz parte da minha vida já transforma completamente o meu dia.",
+    "Porque eu nunca encontrei alguém que conseguisse transmitir tanta paz apenas estando por perto. É como se a sua presença organizasse o caos dentro de mim sem precisar dizer absolutamente nenhuma palavra.",
+    "Porque eu amo imaginar que, daqui a muitos anos, quando olharmos nossas fotografias antigas, vamos perceber que a maior riqueza delas nunca foi o lugar onde foram tiradas, mas o fato de sempre estarmos juntos em cada uma delas.",
+    "Porque você despertou em mim uma vontade enorme de construir um futuro bonito. Não um futuro perfeito, mas um futuro verdadeiro, cheio de momentos simples, risadas sinceras, desafios superados e a certeza de que estaremos segurando a mão um do outro.",
+    "Porque às vezes eu fico pensando que você nunca vai conseguir enxergar pelos meus olhos o quanto é especial para mim. E talvez essa seja a única tristeza que existe em amar tanto alguém: saber que nenhuma palavra consegue mostrar exatamente o tamanho desse sentimento.",
+    "Porque você me ensinou que amar alguém também significa admirar a pessoa que ela é quando ninguém está olhando. E eu admiro você justamente pelos detalhes que quase ninguém percebe, porque são eles que revelam a beleza da sua essência.",
+    "Porque eu gosto de acreditar que o universo inteiro precisou organizar milhares de acontecimentos para que nós nos encontrássemos, e pensar nisso faz o nosso amor parecer ainda mais raro e precioso.",
+    "Porque o seu sorriso nunca ilumina apenas o seu rosto; ele muda completamente a atmosfera ao meu redor. É impressionante como uma expressão sua consegue transformar um dia inteiro.",
+    "Porque eu nunca vou me cansar de descobrir novos motivos para amar você. Quanto mais eu conheço o seu coração, mais percebo que ainda existe um universo inteiro dentro de você esperando para ser descoberto.",
+    "Porque eu amo a sensação de segurança que existe quando estou ao seu lado. Não importa o que esteja acontecendo lá fora; perto de você eu sinto que sempre vou encontrar forças para continuar.",
+    "Porque você conseguiu fazer com que o amor deixasse de parecer algo distante ou complicado. Com você tudo simplesmente acontece de forma natural, como se os nossos corações já soubessem exatamente o caminho que precisavam seguir.",
+    "Porque eu gosto de imaginar todas as histórias que ainda vamos viver. Lugares que ainda vamos conhecer, fotografias que ainda vamos tirar, abraços que ainda vamos dar e lembranças que ainda vão ocupar um espaço eterno dentro de nós.",
+    "Porque você transformou o conceito de lar para mim. Hoje eu entendi que lar nunca foi uma casa, uma cidade ou um endereço. Lar sempre foi o lugar onde o meu coração encontra você.",
+    "Porque, quando você sorri de verdade, eu sinto uma vontade enorme de congelar aquele instante, apenas para poder voltar nele sempre que a vida parecer difícil demais.",
+    "Porque eu amo perceber que você consegue enxergar qualidades em mim que eu mesmo nunca tinha notado. Você acredita em mim até nos momentos em que eu tenho dificuldade para acreditar em mim mesmo.",
+    "Porque, se existisse a possibilidade de viver infinitas vidas diferentes, eu ainda pediria para encontrar você em cada uma delas. Não importaria o lugar, a época ou a circunstância; eu sempre escolheria viver uma história ao seu lado.",
+    "Porque existem sentimentos que simplesmente não cabem em palavras, e você é exatamente um deles. Por mais que eu escreva, converse ou tente explicar, sempre vou sentir que o meu coração guarda muito mais do que qualquer frase consegue contar.",
+    "Porque eu amo saber que, enquanto escrevo cada uma destas linhas, existe uma pessoa no mundo que merece cada palavra delas. E essa pessoa sempre será você.",
+    "Porque eu nunca quero que passe um único dia sem que você tenha certeza de uma coisa: você mudou completamente a minha vida para melhor, e eu sou infinitamente grato por isso.",
+    "Porque você faz com que eu queira viver cada fase da vida com calma, apenas para aproveitar tudo o que ainda vamos construir juntos. Eu não tenho pressa quando o destino é passar o resto da vida ao seu lado.",
+    "Porque eu acredito que algumas pessoas entram na nossa vida apenas para deixar uma lembrança bonita. Mas você entrou para escrever a história inteira comigo.",
+    "Porque, quando alguém perguntar qual foi o maior amor que eu vivi, eu nem vou precisar pensar na resposta. Basta lembrar de você para perceber que o meu coração já escolheu essa resposta há muito tempo.",
+    "❤️ Porque, depois de escrever mais mil motivos, eu continuo chegando exatamente à mesma conclusão: eu poderia passar a vida inteira escrevendo sobre você... e, ainda assim, sentiria que não consegui colocar em palavras nem metade do amor que existe dentro do meu coração. ❤️"
+  ];
+
+  const cap1051 = [
+    "Às vezes eu me pego imaginando como seria a minha vida se você nunca tivesse aparecido. E, por mais que eu tente criar esse cenário, ele sempre parece vazio, silencioso e sem cor. Você não apenas entrou na minha história; você se tornou a razão pela qual ela passou a fazer sentido.",
+    "Porque eu descobri que a felicidade não faz barulho. Ela chega devagar, senta ao nosso lado e sorri baixinho. Foi exatamente assim que você entrou na minha vida, sem precisar provar nada, apenas sendo você, e isso foi suficiente para mudar tudo.",
+    "Nunca te contei isso, mas existem noites em que eu releio conversas antigas apenas para reviver a sensação de quando ainda estávamos descobrindo um ao outro. É incrível perceber que, mesmo depois de tanto tempo, meu coração ainda acelera da mesma forma.",
+    "Se alguém me perguntasse qual foi o momento mais importante da minha vida, eu provavelmente não responderia com uma data específica. Eu responderia apenas com o seu nome, porque foi a partir dele que todos os outros momentos passaram a ter valor.",
+    "Existe uma parte de mim que pertence completamente a você. Não porque eu a entreguei, mas porque ela simplesmente escolheu morar no mesmo lugar onde o seu coração decidiu ficar.",
+    "Eu adoro pensar que, enquanto o mundo inteiro continua correndo com tanta pressa, nós ainda conseguimos encontrar felicidade nas coisas mais simples, como uma conversa longa, um abraço demorado ou um olhar que diz tudo sem precisar de nenhuma palavra.",
+    "Porque o seu jeito de existir faz com que eu acredite que ainda existem pessoas raras neste mundo. Pessoas que carregam bondade, delicadeza, força e amor no mesmo coração, exatamente como você faz todos os dias.",
+    "Às vezes eu olho para você e tenho vontade de agradecer aos detalhes mais improváveis da vida. Se qualquer pequeno acontecimento tivesse sido diferente, talvez nós nunca tivéssemos nos encontrado, e pensar nisso me faz valorizar ainda mais a sorte que tive.",
+    "Nunca imaginei que seria possível sentir saudade de alguém mesmo poucas horas depois de dizer 'até logo'. Mas você transformou até a distância mais curta em um lembrete do quanto a sua presença faz falta.",
+    "Porque eu amo perceber que você conhece versões minhas que absolutamente ninguém mais conhece. Você viu os meus medos, as minhas inseguranças, as minhas falhas e, mesmo assim, decidiu permanecer. Isso vale mais do que qualquer declaração de amor.",
+    "Existe uma tranquilidade enorme em saber que posso ser completamente verdadeiro perto de você. Eu não preciso fingir ser mais forte, mais inteligente ou mais interessante. Você me ama exatamente como eu sou, e isso é uma das maiores provas de amor que já recebi.",
+    "Porque o tempo passou a ter outro significado depois que você apareceu. Alguns minutos ao seu lado parecem durar segundos, enquanto alguns segundos longe de você conseguem parecer horas inteiras.",
+    "Eu espero que, em algum momento da sua vida, você consiga enxergar pelos meus olhos a mulher extraordinária que você é. Porque tenho certeza de que você descobriria uma beleza em si mesma que talvez ainda nem tenha percebido.",
+    "Porque você me ensinou que o amor verdadeiro não prende ninguém. Pelo contrário, ele incentiva, fortalece, apoia e faz a outra pessoa crescer sem nunca deixar de caminhar ao lado dela.",
+    "Às vezes eu penso que todas as palavras já inventadas ainda são pequenas demais para descrever exatamente o que sinto por você. Parece que o meu coração fala um idioma que ainda não foi criado.",
+    "Eu gosto de imaginar que, quando estivermos bem velhinhos, ainda vamos rir das mesmas piadas sem graça, lembrar das mesmas histórias e continuar segurando as mãos um do outro como fazemos hoje, porque algumas coisas nunca deveriam mudar.",
+    "Porque você conseguiu fazer com que eu deixasse de procurar felicidade em lugares distantes. Hoje eu descobri que ela pode estar escondida em um simples 'bom dia' vindo de você.",
+    "Existe algo extremamente bonito na maneira como você enfrenta a vida. Você talvez nem perceba, mas a sua coragem inspira mais pessoas do que imagina, principalmente a mim.",
+    "Se eu pudesse voltar no tempo apenas para reviver algum momento da minha vida, eu não escolheria uma viagem, uma conquista ou uma festa. Eu escolheria qualquer instante simples em que estivemos juntos, porque foi nesses momentos que eu fui verdadeiramente feliz.",
+    "Porque eu amo imaginar quantas lembranças ainda estão esperando para acontecer. Ainda existem tantos abraços que não demos, tantas fotos que não tiramos, tantos lugares que não conhecemos e tantas histórias que ainda vão fazer parte da nossa vida.",
+    "Nunca deixe que alguém faça você duvidar do quanto é especial. Se um dia isso acontecer, lembre-se de que existe uma pessoa que escreveu milhares de motivos apenas para tentar explicar o tamanho da admiração que sente por você, mesmo sabendo que nunca conseguiria colocar tudo em palavras.",
+    "Porque eu acredito que amar você foi a decisão mais bonita que o meu coração já tomou. E, sinceramente, eu faria essa mesma escolha quantas vezes fosse necessário.",
+    "Existe uma paz muito grande em imaginar que o futuro ainda guarda tantos capítulos da nossa história. Isso faz com que eu tenha vontade de viver cada dia com calma, apenas para aproveitar tudo o que ainda vamos construir juntos.",
+    "Porque, quando penso em tudo o que já vivemos, eu não sinto orgulho apenas das nossas alegrias. Eu sinto orgulho de cada dificuldade que atravessamos sem soltar a mão um do outro, porque foi ali que o nosso amor mostrou a sua verdadeira força.",
+    "❤️ E, se algum dia você esquecer o tamanho do amor que existe dentro de mim, basta lembrar que eu aceitei o desafio de escrever dois mil motivos sobre você... não porque dois mil fossem suficientes, mas porque o meu coração precisava encontrar alguma forma de dizer que escolheria você, hoje, amanhã e em todos os dias que ainda existirem.",
+    "Às vezes eu fico imaginando se você tem ideia da dimensão que ocupa dentro do meu coração. Acho que não, porque se tivesse, entenderia que nenhum dia passa sem que eu pense em você, sem que eu agradeça pela sua existência ou sem que eu imagine mais um pedacinho do nosso futuro.",
+    "Porque eu aprendi que amar alguém não é apenas sentir o coração acelerar nos momentos especiais. É desejar estar presente até nos dias comuns, naqueles em que nada extraordinário acontece, porque a sua companhia já transforma qualquer rotina em algo extraordinário.",
+    "Nunca me cansarei de observar você distraída, sem perceber que existe alguém completamente encantado apenas vendo você existir. Talvez seja um dos meus momentos favoritos, porque ali não existe esforço para impressionar ninguém; existe apenas a pessoa maravilhosa que você realmente é.",
+    "Existe uma parte do meu futuro que eu nunca consegui imaginar sem você. Sempre que penso nos próximos anos, automaticamente imagino o seu sorriso fazendo parte deles, como se a minha felicidade já tivesse escolhido definitivamente onde deseja permanecer.",
+    "Porque, quando você segura a minha mão, eu sinto uma tranquilidade que nenhuma palavra conseguiria explicar. É como se aquele simples gesto dissesse silenciosamente que, aconteça o que acontecer, nós vamos enfrentar tudo juntos.",
+    "Às vezes eu penso que Deus olhou para a minha vida em silêncio e resolveu colocar você nela exatamente no momento em que eu mais precisava aprender o verdadeiro significado do amor. E essa continua sendo uma das maiores bênçãos que já recebi.",
+    "Porque eu amo perceber que cada conversa nossa deixa alguma marca bonita dentro de mim. Você consegue transformar até assuntos simples em lembranças que continuam aquecendo o meu coração muito tempo depois.",
+    "Se algum dia a vida nos obrigar a enfrentar tempestades difíceis, quero que você saiba que nunca precisará atravessá-las sozinha. O meu lugar sempre será ao seu lado, segurando a sua mão até que o céu volte a ficar azul.",
+    "Porque você me mostrou que amar alguém também significa admirar a pessoa que ela está se tornando. Eu tenho orgulho da mulher que você é hoje, mas fico ainda mais feliz imaginando a mulher incrível que você continuará sendo daqui a muitos anos.",
+    "Existe uma beleza enorme na forma como você consegue cuidar das pessoas sem esperar nada em troca. Esse tipo de bondade não se aprende; nasce dentro de quem possui um coração tão bonito quanto o seu.",
+    "Porque eu nunca vou esquecer a sensação que tive quando percebi que você já não era apenas alguém importante para mim. Você tinha se tornado o meu primeiro pensamento ao acordar e o último antes de dormir, sem que eu sequer percebesse quando isso aconteceu.",
+    "Às vezes eu gostaria de conseguir congelar alguns instantes da nossa história. Não para impedir que o tempo passe, mas para poder voltar neles sempre que sentisse saudade da forma como os seus olhos brilhavam naquele momento.",
+    "Porque o seu carinho nunca foi exagerado nem insuficiente. Ele sempre chegou exatamente da maneira que eu precisava, como se o seu coração soubesse encontrar as partes de mim que mais precisavam ser abraçadas.",
+    "Se eu pudesse fazer apenas um pedido para o resto da minha vida, pediria que nunca nos faltasse a vontade de continuar escolhendo um ao outro todos os dias, porque é essa escolha diária que torna o nosso amor tão especial.",
+    "Porque você conseguiu transformar o meu conceito de felicidade. Hoje ela já não está ligada às coisas que eu conquisto, mas às pessoas com quem posso compartilhar essas conquistas, e nenhuma delas seria completa sem você.",
+    "Existe uma paz enorme em imaginar que ainda teremos milhares de manhãs para viver juntos. Saber que a nossa história ainda tem tantas páginas em branco me enche de esperança e faz com que eu queira aproveitar cada segundo ao seu lado.",
+    "Porque eu amo quando você sorri sem perceber. Existe uma sinceridade tão bonita nesses momentos que parece impossível não sorrir junto apenas por ver você feliz.",
+    "Nunca permita que o mundo faça você acreditar que precisa ser diferente para merecer amor. Foi justamente a pessoa verdadeira que você é que conquistou completamente o meu coração, e eu nunca trocaria isso por absolutamente nada.",
+    "Porque, mesmo depois de tanto tempo, ainda sinto aquele friozinho bom quando sei que vou encontrar você. Acho bonito perceber que alguns sentimentos não diminuem com o tempo; eles apenas aprendem novas formas de demonstrar o quanto continuam vivos.",
+    "Às vezes eu me pergunto quantas vidas seriam necessárias para conseguir amar você do jeito que merece. A resposta nunca aparece, porque tenho a impressão de que nem a eternidade inteira seria suficiente.",
+    "Porque eu acredito que algumas pessoas passam pela nossa vida para ensinar lições importantes. Você fez muito mais do que isso. Você me ensinou que o amor pode ser leve, seguro, sincero e, ao mesmo tempo, intenso o suficiente para mudar completamente quem somos.",
+    "Existe uma gratidão imensa dentro de mim por cada pequena lembrança que construímos juntos. Talvez você nem imagine, mas muitas delas continuam iluminando dias difíceis apenas por existirem dentro da minha memória.",
+    "Porque eu nunca quero que você tenha dúvidas sobre o lugar que ocupa na minha vida. Você não é apenas uma parte bonita da minha história; você se tornou a história mais bonita que eu já vivi.",
+    "Se algum dia alguém perguntar por que eu sorrio quando escuto o seu nome, provavelmente eu não vou conseguir responder com palavras. Algumas pessoas simplesmente fazem o coração falar mais alto do que qualquer explicação possível.",
+    "❤️ E, mesmo que eu escrevesse durante todos os dias da minha vida, ainda existiriam sentimentos que permaneceriam impossíveis de colocar no papel. Talvez seja justamente isso que torna o amor tão bonito: perceber que nenhuma quantidade de palavras será suficiente para descrever completamente tudo aquilo que sinto por você."
+  ];
+
   // ================================================
 
   const capitulos = {
+
     103: cap103,
     151: cap151,
     201: cap201,
@@ -983,7 +1090,29 @@ document.addEventListener('DOMContentLoaded', () => {
     801: cap801,
     851: cap851,
     901: cap901,
-    951: cap951
+    951: cap951,
+
+    1001: cap1001,
+    1051: cap1051,
+    1101: cap1101,
+    1151: cap1151,
+    1201: cap1201,
+    1251: cap1251,
+    1301: cap1301,
+    1351: cap1351,
+    1401: cap1401,
+    1451: cap1451,
+    1501: cap1501,
+    1551: cap1551,
+    1601: cap1601,
+    1651: cap1651,
+    1701: cap1701,
+    1751: cap1751,
+    1801: cap1801,
+    1851: cap1851,
+    1901: cap1901,
+    1951: cap1951
+
   }
 
   // ================================================
@@ -1031,7 +1160,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ================================================
 
   function mostrarMotivo() {
-    if (listaAtual.length === 0) {
+    if (!listaAtual || listaAtual.length === 0) {
       titulo.innerHTML = 'Em breve ❤️'
 
       motivo.innerHTML = 'Esse capítulo ainda será escrito...'
