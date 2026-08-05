@@ -1,616 +1,605 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lugar Seguro</title>
-    <style>
-      :root {
-        --bg-color: #050203;
-        --heart-red: #ff2a4b;
-        --glow-red: rgba(255, 42, 75, 0.4);
-        --text-color: #f0e6e8;
-        --text-dim: #a39598;
-      }
 
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lugar Seguro</title>
+  <style>
+    :root {
+      --bg-color: #050203;
+      --heart-red: #ff2a4b;
+      --glow-red: rgba(255, 42, 75, 0.4);
+      --text-color: #f0e6e8;
+      --text-dim: #a39598;
+    }
 
-      body {
-        background-color: var(--bg-color);
-        color: var(--text-color);
-        font-family: 'Georgia', 'Times New Roman', serif;
-        min-height: 100vh;
-        overflow-x: hidden;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-      }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-      /* Ambient Lighting */
-      .ambient-glow {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 80vw;
-        height: 80vw;
-        max-width: 800px;
-        max-height: 800px;
-        background: radial-gradient(
-          circle,
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: 'Georgia', 'Times New Roman', serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* Ambient Lighting */
+    .ambient-glow {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80vw;
+      height: 80vw;
+      max-width: 800px;
+      max-height: 800px;
+      background: radial-gradient(circle,
           var(--glow-red) 0%,
-          rgba(5, 2, 3, 0) 70%
-        );
-        z-index: 0;
-        pointer-events: none;
-        opacity: 0.5;
-        transition: opacity 0.5s ease, transform 0.5s ease;
-        animation: breathe 6s infinite ease-in-out;
+          rgba(5, 2, 3, 0) 70%);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.5;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      animation: breathe 6s infinite ease-in-out;
+    }
+
+    @keyframes breathe {
+
+      0%,
+      100% {
+        transform: translate(-50%, -50%) scale(0.9);
+        opacity: 0.4;
       }
 
-      @keyframes breathe {
-        0%,
-        100% {
-          transform: translate(-50%, -50%) scale(0.9);
-          opacity: 0.4;
-        }
-        50% {
-          transform: translate(-50%, -50%) scale(1.1);
-          opacity: 0.7;
-        }
+      50% {
+        transform: translate(-50%, -50%) scale(1.1);
+        opacity: 0.7;
+      }
+    }
+
+    /* Particles Canvas */
+    #particles-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Main Container */
+    .container {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 1200px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      transition: all 1s ease;
+    }
+
+    /* Layout State: Revealed */
+    .container.revealed {
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding-top: 4rem;
+    }
+
+    /* Heart Section */
+    .heart-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      transition: all 1s ease;
+    }
+
+    .container.revealed .heart-wrapper {
+      position: sticky;
+      top: 5rem;
+      width: 40%;
+      height: fit-content;
+    }
+
+    /* Anatomical SVG Heart Container */
+    .heart-svg-container {
+      width: 280px;
+      height: 340px;
+      position: relative;
+      filter: drop-shadow(0 0 25px rgba(255, 42, 75, 0.6));
+      transition: filter 0.3s ease, transform 0.1s ease;
+    }
+
+    .heart-svg-container:hover {
+      filter: drop-shadow(0 0 45px rgba(255, 42, 75, 0.9));
+    }
+
+    /* Pulse Animation */
+    .pulse-normal {
+      animation: heartBeat 1.2s infinite ease-in-out;
+    }
+
+    @keyframes heartBeat {
+      0% {
+        transform: scale(1);
       }
 
-      /* Particles Canvas */
-      #particles-canvas {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 1;
-        pointer-events: none;
+      14% {
+        transform: scale(1.12);
       }
 
-      /* Main Container */
-      .container {
-        position: relative;
-        z-index: 2;
-        width: 100%;
-        max-width: 1200px;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 2rem;
-        transition: all 1s ease;
+      28% {
+        transform: scale(1);
       }
 
-      /* Layout State: Revealed */
+      42% {
+        transform: scale(1.08);
+      }
+
+      70% {
+        transform: scale(1);
+      }
+    }
+
+    /* Cardiac Monitor HUD */
+    .monitor-hud {
+      margin-top: 2rem;
+      text-align: center;
+      font-family: 'Courier New', Courier, monospace;
+      letter-spacing: 2px;
+      background: rgba(15, 5, 8, 0.75);
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 42, 75, 0.2);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+      transition: all 0.5s ease;
+    }
+
+    .bpm-value {
+      font-size: 2.2rem;
+      font-weight: bold;
+      color: var(--heart-red);
+      text-shadow: 0 0 10px var(--glow-red);
+    }
+
+    .bpm-label {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-top: 0.2rem;
+    }
+
+    .monitor-status {
+      font-size: 0.95rem;
+      margin-top: 0.6rem;
+      color: #ffffff;
+      font-family: 'Georgia', serif;
+      font-style: italic;
+      min-height: 1.2em;
+      opacity: 0.9;
+    }
+
+    /* Text Content Area */
+    .content-area {
+      width: 55%;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 1.5s ease 0.5s, transform 1.5s ease 0.5s;
+      display: none;
+      padding-bottom: 8rem;
+    }
+
+    .container.revealed .content-area {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .content-area h1 {
+      font-size: 2.5rem;
+      font-weight: 300;
+      letter-spacing: 3px;
+      margin-bottom: 2rem;
+      color: var(--heart-red);
+      text-shadow: 0 0 15px rgba(255, 42, 75, 0.3);
+      line-height: 1.3;
+    }
+
+    .content-area p {
+      font-size: 1.15rem;
+      line-height: 1.9;
+      color: var(--text-color);
+      margin-bottom: 2rem;
+      text-align: justify;
+      font-weight: 300;
+      opacity: 0.9;
+    }
+
+    .content-area p strong {
+      color: var(--heart-red);
+      font-weight: 400;
+    }
+
+    .content-area .highlight-quote {
+      font-style: italic;
+      font-size: 1.3rem;
+      border-left: 2px solid var(--heart-red);
+      padding-left: 1.5rem;
+      margin: 2.5rem 0;
+      color: #fff;
+    }
+
+    /* Screen Shake effect */
+    .shake {
+      animation: shake 0.15s infinite;
+    }
+
+    @keyframes shake {
+      0% {
+        transform: translate(1px, 1px) rotate(0deg);
+      }
+
+      20% {
+        transform: translate(-1px, -2px) rotate(-0.5deg);
+      }
+
+      40% {
+        transform: translate(-2px, 0px) rotate(0.5deg);
+      }
+
+      60% {
+        transform: translate(2px, 1px) rotate(0deg);
+      }
+
+      80% {
+        transform: translate(1px, -1px) rotate(0.5deg);
+      }
+
+      100% {
+        transform: translate(-1px, 2px) rotate(-0.5deg);
+      }
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 900px) {
       .container.revealed {
-        flex-direction: row;
-        align-items: flex-start;
-        justify-content: space-between;
-        padding-top: 4rem;
-      }
-
-      /* Heart Section */
-      .heart-wrapper {
-        display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        position: relative;
-        transition: all 1s ease;
       }
 
       .container.revealed .heart-wrapper {
-        position: sticky;
-        top: 5rem;
-        width: 40%;
-        height: fit-content;
-      }
-
-      /* Anatomical SVG Heart Container */
-      .heart-svg-container {
-        width: 280px;
-        height: 340px;
         position: relative;
-        filter: drop-shadow(0 0 25px rgba(255, 42, 75, 0.6));
-        transition: filter 0.3s ease, transform 0.1s ease;
+        top: 0;
+        width: 100%;
+        margin-bottom: 3rem;
       }
 
-      .heart-svg-container:hover {
-        filter: drop-shadow(0 0 45px rgba(255, 42, 75, 0.9));
-      }
-
-      /* Pulse Animation */
-      .pulse-normal {
-        animation: heartBeat 1.2s infinite ease-in-out;
-      }
-
-      @keyframes heartBeat {
-        0% {
-          transform: scale(1);
-        }
-        14% {
-          transform: scale(1.12);
-        }
-        28% {
-          transform: scale(1);
-        }
-        42% {
-          transform: scale(1.08);
-        }
-        70% {
-          transform: scale(1);
-        }
-      }
-
-      /* Cardiac Monitor HUD */
-      .monitor-hud {
-        margin-top: 2rem;
-        text-align: center;
-        font-family: 'Courier New', Courier, monospace;
-        letter-spacing: 2px;
-        background: rgba(15, 5, 8, 0.75);
-        padding: 1rem 2rem;
-        border-radius: 12px;
-        border: 1px solid rgba(255, 42, 75, 0.2);
-        backdrop-filter: blur(8px);
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-        transition: all 0.5s ease;
-      }
-
-      .bpm-value {
-        font-size: 2.2rem;
-        font-weight: bold;
-        color: var(--heart-red);
-        text-shadow: 0 0 10px var(--glow-red);
-      }
-
-      .bpm-label {
-        font-size: 0.85rem;
-        color: var(--text-dim);
-        text-transform: uppercase;
-        margin-top: 0.2rem;
-      }
-
-      .monitor-status {
-        font-size: 0.95rem;
-        margin-top: 0.6rem;
-        color: #ffffff;
-        font-family: 'Georgia', serif;
-        font-style: italic;
-        min-height: 1.2em;
-        opacity: 0.9;
-      }
-
-      /* Text Content Area */
       .content-area {
-        width: 55%;
-        opacity: 0;
-        transform: translateY(40px);
-        transition: opacity 1.5s ease 0.5s, transform 1.5s ease 0.5s;
-        display: none;
-        padding-bottom: 8rem;
+        width: 100%;
       }
+    }
+  </style>
+</head>
 
-      .container.revealed .content-area {
-        display: block;
-        opacity: 1;
-        transform: translateY(0);
-      }
+<body>
+  <div class="ambient-glow" id="ambient"></div>
+  <canvas id="particles-canvas"></canvas>
 
-      .content-area h1 {
-        font-size: 2.5rem;
-        font-weight: 300;
-        letter-spacing: 3px;
-        margin-bottom: 2rem;
-        color: var(--heart-red);
-        text-shadow: 0 0 15px rgba(255, 42, 75, 0.3);
-        line-height: 1.3;
-      }
+  <div class="container" id="mainContainer">
+    <div class="heart-wrapper" id="heartWrapper">
+      <div class="heart-svg-container pulse-normal" id="heartContainer">
+        <svg viewBox="0 0 300 350" width="100%" height="100%">
+          <defs>
+            <radialGradient id="heartGrad" cx="40%" cy="40%" r="60%">
+              <stop offset="0%" stop-color="#ff3b5c" />
+              <stop offset="50%" stop-color="#a80922" />
+              <stop offset="85%" stop-color="#4a000b" />
+              <stop offset="100%" stop-color="#1a0003" />
+            </radialGradient>
 
-      .content-area p {
-        font-size: 1.15rem;
-        line-height: 1.9;
-        color: var(--text-color);
-        margin-bottom: 2rem;
-        text-align: justify;
-        font-weight: 300;
-        opacity: 0.9;
-      }
+            <linearGradient id="arteryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ff7b93" />
+              <stop offset="100%" stop-color="#ff2a4b" />
+            </linearGradient>
 
-      .content-area p strong {
-        color: var(--heart-red);
-        font-weight: 400;
-      }
+            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="6" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+          </defs>
 
-      .content-area .highlight-quote {
-        font-style: italic;
-        font-size: 1.3rem;
-        border-left: 2px solid var(--heart-red);
-        padding-left: 1.5rem;
-        margin: 2.5rem 0;
-        color: #fff;
-      }
+          <path
+            d="M140,70 C120,20 70,20 50,60 C30,100 40,160 75,210 C100,245 130,285 155,315 C160,320 165,320 170,315 C195,285 235,235 255,185 C275,135 265,80 230,55 C195,30 160,60 140,70 Z"
+            fill="url(#heartGrad)" stroke="#ff2a4b" stroke-width="1.5" />
 
-      /* Screen Shake effect */
-      .shake {
-        animation: shake 0.15s infinite;
-      }
+          <path d="M125,75 C110,40 120,15 150,15 C175,15 190,35 185,65 C210,45 240,55 245,85" fill="none"
+            stroke="url(#heartGrad)" stroke-width="28" stroke-linecap="round" />
 
-      @keyframes shake {
-        0% {
-          transform: translate(1px, 1px) rotate(0deg);
-        }
-        20% {
-          transform: translate(-1px, -2px) rotate(-0.5deg);
-        }
-        40% {
-          transform: translate(-2px, 0px) rotate(0.5deg);
-        }
-        60% {
-          transform: translate(2px, 1px) rotate(0deg);
-        }
-        80% {
-          transform: translate(1px, -1px) rotate(0.5deg);
-        }
-        100% {
-          transform: translate(-1px, 2px) rotate(-0.5deg);
-        }
-      }
+          <g fill="none" stroke="url(#arteryGrad)" filter="url(#glow)" opacity="0.85">
+            <path d="M145,25 C145,55 135,80 145,110 C155,140 170,170 175,210" stroke-width="4.5"
+              stroke-linecap="round" />
+            <path d="M145,110 C125,130 100,150 85,180" stroke-width="3.5" stroke-linecap="round" />
+            <path d="M175,210 C165,245 160,270 158,300" stroke-width="3" stroke-linecap="round" />
 
-      /* Responsive Breakpoints */
-      @media (max-width: 900px) {
-        .container.revealed {
-          flex-direction: column;
-          align-items: center;
-        }
-        .container.revealed .heart-wrapper {
-          position: relative;
-          top: 0;
-          width: 100%;
-          margin-bottom: 3rem;
-        }
-        .content-area {
-          width: 100%;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="ambient-glow" id="ambient"></div>
-    <canvas id="particles-canvas"></canvas>
-
-    <div class="container" id="mainContainer">
-      <div class="heart-wrapper" id="heartWrapper">
-        <div class="heart-svg-container pulse-normal" id="heartContainer">
-          <svg viewBox="0 0 300 350" width="100%" height="100%">
-            <defs>
-              <radialGradient id="heartGrad" cx="40%" cy="40%" r="60%">
-                <stop offset="0%" stop-color="#ff3b5c" />
-                <stop offset="50%" stop-color="#a80922" />
-                <stop offset="85%" stop-color="#4a000b" />
-                <stop offset="100%" stop-color="#1a0003" />
-              </radialGradient>
-
-              <linearGradient
-                id="arteryGrad"
-                x1="0%"
-                y1="0%"
-                x2="100%"
-                y2="100%"
-              >
-                <stop offset="0%" stop-color="#ff7b93" />
-                <stop offset="100%" stop-color="#ff2a4b" />
-              </linearGradient>
-
-              <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="6" result="blur" />
-                <feComposite in="SourceGraphic" in2="blur" operator="over" />
-              </filter>
-            </defs>
-
-            <path
-              d="M140,70 C120,20 70,20 50,60 C30,100 40,160 75,210 C100,245 130,285 155,315 C160,320 165,320 170,315 C195,285 235,235 255,185 C275,135 265,80 230,55 C195,30 160,60 140,70 Z"
-              fill="url(#heartGrad)"
-              stroke="#ff2a4b"
-              stroke-width="1.5"
-            />
-
-            <path
-              d="M125,75 C110,40 120,15 150,15 C175,15 190,35 185,65 C210,45 240,55 245,85"
-              fill="none"
-              stroke="url(#heartGrad)"
-              stroke-width="28"
-              stroke-linecap="round"
-            />
-
-            <g
-              fill="none"
-              stroke="url(#arteryGrad)"
-              filter="url(#glow)"
-              opacity="0.85"
-            >
-              <path
-                d="M145,25 C145,55 135,80 145,110 C155,140 170,170 175,210"
-                stroke-width="4.5"
-                stroke-linecap="round"
-              />
-              <path
-                d="M145,110 C125,130 100,150 85,180"
-                stroke-width="3.5"
-                stroke-linecap="round"
-              />
-              <path
-                d="M175,210 C165,245 160,270 158,300"
-                stroke-width="3"
-                stroke-linecap="round"
-              />
-
-              <path d="M138,65 C115,75 95,90 80,120" stroke-width="3" />
-              <path d="M152,135 C175,145 205,155 225,180" stroke-width="3" />
-              <path d="M100,160 C115,185 125,215 130,250" stroke-width="2" />
-              <path d="M190,165 C205,190 215,220 220,245" stroke-width="2" />
-              <path d="M82,125 C65,140 58,160 55,180" stroke-width="1.8" />
-            </g>
-          </svg>
-        </div>
-
-        <div class="monitor-hud">
-          <div class="bpm-value" id="bpmDisplay">67 BPM</div>
-          <div class="bpm-label">Frequência Cardíaca</div>
-          <div class="monitor-status" id="monitorStatus">
-            Ritmo em repouso...
-          </div>
-        </div>
+            <path d="M138,65 C115,75 95,90 80,120" stroke-width="3" />
+            <path d="M152,135 C175,145 205,155 225,180" stroke-width="3" />
+            <path d="M100,160 C115,185 125,215 130,250" stroke-width="2" />
+            <path d="M190,165 C205,190 215,220 220,245" stroke-width="2" />
+            <path d="M82,125 C65,140 58,160 55,180" stroke-width="1.8" />
+          </g>
+        </svg>
       </div>
 
-      <div class="content-area" id="contentArea">
-        <h1>Você Descobriu o Motivo.</h1>
-
-        <p>
-          Durante muito tempo, este coração apenas existiu. Ele cumpria sua
-          função todos os dias, bombeando sangue, mantendo meu corpo vivo e
-          seguindo exatamente o ritmo que a natureza determinou. Era um órgão
-          como qualquer outro, trabalhando em silêncio, sem nunca imaginar que
-          um dia descobriria que existia uma diferença enorme entre estar
-          vivo... e realmente sentir a vida acontecer.
-        </p>
-
-        <p>Então você apareceu.</p>
-
-        <p>
-          E foi estranho... porque nada ao meu redor mudou. O céu continuou
-          sendo o mesmo. As ruas continuaram iguais. As pessoas seguiram vivendo
-          normalmente. Mas aqui dentro... absolutamente tudo deixou de funcionar
-          como antes. Meu coração encontrou um novo ritmo, minha respiração
-          ganhou outro significado e, pela primeira vez, eu entendi que algumas
-          pessoas chegam ao mundo para mudar completamente o universo de alguém.
-        </p>
-
-        <p>Antes de você, as minhas batidas eram apenas um reflexo da vida.</p>
-
-        <p>Depois de você...</p>
-
-        <p><strong>elas passaram a ter um motivo.</strong></p>
-
-        <p>
-          Hoje eu consigo perceber isso nas menores coisas. Basta ouvir sua voz
-          para meu peito acelerar sem pedir permissão. Basta receber uma
-          mensagem sua para um sorriso aparecer antes mesmo que eu consiga
-          perceber. Basta imaginar o seu abraço para tudo dentro de mim
-          encontrar uma calma que eu nunca soube explicar.
-        </p>
-
-        <p>
-          Você transformou o impossível em rotina. Fez o extraordinário parecer
-          simples. Porque amar você nunca foi um esforço. Foi como respirar.
-          Natural. Leve. Inevitável.
-        </p>
-
-        <div class="highlight-quote">
-          "Se um médico escutasse meu coração quando você está perto, talvez ele
-          procurasse uma doença. Mas a verdade é muito mais bonita: ele só
-          encontrou a razão pela qual vale a pena continuar batendo."
+      <div class="monitor-hud">
+        <div class="bpm-value" id="bpmDisplay">67 BPM</div>
+        <div class="bpm-label">Frequência Cardíaca</div>
+        <div class="monitor-status" id="monitorStatus">
+          Ritmo em repouso...
         </div>
-
-        <p>
-          Existem pessoas que entram na nossa vida e deixam lembranças. Outras
-          deixam saudade. Algumas passam quase despercebidas. Mas você... você
-          deixou raízes. Você ocupou lugares dentro de mim que eu nem sabia que
-          existiam. Lugares onde antes havia silêncio, hoje existe o som
-          constante da esperança de construir uma vida inteira ao seu lado.
-        </p>
-
-        <p>
-          Eu gosto de pensar que cada batida do meu coração agora carrega um
-          pedacinho seu. Como se ele tivesse aprendido um idioma completamente
-          novo. Um idioma feito de abraços demorados, olhares discretos,
-          conversas sem hora para acabar e daqueles pequenos momentos que
-          ninguém mais percebe, mas que para mim significam absolutamente tudo.
-        </p>
-
-        <p>
-          Porque é exatamente isso que você faz comigo. Você transforma o comum
-          em inesquecível. Um passeio vira memória. Um abraço vira lar. Um
-          sorriso vira combustível para semanas inteiras. Um simples "oi"
-          consegue melhorar um dia que parecia impossível de salvar.
-        </p>
-
-        <p>
-          Às vezes eu fico imaginando quantas vezes esse coração bateu antes de
-          conhecer você. Milhões. Talvez bilhões de vezes. Mas nenhuma delas
-          parecia realmente importante. Era apenas uma contagem automática.
-          Hoje, cada nova batida parece agradecer silenciosamente por você
-          existir.
-        </p>
-
-        <p>
-          Você me ensinou que amor não é aquele sentimento exagerado dos filmes.
-          Amor é perceber que a paz tem um rosto. Que felicidade pode ter uma
-          risada específica. Que segurança pode morar dentro de um abraço. E que
-          existe alguém capaz de fazer o mundo inteiro desaparecer simplesmente
-          por estar perto.
-        </p>
-
-        <p>
-          Quando você segura minha mão, eu sinto como se todas as preocupações
-          resolvessem fazer uma pausa. Quando você sorri para mim, parece que
-          meu corpo inteiro esquece qualquer peso que carregava. Quando você me
-          abraça... eu finalmente entendo por que dizem que algumas pessoas são
-          lar.
-        </p>
-
-        <p>
-          E talvez seja justamente isso que mais me assusta e, ao mesmo tempo,
-          mais me encanta. Você nunca precisou fazer grandes coisas para mudar a
-          minha vida. Nunca precisou de gestos impossíveis. Foi sendo exatamente
-          quem você é que conseguiu transformar completamente quem eu sou.
-        </p>
-
-        <p>
-          Você reorganizou os meus dias. Mudou meus planos. Alterou meus sonhos.
-          Fez meu futuro deixar de ser um lugar vazio para se tornar um espaço
-          onde eu sempre imagino você caminhando ao meu lado.
-        </p>
-
-        <p>
-          Hoje eu sei que este coração continua sendo um órgão biológico. Ele
-          continua tendo artérias, veias, músculos e impulsos elétricos. Mas
-          existe uma parte dele que nenhuma ciência conseguirá explicar. Uma
-          parte que bate diferente quando vê você chegando. Que acelera quando
-          escuta seu nome. Que desacelera quando encontra seu abraço. E que
-          encontra paz simplesmente por saber que você existe.
-        </p>
-
-        <p>
-          Talvez eu nunca consiga colocar em palavras tudo o que realmente
-          sinto. Talvez nenhuma declaração seja suficiente para explicar a
-          dimensão do espaço que você ocupa dentro de mim. Mas, se algum dia
-          você tiver qualquer dúvida sobre isso, basta lembrar de uma coisa.
-        </p>
-
-        <div class="highlight-quote">
-          "Meu coração nunca precisou aprender a bater... mas precisou conhecer
-          você para descobrir por que fazia isso todos os dias."
-        </div>
-
-        <p>
-          E enquanto ele continuar pulsando dentro do meu peito, todas essas
-          batidas continuarão dizendo exatamente a mesma coisa, mesmo quando eu
-          estiver completamente em silêncio.
-        </p>
-
-        <p><strong>Eu amo você.</strong></p>
       </div>
     </div>
 
-    <script>
-      // --- Web Audio API Synthesizer for Realtime Heartbeat Sounds ---
-      class HeartAudio {
-        constructor() {
-          this.ctx = null
-        }
+    <div class="content-area" id="contentArea">
+      <h1>Você Descobriu o Motivo.</h1>
 
-        init() {
-          if (!this.ctx) {
-            const AudioContext =
-              window.AudioContext || window.webkitAudioContext
-            this.ctx = new AudioContext()
-          }
-        }
+      <p>
+        Durante muito tempo, este coração apenas existiu. Ele cumpria sua
+        função todos os dias, bombeando sangue, mantendo meu corpo vivo e
+        seguindo exatamente o ritmo que a natureza determinou. Era um órgão
+        como qualquer outro, trabalhando em silêncio, sem nunca imaginar que
+        um dia descobriria que existia uma diferença enorme entre estar
+        vivo... e realmente sentir a vida acontecer.
+      </p>
 
-        playBeat(intensity = 1) {
-          if (!this.ctx) return
+      <p>Então você apareceu.</p>
 
-          // Double thump (Lub-Dub)
-          this.synthesizeThump(60, 0.12, 0.8 * intensity)
-          setTimeout(() => {
-            this.synthesizeThump(48, 0.09, 0.6 * intensity)
-          }, 140)
-        }
+      <p>
+        E foi estranho... porque nada ao meu redor mudou. O céu continuou
+        sendo o mesmo. As ruas continuaram iguais. As pessoas seguiram vivendo
+        normalmente. Mas aqui dentro... absolutamente tudo deixou de funcionar
+        como antes. Meu coração encontrou um novo ritmo, minha respiração
+        ganhou outro significado e, pela primeira vez, eu entendi que algumas
+        pessoas chegam ao mundo para mudar completamente o universo de alguém.
+      </p>
 
-        synthesizeThump(freq, duration, gainVal) {
-          try {
-            const osc = this.ctx.createOscillator()
-            const gain = this.ctx.createGain()
+      <p>Antes de você, as minhas batidas eram apenas um reflexo da vida.</p>
 
-            osc.type = 'sine'
-            osc.frequency.setValueAtTime(freq, this.ctx.currentTime)
-            osc.frequency.exponentialRampToValueAtTime(
-              10,
-              this.ctx.currentTime + duration
-            )
+      <p>Depois de você...</p>
 
-            gain.gain.setValueAtTime(gainVal, this.ctx.currentTime)
-            gain.gain.exponentialRampToValueAtTime(
-              0.001,
-              this.ctx.currentTime + duration
-            )
+      <p><strong>elas passaram a ter um motivo.</strong></p>
 
-            osc.connect(gain)
-            gain.connect(this.ctx.destination)
+      <p>
+        Hoje eu consigo perceber isso nas menores coisas. Basta ouvir sua voz
+        para meu peito acelerar sem pedir permissão. Basta receber uma
+        mensagem sua para um sorriso aparecer antes mesmo que eu consiga
+        perceber. Basta imaginar o seu abraço para tudo dentro de mim
+        encontrar uma calma que eu nunca soube explicar.
+      </p>
 
-            osc.start()
-            osc.stop(this.ctx.currentTime + duration)
-          } catch (e) {}
+      <p>
+        Você transformou o impossível em rotina. Fez o extraordinário parecer
+        simples. Porque amar você nunca foi um esforço. Foi como respirar.
+        Natural. Leve. Inevitável.
+      </p>
+
+      <div class="highlight-quote">
+        "Se um médico escutasse meu coração quando você está perto, talvez ele
+        procurasse uma doença. Mas a verdade é muito mais bonita: ele só
+        encontrou a razão pela qual vale a pena continuar batendo."
+      </div>
+
+      <p>
+        Existem pessoas que entram na nossa vida e deixam lembranças. Outras
+        deixam saudade. Algumas passam quase despercebidas. Mas você... você
+        deixou raízes. Você ocupou lugares dentro de mim que eu nem sabia que
+        existiam. Lugares onde antes havia silêncio, hoje existe o som
+        constante da esperança de construir uma vida inteira ao seu lado.
+      </p>
+
+      <p>
+        Eu gosto de pensar que cada batida do meu coração agora carrega um
+        pedacinho seu. Como se ele tivesse aprendido um idioma completamente
+        novo. Um idioma feito de abraços demorados, olhares discretos,
+        conversas sem hora para acabar e daqueles pequenos momentos que
+        ninguém mais percebe, mas que para mim significam absolutamente tudo.
+      </p>
+
+      <p>
+        Porque é exatamente isso que você faz comigo. Você transforma o comum
+        em inesquecível. Um passeio vira memória. Um abraço vira lar. Um
+        sorriso vira combustível para semanas inteiras. Um simples "oi"
+        consegue melhorar um dia que parecia impossível de salvar.
+      </p>
+
+      <p>
+        Às vezes eu fico imaginando quantas vezes esse coração bateu antes de
+        conhecer você. Milhões. Talvez bilhões de vezes. Mas nenhuma delas
+        parecia realmente importante. Era apenas uma contagem automática.
+        Hoje, cada nova batida parece agradecer silenciosamente por você
+        existir.
+      </p>
+
+      <p>
+        Você me ensinou que amor não é aquele sentimento exagerado dos filmes.
+        Amor é perceber que a paz tem um rosto. Que felicidade pode ter uma
+        risada específica. Que segurança pode morar dentro de um abraço. E que
+        existe alguém capaz de fazer o mundo inteiro desaparecer simplesmente
+        por estar perto.
+      </p>
+
+      <p>
+        Quando você segura minha mão, eu sinto como se todas as preocupações
+        resolvessem fazer uma pausa. Quando você sorri para mim, parece que
+        meu corpo inteiro esquece qualquer peso que carregava. Quando você me
+        abraça... eu finalmente entendo por que dizem que algumas pessoas são
+        lar.
+      </p>
+
+      <p>
+        E talvez seja justamente isso que mais me assusta e, ao mesmo tempo,
+        mais me encanta. Você nunca precisou fazer grandes coisas para mudar a
+        minha vida. Nunca precisou de gestos impossíveis. Foi sendo exatamente
+        quem você é que conseguiu transformar completamente quem eu sou.
+      </p>
+
+      <p>
+        Você reorganizou os meus dias. Mudou meus planos. Alterou meus sonhos.
+        Fez meu futuro deixar de ser um lugar vazio para se tornar um espaço
+        onde eu sempre imagino você caminhando ao meu lado.
+      </p>
+
+      <p>
+        Hoje eu sei que este coração continua sendo um órgão biológico. Ele
+        continua tendo artérias, veias, músculos e impulsos elétricos. Mas
+        existe uma parte dele que nenhuma ciência conseguirá explicar. Uma
+        parte que bate diferente quando vê você chegando. Que acelera quando
+        escuta seu nome. Que desacelera quando encontra seu abraço. E que
+        encontra paz simplesmente por saber que você existe.
+      </p>
+
+      <p>
+        Talvez eu nunca consiga colocar em palavras tudo o que realmente
+        sinto. Talvez nenhuma declaração seja suficiente para explicar a
+        dimensão do espaço que você ocupa dentro de mim. Mas, se algum dia
+        você tiver qualquer dúvida sobre isso, basta lembrar de uma coisa.
+      </p>
+
+      <div class="highlight-quote">
+        "Meu coração nunca precisou aprender a bater... mas precisou conhecer
+        você para descobrir por que fazia isso todos os dias."
+      </div>
+
+      <p>
+        E enquanto ele continuar pulsando dentro do meu peito, todas essas
+        batidas continuarão dizendo exatamente a mesma coisa, mesmo quando eu
+        estiver completamente em silêncio.
+      </p>
+
+      <p><strong>Eu amo você.</strong></p>
+    </div>
+  </div>
+
+  <script>
+    // --- Web Audio API Synthesizer for Realtime Heartbeat Sounds ---
+    class HeartAudio {
+      constructor() {
+        this.ctx = null
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext =
+            window.AudioContext || window.webkitAudioContext
+          this.ctx = new AudioContext()
         }
       }
 
-      const audio = new HeartAudio()
+      playBeat(intensity = 1) {
+        if (!this.ctx) return
 
-      // --- Interactive State Management ---
-      const bpmDisplay = document.getElementById('bpmDisplay')
-      const monitorStatus = document.getElementById('monitorStatus')
-      const heartContainer = document.getElementById('heartContainer')
-      const heartWrapper = document.getElementById('heartWrapper')
-      const mainContainer = document.getElementById('mainContainer')
-      const contentArea = document.getElementById('contentArea')
-      const ambient = document.getElementById('ambient')
-
-      const bpmStages = [67, 80, 95, 110, 130, 150]
-      let currentStageIndex = 0
-      let hoverTimer = null
-      let beatInterval = null
-      let isHovered = false
-      let isRevealed = false
-      let currentBPM = 67
-
-      // Sound Loop timing
-      function updateBeatInterval(bpm) {
-        if (beatInterval) clearInterval(beatInterval)
-        const intervalMs = (60 / bpm) * 1000
-
-        // Adjust SVG animation speed to match BPM dynamically
-        heartContainer.style.animationDuration = `${intervalMs / 1000}s`
-
-        beatInterval = setInterval(() => {
-          audio.playBeat(Math.min(1.5, bpm / 90))
-        }, intervalMs)
+        // Double thump (Lub-Dub)
+        this.synthesizeThump(60, 0.12, 0.8 * intensity)
+        setTimeout(() => {
+          this.synthesizeThump(48, 0.09, 0.6 * intensity)
+        }, 140)
       }
 
-      // Initial background rhythm
-      updateBeatInterval(67)
+      synthesizeThump(freq, duration, gainVal) {
+        try {
+          const osc = this.ctx.createOscillator()
+          const gain = this.ctx.createGain()
 
-      // Mouse Hover Mechanics
-      heartWrapper.addEventListener('mouseenter', () => {
-        audio.init()
-        if (isRevealed) return
+          osc.type = 'sine'
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime)
+          osc.frequency.exponentialRampToValueAtTime(
+            10,
+            this.ctx.currentTime + duration
+          )
 
-        isHovered = true
-        monitorStatus.textContent = 'Aproximação detectada...'
+          gain.gain.setValueAtTime(gainVal, this.ctx.currentTime)
+          gain.gain.exponentialRampToValueAtTime(
+            0.001,
+            this.ctx.currentTime + duration
+          )
 
-        // Progressively increase BPM every 700ms while hovered
+          osc.connect(gain)
+          gain.connect(this.ctx.destination)
+
+          osc.start()
+          osc.stop(this.ctx.currentTime + duration)
+        } catch (e) { }
+      }
+    }
+
+    const audio = new HeartAudio()
+
+    // --- Interactive State Management ---
+    const bpmDisplay = document.getElementById('bpmDisplay')
+    const monitorStatus = document.getElementById('monitorStatus')
+    const heartContainer = document.getElementById('heartContainer')
+    const heartWrapper = document.getElementById('heartWrapper')
+    const mainContainer = document.getElementById('mainContainer')
+    const contentArea = document.getElementById('contentArea')
+    const ambient = document.getElementById('ambient')
+
+    const bpmStages = [67, 80, 95, 110, 130, 150]
+    let currentStageIndex = 0
+    let hoverTimer = null
+    let beatInterval = null
+    let isHovered = false
+    let isRevealed = false
+    let currentBPM = 67
+
+    // Sound Loop timing
+    function updateBeatInterval(bpm) {
+      if (beatInterval) clearInterval(beatInterval)
+      const intervalMs = (60 / bpm) * 1000
+
+      heartContainer.style.animationDuration = `${intervalMs / 1000}s`
+
+      beatInterval = setInterval(() => {
+        audio.playBeat(Math.min(1.5, bpm / 90))
+      }, intervalMs)
+    }
+
+    // Initial background rhythm
+    updateBeatInterval(67)
+
+    // --- Eventos Unificados (Mouse + Touch para Celular) ---
+    function handleInteractionStart(e) {
+      // Evita scroll acidental no toque
+      if (e.type === 'touchstart') e.preventDefault()
+
+      audio.init()
+      if (audio.ctx && audio.ctx.state === 'suspended') {
+        audio.ctx.resume()
+      }
+
+      if (isRevealed) return
+
+      isHovered = true
+      monitorStatus.textContent = 'Aproximação detectada...'
+
+      if (!hoverTimer) {
         hoverTimer = setInterval(() => {
           if (currentStageIndex < bpmStages.length - 1) {
             currentStageIndex++
@@ -618,145 +607,149 @@
             bpmDisplay.textContent = `${currentBPM} BPM`
             updateBeatInterval(currentBPM)
 
-            // Visual Feedback Scaling
-            ambient.style.transform = `translate(-50%, -50%) scale(${
-              1 + currentStageIndex * 0.12
-            })`
+            ambient.style.transform = `translate(-50%, -50%) scale(${1 + currentStageIndex * 0.12
+              })`
 
-            // Add Screen Vibration at high BPM
             if (currentBPM >= 110) {
               document.body.classList.add('shake')
             }
           } else {
-            // Maximum state reached -> Reveal Text Sequence
             clearInterval(hoverTimer)
+            hoverTimer = null
             triggerRevealSequence()
           }
         }, 750)
-      })
+      }
+    }
 
-      heartWrapper.addEventListener('mouseleave', () => {
-        if (isRevealed) return
-        isHovered = false
-        clearInterval(hoverTimer)
-        document.body.classList.remove('shake')
+    function handleInteractionEnd() {
+      if (isRevealed) return
+      isHovered = false
+      clearInterval(hoverTimer)
+      hoverTimer = null
+      document.body.classList.remove('shake')
 
-        // Decay back to resting BPM slowly if left early
-        let decayInterval = setInterval(() => {
-          if (isHovered || isRevealed) {
-            clearInterval(decayInterval)
-            return
-          }
-          if (currentStageIndex > 0) {
-            currentStageIndex--
-            currentBPM = bpmStages[currentStageIndex]
+      let decayInterval = setInterval(() => {
+        if (isHovered || isRevealed) {
+          clearInterval(decayInterval)
+          return
+        }
+        if (currentStageIndex > 0) {
+          currentStageIndex--
+          currentBPM = bpmStages[currentStageIndex]
+          bpmDisplay.textContent = `${currentBPM} BPM`
+          updateBeatInterval(currentBPM)
+          ambient.style.transform = `translate(-50%, -50%) scale(${1 + currentStageIndex * 0.1
+            })`
+        } else {
+          monitorStatus.textContent = 'Ritmo em repouso...'
+          clearInterval(decayInterval)
+        }
+      }, 400)
+    }
+
+    // Escutadores para PC (Mouse)
+    heartWrapper.addEventListener('mouseenter', handleInteractionStart)
+    heartWrapper.addEventListener('mouseleave', handleInteractionEnd)
+
+    // Escutadores para Celular (Toque na tela)
+    heartWrapper.addEventListener('touchstart', handleInteractionStart, { passive: false })
+    heartWrapper.addEventListener('touchend', handleInteractionEnd)
+
+    // --- Text Reveal & Heart Stabilization ---
+    function triggerRevealSequence() {
+      isRevealed = true
+      document.body.classList.remove('shake')
+
+      monitorStatus.textContent = 'Você descobriu o motivo.'
+      monitorStatus.style.color = '#ff2a4b'
+      monitorStatus.style.fontWeight = 'bold'
+
+      setTimeout(() => {
+        mainContainer.classList.add('revealed')
+
+        let slowDown = setInterval(() => {
+          if (currentBPM > 60) {
+            currentBPM -= 5
             bpmDisplay.textContent = `${currentBPM} BPM`
             updateBeatInterval(currentBPM)
-            ambient.style.transform = `translate(-50%, -50%) scale(${
-              1 + currentStageIndex * 0.1
-            })`
           } else {
-            monitorStatus.textContent = 'Ritmo em repouso...'
-            clearInterval(decayInterval)
+            currentBPM = 60
+            bpmDisplay.innerHTML = '❤️ 60 BPM'
+            monitorStatus.textContent = 'Lugar seguro encontrado.'
+            monitorStatus.style.color = '#ffffff'
+            ambient.style.transform = 'translate(-50%, -50%) scale(1)'
+            clearInterval(slowDown)
           }
-        }, 400)
-      })
+        }, 300)
+      }, 1000)
+    }
 
-      // --- Text Reveal & Heart Stabilization ---
-      function triggerRevealSequence() {
-        isRevealed = true
-        document.body.classList.remove('shake')
+    // --- Canvas Glowing Dust Particles ---
+    const canvas = document.getElementById('particles-canvas')
+    const ctx = canvas.getContext('2d')
+    let particles = []
 
-        monitorStatus.textContent = 'Você descobriu o motivo.'
-        monitorStatus.style.color = '#ff2a4b'
-        monitorStatus.style.fontWeight = 'bold'
+    function resizeCanvas() {
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+    }
+    window.addEventListener('resize', resizeCanvas)
+    resizeCanvas()
 
-        setTimeout(() => {
-          // Transition layout to split view
-          mainContainer.classList.add('revealed')
-
-          // Slow heart down gently to a peaceful 60 BPM
-          let slowDown = setInterval(() => {
-            if (currentBPM > 60) {
-              currentBPM -= 5
-              bpmDisplay.textContent = `${currentBPM} BPM`
-              updateBeatInterval(currentBPM)
-            } else {
-              currentBPM = 60
-              bpmDisplay.innerHTML = '❤️ 60 BPM'
-              monitorStatus.textContent = 'Lugar seguro encontrado.'
-              monitorStatus.style.color = '#ffffff'
-              ambient.style.transform = 'translate(-50%, -50%) scale(1)'
-              clearInterval(slowDown)
-            }
-          }, 300)
-        }, 1000)
+    class Particle {
+      constructor() {
+        this.reset()
       }
 
-      // --- Canvas Glowing Dust Particles ---
-      const canvas = document.getElementById('particles-canvas')
-      const ctx = canvas.getContext('2d')
-      let particles = []
-
-      function resizeCanvas() {
-        canvas.width = window.innerWidth
-        canvas.height = window.innerHeight
+      reset() {
+        this.x = Math.random() * canvas.width
+        this.y = Math.random() * canvas.height
+        this.size = Math.random() * 2 + 0.5
+        this.speedX = (Math.random() - 0.5) * 0.4
+        this.speedY = (Math.random() - 0.5) * 0.4 - 0.2
+        this.alpha = Math.random() * 0.6 + 0.1
       }
-      window.addEventListener('resize', resizeCanvas)
-      resizeCanvas()
 
-      class Particle {
-        constructor() {
+      update() {
+        this.x += this.speedX
+        this.y += this.speedY
+
+        if (
+          this.x < 0 ||
+          this.x > canvas.width ||
+          this.y < 0 ||
+          this.y > canvas.height
+        ) {
           this.reset()
         }
-
-        reset() {
-          this.x = Math.random() * canvas.width
-          this.y = Math.random() * canvas.height
-          this.size = Math.random() * 2 + 0.5
-          this.speedX = (Math.random() - 0.5) * 0.4
-          this.speedY = (Math.random() - 0.5) * 0.4 - 0.2
-          this.alpha = Math.random() * 0.6 + 0.1
-        }
-
-        update() {
-          this.x += this.speedX
-          this.y += this.speedY
-
-          if (
-            this.x < 0 ||
-            this.x > canvas.width ||
-            this.y < 0 ||
-            this.y > canvas.height
-          ) {
-            this.reset()
-          }
-        }
-
-        draw() {
-          ctx.save()
-          ctx.globalAlpha = this.alpha
-          ctx.fillStyle = '#ff3b5c'
-          ctx.beginPath()
-          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
-          ctx.fill()
-          ctx.restore()
-        }
       }
 
-      for (let i = 0; i < 65; i++) {
-        particles.push(new Particle())
+      draw() {
+        ctx.save()
+        ctx.globalAlpha = this.alpha
+        ctx.fillStyle = '#ff3b5c'
+        ctx.beginPath()
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
+        ctx.fill()
+        ctx.restore()
       }
+    }
 
-      function animateParticles() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height)
-        particles.forEach(p => {
-          p.update()
-          p.draw()
-        })
-        requestAnimationFrame(animateParticles)
-      }
-      animateParticles()
-    </script>
-  </body>
+    for (let i = 0; i < 65; i++) {
+      particles.push(new Particle())
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      particles.forEach(p => {
+        p.update()
+        p.draw()
+      })
+      requestAnimationFrame(animateParticles)
+    }
+    animateParticles()
+  </script>
+</body>
+
 </html>
