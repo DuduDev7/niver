@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nosso Mapa de Memórias ❤️</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+
+  <style>
+    /* ==========================================================================
+       1. ESTILOS GERAIS E PALETA DARK ROMÂNTICA
+       ========================================================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: #0f0d13;
+      color: #e2e8f0;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+    }
+
+    /* Layout Principal em Split-Screen */
+    .app-layout {
+      display: flex;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    /* ==========================================================================
+       2. PAINEL LATERAL DE HISTÓRIAS (ESQUERDA)
+       ========================================================================== */
+    .story-panel {
+      width: 450px;
+      min-width: 350px;
+      height: 100%;
+      background: rgba(23, 19, 31, 0.95);
+      border-right: 1px solid rgba(255, 117, 160, 0.2);
+      display: flex;
+      flex-direction: column;
+      z-index: 1000;
+      box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+      overflow-y: auto;
+    }
+
+    .story-header {
+      padding: 30px 25px 20px 25px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: linear-gradient(180deg, rgba(255, 117, 160, 0.05) 0%, rgba(0,0,0,0) 100%);
+    }
+
+    .story-header h1 {
+      color: #ff75a0;
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      text-shadow: 0 0 15px rgba(255, 117, 160, 0.3);
+      font-weight: 700;
+    }
+
+    .story-header p {
+      color: #a0aec0;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .story-content {
+      padding: 25px;
+      flex-grow: 1;
+    }
+
+    /* Card da Memória Ativa */
+    .memory-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 18px;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .memory-img-box {
+      width: 100%;
+      height: 230px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .memory-img-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+
+    .memory-card:hover .memory-img-box img {
+      transform: scale(1.03);
+    }
+
+    .memory-body {
+      padding: 22px;
+    }
+
+    .memory-date {
+      display: inline-block;
+      background: rgba(255, 117, 160, 0.15);
+      color: #ff75a0;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .memory-title {
+      font-size: 1.4rem;
+      color: #ffffff;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    .memory-text {
+      color: #cbd5e1;
+      font-size: 0.98rem;
+      line-height: 1.7;
+      white-space: pre-line;
+    }
+
+    /* Estado Inicial do Painel */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #718096;
+    }
+
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      display: block;
+    }
+
+    /* Lista de Navegação Rápida */
+    .memory-list-nav {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .nav-item-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #a0aec0;
+      padding: 12px 16px;
+      border-radius: 12px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-item-btn:hover, .nav-item-btn.active {
+      background: rgba(255, 117, 160, 0.15);
+      border-color: #ff75a0;
+      color: #ffffff;
+    }
+
+    /* ==========================================================================
+       3. AREA DO MAPA LEAFLET (DIREITA)
+       ========================================================================== */
+    .map-container {
+      flex-grow: 1;
+      height: 100%;
+      position: relative;
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+      background: #0f0d13;
+    }
+
+    /* Personalização dos Marcadores de Coração no Mapa */
+    .custom-heart-pin {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 38px !important;
+      height: 38px !important;
+      background: linear-gradient(135deg, #ff75a0 0%, #f72585 100%);
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      box-shadow: 0 4px 15px rgba(247, 37, 133, 0.5);
+      border: 2px solid #ffffff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .custom-heart-pin::after {
+      content: '❤️';
+      font-size: 16px;
+      transform: rotate(45deg);
+    }
+
+    .custom-heart-pin:hover {
+      transform: rotate(-45deg) scale(1.15);
+      box-shadow: 0 6px 20px rgba(247, 37, 133, 0.8);
+    }
+
+    /* Ajuste dos Popups do Mapa */
+    .leaflet-popup-content-wrapper {
+      background: rgba(23, 19, 31, 0.95) !important;
+      color: #fff !important;
+      border: 1px solid rgba(255, 117, 160, 0.3);
+      border-radius: 12px !important;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5) !important;
+    }
+
+    .leaflet-popup-tip {
+      background: rgba(23, 19, 31, 0.95) !important;
+    }
+
+    .popup-title {
+      font-weight: 700;
+      color: #ff75a0;
+      font-size: 0.95rem;
+    }
+
+    /* ==========================================================================
+       4. ADAPTAÇÃO RESPONSIVA (MOBILE)
+       ========================================================================== */
+    @media (max-width: 768px) {
+      .app-layout {
+        flex-direction: column-reverse;
+      }
+
+      .map-container {
+        height: 45vh;
+        width: 100%;
+      }
+
+      .story-panel {
+        width: 100%;
+        height: 55vh;
+        border-right: none;
+        border-top: 1px solid rgba(255, 117, 160, 0.2);
+      }
+
+      .story-header {
+        padding: 20px 20px 15px 20px;
+      }
+
+      .story-header h1 {
+        font-size: 1.4rem;
+      }
+
+      .story-content {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-layout">
+    
+    <div class="story-panel">
+      <div class="story-header">
+        <h1>Mapa das Nossas Memórias ❤️</h1>
+        <p>Cada marcador neste mapa guarda um capítulo da nossa história. Clique em um coração para relembrar o momento.</p>
+      </div>
+
+      <div class="story-content">
+        <div id="memory-display">
+          <div class="empty-state">
+            <span class="empty-state-icon">🗺️</span>
+            <p>Selecione um ponto no mapa para ler a nossa história.</p>
+          </div>
+        </div>
+
+        <div style="margin-top: 30px;">
+          <h3 style="font-size: 0.9rem; color: #718096; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">Todos os Lugares</h3>
+          <div class="memory-list-nav" id="memory-nav-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="map-container">
+      <div id="map"></div>
+    </div>
+
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <script>
+    /* ==========================================================================
+       1. BASE DE DADOS DAS MEMÓRIAS (EDITE OS LOCAIS E HISTÓRIAS AQUI!)
+       ========================================================================== */
+    const memoriasData = [
+      {
+        id: 1,
+        titulo: "O Nosso Primeiro Encontro",
+        data: "12 de Junho de 2022",
+        coords: [-23.55052, -46.633308], // Exemplo: São Paulo (Praça da Sé)
+        texto: "Lembra como estávamos nervosos? Conversamos por horas até o café fechar. Foi aqui que percebi que você era alguém verdadeiramente especial e que aquele seria apenas o primeiro de infinitos encontros.",
+        imagem: "https://picsum.photos/600/400?romantic=1" // Substitua pela URL da foto de vocês
+      },
+      {
+        id: 2,
+        titulo: "Primeira Viagem Juntos",
+        data: "15 de Janeiro de 2023",
+        coords: [-22.906847, -43.172896], // Exemplo: Rio de Janeiro
+        texto: "Nossa primeira viagem marcante! Passamos o dia na praia, tomamos água de coco e tiramos dezenas de fotos encarando o pôr do sol. Um final de semana inesquecível.",
+        imagem: "https://picsum.photos/600/400?beach=2"
+      },
+      {
+        id: 3,
+        titulo: "O Pedido de Namoro",
+        data: "20 de Setembro de 2023",
+        coords: [-19.916681, -43.934493], // Exemplo: Belo Horizonte
+        texto: "Neste lugar mágico, com uma vista incrível da cidade iluminada, tomei coragem para fazer a pergunta mais importante da minha vida. O seu 'SIM' fez o meu coração transbordar de felicidade.",
+        imagem: "https://picsum.photos/600/400?night=3"
+      },
+      {
+        id: 4,
+        titulo: "Nosso Show Favorito",
+        data: "10 de Maio de 2024",
+        coords: [-25.4284, -49.2733], // Exemplo: Curitiba
+        texto: "Cantamos todas as músicas até ficar sem voz. Estar abraçado com você enquanto tocava a nossa música favorita foi uma das sensações mais mágicas que já vivi.",
+        imagem: "https://picsum.photos/600/400?concert=4"
+      }
+    ];
+
+    /* ==========================================================================
+       2. INICIALIZAÇÃO DO MAPA (LEAFLET)
+       ========================================================================== */
+    // Ponto central inicial (calculado ou fixo no primeiro ponto)
+    const initialCoords = memoriasData[0].coords;
+    
+    // Inicializa o mapa com estilo escuro (CartoDB Dark Matter)
+    const map = L.map('map', {
+      zoomControl: false
+    }).setView(initialCoords, 12);
+
+    // Adiciona o controle de zoom em posição estratégica
+    L.control.zoom({ position: 'topright' }).addTo(map);
+
+    // Camada de Mapa Escura (Dark Mode Tiles)
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap &copy; CARTO',
+      subdomains: 'abcd',
+      maxZoom: 19
+    }).addTo(map);
+
+    /* ==========================================================================
+       3. RENDERIZAÇÃO DOS MARCADORES E INTERAÇÕES
+       ========================================================================== */
+    const memoryDisplay = document.getElementById('memory-display');
+    const memoryNavList = document.getElementById('memory-nav-list');
+    const markers = {};
+
+    // Cria o ícone customizado de Coração
+    const heartIcon = L.divIcon({
+      className: 'custom-heart-pin',
+      iconSize: [38, 38],
+      iconAnchor: [19, 38],
+      popupAnchor: [0, -34]
+    });
+
+    // Renderiza marcadores e lista de navegação
+    memoriasData.forEach(memoria => {
+      // 1. Adiciona o Marcador no Mapa
+      const marker = L.marker(memoria.coords, { icon: heartIcon }).addTo(map);
+      marker.bindPopup(`<div class="popup-title">${memoria.titulo}</div><div>${memoria.data}</div>`);
+      
+      // Clique no marcador do mapa
+      marker.on('click', () => {
+        exibirMemoria(memoria);
+      });
+
+      markers[memoria.id] = marker;
+
+      // 2. Adiciona o Item na Lista Lateral de Navegação
+      const navBtn = document.createElement('button');
+      navBtn.className = 'nav-item-btn';
+      navBtn.id = `nav-btn-${memoria.id}`;
+      navBtn.innerHTML = `
+        <span>${memoria.titulo}</span>
+        <small style="opacity: 0.6;">${memoria.data.split('de ')[2] || ''}</small>
+      `;
+      navBtn.onclick = () => {
+        exibirMemoria(memoria);
+        map.flyTo(memoria.coords, 14, { duration: 1.5 });
+        marker.openPopup();
+      };
+      memoryNavList.appendChild(navBtn);
+    });
+
+    // Função para exibir os detalhes da memória no painel
+    function exibirMemoria(memoria) {
+      // Mover suavemente o mapa até o ponto
+      map.flyTo(memoria.coords, 14, { duration: 1.5 });
+
+      // Atualizar o cartão da história com animação
+      memoryDisplay.innerHTML = `
+        <div class="memory-card">
+          <div class="memory-img-box">
+            <img src="${memoria.imagem}" alt="${memoria.titulo}">
+          </div>
+          <div class="memory-body">
+            <span class="memory-date">📅 ${memoria.data}</span>
+            <h2 class="memory-title">${memoria.titulo}</h2>
+            <p class="memory-text">${memoria.texto}</p>
+          </div>
+        </div>
+      `;
+
+      // Destacar o botão correspondente na lista
+      document.querySelectorAll('.nav-item-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`nav-btn-${memoria.id}`);
+      if (activeBtn) activeBtn.classList.add('active');
+    }
+  </script>
+</body>
+</html>
