@@ -97,18 +97,23 @@
 
     .question-image-container {
       width: 100%;
-      max-height: 220px;
       border-radius: 16px;
       overflow: hidden;
       margin-bottom: 18px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      /* Remova o max-height daqui */
     }
 
     .question-image-container img {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
+      height: auto;
+      /* Mantém a proporção real da foto */
+      max-height: 350px;
+      /* Evita que fotos muito altas fiquem gigantes na tela */
+      object-fit: contain;
       display: block;
+      margin: 0 auto;
+      /* Centraliza se necessário */
     }
 
     .question-title {
@@ -165,8 +170,15 @@
     }
 
     @keyframes popIn {
-      0% { opacity: 0; transform: scale(0.8) translateY(10px); }
-      100% { opacity: 1; transform: scale(1) translateY(0); }
+      0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(10px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
     }
 
     .btn-option.correct {
@@ -184,15 +196,35 @@
     }
 
     @keyframes pulseGreen {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.02); }
-      100% { transform: scale(1); }
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.02);
+      }
+
+      100% {
+        transform: scale(1);
+      }
     }
 
     @keyframes shakeRed {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-6px); }
-      40%, 80% { transform: translateX(6px); }
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      20%,
+      60% {
+        transform: translateX(-6px);
+      }
+
+      40%,
+      80% {
+        transform: translateX(6px);
+      }
     }
 
     .btn-primary {
@@ -283,16 +315,18 @@
 
     <div id="start-screen">
       <div class="cover-image-container">
-        <img src="https://picsum.photos/800/400?romantic" alt="Imagem de Capa">
+        <img src="imgs/bestImg.jpeg" alt="Imagem de Capa">
       </div>
 
       <div class="content-padding">
         <h1>Quanto você realmente lembra da nossa história? ❤️</h1>
 
         <p class="intro-text">
-          Não é uma prova. Não existe nota. E, sinceramente, eu provavelmente vou ficar feliz mesmo se você errar algumas.
+          Não é uma prova. Não existe nota. E, sinceramente, eu provavelmente vou ficar feliz mesmo se você errar
+          algumas.
           <br><br>
-          Mas existem pequenas coisas que ficaram guardadas em mim desde que você entrou na minha vida. Então eu quero descobrir quantas delas também ficaram guardadas em você.
+          Mas existem pequenas coisas que ficaram guardadas em mim desde que você entrou na minha vida. Então eu quero
+          descobrir quantas delas também ficaram guardadas em você.
         </p>
 
         <button class="btn-primary" onclick="iniciarQuiz()">Começar o Quiz</button>
@@ -321,17 +355,20 @@
       <div class="content-padding">
         <h1>Sua Pontuação ❤️</h1>
         <div id="final-score" class="result-score">0 / 110 pts</div>
-        
+
         <div id="final-message" class="result-text"></div>
 
         <hr style="border: 0; height: 1px; background: rgba(214, 51, 108, 0.2); margin: 20px 0;">
 
         <div class="quiz-final-message intro-text" style="text-align: left;">
-          <p>Se você chegou até aqui, provavelmente percebeu uma coisa: <strong>esse quiz nunca foi realmente sobre acertar as respostas.</strong></p>
+          <p>Se você chegou até aqui, provavelmente percebeu uma coisa: <strong>esse quiz nunca foi realmente sobre
+              acertar as respostas.</strong></p>
           <p>Era só uma desculpa para fazer você voltar, por alguns minutos, por tudo aquilo que a gente viveu.</p>
-          <p>Porque eu lembro de muita coisa. Dos detalhes. Dos momentos pequenos. Das coisas que talvez para qualquer outra pessoa não significassem absolutamente nada.</p>
+          <p>Porque eu lembro de muita coisa. Dos detalhes. Dos momentos pequenos. Das coisas que talvez para qualquer
+            outra pessoa não significassem absolutamente nada.</p>
           <p>Mas significam para mim.</p>
-          <p>E talvez essa seja uma das coisas mais bonitas da nossa história: a gente não precisou de acontecimentos gigantes para transformar dias comuns em memórias que eu nunca mais quero esquecer.</p>
+          <p>E talvez essa seja uma das coisas mais bonitas da nossa história: a gente não precisou de acontecimentos
+            gigantes para transformar dias comuns em memórias que eu nunca mais quero esquecer.</p>
           <p style="text-align: center; margin-top: 20px; font-size: 1.15rem; color: #d6336c;">
             <strong>Você não foi apenas alguém que apareceu na minha história. Você virou parte dela.</strong>
           </p>
@@ -349,42 +386,42 @@
       {
         pergunta: "01 — Onde tudo começou?",
         descricao: "Onde você começou a fazer parte da minha rotina antes de a gente realmente começar a conversar?",
-        imagem: "https://picsum.photos/800/400?sports",
+        imagem: "imgs/casacoAzul.jpeg",
         opcoes: ["Na faculdade", "No CT de futevôlei", "Em um torneio", "Em uma viagem"],
         correta: 1
       },
       {
         pergunta: "02 — Em que ano a nossa história realmente começou a ganhar outro significado?",
         descricao: "Foi o ano em que você apareceu na minha rotina e, pouco a pouco, deixou de ser apenas mais uma pessoa que eu conhecia.",
-        imagem: "https://picsum.photos/800/400?calendar",
+        imagem: "imgs/praia.jpeg",
         opcoes: ["2024", "2025", "2026", "2027"],
-        correta: 1
+        correta: 2
       },
       {
         pergunta: "03 — Qual esporte acabou sendo um dos grandes responsáveis por colocar você no meu caminho?",
         descricao: "Aquele esporte que nos reaproximou na praia ou na quadra de areia.",
-        imagem: "https://picsum.photos/800/400?volleyball",
+        imagem: "imgs/bandeira.jpeg",
         opcoes: ["Futebol", "Futsal", "Futevôlei", "Vôlei"],
         correta: 2
       },
       {
         pergunta: "04 — Qual flor tem um significado especial na nossa história?",
         descricao: "Aquela que eu te dei e que acabou se tornando muito mais do que simplesmente uma flor.",
-        imagem: "https://picsum.photos/800/400?flower",
+        imagem: "imgs/elevador.jpeg",
         opcoes: ["Rosas", "Girassóis", "Lírios", "Margaridas"],
-        correta: 1
+        correta: 2
       },
       {
         pergunta: "05 — Qual dessas coisas eu já fiz pensando em transformar a nossa história em algo que você pudesse guardar?",
         descricao: "Pense no carinho colocados nos detalhes!",
-        imagem: "https://picsum.photos/800/400?code",
+        imagem: "imgs/juliaEflor2.jpeg",
         opcoes: ["Uma coleção de cartas", "Um site inteiro sobre nós", "Uma playlist com 100 músicas", "Um livro publicado"],
         correta: 1
       },
       {
         pergunta: "06 — Qual é uma das coisas que mais combina comigo quando estou criando alguma coisa para você?",
         descricao: "O meu jeito de tentar surpreender você.",
-        imagem: "https://picsum.photos/800/400?details",
+        imagem: "imgs/juliaEmissi.jpeg",
         opcoes: [
           "Fazer algo simples e terminar rápido",
           "Fazer tudo correndo e sem detalhes",
@@ -396,7 +433,7 @@
       {
         pergunta: "07 — Qual dessas situações realmente aconteceu na nossa história?",
         descricao: "Nossos momentos marcantes juntos.",
-        imagem: "https://picsum.photos/800/400?match",
+        imagem: "imgs/arquibancada.jpeg",
         opcoes: [
           "Eu dediquei um gol para você",
           "Você me viu jogar um torneio de futevôlei",
@@ -408,7 +445,7 @@
       {
         pergunta: "08 — Qual dessas frases mais representa uma coisa que eu sempre tento colocar nas coisas que faço para você?",
         descricao: "O meu propósito em tudo o que planejo.",
-        imagem: "https://picsum.photos/800/400?love",
+        imagem: "imgs/gol.jpeg",
         opcoes: [
           "“Quero que seja bonito.”",
           "“Quero que seja diferente.”",
@@ -420,21 +457,21 @@
       {
         pergunta: "09 — Se eu pudesse resumir tudo o que construí até aqui em uma única ideia, qual seria?",
         descricao: "Olhando para o que ainda nos espera.",
-        imagem: "https://picsum.photos/800/400?future",
+        imagem: "imgs/espelho.jpeg",
         opcoes: ["O passado", "O acaso", "O tempo que a gente ainda tem pela frente", "Uma lembrança bonita"],
         correta: 2
       },
       {
         pergunta: "10 — E a pergunta mais importante...",
         descricao: "Depois de tudo isso — das primeiras vezes, das conversas, dos abraços... Você escolheria viver tudo isso comigo novamente?",
-        imagem: "https://picsum.photos/800/400?heart",
+        imagem: "imgs/carro.jpeg",
         opcoes: ["Sim.", "Com certeza.", "Mil vezes.", "Eu nem precisaria pensar."],
         correta: 3
       },
       {
         pergunta: "11 — E para fechar... quem é que realmente manda aqui?",
-        descricao: "Seja bem sincera(o)... (Dica: se não achar a resposta certa, tente clicar no texto da pergunta algumas vezes 🤫)",
-        imagem: "https://picsum.photos/800/400?crown",
+        descricao: "",
+        imagem: "imgs/bestImg.jpeg",
         opcoes: [
           "A) Eu",
           "B) Eduardo",
@@ -507,19 +544,19 @@
       // Verifica se é a última questão (pergunta 11) e se a opção D ainda não apareceu
       if (currentQuestion === quizData.length - 1 && !secretUnlocked) {
         questionClicks++;
-        
+
         if (questionClicks >= 10) {
           secretUnlocked = true;
           const data = quizData[currentQuestion];
-          
+
           // Cria o botão da Opção D
           const btnSecret = document.createElement('button');
           btnSecret.classList.add('btn-option', 'secret-option');
           btnSecret.innerHTML = `<span>${data.opcaoEspecial}</span>`;
           btnSecret.onclick = () => selecionarResposta(3, btnSecret);
-          
+
           optionsContainer.appendChild(btnSecret);
-          
+
           // Atualiza a dica na tela
           questionDesc.textContent = "Aha! Você encontrou a resposta certa! ✨";
         }
