@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trilha Sonora de Nós</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================================================
+           CONFIGURAÇÕES GERAIS E VARIÁVEIS DE COR / FONTE
+           ========================================================================== */
+        :root {
+            --bg-dark: #0a0508;
+            --bg-card: rgba(23, 13, 20, 0.7);
+            --bg-card-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f5f0f3;
+            --text-muted: #b8a5b0;
+            --accent-wine: #721c38;
+            --accent-rose: #d4708f;
+            --accent-glow: rgba(212, 112, 143, 0.3);
+            --accent-gold: #e5b97d;
+            --font-title: 'Cinzel', serif;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Montserrat', sans-serif;
+            --transition-smooth: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            overflow-x: hidden;
+        }
+
+        body {
+            min-height: 100vh;
+            line-height: 1.8;
+            background: radial-gradient(circle at 50% 0%, #1a0812 0%, #0a0508 70%);
+            background-attachment: fixed;
+            position: relative;
+        }
+
+        /* Canvas para partículas no fundo */
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.6;
+        }
+
+        /* Escurecimento do fundo quando o player da 7ª música abrir */
+        .overlay-dim {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 900;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s ease;
+        }
+        .overlay-dim.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Container principal */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ==========================================================================
+           BARRA FIXA DE PROGRESSO E NAVEGAÇÃO
+           ========================================================================== */
+        .progress-bar-fixed {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(15, 8, 13, 0.85);
+            border: 1px solid var(--bg-card-border);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .progress-bar-fixed span {
+            color: var(--accent-rose);
+            font-weight: 600;
+        }
+
+        .btn-top {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(23, 13, 20, 0.8);
+            border: 1px solid var(--accent-rose);
+            color: var(--accent-rose);
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition-smooth);
+            backdrop-filter: blur(5px);
+        }
+        .btn-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .btn-top:hover {
+            background: var(--accent-rose);
+            color: #fff;
+            box-shadow: 0 0 15px var(--accent-glow);
+            transform: translateY(-3px);
+        }
+
+        /* ==========================================================================
+           TOPO DA PÁGINA / HERO
+           ========================================================================== */
+        header {
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 60px 20px;
+            position: relative;
+        }
+
+        .header-intro {
+            font-family: var(--font-serif);
+            font-style: italic;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1.2s ease forwards 0.3s;
+        }
+
+        h1.main-title {
+            font-family: var(--font-title);
+            font-size: clamp(2.2rem, 6vw, 4rem);
+            font-weight: 700;
+            letter-spacing: 4px;
+            background: linear-gradient(135deg, #ffffff 0%, var(--accent-rose) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1.2s ease forwards 0.6s;
+        }
+
+        .header-subtitle {
+            font-family: var(--font-sans);
+            font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+            color: var(--text-muted);
+            font-weight: 300;
+            line-height: 1.8;
+            max-width: 600px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1.2s ease forwards 0.9s;
+        }
+
+        .scroll-indicator {
+            margin-top: 50px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            opacity: 0;
+            animation: fadeIn 1.2s ease forwards 1.2s, float 3s infinite ease-in-out 2s;
+        }
+
+        /* ==========================================================================
+           REVELAÇÃO DE ELEMENTOS AO ROLAR (SCROLL REVEAL)
+           ========================================================================== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1), transform 1s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ==========================================================================
+           CARDS DAS MÚSICAS (1 A 6) COM PROGRESSÃO VISUAL
+           ========================================================================== */
+        .tracks-section {
+            display: flex;
+            flex-direction: column;
+            gap: 60px;
+            padding-bottom: 80px;
+        }
+
+        .music-card {
+            background: var(--bg-card);
+            border: 1px solid var(--bg-card-border);
+            border-radius: 16px;
+            padding: 35px;
+            backdrop-filter: blur(12px);
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition-smooth);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .music-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: transparent;
+            transition: var(--transition-smooth);
+        }
+
+        /* Progressão Visual por Faixas */
+        .music-card[data-track="1"]::before,
+        .music-card[data-track="2"]::before {
+            background: linear-gradient(to bottom, #d4708f, rgba(212, 112, 143, 0.2));
+        }
+
+        .music-card[data-track="3"],
+        .music-card[data-track="4"] {
+            background: linear-gradient(145deg, rgba(30, 12, 22, 0.7), rgba(15, 8, 13, 0.8));
+            border-color: rgba(180, 70, 105, 0.2);
+        }
+        .music-card[data-track="3"]::before,
+        .music-card[data-track="4"]::before {
+            background: linear-gradient(to bottom, #a3385a, var(--accent-wine));
+        }
+
+        .music-card[data-track="5"],
+        .music-card[data-track="6"] {
+            background: linear-gradient(145deg, rgba(40, 10, 25, 0.85), rgba(10, 3, 7, 0.95));
+            border-color: rgba(212, 112, 143, 0.35);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+        }
+        .music-card[data-track="5"]::before,
+        .music-card[data-track="6"]::before {
+            background: linear-gradient(to bottom, #e63956, #721c38);
+            box-shadow: 0 0 10px #e63956;
+        }
+
+        .music-card.unlocked {
+            border-color: var(--accent-rose);
+        }
+        .music-card.unlocked::after {
+            content: '✓ EXPLORADO';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+            color: var(--accent-rose);
+            font-weight: 600;
+        }
+
+        .track-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .track-number {
+            font-family: var(--font-title);
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            color: var(--accent-rose);
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .track-title {
+            font-family: var(--font-serif);
+            font-size: 1.6rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .track-artist {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+            font-style: italic;
+        }
+
+        .btn-listen {
+            background: transparent;
+            border: 1px solid var(--accent-rose);
+            color: var(--text-primary);
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-family: var(--font-sans);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-listen:hover {
+            background: var(--accent-rose);
+            color: #fff;
+            box-shadow: 0 0 20px var(--accent-glow);
+            transform: scale(1.03);
+        }
+
+        .btn-listen.playing {
+            background: var(--accent-wine);
+            border-color: var(--accent-wine);
+            color: #fff;
+            animation: pulseGlow 2s infinite;
+        }
+
+        /* Player Responsivo do YouTube */
+        .player-container {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.6s cubic-bezier(0, 1, 0, 1), margin-top 0.4s ease;
+            margin-top: 0;
+            border-radius: 12px;
+        }
+        .player-container.active {
+            max-height: 350px;
+            margin-top: 25px;
+            margin-bottom: 25px;
+        }
+
+        .iframe-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* Aspect Ratio 16:9 */
+            height: 0;
+            overflow: hidden;
+            border-radius: 12px;
+            background: #000;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+        }
+
+        .iframe-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .btn-close-player {
+            display: block;
+            margin: 10px auto 0 auto;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .btn-close-player:hover {
+            color: var(--accent-rose);
+        }
+
+        .track-text {
+            font-family: var(--font-serif);
+            font-size: 1.05rem;
+            color: #e0d0d8;
+            line-height: 1.9;
+            margin-top: 20px;
+            white-space: pre-line;
+        }
+
+        /* ==========================================================================
+           TRANSIÇÃO PARA A MÚSICA 07
+           ========================================================================== */
+        .transition-section {
+            text-align: center;
+            padding: 100px 20px;
+            position: relative;
+        }
+
+        .trans-text {
+            font-family: var(--font-serif);
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1.5s ease, transform 1.5s ease;
+        }
+
+        .trans-text.highlight {
+            font-family: var(--font-title);
+            color: var(--accent-rose);
+            font-size: clamp(1.5rem, 4vw, 2.3rem);
+            letter-spacing: 2px;
+        }
+
+        /* ==========================================================================
+           A 7ª MÚSICA - ÁREA ESPECIAL & DECLARAÇÃO FINAL
+           ========================================================================== */
+        .final-section {
+            display: none;
+            padding-bottom: 120px;
+            position: relative;
+            z-index: 950;
+        }
+
+        .final-card {
+            background: linear-gradient(160deg, #1f0713 0%, #080205 100%);
+            border: 1px solid rgba(212, 112, 143, 0.4);
+            border-radius: 24px;
+            padding: clamp(30px, 6vw, 60px);
+            box-shadow: 0 0 50px rgba(114, 28, 56, 0.4), inset 0 0 30px rgba(212, 112, 143, 0.1);
+            position: relative;
+            overflow: hidden;
+            animation: pulseGlowSlow 6s infinite alternate;
+        }
+
+        .final-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212, 112, 143, 0.1) 0%, transparent 60%);
+            pointer-events: none;
+            animation: rotate 20s linear infinite;
+        }
+
+        .final-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .final-badge {
+            font-family: var(--font-title);
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            color: var(--accent-gold);
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px rgba(229, 185, 125, 0.4);
+            margin-bottom: 10px;
+        }
+
+        .final-title {
+            font-family: var(--font-serif);
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            color: #ffffff;
+            margin-bottom: 15px;
+        }
+
+        .final-subtitle {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 650px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .declaration-body {
+            font-family: var(--font-serif);
+            font-size: clamp(1.05rem, 2vw, 1.2rem);
+            line-height: 2.1;
+            color: #f0e6ec;
+            margin: 50px 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .declaration-body p {
+            margin-bottom: 30px;
+            text-indent: 20px;
+        }
+
+        .final-btn-wrapper {
+            text-align: center;
+            margin: 50px 0 30px 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn-final-listen {
+            background: linear-gradient(135deg, var(--accent-wine) 0%, var(--accent-rose) 100%);
+            color: #ffffff;
+            border: none;
+            padding: 18px 45px;
+            border-radius: 50px;
+            font-family: var(--font-title);
+            font-size: 1rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(212, 112, 143, 0.4);
+            transition: var(--transition-smooth);
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-final-listen:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(212, 112, 143, 0.7);
+        }
+
+        .final-player-wrapper {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.8s ease;
+            position: relative;
+            z-index: 951;
+        }
+        .final-player-wrapper.active {
+            max-height: 500px;
+            margin-top: 40px;
+        }
+
+        .final-message-overlay {
+            text-align: center;
+            padding: 30px 0;
+            opacity: 0;
+            transition: opacity 1s ease 0.5s;
+        }
+        .final-message-overlay.active {
+            opacity: 1;
+        }
+
+        .final-message-overlay h3 {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            color: var(--accent-gold);
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .epilogue {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid var(--bg-card-border);
+            position: relative;
+            z-index: 2;
+        }
+
+        .epilogue p {
+            font-family: var(--font-serif);
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            line-height: 2;
+        }
+
+        .epilogue .final-love {
+            font-family: var(--font-title);
+            font-size: 2.2rem;
+            letter-spacing: 4px;
+            color: var(--accent-rose);
+            margin-top: 40px;
+            text-transform: uppercase;
+            text-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        /* ==========================================================================
+           ANIMAÇÕES CSS
+           ========================================================================== */
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(212, 112, 143, 0.6); }
+            70% { box-shadow: 0 0 0 15px rgba(212, 112, 143, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(212, 112, 143, 0); }
+        }
+
+        @keyframes pulseGlowSlow {
+            0% { box-shadow: 0 0 30px rgba(114, 28, 56, 0.3); }
+            100% { box-shadow: 0 0 60px rgba(212, 112, 143, 0.5); }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* ==========================================================================
+           RESPONSIVIDADE (CELULAR / TABLET)
+           ========================================================================== */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            .music-card {
+                padding: 25px 20px;
+            }
+            .track-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .btn-listen {
+                width: 100%;
+                justify-content: center;
+                margin-top: 10px;
+            }
+            .progress-bar-fixed {
+                top: 10px;
+                right: 10px;
+                font-size: 0.75rem;
+                padding: 6px 12px;
+            }
+            .declaration-body p {
+                text-indent: 0;
+            }
+            .btn-final-listen {
+                width: 100%;
+                padding: 16px 20px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particleCanvas"></canvas>
+
+    <div class="overlay-dim" id="overlayDim"></div>
+
+    <div class="progress-bar-fixed">
+        CAPÍTULO <span id="progressText">0 / 7</span>
+    </div>
+
+    <button class="btn-top" id="btnTop" title="Voltar ao topo">↑</button>
+
+    <div class="container">
+        
+        <header>
+            <p class="header-intro">
+                "Algumas histórias são contadas com palavras.<br>
+                A nossa também pode ser contada com músicas."
+            </p>
+            <h1 class="main-title">Trilha Sonora de Nós</h1>
+            <p class="header-subtitle">
+                7 músicas.<br>
+                7 momentos.<br>
+                Uma história que eu nunca quero esquecer.
+            </p>
+            <div class="scroll-indicator">
+                ▼ Role para começar a ouvir
+            </div>
+        </header>
+
+        <section class="tracks-section" id="tracksContainer">
+            </section>
+
+        <section class="transition-section" id="transSection" style="display: none;">
+            <p class="trans-text" id="transText1">Você chegou até aqui.</p>
+            <p class="trans-text" id="transText2">Mas ainda falta uma.</p>
+            <p class="trans-text highlight" id="transText3" style="display: none;">
+                Na verdade...<br>falta a mais importante.
+            </p>
+        </section>
+
+        <section class="final-section" id="finalSection">
+            <div class="final-card reveal">
+                
+                <div class="final-header">
+                    <div class="final-badge">07</div>
+                    <h2 class="final-title" id="finalTrackTitle">[NOSSA MÚSICA]</h2>
+                    <p class="final-subtitle" id="finalTrackArtist">[ARTISTA]</p>
+                    <p class="final-subtitle" style="margin-top: 20px; color: var(--accent-rose);">
+                        "Essa eu não escolhi apenas para você ouvir.<br>
+                        Eu escolhi para tentar dizer aquilo que às vezes eu não consigo falar olhando nos seus olhos."
+                    </p>
+                </div>
+
+                <div class="declaration-body" id="finalDeclaration"></div>
+
+                <div class="final-btn-wrapper">
+                    <button class="btn-final-listen" id="btnFinalListen" onclick="playFinalTrack()">
+                        <span>♥</span> OUVIR A NOSSA MÚSICA
+                    </button>
+                </div>
+
+                <div class="final-player-wrapper" id="finalPlayerWrapper">
+                    <div class="iframe-wrapper" id="finalIframeContainer"></div>
+                </div>
+
+                <div class="final-message-overlay" id="finalMessageOverlay">
+                    <h3>"Agora não é mais uma música.<br>É uma lembrança."</h3>
+                    
+                    <div class="track-text" style="text-align: center; font-size: 1.1rem;" id="finalWildcardText"></div>
+                </div>
+
+                <div class="epilogue">
+                    <p><i>Se algum dia você ouvir essas músicas novamente...</i></p>
+                    
+                    <div class="track-text" id="epilogueWildcardText" style="margin-bottom: 30px;"></div>
+
+                    <p>
+                        Talvez você não lembre exatamente de todas as palavras que eu escrevi aqui.<br><br>
+                        Mas eu espero que, quando qualquer uma dessas músicas tocar...<br>
+                        <strong>você lembre de nós.</strong>
+                    </p>
+
+                    <p style="margin-top: 35px; font-style: italic; color: var(--accent-rose);">
+                        Porque algumas músicas acabam.<br>
+                        Mas algumas histórias continuam.
+                    </p>
+
+                    <div class="final-love">Eu te amo.</div>
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        /* ==========================================================================
+           ÁREA DE CONFIGURAÇÃO DAS MÚSICAS E TEXTOS (EDITE AQUI!)
+           ========================================================================== */
+
+        // 1 a 6 Músicas: Insira os dados, links do YouTube e substitua os [TEXTO CURINGA]
+        const musicas = [
+            {
+                numero: "01",
+                titulo: "[MÚSICA 1]",
+                artista: "[ARTISTA 1]",
+                youtube: "COLE_O_LINK_DO_YOUTUBE_AQUI_1",
+                texto: `Talvez essa música não diga exatamente tudo o que eu sinto.
+Mas quando eu escuto ela, alguma coisa dentro de mim lembra de você.
+
+[TEXTO CURINGA - CAPÍTULO 1]
+Escreva aqui sobre o começo de vocês, o momento em que se conheceram ou os primeiros olhares. Este texto pode ser longo e detalhado. Fale sobre as sensações das primeiras conversas, a curiosidade e como tudo parecia calmo e bonito no início.`
+            },
+            {
+                numero: "02",
+                titulo: "[MÚSICA 2]",
+                artista: "[ARTISTA 2]",
+                youtube: "COLE_O_LINK_DO_YOUTUBE_AQUI_2",
+                texto: `Essa música tem a leveza daqueles dias em que a gente só existia sem se preocupar com o tempo.
+
+[TEXTO CURINGA - CAPÍTULO 2]
+Escreva aqui sobre um momento leve e divertido que passaram juntos. Um passeio, uma risada bobagem, uma conversa de madrugada. Conte os detalhes de como foi perceber que a companhia um do outro era fácil e acolhedora.`
+            },
+            {
+                numero: "03",
+                titulo: "[MÚSICA 3]",
+                artista: "[ARTISTA 3]",
+                youtube: "COLE_O_LINK_DO_YOUTUBE_AQUI_3",
+                texto: `Quando essa melodia toca, é impossível não sentir aquele frio na barriga de novo.
+
+[TEXTO CURINGA - CAPÍTULO 3]
+Escreva aqui sobre a virada de chave, o momento em que você percebeu que estava se apaixonando de verdade. Fale sobre o primeiro beijo, a intensidade dos sentimentos crescendo ou aquele instante específico em que o mundo pareceu parar.`
+            },
+            {
+                numero: "04",
+                titulo: "[MÚSICA 4]",
+                artista: "[ARTISTA 4]",
+                youtube: "COLE_O_LINK_DO_YOUTUBE_AQUI_4",
+                texto: `Acho que essa música reflete a paz que é estar do seu lado.
+
+[TEXTO CURINGA - CAPÍTULO 4]
+Escreva aqui sobre a cumplicidade e a segurança do relacionamento. Fale sobre os dias em que vocês simplesmente ficaram juntos em silêncio, sobre o apoio mútuo nos momentos difíceis e como o abraço do outro se tornou o lugar mais seguro do mundo.`
+            },
+            {
+                numero: "05",
+                titulo: "[MÚSICA 5]",
+                artista: "[ARTISTA 5]",
+                youtube: "COLE_O_LINK_DO_YOUTUBE_AQUI_5",
+                texto: `Tem músicas que parecem descrever sentimentos que a gente nem sabia que conseguia carregar.
+
+[TEXTO CURINGA - CAPÍTULO 5]
+Escreva aqui sobre a profundidade do sentimento de vocês. Fale sobre os desafios previstos ou superados, o amadurecimento do amor e a certeza de que o que vocês constroem juntos é algo raro e precioso.`
+            },
+            {
+                numero: "06",
+                titulo: "[MÚSICA 6]",
+                artista: "[ARTISTA 6]",
+                youtube: "COLE_O_LINK_DO_YOUTUBE_AQUI_6",
+                texto: `Chegar até aqui faz olhar para trás e ver o quanto cada detalhe valeu a pena.
+
+[TEXTO CURINGA - CAPÍTULO 6]
+Escreva aqui uma reflexão sobre o presente. Como você se sente hoje ao olhar para a pessoa, o orgulho que tem dela e da história de vocês. Prepare o terreno emocional para a revelação da última faixa.`
+            }
+        ];
+
+        // 7ª MÚSICA - A MAIS IMPORTANTE
+        const musicaFinal = {
+            titulo: "[NOME DA NOSSA MÚSICA]",
+            artista: "[NOME DO ARTISTA]",
+            youtube: "COLE_O_LINK_DO_YOUTUBE_AQUI_7",
+            
+            // DECLARAÇÃO EM PARÁGRAFOS (8 A 12 PARÁGRAFOS INTENSOS)
+            declaracao: [
+                `[TEXTO CURINGA DA DECLARAÇÃO - PARÁGRAFO 1]
+Eu passei muito tempo pensando em qual música escolher para este momento. Não podia ser apenas uma canção bonita ou uma melodia agradável. Precisava ser a música que traduzisse tudo aquilo que, às vezes, minha voz trava e não consegue colocar em palavras quando estou diante de você.`,
+
+                `[TEXTO CURINGA DA DECLARAÇÃO - PARÁGRAFO 2]
+É impressionante como algumas músicas deixam de pertencer aos artistas que as escreveram e passam a pertencer inteiramente às lembranças de alguém. Desde que você entrou na minha vida, o meu repertório mudou. Cada acorde desta música carrega um pedaço do seu sorriso, do seu olhar e do jeito único como você me faz sentir.`,
+
+                `[TEXTO CURINGA DA DECLARAÇÃO - PARÁGRAFO 3]
+Você se tornou parte intrínseca do meu cotidiano e do meu universo. As coisas mais simples ganharam uma cor totalmente diferente só porque você está aqui para compartilhar comigo. Olhar para você é ter a certeza de que a vida sabe ser generosa.`,
+
+                `[TEXTO CURINGA DA DECLARAÇÃO - PARÁGRAFO 4]
+Você mudou fundamentalmente a minha forma de enxergar o mundo e a mim mesmo. A sua presença me trouxe uma calma que eu nem sabia que precisava, e ao mesmo tempo uma força que me faz querer ser melhor a cada novo dia.`,
+
+                `[TEXTO CURINGA DA DECLARAÇÃO - PARÁGRAFO 5]
+Eu quero que, ao ouvir essa música agora, você feche os olhos por um segundo e sinta a minha mão segurando a sua. Quero que você pense em todos os nossos abraços, nas nossas risadas bobas e na cumplicidade única que só nós dois entendemos.`,
+
+                `[TEXTO CURINGA DA DECLARAÇÃO - PARÁGRAFO 6]
+Penso em tudo o que ainda quero viver ao seu lado. As viagens que ainda não fizemos, os dias chuvosos em que só precisaremos de um café e de um filme, os planos que sonhamos em silêncio e todos os capítulos que a gente ainda vai escrever juntos.`,
+
+                `[TEXTO CURINGA DA DECLARAÇÃO - PARÁGRAFO 7]
+A verdade é que sou profundamente grato por você ter escolhido caminhar ao meu lado. Por cada gesto de carinho, por cada escuta atenta, pela sua paciência e por essa luz tão linda que você espalha por onde passa.`,
+
+                `[TEXTO CURINGA DA DECLARAÇÃO - PARÁGRAFO 8]
+Às vezes me dá um medo bobo de que o tempo passe rápido demais e que algum pequeno detalhe do nosso dia a dia se perca na memória. Por isso escrevi esta página, para transformar a nossa história em algo eterno, um refúgio para onde podemos voltar sempre que quisermos.`,
+
+                `[TEXTO CURINGA DA DECLARAÇÃO - PARÁGRAFO 9]
+Eu quero continuar criando memórias com você todos os dias. Quero que continuemos sendo a melhor parceria um do outro, rindo dos nossos erros, comemorando as nossas vitórias e construindo uma vida cheia de significado.`,
+
+                `[TEXTO CURINGA DA DECLARAÇÃO - PARÁGRAFO 10]
+Eu amo você. Não de uma forma comum ou passageira, mas com toda a profundidade e a verdade que o meu coração é capaz de carregar. Esta é a nossa música, hoje e para sempre.`
+            ],
+
+            textoMensagemFinal: `[TEXTO CURINGA MENSAGEM FINAL]
+Que essa música seja sempre o nosso ponto de encontro. Não importa onde estejamos ou o quão agitado o mundo esteja lá fora, quando ela tocar, estaremos de volta a este momento.`,
+
+            textoEpilogo: `[TEXTO CURINGA DO EPÍLOGO]
+Escreva aqui uma última mensagem carinhosa. Reafirme o quanto esta pessoa é importante e como você deseja que ela guarde esta experiência com carinho no coração.`
+        };
+
+        /* ==========================================================================
+           LÓGICA INTERATIVA
+           ========================================================================== */
+
+        let tracksExplored = new Set();
+        const totalTracks = 7;
+
+        function getYouTubeEmbedUrl(url) {
+            if (!url || url.includes("COLE_O_LINK")) return null;
+            let videoId = url;
+            if (url.includes("v=")) {
+                videoId = url.split("v=")[1].split("&")[0];
+            } else if (url.includes("youtu.be/")) {
+                videoId = url.split("youtu.be/")[1].split("?")[0];
+            } else if (url.includes("embed/")) {
+                videoId = url.split("embed/")[1].split("?")[0];
+            }
+            return `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`;
+        }
+
+        function renderTracks() {
+            const container = document.getElementById("tracksContainer");
+            container.innerHTML = "";
+
+            musicas.forEach((track, index) => {
+                const trackIndex = index + 1;
+                const card = document.createElement("div");
+                card.className = "music-card reveal";
+                card.setAttribute("data-track", trackIndex);
+                card.id = `card-${trackIndex}`;
+
+                card.innerHTML = `
+                    <div class="track-header">
+                        <div>
+                            <div class="track-number">FAIXA ${track.numero}</div>
+                            <div class="track-title">${track.titulo}</div>
+                            <div class="track-artist">${track.artista}</div>
+                        </div>
+                        <button class="btn-listen" id="btn-listen-${trackIndex}" onclick="togglePlayer(${trackIndex})">
+                            <span class="icon">▶</span> <span class="label">OUVIR</span>
+                        </button>
+                    </div>
+
+                    <div class="player-container" id="player-${trackIndex}">
+                        <div class="iframe-wrapper" id="iframe-wrap-${trackIndex}"></div>
+                        <button class="btn-close-player" onclick="closePlayer(${trackIndex})">Fechar Player ✕</button>
+                    </div>
+
+                    <div class="track-text">${track.texto}</div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        function renderFinalTrack() {
+            document.getElementById("finalTrackTitle").innerText = musicaFinal.titulo;
+            document.getElementById("finalTrackArtist").innerText = musicaFinal.artista;
+
+            const declContainer = document.getElementById("finalDeclaration");
+            declContainer.innerHTML = musicaFinal.declaracao.map(p => `<p>${p}</p>`).join("");
+
+            document.getElementById("finalWildcardText").innerHTML = musicaFinal.textoMensagemFinal;
+            document.getElementById("epilogueWildcardText").innerHTML = musicaFinal.textoEpilogo;
+        }
+
+        function togglePlayer(trackIndex) {
+            const playerContainer = document.getElementById(`player-${trackIndex}`);
+            const iframeWrap = document.getElementById(`iframe-wrap-${trackIndex}`);
+            const btn = document.getElementById(`btn-listen-${trackIndex}`);
+
+            for (let i = 1; i <= 6; i++) {
+                if (i !== trackIndex) closePlayer(i);
+            }
+
+            if (playerContainer.classList.contains("active")) {
+                closePlayer(trackIndex);
+            } else {
+                const embedUrl = getYouTubeEmbedUrl(musicas[trackIndex - 1].youtube);
+                if (embedUrl) {
+                    iframeWrap.innerHTML = `<iframe src="${embedUrl}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+                } else {
+                    iframeWrap.innerHTML = `<div style="color:#fff; padding:40px; text-align:center; font-size:0.9rem;">Insira o link do YouTube no código JavaScript para visualizar este vídeo.</div>`;
+                }
+
+                playerContainer.classList.add("active");
+                btn.classList.add("playing");
+                btn.querySelector(".label").innerText = "TOCANDO";
+                btn.querySelector(".icon").innerText = "❚❚";
+
+                markTrackExplored(trackIndex);
+            }
+        }
+
+        function closePlayer(trackIndex) {
+            const playerContainer = document.getElementById(`player-${trackIndex}`);
+            const iframeWrap = document.getElementById(`iframe-wrap-${trackIndex}`);
+            const btn = document.getElementById(`btn-listen-${trackIndex}`);
+
+            if (playerContainer && playerContainer.classList.contains("active")) {
+                playerContainer.classList.remove("active");
+                iframeWrap.innerHTML = "";
+                btn.classList.remove("playing");
+                btn.querySelector(".label").innerText = "OUVIR";
+                btn.querySelector(".icon").innerText = "▶";
+            }
+        }
+
+        function markTrackExplored(index) {
+            tracksExplored.add(index);
+            const card = document.getElementById(`card-${index}`);
+            if (card) card.classList.add("unlocked");
+
+            updateProgress();
+
+            if (tracksExplored.has(6) || tracksExplored.size >= 6) {
+                revealTransitionSection();
+            }
+        }
+
+        function updateProgress() {
+            document.getElementById("progressText").innerText = `${tracksExplored.size} / ${totalTracks}`;
+        }
+
+        function revealTransitionSection() {
+            const transSection = document.getElementById("transSection");
+            if (transSection.style.display === "block") return;
+
+            transSection.style.display = "block";
+            const t1 = document.getElementById("transText1");
+            const t2 = document.getElementById("transText2");
+            const t3 = document.getElementById("transText3");
+
+            setTimeout(() => t1.style.opacity = "1", 300);
+            setTimeout(() => t2.style.opacity = "1", 1800);
+            setTimeout(() => {
+                t3.style.display = "block";
+                setTimeout(() => t3.style.opacity = "1", 100);
+                
+                document.getElementById("finalSection").style.display = "block";
+                initScrollReveal();
+            }, 3500);
+        }
+
+        function playFinalTrack() {
+            const playerWrapper = document.getElementById("finalPlayerWrapper");
+            const iframeContainer = document.getElementById("finalIframeContainer");
+            const overlayDim = document.getElementById("overlayDim");
+            const messageOverlay = document.getElementById("finalMessageOverlay");
+
+            markTrackExplored(7);
+
+            const embedUrl = getYouTubeEmbedUrl(musicaFinal.youtube);
+            if (embedUrl) {
+                iframeContainer.innerHTML = `<iframe src="${embedUrl}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+            } else {
+                iframeContainer.innerHTML = `<div style="color:#fff; padding:40px; text-align:center; font-size:0.9rem;">Insira o link do YouTube da 7ª música no JavaScript.</div>`;
+            }
+
+            overlayDim.classList.add("active");
+            playerWrapper.classList.add("active");
+            messageOverlay.classList.add("active");
+
+            playerWrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function initScrollReveal() {
+            const reveals = document.querySelectorAll(".reveal");
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("active");
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            reveals.forEach(el => observer.observe(el));
+        }
+
+        const btnTop = document.getElementById("btnTop");
+        window.addEventListener("scroll", () => {
+            if (window.scrollY > 400) {
+                btnTop.classList.add("visible");
+            } else {
+                btnTop.classList.remove("visible");
+            }
+        });
+        btnTop.addEventListener("click", () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        document.getElementById("overlayDim").addEventListener("click", () => {
+            document.getElementById("overlayDim").classList.remove("active");
+        });
+
+        /* Particle Canvas Animation */
+        const canvas = document.getElementById("particleCanvas");
+        const ctx = canvas.getContext("2d");
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.4;
+                this.speedY = -Math.random() * 0.5 - 0.2;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.y < 0) {
+                    this.y = canvas.height;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+            draw() {
+                ctx.fillStyle = `rgba(212, 112, 143, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const count = Math.floor(window.innerWidth / 15);
+            for (let i = 0; i < count; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderTracks();
+            renderFinalTrack();
+            initScrollReveal();
+            initParticles();
+            animateParticles();
+        });
+    </script>
+</body>
+</html>
