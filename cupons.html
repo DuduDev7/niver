@@ -4,130 +4,206 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cupons de Amor Virtuais ❤️</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
   <style>
     /* ==========================================================================
-       1. ESTILOS GERAIS E TEMA VISUAL
+       1. VARIÁVEIS E ESTILOS BASE
        ========================================================================== */
+    :root {
+      --bg-dark: #0a0512;
+      --primary: #ff3366;
+      --primary-hover: #ff1a53;
+      --accent: #ff85a2;
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --card-border: rgba(255, 255, 255, 0.12);
+      --text-main: #f8f9fa;
+      --text-muted: #a0a5b5;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
     body {
-      background: linear-gradient(135deg, #0f0c1b 0%, #2d112c 50%, #170a1e 100%);
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(255, 51, 102, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(114, 9, 183, 0.2) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(15, 10, 25, 1) 0px, transparent 100%);
       background-attachment: fixed;
-      color: #f1f1f1;
+      color: var(--text-main);
       min-height: 100vh;
-      padding: 30px 15px;
+      padding: 40px 20px;
       display: flex;
       justify-content: center;
+      align-items: flex-start;
     }
 
     .main-container {
-      max-width: 1000px;
+      max-width: 1080px;
       width: 100%;
     }
 
     /* ==========================================================================
-       2. CABEÇALHO E FOTO DE DESTAQUE
+       2. CABEÇALHO ELEGANTE
        ========================================================================== */
     .header-card {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 24px;
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--card-border);
+      border-radius: 28px;
       overflow: hidden;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 105, 180, 0.2);
-      margin-bottom: 40px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+      margin-bottom: 50px;
+      position: relative;
     }
 
     .cover-image-box {
       width: 100%;
-      height: 320px;
-      overflow: hidden;
+      height: 340px;
       position: relative;
+      overflow: hidden;
     }
 
     .cover-image-box img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      display: block;
+      filter: brightness(0.85) contrast(1.05);
+      transition: transform 0.8s ease;
+    }
+
+    .header-card:hover .cover-image-box img {
+      transform: scale(1.03);
+    }
+
+    .cover-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60%;
+      background: linear-gradient(to top, rgba(10, 5, 18, 0.95), transparent);
     }
 
     .header-content {
-      padding: 30px;
+      padding: 0 40px 40px 40px;
+      margin-top: -40px;
+      position: relative;
+      z-index: 2;
       text-align: center;
     }
 
     .header-content h1 {
-      font-size: 2.2rem;
-      color: #ff75a0;
-      margin-bottom: 15px;
-      text-shadow: 0 0 10px rgba(255, 117, 160, 0.5);
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      background: linear-gradient(135deg, #ffffff 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
     }
 
     .header-content p {
-      color: #d1d1d1;
+      color: var(--text-muted);
       font-size: 1.05rem;
-      line-height: 1.7;
-      max-width: 800px;
+      line-height: 1.8;
+      max-width: 780px;
       margin: 0 auto;
+      font-weight: 400;
+    }
+
+    .header-content strong {
+      color: var(--text-main);
     }
 
     /* ==========================================================================
-       3. GRID DE CUPONS (DESIGN ESTILO TICKET/VALE)
+       3. GRID DE CUPONS (ESTILO TICKET PREMIUM)
        ========================================================================== */
     .coupons-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 25px;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 30px;
     }
 
     .coupon-card {
-      background: rgba(255, 255, 255, 0.04);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
       position: relative;
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     }
 
-    /* Efeito Ticket nas laterais */
+    /* Recortes Laterais de Ticket */
     .coupon-card::before, .coupon-card::after {
       content: '';
       position: absolute;
-      top: 55%;
-      width: 20px;
-      height: 20px;
-      background-color: #170a1e;
+      top: 190px;
+      width: 24px;
+      height: 24px;
+      background-color: var(--bg-dark);
       border-radius: 50%;
-      z-index: 2;
+      z-index: 3;
+      border: 1px solid var(--card-border);
     }
-    .coupon-card::before { left: -10px; }
-    .coupon-card::after { right: -10px; }
+    .coupon-card::before { left: -13px; }
+    .coupon-card::after { right: -13px; }
 
     .coupon-card:hover:not(.redeemed) {
       transform: translateY(-8px);
-      border-color: #ff75a0;
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 117, 160, 0.3);
+      border-color: rgba(255, 51, 102, 0.4);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(255, 51, 102, 0.15);
+    }
+
+    .coupon-img-wrapper {
+      position: relative;
+      height: 190px;
+      width: 100%;
+      overflow: hidden;
+      border-bottom: 1px dashed var(--card-border);
     }
 
     .coupon-img {
       width: 100%;
-      height: 180px;
+      height: 100%;
       object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .coupon-card:hover .coupon-img {
+      transform: scale(1.05);
+    }
+
+    .coupon-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(10, 5, 18, 0.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--accent);
     }
 
     .coupon-body {
-      padding: 20px;
+      padding: 25px;
       display: flex;
       flex-direction: column;
       flex-grow: 1;
@@ -135,57 +211,60 @@
     }
 
     .coupon-title {
-      font-size: 1.3rem;
-      color: #fff;
-      margin-bottom: 10px;
+      font-size: 1.25rem;
+      color: var(--text-main);
+      margin-bottom: 12px;
       font-weight: 700;
+      line-height: 1.3;
     }
 
     .coupon-desc {
       font-size: 0.92rem;
-      color: #b3b3b3;
-      line-height: 1.5;
-      margin-bottom: 20px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 25px;
     }
 
     .btn-redeem {
-      background: linear-gradient(135deg, #ff75a0 0%, #f72585 100%);
+      background: linear-gradient(135deg, var(--primary) 0%, #d62839 100%);
       color: white;
       border: none;
-      padding: 14px;
-      border-radius: 12px;
+      padding: 16px;
+      border-radius: 16px;
       font-weight: 700;
-      font-size: 1rem;
+      font-size: 0.95rem;
       cursor: pointer;
       transition: all 0.3s ease;
-      box-shadow: 0 5px 15px rgba(247, 37, 133, 0.4);
+      box-shadow: 0 8px 20px rgba(255, 51, 102, 0.3);
       width: 100%;
       text-align: center;
-      text-decoration: none;
-      display: inline-block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     .btn-redeem:hover {
-      opacity: 0.9;
-      transform: scale(1.02);
+      background: linear-gradient(135deg, var(--primary-hover) 0%, #b51e2d 100%);
+      box-shadow: 0 10px 25px rgba(255, 51, 102, 0.4);
     }
 
     /* Estado do Cupom Resgatado */
     .coupon-card.redeemed {
-      opacity: 0.6;
-      filter: grayscale(0.5);
-      border-color: #4cc9f0;
+      opacity: 0.5;
+      filter: grayscale(0.8);
     }
 
     .coupon-card.redeemed .btn-redeem {
-      background: #2b2d42;
-      color: #4cc9f0;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
       box-shadow: none;
       cursor: not-allowed;
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     /* ==========================================================================
-       4. EFEITO DE PARTICULAS (CORAÇÕES)
+       4. PARTICULAS E ANIMAÇÃO
        ========================================================================== */
     #fx-canvas {
       position: fixed;
@@ -199,9 +278,13 @@
 
     /* Responsividade */
     @media (max-width: 600px) {
-      .header-content h1 { font-size: 1.8rem; }
+      body { padding: 20px 12px; }
+      .header-content { padding: 0 20px 30px 20px; }
+      .header-content h1 { font-size: 2.1rem; }
       .header-content p { font-size: 0.95rem; }
-      .cover-image-box { height: 200px; }
+      .cover-image-box { height: 220px; }
+      .coupon-card::before, .coupon-card::after { top: 180px; }
+      .coupon-img-wrapper { height: 180px; }
     }
   </style>
 </head>
@@ -213,13 +296,14 @@
     
     <div class="header-card">
       <div class="cover-image-box">
-        <img src="https://via.placeholder.com/800x400" alt="Foto do Casal">
+        <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=1200&auto=format&fit=crop" alt="Foto de Capa">
+        <div class="cover-overlay"></div>
       </div>
       <div class="header-content">
-        <h1>Seus Cupons de Amor Virtuais ❤️</h1>
+        <h1>Cupons de Amor Virtuais ❤️</h1>
         <p>
-          Bem-vinda ao seu livro de cupons exclusivos! Cada um destes tickets dá direito a um momento especial feito com todo o amor do mundo. 
-          <strong>Regras do jogo:</strong> Você pode resgatar o cupom que quiser quando sentir vontade. Ao clicar em "Resgatar", seu cupom será validado e enviado diretamente para o meu WhatsApp com o horário de resgate!
+          Bem-vinda ao seu livro de vales exclusivos! Cada um destes tickets dá direito a um momento especial feito para você. 
+          <br><strong>Como funciona:</strong> Escolha o cupom que desejar e clique em "Resgatar". O cupom será validado e enviado automaticamente para o meu WhatsApp com a data e horário exatos!
         </p>
       </div>
     </div>
@@ -230,65 +314,76 @@
 
   <script>
     /* ==========================================================================
-       CONFIGURAÇÕES E BASE DE DADOS DOS CUPONS (EDITE AQUI!)
+       CONFIGURAÇÕES E DADOS DOS CUPONS
        ========================================================================== */
-    // INSIRA O SEU NÚMERO DE WHATSAPP AQUI (Com código do país e DDD, sem traços ou espaços)
-    const SEU_NUMERO_WHATSAPP = "5511999999999"; 
+    // Seu número de WhatsApp configurado (55 + DDD 47 + Número)
+    const SEU_NUMERO_WHATSAPP = "5547992856297"; 
 
     const cuponsData = [
       {
         id: 1,
-        titulo: "Vale: Noite da Pizza 🍕",
-        descricao: "Dá direito a uma noite com a sua pizza favorita escolhida por você, com refri e sem direito a reclamação sobre os sabores!",
-        imagem: "https://via.placeholder.com/400x250/ff4d6d/ffffff?text=Noite+da+Pizza"
+        titulo: "Vale: Brownie Sem Motivo 🍫",
+        descricao: "Este cupom pode ser usado sempre que você estiver com vontade de comer um brownie. Não precisa ser aniversário, data especial ou existir qualquer justificativa. Você pediu, eu dou um jeito. Porque às vezes amar alguém também é lembrar que ela gosta de brownie.",
+        imagem: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?q=80&w=600&auto=format&fit=crop"
       },
       {
         id: 2,
-        titulo: "Vale: Massagem Relaxante 💆‍♀️",
-        descricao: "Válido para uma massagem caprichada nas costas ou nos pés de pelo menos 20 minutos com óleos cheirosos e música calma.",
-        imagem: "https://via.placeholder.com/400x250/7209b7/ffffff?text=Massagem+Vip"
+        titulo: "Vale: Meu Abraço 🫂",
+        descricao: "Válido por um abraço demorado, daqueles em que ninguém precisa falar nada. Pode ser usado quando você estiver triste, cansada, com saudade, preocupada ou simplesmente quando quiser ficar alguns minutos longe do barulho do mundo. Se o mundo estiver demais, vem para perto de mim.",
+        imagem: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?q=80&w=600&auto=format&fit=crop"
       },
       {
         id: 3,
-        titulo: "Vale: Sessão de Cinema 🎬",
-        descricao: "Você escolhe o filme, o horário e os petiscos/pipoca. Eu só sento ao seu lado e não posso dormir durante o filme!",
-        imagem: "https://via.placeholder.com/400x250/4cc9f0/ffffff?text=Cinema+em+Casa"
+        titulo: "Vale: Dia de Torneio ⚽❤️",
+        descricao: "Garante um dia em que você pode aparecer para me ver jogar, torcer por mim, tirar sarro quando eu errar e comemorar comigo quando der certo. E, no final, independentemente do resultado, você ganha um abraço meu. Porque ter você na arquibancada já faz qualquer campeonato valer a pena.",
+        imagem: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=600&auto=format&fit=crop"
       },
       {
         id: 4,
-        titulo: "Vale: Perdão de Discussão 🏳️",
-        descricao: "Apresente este cupom no meio de uma besteira para encerrar imediatamente a discussão com um abraço e um beijo.",
-        imagem: "https://via.placeholder.com/400x250/f72585/ffffff?text=Bandeira+Branca"
+        titulo: "Vale: Você Escolhe o Rolê 🎟️",
+        descricao: "Hoje você manda. Pode ser sair para comer alguma coisa, ficar conversando por horas, assistir alguma coisa juntos, caminhar sem destino ou simplesmente ficar comigo sem fazer absolutamente nada. A única regra é que o programa precisa ter nós dois.",
+        imagem: "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=600&auto=format&fit=crop"
       },
       {
         id: 5,
-        titulo: "Vale: Sobremesa Especial 🍦",
-        descricao: "Garante aquele doce, sorvete ou açaí no meio da semana só porque você deu vontade de comer.",
-        imagem: "https://via.placeholder.com/400x250/ffb703/ffffff?text=Doce+Favorito"
+        titulo: "Vale: Uma Massagem Só Minha 💆‍♀️❤️",
+        descricao: "Válido para uma massagem feita por mim, do jeito que você quiser. Pode ser nas costas, nos pés, nos ombros ou simplesmente um carinho demorado enquanto você descansa. Sem pressa e sem horário para terminar.",
+        imagem: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?q=80&w=600&auto=format&fit=crop"
       },
       {
         id: 6,
-        titulo: "Vale: Dia de Preguiça 🛌",
-        descricao: "Um dia todinho onde todas as tarefas simples da casa ou favores ficam por minha conta para você só descansar.",
-        imagem: "https://via.placeholder.com/400x250/3a0ca3/ffffff?text=Dia+de+Folga"
+        titulo: "Vale: Um Dia Juntos Até Dormir 🌙🫂",
+        descricao: "Este cupom vale uma noite inteira juntinhos. Pode ser conversando até o sono chegar, rindo de qualquer besteira, assistindo alguma coisa ou simplesmente ficando abraçados em silêncio. E quando o sono finalmente vencer, a gente dorme junto, sem precisar de mais nada.",
+        imagem: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=600&auto=format&fit=crop"
+      },
+      {
+        id: 7,
+        titulo: "Vale: Um Beijo + Um Tempo Comigo 💋❤️",
+        descricao: "Você pode trocar este cupom por um beijo meu e por um tempo só nosso. Sem celular, sem pressa e sem precisar inventar qualquer programa. Só quero você perto, nem que seja por alguns minutos, porque às vezes tudo que eu preciso é simplesmente ficar com você.",
+        imagem: "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?q=80&w=600&auto=format&fit=crop"
       }
     ];
 
     /* ==========================================================================
-       LÓGICA DE RENDERIZAÇÃO E INTERAÇÃO
+       LÓGICA DE RENDERIZAÇÃO E WHATSAPP
        ========================================================================== */
     const container = document.getElementById('coupons-container');
 
     function renderizarCupons() {
       container.innerHTML = '';
       
-      cuponsData.forEach(cupom => {
+      cuponsData.forEach((cupom, index) => {
         const card = document.createElement('div');
         card.className = 'coupon-card';
         card.id = `cupom-${cupom.id}`;
 
+        const codeNumber = String(index + 1).padStart(2, '0');
+
         card.innerHTML = `
-          <img src="${cupom.imagem}" alt="${cupom.titulo}" class="coupon-img">
+          <div class="coupon-img-wrapper">
+            <span class="coupon-badge">Nº ${codeNumber}</span>
+            <img src="${cupom.imagem}" alt="${cupom.titulo}" class="coupon-img">
+          </div>
           <div class="coupon-body">
             <div>
               <div class="coupon-title">${cupom.titulo}</div>
@@ -314,10 +409,10 @@
       btn.textContent = 'Resgatado! 💖';
       btn.disabled = true;
 
-      // 2. Dispara animação dos corações
+      // 2. Animação de corações
       dispararCoracoes();
 
-      // 3. Monta mensagem e data para o WhatsApp
+      // 3. Monta a mensagem para o WhatsApp
       const agora = new Date();
       const horaFormatada = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
       const dataFormatada = agora.toLocaleDateString('pt-BR');
@@ -325,14 +420,14 @@
       const textoMensagem = `Oi meu amor! ❤️ Acabei de resgatar o meu cupom no site:\n\n🎟️ *${titulo}*\n📅 *Data:* ${dataFormatada} às ${horaFormatada}\n\nJá pode ir preparando! 🥰`;
       const urlWhatsapp = `https://api.whatsapp.com/send?phone=${SEU_NUMERO_WHATSAPP}&text=${encodeURIComponent(textoMensagem)}`;
 
-      // 4. Redireciona para o WhatsApp após pequeno delay para ver a animação
+      // 4. Redireciona para o WhatsApp após animação
       setTimeout(() => {
         window.open(urlWhatsapp, '_blank');
-      }, 1200);
+      }, 1000);
     }
 
     /* ==========================================================================
-       ANIMAÇÃO DOS CORAÇÕES (CANVAS NATIVO)
+       ANIMAÇÃO DE PARTICULAS (CANVAS)
        ========================================================================== */
     const canvas = document.getElementById('fx-canvas');
     const ctx = canvas.getContext('2d');
@@ -349,17 +444,17 @@
       constructor() {
         this.x = Math.random() * canvas.width;
         this.y = canvas.height + 20;
-        this.size = Math.random() * 15 + 10;
-        this.speedY = Math.random() * 4 + 3;
+        this.size = Math.random() * 14 + 10;
+        this.speedY = Math.random() * 3 + 2.5;
         this.speedX = Math.random() * 2 - 1;
-        this.color = `hsl(${Math.random() * 30 + 330}, 100%, 65%)`;
+        this.color = `hsl(${Math.random() * 20 + 340}, 100%, 65%)`;
         this.opacity = 1;
       }
 
       update() {
         this.y -= this.speedY;
         this.x += this.speedX;
-        this.opacity -= 0.008;
+        this.opacity -= 0.007;
       }
 
       draw() {
@@ -383,10 +478,10 @@
     }
 
     function dispararCoracoes() {
-      for (let i = 0; i < 50; i++) {
+      for (let i = 0; i < 40; i++) {
         setTimeout(() => {
           particles.push(new HeartParticle());
-        }, i * 30);
+        }, i * 25);
       }
     }
 
@@ -402,7 +497,6 @@
       requestAnimationFrame(animateFX);
     }
 
-    // Inicialização da aplicação
     renderizarCupons();
     animateFX();
   </script>

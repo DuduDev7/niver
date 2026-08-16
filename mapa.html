@@ -99,7 +99,7 @@
     .memory-img-box img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       display: block;
       transition: transform 0.5s ease;
     }
@@ -112,7 +112,7 @@
       padding: 22px;
     }
 
-    .memory-date {
+    .memory-category {
       display: inline-block;
       background: rgba(255, 117, 160, 0.15);
       color: #ff75a0;
@@ -151,8 +151,17 @@
     }
 
     /* Lista de Navegação Rápida */
-    .memory-list-nav {
+    .section-label {
+      font-size: 0.8rem;
+      color: #ff75a0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
       margin-top: 20px;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .memory-list-nav {
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -281,7 +290,7 @@
     <div class="story-panel">
       <div class="story-header">
         <h1>Mapa das Nossas Memórias ❤️</h1>
-        <p>Cada marcador neste mapa guarda um capítulo da nossa história. Clique em um coração para relembrar o momento.</p>
+        <p>Cada marcador neste mapa guarda um capítulo inesquecível da nossa jornada e os caminhos que ainda vamos trilhar juntos.</p>
       </div>
 
       <div class="story-content">
@@ -292,9 +301,12 @@
           </div>
         </div>
 
-        <div style="margin-top: 30px;">
-          <h3 style="font-size: 0.9rem; color: #718096; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">Todos os Lugares</h3>
-          <div class="memory-list-nav" id="memory-nav-list"></div>
+        <div style="margin-top: 20px;">
+          <div class="section-label">📍 Onde Já Fomos</div>
+          <div class="memory-list-nav" id="nav-onde-fomos"></div>
+
+          <div class="section-label">✨ Onde Queremos Ir</div>
+          <div class="memory-list-nav" id="nav-queremos-ir"></div>
         </div>
       </div>
     </div>
@@ -309,58 +321,79 @@
 
   <script>
     /* ==========================================================================
-       1. BASE DE DADOS DAS MEMÓRIAS (EDITE OS LOCAIS E HISTÓRIAS AQUI!)
+       1. BASE DE DADOS DAS MEMÓRIAS COM TEXTOS DETALHADOS E SENTIMENTAIS
        ========================================================================== */
     const memoriasData = [
+      // --- ONDE JÁ FOMOS ---
       {
         id: 1,
-        titulo: "O Nosso Primeiro Encontro",
-        data: "12 de Junho de 2022",
-        coords: [-23.55052, -46.633308], // Exemplo: São Paulo (Praça da Sé)
-        texto: "Lembra como estávamos nervosos? Conversamos por horas até o café fechar. Foi aqui que percebi que você era alguém verdadeiramente especial e que aquele seria apenas o primeiro de infinitos encontros.",
-        imagem: "https://picsum.photos/600/400?romantic=1" // Substitua pela URL da foto de vocês
+        categoria: "Onde Já Fomos",
+        tipo: "fomos",
+        titulo: "CT ALOB – Onde Tudo Começou",
+        coords: [-26.2736, -48.8488], // Av. Santos Dumont, 940 - Joinville
+        texto: "Foi exatamente aqui que os nossos caminhos se cruzaram pela primeira vez. Eu, no meu papel de professor do CT, e você, chegando como aluna. Entre um treino e outro, instruções de jogo e trocas de olhares sutis, algo inexplicável começou a nascer. O que parecia ser apenas uma rotina de futevôlei rapidamente se transformou na melhor surpresa da minha vida. Olhar para quadra hoje é lembrar que o destino colocou você no meu caminho no lugar mais improvável e especial.",
+        imagem: "imgs/praia.jpeg"
       },
       {
         id: 2,
-        titulo: "Primeira Viagem Juntos",
-        data: "15 de Janeiro de 2023",
-        coords: [-22.906847, -43.172896], // Exemplo: Rio de Janeiro
-        texto: "Nossa primeira viagem marcante! Passamos o dia na praia, tomamos água de coco e tiramos dezenas de fotos encarando o pôr do sol. Um final de semana inesquecível.",
-        imagem: "https://picsum.photos/600/400?beach=2"
+        categoria: "Onde Já Fomos",
+        tipo: "fomos",
+        titulo: "O Refúgio da Casa Dela",
+        coords: [-26.3155, -48.8472], // R. da Independência, 257 - Joinville
+        texto: "Cada centímetro dessa rua e dessa casa carrega a essência de onde o nosso sentimento criou raízes profundas. Foi aqui que demos a nossa primeira ficada, onde conversamos por horas sem ver o tempo passar e onde compartilhamos momentos de verdadeira cumplicidade. Sempre que eu passar por este lugar, meu coração vai acelerar e vou me lembrar da paz que é estar ao seu lado. É o nosso refúgio, o lugar onde a nossa conexão deixou de ser um simples desejo e se tornou certeza.",
+        imagem: "imgs/especial.jpeg"
       },
       {
         id: 3,
-        titulo: "O Pedido de Namoro",
-        data: "20 de Setembro de 2023",
-        coords: [-19.916681, -43.934493], // Exemplo: Belo Horizonte
-        texto: "Neste lugar mágico, com uma vista incrível da cidade iluminada, tomei coragem para fazer a pergunta mais importante da minha vida. O seu 'SIM' fez o meu coração transbordar de felicidade.",
-        imagem: "https://picsum.photos/600/400?night=3"
+        categoria: "Onde Já Fomos",
+        tipo: "fomos",
+        titulo: "O Primeiro Pódio no Futevôlei",
+        coords: [-26.3094, -48.8503], // R. Pernambuco, 574 - Joinville
+        texto: "Um dos finais de semana mais perfeitos da nossa história! Ver o seu esforço e a sua paixão pelo futevôlei se transformarem no seu primeiro pódio em um torneio foi inesquecível, mas ter a honra de jogar ao seu lado como seu parceiro de quadra tornou tudo surreal. A nossa sintonia no jogo foi só o reflexo do quanto funcionamos juntos na vida. Cada ponto comemorado e aquele troféu representam a nossa parceria imbatível.",
+        imagem: "imgs/podio.jpeg"
       },
       {
         id: 4,
-        titulo: "Nosso Show Favorito",
-        data: "10 de Maio de 2024",
-        coords: [-25.4284, -49.2733], // Exemplo: Curitiba
-        texto: "Cantamos todas as músicas até ficar sem voz. Estar abraçado com você enquanto tocava a nossa música favorita foi uma das sensações mais mágicas que já vivi.",
-        imagem: "https://picsum.photos/600/400?concert=4"
+        categoria: "Onde Já Fomos",
+        tipo: "fomos",
+        titulo: "A Nossa Praia em Balneário Piçarras",
+        coords: [-26.7642, -48.6702], // Balneário Piçarras - SC
+        texto: "Piçarras guarda o sopro do mar e o momento em que a vontade de estar junto virou um sentimento incontrolável. Foi aqui que o sentimento de 'ficar' e não querer mais largar se consolidou. Além disso, viver dias ensolarados nessa praia ao lado dos meus pais e da minha irmã com você foi a prova viva de como você se encaixa perfeitamente na minha vida e na minha família. O barulho das ondas sempre vai me lembrar do seu sorriso.",
+        imagem: "imgs/bestImg.jpeg"
+      },
+
+      // --- ONDE QUEREMOS IR ---
+      {
+        id: 5,
+        categoria: "Onde Queremos Ir",
+        tipo: "queremos",
+        titulo: "Diversão e Alegria no Beto Carrero World",
+        coords: [-26.7932, -48.6148], // Penha - SC
+        texto: "Mais um destino na nossa lista de desejos que mal podemos esperar para realizar! Queremos viver um dia inteiro de pura diversão, rir até a barriga doer, tirar dezenas de fotos bobas e curtir cada atração juntos. O Beto Carrero representa a leveza do nosso namoro, a nossa capacidade de sermos crianças e felizes apenas por estarmos na companhia um do outro.",
+        imagem: "imgs/carro.jpeg"
+      },
+      {
+        id: 6,
+        categoria: "Onde Queremos Ir",
+        tipo: "queremos",
+        titulo: "Sonho Carioca – Viagem ao Rio de Janeiro",
+        coords: [-22.9068, -43.1729], // Rio de Janeiro - RJ
+        texto: "A nossa grande aventura que já está marcada no nosso coração e nos nossos planos para o final do ano! Conseguir imaginar a gente caminhando pela orla, curtindo o clima carioca, assistindo ao pôr do sol e criando memórias incríveis no Rio de Janeiro me faz contar os dias. Essa viagem vai ser o coroamento de tudo o que construímos, uma celebração da nossa história em uma das cidades mais bonitas do mundo.",
+        imagem: "imgs/casacoAzul.jpeg"
       }
     ];
 
     /* ==========================================================================
        2. INICIALIZAÇÃO DO MAPA (LEAFLET)
        ========================================================================== */
-    // Ponto central inicial (calculado ou fixo no primeiro ponto)
     const initialCoords = memoriasData[0].coords;
     
-    // Inicializa o mapa com estilo escuro (CartoDB Dark Matter)
     const map = L.map('map', {
       zoomControl: false
-    }).setView(initialCoords, 12);
+    }).setView(initialCoords, 11);
 
-    // Adiciona o controle de zoom em posição estratégica
     L.control.zoom({ position: 'topright' }).addTo(map);
 
-    // Camada de Mapa Escura (Dark Mode Tiles)
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; OpenStreetMap &copy; CARTO',
       subdomains: 'abcd',
@@ -368,13 +401,13 @@
     }).addTo(map);
 
     /* ==========================================================================
-       3. RENDERIZAÇÃO DOS MARCADORES E INTERAÇÕES
+       3. RENDERIZAÇÃO DOS MARCADORES E LISTAS SEPARADAS
        ========================================================================== */
     const memoryDisplay = document.getElementById('memory-display');
-    const memoryNavList = document.getElementById('memory-nav-list');
+    const navOndeFomos = document.getElementById('nav-onde-fomos');
+    const navQueremosIr = document.getElementById('nav-queremos-ir');
     const markers = {};
 
-    // Cria o ícone customizado de Coração
     const heartIcon = L.divIcon({
       className: 'custom-heart-pin',
       iconSize: [38, 38],
@@ -382,55 +415,54 @@
       popupAnchor: [0, -34]
     });
 
-    // Renderiza marcadores e lista de navegação
     memoriasData.forEach(memoria => {
-      // 1. Adiciona o Marcador no Mapa
+      // Marcador no Mapa
       const marker = L.marker(memoria.coords, { icon: heartIcon }).addTo(map);
-      marker.bindPopup(`<div class="popup-title">${memoria.titulo}</div><div>${memoria.data}</div>`);
+      marker.bindPopup(`<div class="popup-title">${memoria.titulo}</div><div>${memoria.categoria}</div>`);
       
-      // Clique no marcador do mapa
       marker.on('click', () => {
         exibirMemoria(memoria);
       });
 
       markers[memoria.id] = marker;
 
-      // 2. Adiciona o Item na Lista Lateral de Navegação
+      // Item na Lista
       const navBtn = document.createElement('button');
       navBtn.className = 'nav-item-btn';
       navBtn.id = `nav-btn-${memoria.id}`;
       navBtn.innerHTML = `
         <span>${memoria.titulo}</span>
-        <small style="opacity: 0.6;">${memoria.data.split('de ')[2] || ''}</small>
+        <small style="opacity: 0.7;">✨</small>
       `;
       navBtn.onclick = () => {
         exibirMemoria(memoria);
-        map.flyTo(memoria.coords, 14, { duration: 1.5 });
+        map.flyTo(memoria.coords, 13, { duration: 1.5 });
         marker.openPopup();
       };
-      memoryNavList.appendChild(navBtn);
+
+      if (memoria.tipo === 'fomos') {
+        navOndeFomos.appendChild(navBtn);
+      } else {
+        navQueremosIr.appendChild(navBtn);
+      }
     });
 
-    // Função para exibir os detalhes da memória no painel
     function exibirMemoria(memoria) {
-      // Mover suavemente o mapa até o ponto
-      map.flyTo(memoria.coords, 14, { duration: 1.5 });
+      map.flyTo(memoria.coords, 13, { duration: 1.5 });
 
-      // Atualizar o cartão da história com animação
       memoryDisplay.innerHTML = `
         <div class="memory-card">
           <div class="memory-img-box">
             <img src="${memoria.imagem}" alt="${memoria.titulo}">
           </div>
           <div class="memory-body">
-            <span class="memory-date">📅 ${memoria.data}</span>
+            <span class="memory-category">📍 ${memoria.categoria}</span>
             <h2 class="memory-title">${memoria.titulo}</h2>
             <p class="memory-text">${memoria.texto}</p>
           </div>
         </div>
       `;
 
-      // Destacar o botão correspondente na lista
       document.querySelectorAll('.nav-item-btn').forEach(btn => btn.classList.remove('active'));
       const activeBtn = document.getElementById(`nav-btn-${memoria.id}`);
       if (activeBtn) activeBtn.classList.add('active');
