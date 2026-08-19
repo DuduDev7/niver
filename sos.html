@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cupons de Amor Virtuais ❤️</title>
+  <title>Central de S.O.S ❤️ Módulo de Emergência</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -12,17 +12,17 @@
     rel="stylesheet">
   <style>
     /* ==========================================================================
-       1. VARIÁVEIS E ESTILOS BASE
+       1. VARIÁVEIS E ESTILOS BASE (TEMA S.O.S / ACOLHEDOR)
        ========================================================================== */
     :root {
-      --bg-dark: #0a0512;
-      --primary: #ff3366;
-      --primary-hover: #ff1a53;
-      --accent: #ff85a2;
+      --bg-dark: #080c16;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --accent: #60a5fa;
       --card-bg: rgba(255, 255, 255, 0.03);
       --card-border: rgba(255, 255, 255, 0.12);
       --text-main: #f8f9fa;
-      --text-muted: #a0a5b5;
+      --text-muted: #94a3b8;
     }
 
     * {
@@ -35,9 +35,9 @@
     body {
       background-color: var(--bg-dark);
       background-image:
-        radial-gradient(at 0% 0%, rgba(255, 51, 102, 0.15) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(114, 9, 183, 0.2) 0px, transparent 50%),
-        radial-gradient(at 50% 50%, rgba(15, 10, 25, 1) 0px, transparent 100%);
+        radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.2) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(10, 15, 30, 1) 0px, transparent 100%);
       background-attachment: fixed;
       color: var(--text-main);
       min-height: 100vh;
@@ -92,7 +92,7 @@
       left: 0;
       right: 0;
       height: 60%;
-      background: linear-gradient(to top, rgba(10, 5, 18, 0.95), transparent);
+      background: linear-gradient(to top, rgba(8, 12, 22, 0.95), transparent);
     }
 
     .header-content {
@@ -127,7 +127,7 @@
     }
 
     /* ==========================================================================
-       3. GRID DE CUPONS (ESTILO TICKET PREMIUM)
+       3. GRID DE CARDS S.O.S
        ========================================================================== */
     .coupons-grid {
       display: grid;
@@ -149,7 +149,6 @@
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     }
 
-    /* Recortes Laterais de Ticket */
     .coupon-card::before,
     .coupon-card::after {
       content: '';
@@ -163,18 +162,13 @@
       border: 1px solid var(--card-border);
     }
 
-    .coupon-card::before {
-      left: -13px;
-    }
-
-    .coupon-card::after {
-      right: -13px;
-    }
+    .coupon-card::before { left: -13px; }
+    .coupon-card::after { right: -13px; }
 
     .coupon-card:hover:not(.redeemed) {
       transform: translateY(-8px);
-      border-color: rgba(255, 51, 102, 0.4);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(255, 51, 102, 0.15);
+      border-color: rgba(59, 130, 246, 0.4);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(59, 130, 246, 0.15);
     }
 
     .coupon-img-wrapper {
@@ -200,7 +194,7 @@
       position: absolute;
       top: 15px;
       right: 15px;
-      background: rgba(10, 5, 18, 0.7);
+      background: rgba(8, 12, 22, 0.8);
       backdrop-filter: blur(8px);
       border: 1px solid rgba(255, 255, 255, 0.15);
       padding: 6px 12px;
@@ -236,7 +230,7 @@
     }
 
     .btn-redeem {
-      background: linear-gradient(135deg, var(--primary) 0%, #d62839 100%);
+      background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);
       color: white;
       border: none;
       padding: 16px;
@@ -245,7 +239,7 @@
       font-size: 0.95rem;
       cursor: pointer;
       transition: all 0.3s ease;
-      box-shadow: 0 8px 20px rgba(255, 51, 102, 0.3);
+      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
       width: 100%;
       text-align: center;
       display: flex;
@@ -255,11 +249,10 @@
     }
 
     .btn-redeem:hover {
-      background: linear-gradient(135deg, var(--primary-hover) 0%, #b51e2d 100%);
-      box-shadow: 0 10px 25px rgba(255, 51, 102, 0.4);
+      background: linear-gradient(135deg, var(--primary-hover) 0%, #1e40af 100%);
+      box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
     }
 
-    /* Estado do Cupom Resgatado */
     .coupon-card.redeemed {
       opacity: 0.5;
       filter: grayscale(0.8);
@@ -273,9 +266,6 @@
       border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    /* ==========================================================================
-       4. PARTICULAS E ANIMAÇÃO
-       ========================================================================== */
     #fx-canvas {
       position: fixed;
       top: 0;
@@ -286,36 +276,14 @@
       z-index: 999;
     }
 
-    /* Responsividade */
     @media (max-width: 600px) {
-      body {
-        padding: 20px 12px;
-      }
-
-      .header-content {
-        padding: 0 20px 30px 20px;
-      }
-
-      .header-content h1 {
-        font-size: 2.1rem;
-      }
-
-      .header-content p {
-        font-size: 0.95rem;
-      }
-
-      .cover-image-box {
-        height: 220px;
-      }
-
-      .coupon-card::before,
-      .coupon-card::after {
-        top: 180px;
-      }
-
-      .coupon-img-wrapper {
-        height: 180px;
-      }
+      body { padding: 20px 12px; }
+      .header-content { padding: 0 20px 30px 20px; }
+      .header-content h1 { font-size: 2.1rem; }
+      .header-content p { font-size: 0.95rem; }
+      .cover-image-box { height: 220px; }
+      .coupon-card::before, .coupon-card::after { top: 180px; }
+      .coupon-img-wrapper { height: 180px; }
     }
   </style>
 </head>
@@ -328,17 +296,15 @@
 
     <div class="header-card">
       <div class="cover-image-box">
-        <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=1200&auto=format&fit=crop"
-          alt="Foto de Capa">
+        <img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?q=80&w=1200&auto=format&fit=crop"
+          alt="Foto de Capa S.O.S">
         <div class="cover-overlay"></div>
       </div>
       <div class="header-content">
-        <h1>Cupons de Amor Virtuais ❤️</h1>
+        <h1>Central S.O.S Amor & Apoio 🚨❤️</h1>
         <p>
-          Bem-vinda ao seu livro de vales exclusivos! Cada um destes tickets dá direito a um momento especial feito para
-          você.
-          <br><strong>Como funciona:</strong> Escolha o cupom que desejar e clique em "Resgatar". O cupom será validado
-          e enviado automaticamente para o meu WhatsApp com a data e horário exatos!
+          Sempre que você precisar de mim, estiver com um dia ruim ou só quiser um refúgio, esta página é o seu botão de emergência.
+          <br><strong>Como funciona:</strong> Escolha o tipo de apoio que precisa agora e clique em "Acionar S.O.S". O alerta será enviado na hora direto para o meu WhatsApp com a hora exata. Estou sempre aqui por você!
         </p>
       </div>
     </div>
@@ -349,71 +315,46 @@
 
   <script>
     /* ==========================================================================
-       CONFIGURAÇÕES E DADOS DOS CUPONS
+       CONFIGURAÇÕES E DADOS DOS CARDS S.O.S
        ========================================================================== */
-    // Seu número de WhatsApp configurado (55 + DDD 47 + Número)
     const SEU_NUMERO_WHATSAPP = "5547992856297";
 
     const cuponsData = [
       {
-        id: 1,
-        titulo: "Vale: Brownie Sem Motivo 🍫",
-        descricao: "Este cupom pode ser usado sempre que você estiver com vontade de comer um brownie. Não precisa ser aniversário, data especial ou existir qualquer justificativa. Você pediu, eu dou um jeito. Porque às vezes amar alguém também é lembrar que ela gosta de brownie.",
-        imagem: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?q=80&w=600&auto=format&fit=crop"
-      },
-      {
-        id: 2,
-        titulo: "Vale: Meu Abraço 🫂",
-        descricao: "Válido por um abraço demorado, daqueles em que ninguém precisa falar nada. Pode ser usado quando você estiver triste, cansada, com saudade, preocupada ou simplesmente quando quiser ficar alguns minutos longe do barulho do mundo. Se o mundo estiver demais, vem para perto de mim.",
-        imagem: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?q=80&w=600&auto=format&fit=crop"
-      },
-      {
-        id: 3,
-        titulo: "Vale: Dia de Torneio ⚽❤️",
-        descricao: "Garante um dia em que você pode aparecer para me ver jogar, torcer por mim, tirar sarro quando eu errar e comemorar comigo quando der certo. E, no final, independentemente do resultado, você ganha um abraço meu. Porque ter você na arquibancada já faz qualquer campeonato valer a pena.",
-        imagem: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=600&auto=format&fit=crop"
-      },
-      {
-        id: 4,
-        titulo: "Vale: Você Escolhe o Rolê 🎟️",
-        descricao: "Hoje você manda. Pode ser sair para comer alguma coisa, ficar conversando por horas, assistir alguma coisa juntos, caminhar sem destino ou simplesmente ficar comigo sem fazer absolutamente nada. A única regra é que o programa precisa ter nós dois.",
-        imagem: "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=600&auto=format&fit=crop"
-      },
-      {
-        id: 5,
-        titulo: "Vale: Uma Massagem Só Minha 💆‍♀️❤️",
-        descricao: "Válido para uma massagem feita por mim, do jeito que você quiser. Pode ser nas costas, nos pés, nos ombros ou simplesmente um carinho demorado enquanto você descansa. Sem pressa e sem horário para terminar.",
-        imagem: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?q=80&w=600&auto=format&fit=crop"
-      },
-      {
-        id: 6,
-        titulo: "Vale: Um Dia Juntos Até Dormir 🌙🫂",
-        descricao: "Este cupom vale uma noite inteira juntinhos. Pode ser conversando até o sono chegar, rindo de qualquer besteira, assistindo alguma coisa ou simplesmente ficando abraçados em silêncio. E quando o sono finalmente vencer, a gente dorme junto, sem precisar de mais nada.",
-        imagem: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=600&auto=format&fit=crop"
-      },
-      {
-        id: 7,
-        titulo: "Vale: Um Beijo + Um Tempo Comigo 💋❤️",
-        descricao: "Você pode trocar este cupom por um beijo meu e por um tempo só nosso. Sem celular, sem pressa e sem precisar inventar qualquer programa. Só quero você perto, nem que seja por alguns minutos, porque às vezes tudo que eu preciso é simplesmente ficar com você.",
-        imagem: "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?q=80&w=600&auto=format&fit=crop"
-      },
-      {
-        id: 8,
-        titulo: "Vale: Chocolate Quente Juntinhos ☕🍫❤️",
-        descricao: "Válido para uma noite de chocolate quente feito especialmente para nós dois. Uma bebida quentinha, um lugar confortável, você pertinho de mim e todo o tempo do mundo para conversar, rir, assistir alguma coisa ou simplesmente ficar abraçado. Porque às vezes uma noite simples ao seu lado é exatamente o que eu quero.",
-        imagem: "https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?q=80&w=600&auto=format&fit=crop"
-      },
-      {
-        id: 9,
-        titulo: "Vale: Uma Carta ou Desenho Meu 💌🎨",
-        descricao: "Você pode trocar este cupom por uma carta ou um desenho feito por mim, especialmente para você. Pode ser uma carta enorme, cheia de coisas que talvez eu nem consiga falar olhando nos seus olhos, ou um desenho feito do meu jeito, mesmo que não fique perfeito. O importante é que vai existir alguma coisa feita pelas minhas mãos, pensada em você e guardada para você. Porque algumas coisas merecem sair da tela e virar memória de verdade.",
+        id: 101,
+        titulo: "S.O.S: Preciso de um Abraço Urgente 🫂",
+        descricao: "Acione este botão se o dia esteve pesado ou se você simplesmente precisa de um lugar seguro. Não precisa dar explicações. Eu vou correndo te dar um abraço até você se sentir melhor.",
         imagem: "https://images.unsplash.com/photo-1517842645767-c639042777db?q=80&w=600&auto=format&fit=crop"
       },
       {
-        id: 10,
-        titulo: "Vale: Beijo Demorado 💋❤️",
-        descricao: "Válido por um beijo demorado, daqueles em que o resto do mundo pode esperar. Sem pressa, sem motivo e sem precisar dizer nada depois. Só nós dois, por alguns instantes, esquecendo tudo ao redor. Porque tem momentos em que um beijo diz exatamente aquilo que nenhuma quantidade de palavras conseguiria explicar.",
-        imagem: "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?q=80&w=600&auto=format&fit=crop"
+        id: 102,
+        titulo: "S.O.S: Mimo / Doce de Emergência 🍫",
+        descricao: "Quando a TPM chegar, a ansiedade bater ou bater aquela vontade incontrolável de comer um docinho sem motivo. Acionou, eu dou um jeito de levar um mimo para adoçar seu dia.",
+        imagem: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?q=80&w=600&auto=format&fit=crop"
+      },
+      {
+        id: 103,
+        titulo: "S.O.S: Só Quero Desabafar 🗣️💬",
+        descricao: "Valido para quando você precisar falar sem ser julgada. Vou apenas te escutar, concordar com você, te dar razão e guardar todo o seu desabafo no absoluto segredo.",
+        imagem: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=600&auto=format&fit=crop"
+      },
+      {
+        id: 104,
+        titulo: "S.O.S: Modo Silêncio + Companhia 🌙",
+        descricao: "Para aqueles dias em que você não quer conversar com ninguém, mas também não quer ficar sozinha. Eu fico do seu lado em silêncio, só fazendo companhia e te fazendo carinho.",
+        imagem: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=600&auto=format&fit=crop"
+      },
+      {
+        id: 105,
+        titulo: "S.O.S: Distração Imediata 🎬🍿",
+        descricao: "Se a sua cabeça estiver cheia de preocupações, use este chamado. Minha missão será te fazer rir, contar piadas bobas ou colocar um filme/série para você esquecer dos problemas.",
+        imagem: "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=600&auto=format&fit=crop"
+      },
+      {
+        id: 106,
+        titulo: "S.O.S: Massagem para Desestressar 💆‍♀️",
+        descricao: "Garante uma sessão de massagem focada em tirar toda a tensão dos seus ombros, costas ou pés depois de um dia exaustivo. Sem pressa e com todo o cuidado.",
+        imagem: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?q=80&w=600&auto=format&fit=crop"
       }
     ];
 
@@ -434,7 +375,7 @@
 
         card.innerHTML = `
           <div class="coupon-img-wrapper">
-            <span class="coupon-badge">Nº ${codeNumber}</span>
+            <span class="coupon-badge">S.O.S Nº ${codeNumber}</span>
             <img src="${cupom.imagem}" alt="${cupom.titulo}" class="coupon-img">
           </div>
           <div class="coupon-body">
@@ -443,7 +384,7 @@
               <div class="coupon-desc">${cupom.descricao}</div>
             </div>
             <button class="btn-redeem" onclick="resgatarCupom(${cupom.id}, '${cupom.titulo}')">
-              Resgatar Cupom ✨
+              Acionar S.O.S 🚨
             </button>
           </div>
         `;
@@ -456,31 +397,27 @@
       const card = document.getElementById(`cupom-${id}`);
       if (card.classList.contains('redeemed')) return;
 
-      // 1. Atualiza visual do Card
       card.classList.add('redeemed');
       const btn = card.querySelector('.btn-redeem');
-      btn.textContent = 'Resgatado! 💖';
+      btn.textContent = 'Chamado Enviado! 💙';
       btn.disabled = true;
 
-      // 2. Animação de corações
       dispararCoracoes();
 
-      // 3. Monta a mensagem para o WhatsApp
       const agora = new Date();
       const horaFormatada = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
       const dataFormatada = agora.toLocaleDateString('pt-BR');
 
-      const textoMensagem = `Oi meu amor! ❤️ Acabei de resgatar o meu cupom no site:\n\n🎟️ *${titulo}*\n📅 *Data:* ${dataFormatada} às ${horaFormatada}\n\nJá pode ir preparando! 🥰`;
+      const textoMensagem = `Amor! 🚨 Acabei de acionar um S.O.S no site:\n\n🆘 *${titulo}*\n📅 *Horário:* ${dataFormatada} às ${horaFormatada}\n\nPreciso de você aqui! 🥺💙`;
       const urlWhatsapp = `https://api.whatsapp.com/send?phone=${SEU_NUMERO_WHATSAPP}&text=${encodeURIComponent(textoMensagem)}`;
 
-      // 4. Redireciona para o WhatsApp após animação
       setTimeout(() => {
         window.open(urlWhatsapp, '_blank');
       }, 1000);
     }
 
     /* ==========================================================================
-       ANIMAÇÃO DE PARTICULAS (CANVAS)
+       ANIMAÇÃO DE PARTÍCULAS
        ========================================================================== */
     const canvas = document.getElementById('fx-canvas');
     const ctx = canvas.getContext('2d');
@@ -500,7 +437,7 @@
         this.size = Math.random() * 14 + 10;
         this.speedY = Math.random() * 3 + 2.5;
         this.speedX = Math.random() * 2 - 1;
-        this.color = `hsl(${Math.random() * 20 + 340}, 100%, 65%)`;
+        this.color = `hsl(${Math.random() * 40 + 200}, 100%, 65%)`; // Tons de azul/violeta
         this.opacity = 1;
       }
 

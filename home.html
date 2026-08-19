@@ -1,10 +1,131 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
     <title>home</title>
+    <style>
+      /* Estilo do Botão S.O.S de Emergência */
+      .sos-card-destaque {
+        background: linear-gradient(135deg, #800f2f 0%, #ff3366 100%);
+        border: 2px solid #ff85a2;
+        border-radius: 20px;
+        padding: 20px;
+        margin: 25px 0 15px 0;
+        box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
+        text-align: center;
+        animation: pulse-border 2s infinite alternate;
+      }
+
+      @keyframes pulse-border {
+        0% {
+          box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+          transform: scale(1);
+        }
+        100% {
+          box-shadow: 0 0 30px rgba(96, 165, 250, 0.8);
+          transform: scale(1.02);
+        }
+      }
+
+      .sos-card-destaque h2 {
+        color: #ffffff;
+        font-size: 1.4rem;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .sos-card-destaque p {
+        color: #dbeafe;
+        font-size: 0.95rem;
+        margin-bottom: 15px;
+      }
+
+      .btn-sos-emergencia {
+        background: #ffffff;
+        color: #1e3a8a;
+        font-weight: 800;
+        font-size: 1.05rem;
+        padding: 14px 28px;
+        border: none;
+        border-radius: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        max-width: 300px;
+      }
+
+      .btn-sos-emergencia:hover {
+        background: #eff6ff;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.4);
+      }
+
+      /* Estilo Exclusivo do Botão de Cupons de Amor */
+      .cupons-card-destaque {
+        background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        border: 2px solid #60a5fa;
+        border-radius: 20px;
+        padding: 20px;
+        margin: 15px 0 25px 0;
+        box-shadow: 0 0 25px rgba(255, 51, 102, 0.5);
+        text-align: center;
+        animation: pulse-cupons 2s infinite alternate;
+      }
+
+      @keyframes pulse-cupons {
+        0% {
+          box-shadow: 0 0 15px rgba(255, 51, 102, 0.4);
+          transform: scale(1);
+        }
+        100% {
+          box-shadow: 0 0 30px rgba(255, 133, 162, 0.8);
+          transform: scale(1.02);
+        }
+      }
+
+      .cupons-card-destaque h2 {
+        color: #ffffff;
+        font-size: 1.4rem;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .cupons-card-destaque p {
+        color: #ffe0e9;
+        font-size: 0.95rem;
+        margin-bottom: 15px;
+      }
+
+      .btn-cupons-destaque {
+        background: #ffffff;
+        color: #800f2f;
+        font-weight: 800;
+        font-size: 1.05rem;
+        padding: 14px 28px;
+        border: none;
+        border-radius: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        max-width: 300px;
+      }
+
+      .btn-cupons-destaque:hover {
+        background: #fff0f5;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.4);
+      }
+    </style>
   </head>
 
   <body class="center">
@@ -18,6 +139,23 @@
         <br />
         Todos os módulos estão funcionando normalmente.
       </p>
+
+      <!-- CARDS DE ACESSO RÁPIDO S.O.S E CUPONS -->
+      <div class="sos-card-destaque">
+        <h2>🚨 CENTRAL S.O.S & APOIO 🚨</h2>
+        <p>Precisa de mim agora? Acesse o módulo de emergência.</p>
+        <button class="btn-sos-emergencia" onclick="go('sos.html')">
+          🆘 Abrir Botão de Emergência
+        </button>
+      </div>
+
+      <div class="cupons-card-destaque">
+        <h2>🎟️ CUPONS DE AMOR VIRTUAIS ❤️</h2>
+        <p>Escolha um vale especial para resgatar agora mesmo.</p>
+        <button class="btn-cupons-destaque" onclick="go('cupons.html')">
+          ✨ Abrir Meus Cupons
+        </button>
+      </div>
 
       <div class="status-box">
         <h3 id="levaTempo">📡 Status Atual</h3>
@@ -54,10 +192,6 @@
         </div>
       </div>
 
-      <!-- <button onclick="resetarSegredos()">
-        Resetar Segredos
-      </button> -->
-
       <div class="contador-dias">
         ⏳ Projeto em desenvolvimento há:
 
@@ -86,6 +220,8 @@
 
       <h3 class="categoria" id="levaCofre">🧠 Sistemas</h3>
 
+      <button onclick="go('sos.html')" style="border: 1px solid #60a5fa;">🚨 S.O.S</button>
+      <button onclick="go('cupons.html')" style="border: 1px solid #ff85a2;">🎟️ Cupons</button>
       <button onclick="go('analise.html')">🔍 Analise</button>
       <button onclick="go('estatistica.html')">📊 Estatistica</button>
       <button onclick="go('arquivo.html')">🗂️ Arquivo</button>
@@ -107,8 +243,9 @@
       <button onclick="go('arvore.html')">Muito Importante</button>
       <button onclick="go('flor3d.html')">Para Você 🫶🏽🫵🏽</button>
       <button onclick="go('maquinaTempo.html')">Coincidencia ?</button>
-
-
+      <button onclick="go('quiz.html')"> você me conhece ? </button>
+      <button onclick="go('musicas.html')">Especial</button>
+      <button onclick="go('mapa.html')"> Eu e Você </button>
 
       <h3 class="categoria" id="btn-lirios">🌸 Pessoal</h3>
 
