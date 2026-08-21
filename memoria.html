@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nossas Memórias - Jogo da Memória</title>
+  <style>
+    /* ==========================================
+       ESTILOS GERAIS E TEMA
+       ========================================== */
+    :root {
+      --bg-color: #120912;
+      --card-bg: #fffbf7;
+      --accent-color: #d84b6d;
+      --accent-glow: rgba(216, 75, 109, 0.4);
+      --text-color: #f3e8ee;
+      --subtext-color: #bda2b2;
+      --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      background-image: 
+        radial-gradient(circle at 50% 20%, #2c1221 0%, transparent 60%),
+        radial-gradient(circle at 80% 80%, #200b1a 0%, transparent 50%);
+      color: var(--text-color);
+      font-family: var(--font-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      padding: 20px 10px;
+    }
+
+    /* ==========================================
+       TELA DE INTRODUÇÃO
+       ========================================== */
+    #intro-screen {
+      text-align: center;
+      max-width: 500px;
+      padding: 40px 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    #intro-screen h1 {
+      font-size: 1.8rem;
+      font-weight: 300;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    #intro-screen p {
+      font-size: 1.1rem;
+      color: var(--subtext-color);
+      margin-bottom: 30px;
+      font-weight: 300;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #d84b6d, #a23250);
+      color: white;
+      border: none;
+      padding: 12px 32px;
+      font-size: 1rem;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px var(--accent-glow);
+      transition: all 0.3s ease;
+      letter-spacing: 0.5px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(216, 75, 109, 0.6);
+    }
+
+    /* ==========================================
+       PAINEL DO JOGO
+       ========================================== */
+    #game-container {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 900px;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .status-bar {
+      display: flex;
+      gap: 20px;
+      font-size: 0.95rem;
+      color: var(--subtext-color);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 8px 20px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .status-bar span span {
+      color: var(--accent-color);
+      font-weight: bold;
+    }
+
+    /* Mensagem do Par Encontrado */
+    #pair-message {
+      height: 30px;
+      margin: 10px 0;
+      font-style: italic;
+      color: #f7c5d0;
+      text-align: center;
+      font-size: 0.95rem;
+      transition: opacity 0.3s ease;
+      opacity: 0;
+    }
+
+    /* ==========================================
+       GRADE DE CARTAS (20 CARTAS PEQUENAS)
+       ========================================== */
+    .grid-container {
+      position: relative;
+      width: 100%;
+      min-height: 500px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .memory-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      width: 100%;
+      max-width: 650px;
+      perspective: 1000px;
+      transition: all 1s ease;
+    }
+
+    /* Ajuste para telas menores */
+    @media (max-width: 600px) {
+      .memory-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        max-width: 100%;
+      }
+    }
+
+    /* Carta Individual - Formato Polaroid Pequena */
+    .card {
+      background: transparent;
+      aspect-ratio: 3 / 4;
+      cursor: pointer;
+      perspective: 1000px;
+      position: relative;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), top 1s, left 1s;
+    }
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+      border-radius: 6px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    .card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    /* Verso da Carta (Design Romântico) */
+    .card-back {
+      background: var(--card-bg);
+      border: 3px solid #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-image: 
+        radial-gradient(#e0b7c2 1px, transparent 0),
+        radial-gradient(#e0b7c2 1px, var(--card-bg) 0);
+      background-size: 12px 12px;
+      background-position: 0 0, 6px 6px;
+    }
+
+    .card-back-pattern {
+      width: 70%;
+      height: 70%;
+      border: 1px dashed var(--accent-color);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-back-pattern::after {
+      content: '♥';
+      color: var(--accent-color);
+      font-size: 14px;
+      opacity: 0.7;
+    }
+
+    /* Frente da Carta (Foto Polaroid) */
+    .card-front {
+      background: var(--card-bg);
+      border: 4px solid var(--card-bg);
+      border-bottom: 12px solid var(--card-bg);
+      transform: rotateY(180deg);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-front img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 2px;
+    }
+
+    /* Estado Matched */
+    .card.matched .card-inner {
+      box-shadow: 0 0 12px var(--accent-color);
+    }
+
+    /* Animação de Coração Flutuante */
+    .floating-heart {
+      position: absolute;
+      color: var(--accent-color);
+      font-size: 20px;
+      pointer-events: none;
+      animation: floatUp 1.2s ease-out forwards;
+      z-index: 100;
+    }
+
+    @keyframes floatUp {
+      0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0.5);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -150%) scale(1.3);
+      }
+    }
+
+    /* ==========================================
+       TELA FINAL / MENSAGEM
+       ========================================== */
+    #final-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      max-width: 650px;
+      margin-top: 20px;
+      opacity: 0;
+      transition: opacity 1s ease;
+      z-index: 10;
+    }
+
+    #final-screen h2 {
+      font-size: 1.6rem;
+      font-weight: 300;
+      color: #f7c5d0;
+      margin-bottom: 20px;
+    }
+
+    .letter-container {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 30px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .letter-text {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: #ebdbe4;
+      white-space: pre-line;
+      text-align: left;
+      font-weight: 300;
+    }
+
+    #hidden-message {
+      display: none;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px dashed rgba(216, 75, 109, 0.4);
+      color: #f7c5d0;
+      font-style: italic;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. TELA DE INTRODUÇÃO -->
+  <div id="intro-screen">
+    <h1>Existem algumas lembranças escondidas aqui.</h1>
+    <p>Você vai precisar encontrar todas.</p>
+    <button class="btn" onclick="startGame()">Começar</button>
+  </div>
+
+  <!-- 2. CONTAINER DO JOGO -->
+  <div id="game-container">
+    <header>
+      <div class="status-bar">
+        <span>Tentativas: <span id="attempts-count">0</span></span>
+        <span>Progresso: <span id="progress-count">0 / 10</span></span>
+      </div>
+      <div id="pair-message"></div>
+    </header>
+
+    <div class="grid-container">
+      <div class="memory-grid" id="grid"></div>
+    </div>
+  </div>
+
+  <!-- 3. TELA FINAL -->
+  <div id="final-screen">
+    <h2>Você encontrou todas as nossas memórias.</h2>
+    
+    <div class="letter-container">
+      <div class="letter-text" id="final-letter-text">
+        <!-- O texto final é inserido via JavaScript -->
+      </div>
+      <div id="hidden-message">
+        <!-- Segunda mensagem revelada ao clicar no botão -->
+      </div>
+    </div>
+
+    <button class="btn" id="continue-btn" onclick="handleContinue()">Continuar lembrando ❤️</button>
+  </div>
+
+  <script>
+    /* ==========================================
+       CONFIGURAÇÕES E DADOS (FÁCIL EDIÇÃO)
+       ========================================== */
+
+    // Caminhos das 10 fotos
+    const photoPaths = [
+      'imgs/arquibancada.jpeg',
+      'imgs/bandeira.jpeg',
+      'imgs/casacoAzul.jpeg',
+      'imgs/elevadorNos.jpeg',
+      'imgs/juliaEmissi.jpeg',
+      'imgs/gol.jpeg',
+      'imgs/bestImg.jpeg',
+      'imgs/podio.jpeg',
+      'imgs/peugeot.jpeg',
+      'imgs/especial.jpeg'
+    ];
+
+    // Frases exibidas ao encontrar cada par correspondente (0 a 9)
+    const pairMessages = [
+      "Quando você foi me ver jogar",
+      "Qunado eu fiz algo que nao era meu",
+      "Nossa foto top 2",
+      "Tu não gosta... mais eu amo",
+      "Você e a missii",
+      "Para você... sempre foi para você",
+      "Nossa Melhor foto, a top 1",
+      "Seu primeiro pódio",
+      "Sua foto coringa... usa para tudo kkkk",
+      "De um dia muito especial que você foi me ver"
+    ];
+
+    // Carta/Texto grande do final
+    const finalLetterContent = `[PLACEHOLDER — TEXTO FINAL MUITO GRANDE]
+
+Escreva aqui sua mensagem sentimental completa. Pode ter múltiplos parágrafos, contar momentos marcantes do casal e expressar tudo o que sente.
+
+Cada linha mantida aqui será formatada respeitando as quebras de texto do arquivo.`;
+
+    // Segunda mensagem escondida (revelada ao clicar no botão final)
+    const hiddenMessageContent = "Esta é a nossa mensagem secreta. Obrigado por construir cada um desses momentos ao meu lado. Eu te amo!";
+
+
+    /* ==========================================
+       ESTADO E LÓGICA DO JOGO
+       ========================================== */
+
+    let cardsData = [];
+    let flippedCards = [];
+    let lockBoard = false;
+    let attempts = 0;
+    let matchesFound = 0;
+
+    const introScreen = document.getElementById('intro-screen');
+    const gameContainer = document.getElementById('game-container');
+    const finalScreen = document.getElementById('final-screen');
+    const gridElement = document.getElementById('grid');
+    const attemptsEl = document.getElementById('attempts-count');
+    const progressEl = document.getElementById('progress-count');
+    const pairMsgEl = document.getElementById('pair-message');
+
+    function startGame() {
+      introScreen.style.opacity = '0';
+      setTimeout(() => {
+        introScreen.style.display = 'none';
+        gameContainer.style.display = 'flex';
+        setTimeout(() => { gameContainer.style.opacity = '1'; }, 50);
+        buildBoard();
+      }, 800);
+    }
+
+    function buildBoard() {
+      // Criar 20 cartas (10 pares)
+      cardsData = [];
+      for (let i = 0; i < photoPaths.length; i++) {
+        cardsData.push({ id: i, img: photoPaths[i] });
+        cardsData.push({ id: i, img: photoPaths[i] });
+      }
+
+      // Embaralhar
+      cardsData.sort(() => Math.random() - 0.5);
+
+      gridElement.innerHTML = '';
+      cardsData.forEach((item, index) => {
+        const cardNode = document.createElement('div');
+        cardNode.classList.add('card');
+        cardNode.dataset.id = item.id;
+        cardNode.dataset.index = index;
+
+        // Leve rotação aleatória para efeito de mesa (-3deg a 3deg)
+        const randomRot = (Math.random() * 6 - 3).toFixed(2);
+        cardNode.style.transform = `rotate(${randomRot}deg)`;
+
+        cardNode.innerHTML = `
+          <div class="card-inner">
+            <div class="card-back">
+              <div class="card-back-pattern"></div>
+            </div>
+            <div class="card-front">
+              <img src="${item.img}" alt="Memória" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\' viewBox=\'0 0 100 100\'><rect width=\'100\' height=\'100\' fill=\'%23f3e8ee\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'12\' fill=\'%23d84b6d\'>Foto ${item.id + 1}</text></svg>'">
+            </div>
+          </div>
+        `;
+
+        cardNode.addEventListener('click', () => handleCardClick(cardNode));
+        gridElement.appendChild(cardNode);
+      });
+    }
+
+    function handleCardClick(card) {
+      if (lockBoard) return;
+      if (card.classList.contains('flipped') || card.classList.contains('matched')) return;
+
+      card.classList.add('flipped');
+      flippedCards.push(card);
+
+      if (flippedCards.length === 2) {
+        attempts++;
+        attemptsEl.textContent = attempts;
+        checkMatch();
+      }
+    }
+
+    function checkMatch() {
+      const [card1, card2] = flippedCards;
+      const isMatch = card1.dataset.id === card2.dataset.id;
+
+      if (isMatch) {
+        disableCards(card1, card2);
+      } else {
+        unflipCards(card1, card2);
+      }
+    }
+
+    function disableCards(card1, card2) {
+      card1.classList.add('matched');
+      card2.classList.add('matched');
+
+      matchesFound++;
+      progressEl.textContent = `${matchesFound} / 10`;
+
+      // Exibir animação de coração nos pares
+      createHeart(card1);
+      createHeart(card2);
+
+      // Exibir frase associada ao par
+      const pairId = parseInt(card1.dataset.id);
+      showPairMessage(pairMessages[pairId]);
+
+      resetBoardState();
+
+      if (matchesFound === 10) {
+        setTimeout(triggerVictoryAnimation, 1200);
+      }
+    }
+
+    function unflipCards(card1, card2) {
+      lockBoard = true;
+      setTimeout(() => {
+        card1.classList.remove('flipped');
+        card2.classList.remove('flipped');
+        resetBoardState();
+      }, 1000);
+    }
+
+    function resetBoardState() {
+      flippedCards = [];
+      lockBoard = false;
+    }
+
+    function showPairMessage(msg) {
+      pairMsgEl.style.opacity = '0';
+      setTimeout(() => {
+        pairMsgEl.textContent = msg;
+        pairMsgEl.style.opacity = '1';
+      }, 200);
+    }
+
+    function createHeart(cardElement) {
+      const rect = cardElement.getBoundingClientRect();
+      const heart = document.createElement('div');
+      heart.classList.add('floating-heart');
+      heart.innerHTML = '♥';
+      heart.style.left = `${rect.left + rect.width / 2}px`;
+      heart.style.top = `${rect.top + rect.height / 2}px`;
+      document.body.appendChild(heart);
+
+      setTimeout(() => heart.remove(), 1200);
+    }
+
+    /* ==========================================
+       ANIMAÇÃO FINAL EM CORAÇÃO
+       ========================================== */
+    function triggerVictoryAnimation() {
+      pairMsgEl.style.opacity = '0';
+
+      const allCards = document.querySelectorAll('.card');
+      const gridRect = gridElement.getBoundingClientRect();
+      const centerX = gridRect.width / 2;
+      const centerY = gridRect.height / 2;
+
+      // Desativa grid CSS para posicionamento absoluto relativo durante animação
+      gridElement.style.height = `${gridRect.height}px`;
+
+      allCards.forEach((card, index) => {
+        const rect = card.getBoundingClientRect();
+        const currentLeft = rect.left - gridRect.left;
+        const currentTop = rect.top - gridRect.top;
+
+        // Travar posição atual
+        card.style.position = 'absolute';
+        card.style.left = `${currentLeft}px`;
+        card.style.top = `${currentTop}px`;
+        card.style.margin = '0';
+
+        // Calcular posição em formato de coração (Paramétrica)
+        const t = (index / 20) * 2 * Math.PI;
+        // Equação do coração
+        const scale = Math.min(gridRect.width, gridRect.height) / 32;
+        const hX = 16 * Math.pow(Math.sin(t), 3);
+        const hY = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+
+        const targetLeft = centerX + (hX * scale) - (rect.width / 2);
+        const targetTop = centerY + (hY * scale) - (rect.height / 2);
+
+        // Aplicar movimento suave
+        setTimeout(() => {
+          card.style.transform = 'rotate(0deg) scale(0.85)';
+          card.style.left = `${targetLeft}px`;
+          card.style.top = `${targetTop}px`;
+        }, 100);
+      });
+
+      // Transição para mensagem final após movimento do coração
+      setTimeout(() => {
+        document.getElementById('final-letter-text').innerText = finalLetterContent;
+        document.getElementById('hidden-message').innerText = hiddenMessageContent;
+
+        finalScreen.style.display = 'flex';
+        setTimeout(() => {
+          finalScreen.style.opacity = '1';
+          finalScreen.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }, 2500);
+    }
+
+    /* ==========================================
+       AÇÃO DO BOTÃO FINAL
+       ========================================== */
+    function handleContinue() {
+      const hiddenEl = document.getElementById('hidden-message');
+      const btn = document.getElementById('continue-btn');
+
+      if (hiddenEl.style.display === 'block') {
+        // Se clicar de novo, rola suavemente para o topo do texto
+        document.querySelector('.letter-container').scrollIntoView({ behavior: 'smooth' });
+      } else {
+        hiddenEl.style.display = 'block';
+        btn.textContent = 'Guardado no coração ❤️';
+      }
+    }
+  </script>
+</body>
+</html>

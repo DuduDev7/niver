@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nossa Lembrança</title>
+    <style>
+        :root {
+            --bg-color: #1a1625;
+            --room-darkness: rgba(0, 0, 0, 0.65);
+            --accent-warm: #ffb703;
+            --text-light: #f8f9fa;
+            --pink-glow: #ff758f;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            font-family: 'Georgia', serif;
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Container Principal */
+        #app {
+            width: 100%;
+            max-width: 900px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 15px;
+            position: relative;
+        }
+
+        /* Títulos e Narrativa */
+        .header-text {
+            text-align: center;
+            margin-bottom: 20px;
+            transition: opacity 1s ease, transform 1s ease;
+            z-index: 10;
+        }
+
+        .header-text h2 {
+            font-size: 1.2rem;
+            font-weight: normal;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+
+        .header-text h1 {
+            font-size: 1.8rem;
+            color: var(--accent-warm);
+            margin-bottom: 12px;
+        }
+
+        .header-text p {
+            font-size: 1rem;
+            line-height: 1.5;
+            max-width: 600px;
+            margin: 0 auto;
+            color: #d8d8d8;
+        }
+
+        /* Barra de Progresso */
+        .progress-container {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 4px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 10;
+            transition: opacity 1s;
+        }
+
+        .progress-bar {
+            height: 16px;
+            width: 0%;
+            background: linear-gradient(90deg, #f72585, var(--accent-warm));
+            border-radius: 15px;
+            transition: width 0.4s ease;
+        }
+
+        .progress-status {
+            text-align: center;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            color: #ccc;
+            font-family: sans-serif;
+        }
+
+        /* A Sala */
+        .room-viewport {
+            width: 100%;
+            height: 480px;
+            position: relative;
+            border-radius: 16px;
+            background: #2b213a;
+            border: 2px solid rgba(255,255,255,0.05);
+            overflow: hidden;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.8), 0 10px 30px rgba(0,0,0,0.5);
+            transition: background 1.5s ease;
+        }
+
+        /* Iluminação Overlay */
+        .room-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--room-darkness);
+            pointer-events: none;
+            transition: background-color 1.5s ease;
+            z-index: 5;
+        }
+
+        /* Elementos Decorativos da Sala */
+        .room-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .window {
+            position: absolute;
+            top: 40px;
+            right: 50px;
+            width: 90px;
+            height: 120px;
+            background: #3d405b;
+            border: 4px solid #1f2029;
+            border-radius: 8px 8px 0 0;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+            transition: background 1.5s;
+        }
+
+        .window-light {
+            position: absolute;
+            top: 40px;
+            right: -20px;
+            width: 250px;
+            height: 350px;
+            background: linear-gradient(135deg, rgba(255,243,176,0.15) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(-25deg);
+            pointer-events: none;
+            opacity: 0.3;
+            transition: opacity 1.5s;
+        }
+
+        .furniture {
+            position: absolute;
+            background: #3e2723;
+            border-radius: 4px;
+        }
+
+        .shelf { top: 120px; left: 40px; width: 140px; height: 12px; }
+        .table { bottom: 60px; right: 80px; width: 160px; height: 15px; }
+        .table-leg { bottom: 0; width: 10px; height: 60px; background: #271714; }
+        .rug {
+            bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 260px; height: 70px; background: #5c3d46;
+            border-radius: 50%; opacity: 0.8;
+        }
+
+        .trash-bin {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            width: 60px;
+            height: 75px;
+            background: #4a4e69;
+            border-radius: 0 0 10px 10px;
+            border: 3px solid #22223b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: sans-serif;
+            font-size: 0.75rem;
+            color: #9a8c98;
+            z-index: 6;
+        }
+
+        /* Vassoura */
+        .broom {
+            position: absolute;
+            width: 14px;
+            height: 130px;
+            background: #8d6e63;
+            border-radius: 4px;
+            cursor: grab;
+            z-index: 8;
+            top: 200px;
+            left: 20px;
+            touch-action: none;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+        }
+        .broom::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: -13px;
+            width: 40px;
+            height: 25px;
+            background: #e0a96d;
+            border-radius: 4px 4px 10px 10px;
+        }
+
+        /* Objetos Interativos */
+        .interactive-item {
+            position: absolute;
+            cursor: pointer;
+            z-index: 7;
+            transition: transform 0.2s, opacity 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: #fff;
+            touch-action: none;
+        }
+
+        .interactive-item:hover {
+            transform: scale(1.08);
+        }
+
+        .paper { width: 30px; height: 35px; background: #f4f1de; border: 1px solid #ccc; transform: rotate(12deg); }
+        .box { width: 55px; height: 45px; background: #b07d62; border: 2px solid #6b4d3e; border-radius: 3px; }
+        .book { width: 35px; height: 45px; background: #a4133c; border-radius: 2px 5px 5px 2px; }
+        .clothes { width: 50px; height: 40px; background: #457b9d; border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+        .dust { width: 60px; height: 40px; background: rgba(200,200,200,0.35); border-radius: 50%; filter: blur(4px); }
+        .trash { width: 25px; height: 25px; background: #6c757d; border-radius: 40%; }
+
+        /* Pop-up de Segredo/Lembrança */
+        .secret-popup {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(15, 12, 29, 0.95);
+            border: 1px solid var(--accent-warm);
+            padding: 12px 20px;
+            border-radius: 25px;
+            color: var(--accent-warm);
+            font-size: 0.9rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.4s ease;
+            z-index: 20;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            max-width: 85%;
+        }
+
+        .secret-popup.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Carta Desbloqueada */
+        .hidden-letter-container {
+            width: 100%;
+            max-width: 700px;
+            display: none;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+            margin-top: 20px;
+            z-index: 10;
+        }
+
+        .hidden-letter {
+            background: #231b2e;
+            border: 1px solid rgba(255, 183, 3, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+            color: #e2e2e2;
+            line-height: 1.8;
+            font-size: 1.05rem;
+            max-height: 60vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .hidden-letter p {
+            margin-bottom: 1.5em;
+        }
+
+        .hidden-letter::-webkit-scrollbar {
+            width: 6px;
+        }
+        .hidden-letter::-webkit-scrollbar-thumb {
+            background: var(--accent-warm);
+            border-radius: 4px;
+        }
+
+        /* Botões */
+        .action-btn {
+            background: linear-gradient(135deg, #ff758f, #ffb703);
+            border: none;
+            color: #1a1625;
+            font-weight: bold;
+            padding: 14px 28px;
+            font-size: 1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            margin: 25px auto 0 auto;
+            display: block;
+            box-shadow: 0 4px 15px rgba(255, 117, 143, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 117, 143, 0.6);
+        }
+
+        /* Section do Vídeo */
+        .video-container {
+            width: 100%;
+            max-width: 750px;
+            display: none;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+            margin-top: 20px;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.9);
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-top: 20px;
+        }
+
+        .video-wrapper video {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+        }
+
+        .final-message {
+            margin-top: 25px;
+            font-size: 1.2rem;
+            color: var(--accent-warm);
+            font-style: italic;
+        }
+
+        @media (max-width: 600px) {
+            .room-viewport { height: 400px; }
+            .header-text h1 { font-size: 1.4rem; }
+            .hidden-letter { padding: 20px; font-size: 0.95rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <!-- Seção de Texto Inicial -->
+    <div class="header-text" id="intro-text">
+        <h2>Antes de continuar...</h2>
+        <h1>Tem uma coisa que eu quero que você faça primeiro.</h1>
+        <p>Você lembra daquela sala?<br>
+        [PLACEHOLDER — Pequena introdução sentimental sobre a lembrança de nós dois limpando a sala juntos.]</p>
+        <br>
+        <p><strong>Então vamos fazer isso mais uma vez. Limpe tudo.</strong></p>
+    </div>
+
+    <!-- Barra de Progresso -->
+    <div class="progress-container" id="progress-box">
+        <div class="progress-bar" id="progress-bar"></div>
+        <div class="progress-status" id="progress-text">Limpando a sala... 0% (0 / 15)</div>
+    </div>
+
+    <!-- O Cenário/Sala Interativa -->
+    <div class="room-viewport" id="room">
+        <div class="room-overlay" id="overlay"></div>
+
+        <!-- Fundo Decorativo -->
+        <div class="room-bg">
+            <div class="window" id="window"></div>
+            <div class="window-light" id="window-light"></div>
+            <div class="furniture shelf"></div>
+            <div class="furniture table">
+                <div class="table-leg" style="left: 10px;"></div>
+                <div class="table-leg" style="right: 10px;"></div>
+            </div>
+            <div class="rug"></div>
+        </div>
+
+        <!-- Lixeira para onde itens podem ser arrastados -->
+        <div class="trash-bin" id="trash-bin">LIXO</div>
+
+        <!-- Vassoura -->
+        <div class="broom" id="broom"></div>
+
+        <!-- Pop-up de Mensagens/Segredos -->
+        <div class="secret-popup" id="secret-popup"></div>
+
+        <!-- 15 Elementos Interativos -->
+        <!-- Papéis (Arrastáveis ou Clicáveis) -->
+        <div class="interactive-item paper draggable" style="top: 280px; left: 180px;" data-secret="[PLACEHOLDER — Bilhete antigo com piada interna]"></div>
+        <div class="interactive-item paper draggable" style="top: 310px; left: 220px;" data-secret="[PLACEHOLDER — Um rabisco que fizemos naquele dia]"></div>
+        <div class="interactive-item paper click-remove" style="top: 110px; left: 60px;" data-secret="[PLACEHOLDER — Uma anotação esquecida]"></div>
+
+        <!-- Caixas (Precisa de múltiplos cliques) -->
+        <div class="interactive-item box multi-click" style="bottom: 70px; left: 280px;" data-clicks="3" data-secret="[PLACEHOLDER — Caixas pesadas, mas juntos foi mais leve]"></div>
+        <div class="interactive-item box multi-click" style="bottom: 75px; left: 340px;" data-clicks="2" data-secret="[PLACEHOLDER — Guardando memórias...]"></div>
+
+        <!-- Livros (Clicáveis) -->
+        <div class="interactive-item book click-remove" style="bottom: 80px; right: 100px;" data-secret="[PLACEHOLDER — O livro que você comentou comigo]"></div>
+        <div class="interactive-item book click-remove" style="bottom: 80px; right: 140px;" data-secret="[PLACEHOLDER — Organizando tudo no lugar]"></div>
+
+        <!-- Roupas (Arrastáveis) -->
+        <div class="interactive-item clothes draggable" style="bottom: 40px; right: 240px;" data-secret="[PLACEHOLDER — Casaco esquecido no canto]"></div>
+        <div class="interactive-item clothes draggable" style="bottom: 90px; left: 130px;" data-secret="[PLACEHOLDER — Bagunça espalhada]"></div>
+
+        <!-- Objetos Diversos (Clicáveis / Arrastáveis) -->
+        <div class="interactive-item trash draggable" style="top: 260px; right: 200px;" data-secret="[PLACEHOLDER — Item inútil jogado fora]"></div>
+        <div class="interactive-item trash click-remove" style="bottom: 30px; left: 120px;" data-secret="[PLACEHOLDER — Pequeno detalhe limpo]"></div>
+
+        <!-- Poeiras (Limpas com a Vassoura) -->
+        <div class="interactive-item dust dust-item" style="top: 240px; left: 100px;"></div>
+        <div class="interactive-item dust dust-item" style="bottom: 50px; left: 200px;"></div>
+        <div class="interactive-item dust dust-item" style="bottom: 80px; right: 180px;"></div>
+        <div class="interactive-item dust dust-item" style="top: 150px; right: 80px;"></div>
+    </div>
+
+    <!-- Carta Oculta (Texto Muito Grande) -->
+    <div class="hidden-letter-container" id="letter-container">
+        <div class="header-text">
+            <h2>Agora sim.</h2>
+            <h1>Você limpou a sala...</h1>
+            <p>...mas dessa vez encontrou algo que eu deixei escondido.</p>
+        </div>
+
+        <div class="hidden-letter">
+            <p>[PLACEHOLDER — TEXTO MUITO GRANDE]</p>
+            
+            <p>Julia, lembro exatamente do dia em que te ajudei a limpar aquela sala. O que parecia ser apenas uma tarefa comum e cansativa se transformou em um dos momentos mais marcantes para mim. Estar ao seu lado transformou a bagunça em risadas, o cansaço em aconchego.</p>
+
+            <p>Enquanto tirávamos a poeira e organizávamos as coisas, percebi o quanto a sua presença deixa qualquer ambiente mais leve e bonito. Não importava a quantidade de caixas ou papéis espalhados, tudo o que eu conseguia prestar atenção era no seu sorriso e no jeito como a gente faz uma dupla incrível.</p>
+
+            <p>Escrevi este texto enorme para te lembrar que, assim como limpamos aquela sala juntos, eu quero estar ao seu lado para organizar qualquer bagunça que a vida nos apresente. Cada pequeno detalhe daquele dia ficou guardado na minha memória com muito carinho.</p>
+
+            <p>Obrigado por ser quem você é e por me permitir dividir momentos tão simples, porém inesquecíveis, com você. Esta página é apenas uma pequena forma de demonstrar o tamanho do carinho que sinto por você.</p>
+
+            <p>[Continue escrevendo quantos parágrafos desejar aqui. O container possui rolagem própria e suporte a textos extremamente longos sem quebrar o layout da página...]</p>
+        </div>
+
+        <button class="action-btn" id="btn-to-video">Tem mais uma coisa...</button>
+    </div>
+
+    <!-- Player de Vídeo -->
+    <div class="video-container" id="video-container">
+        <div class="header-text">
+            <h2>Eu poderia ter terminado aqui...</h2>
+            <p>...mas achei que algumas coisas mereciam ser mostradas, não apenas escritas.</p>
+        </div>
+
+        <div class="video-wrapper">
+            <!-- NOME DO ARQUIVO FACILMENTE MODIFICÁVEL ABAIXO -->
+            <video controls id="main-video">
+                <source src="video.mp4" type="video/mp4">
+                Seu navegador não suporta a exibição de vídeos.
+            </video>
+        </div>
+
+        <div class="final-message">
+            [PLACEHOLDER — FRASE FINAL ROMÂNTICA]
+        </div>
+    </div>
+</div>
+
+<script>
+    // Configurações e Estado
+    const totalItems = 15;
+    let cleanedItems = 0;
+
+    const overlay = document.getElementById('overlay');
+    const windowBg = document.getElementById('window');
+    const windowLight = document.getElementById('window-light');
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
+    const secretPopup = document.getElementById('secret-popup');
+    const introText = document.getElementById('intro-text');
+    const trashBin = document.getElementById('trash-bin').getBoundingClientRect();
+
+    // Atualizar iluminação e progresso
+    function updateProgress() {
+        cleanedItems++;
+        const percentage = Math.round((cleanedItems / totalItems) * 100);
+        
+        progressBar.style.width = percentage + '%';
+        progressText.innerText = `Limpando a sala... ${percentage}% (${cleanedItems} / ${totalItems})`;
+
+        // Efeito de escurecimento diminuindo (sala ficando mais clara)
+        const darkOpacity = 0.65 - (percentage / 100) * 0.65;
+        overlay.style.backgroundColor = `rgba(0, 0, 0, ${darkOpacity})`;
+
+        // Quando estiver quase limpa, janela brilha
+        if (percentage >= 70) {
+            windowBg.style.background = '#ffe5ec';
+            windowLight.style.opacity = '0.8';
+        }
+
+        // Esconder texto intro gradualmente na primeira interação
+        if (cleanedItems === 1) {
+            introText.style.opacity = '0.3';
+        }
+
+        // Fim da limpeza
+        if (cleanedItems >= totalItems) {
+            setTimeout(finishCleaning, 800);
+        }
+    }
+
+    function showSecret(text) {
+        if (!text) return;
+        secretPopup.innerText = text;
+        secretPopup.classList.add('show');
+        setTimeout(() => {
+            secretPopup.classList.remove('show');
+        }, 3000);
+    }
+
+    function removeItem(element) {
+        if (element.dataset.removed) return;
+        element.dataset.removed = "true";
+        element.style.opacity = '0';
+        element.style.transform = 'scale(0)';
+        setTimeout(() => {
+            element.remove();
+        }, 400);
+        showSecret(element.dataset.secret);
+        updateProgress();
+    }
+
+    // 1. Interação: Clicar para remover
+    document.querySelectorAll('.click-remove').forEach(item => {
+        item.addEventListener('click', () => removeItem(item));
+    });
+
+    // 2. Interação: Múltiplos Cliques (Caixas)
+    document.querySelectorAll('.multi-click').forEach(item => {
+        let clicksLeft = parseInt(item.dataset.clicks);
+        item.addEventListener('click', () => {
+            clicksLeft--;
+            item.style.transform = `scale(${1 - (parseInt(item.dataset.clicks) - clicksLeft) * 0.15})`;
+            if (clicksLeft <= 0) {
+                removeItem(item);
+            } else {
+                showSecret(`Ainda faltam alguns toques... (${clicksLeft})`);
+            }
+        });
+    });
+
+    // 3. Interação: Drag and Drop (Arrastar para a Lixeira)
+    document.querySelectorAll('.draggable').forEach(item => {
+        let isDragging = false;
+        let startX, startY, initialLeft, initialTop;
+
+        const startDrag = (e) => {
+            isDragging = true;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            
+            startX = clientX;
+            startY = clientY;
+            initialLeft = item.offsetLeft;
+            initialTop = item.offsetTop;
+            item.style.zIndex = 100;
+        };
+
+        const doDrag = (e) => {
+            if (!isDragging) return;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            const deltaX = clientX - startX;
+            const deltaY = clientY - startY;
+
+            item.style.left = (initialLeft + deltaX) + 'px';
+            item.style.top = (initialTop + deltaY) + 'px';
+        };
+
+        const stopDrag = (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            
+            // Verificar colisão com a Lixeira
+            const itemRect = item.getBoundingClientRect();
+            const roomRect = document.getElementById('room').getBoundingClientRect();
+            
+            const trashArea = document.getElementById('trash-bin').getBoundingClientRect();
+
+            if (
+                itemRect.left < trashArea.right &&
+                itemRect.right > trashArea.left &&
+                itemRect.top < trashArea.bottom &&
+                itemRect.bottom > trashArea.top
+            ) {
+                removeItem(item);
+            }
+        };
+
+        item.addEventListener('mousedown', startDrag);
+        document.addEventListener('mousemove', doDrag);
+        document.addEventListener('mouseup', stopDrag);
+
+        item.addEventListener('touchstart', startDrag);
+        document.addEventListener('touchmove', doDrag);
+        document.addEventListener('touchend', stopDrag);
+    });
+
+    // 4. Interação: Vassoura limpando Poeira
+    const broom = document.getElementById('broom');
+    let isBroomDragging = false;
+    let bStartX, bStartY, bInitLeft, bInitTop;
+
+    const startBroom = (e) => {
+        isBroomDragging = true;
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        bStartX = clientX;
+        bStartY = clientY;
+        bInitLeft = broom.offsetLeft;
+        bInitTop = broom.offsetTop;
+    };
+
+    const moveBroom = (e) => {
+        if (!isBroomDragging) return;
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+        const deltaX = clientX - bStartX;
+        const deltaY = clientY - bStartY;
+
+        broom.style.left = (bInitLeft + deltaX) + 'px';
+        broom.style.top = (bInitTop + deltaY) + 'px';
+
+        // Checar colisão com poeira
+        const broomRect = broom.getBoundingClientRect();
+        document.querySelectorAll('.dust-item').forEach(dust => {
+            if (dust.dataset.removed) return;
+            const dustRect = dust.getBoundingClientRect();
+
+            if (
+                broomRect.left < dustRect.right &&
+                broomRect.right > dustRect.left &&
+                broomRect.top < dustRect.bottom &&
+                broomRect.bottom > dustRect.top
+            ) {
+                removeItem(dust);
+            }
+        });
+    };
+
+    const stopBroom = () => { isBroomDragging = false; };
+
+    broom.addEventListener('mousedown', startBroom);
+    document.addEventListener('mousemove', moveBroom);
+    document.addEventListener('mouseup', stopBroom);
+
+    broom.addEventListener('touchstart', startBroom);
+    document.addEventListener('touchmove', moveBroom);
+    document.addEventListener('touchend', stopBroom);
+
+
+    // Transição Final após a Limpeza
+    function finishCleaning() {
+        introText.style.display = 'none';
+        document.getElementById('progress-box').style.display = 'none';
+        
+        // Sala Iluminada e Bonita
+        overlay.style.backgroundColor = 'rgba(255, 235, 200, 0.05)';
+        document.getElementById('room').style.boxShadow = '0 0 40px rgba(255, 183, 3, 0.3)';
+
+        // Revelar Carta
+        const letter = document.getElementById('letter-container');
+        letter.style.display = 'block';
+        setTimeout(() => {
+            letter.style.opacity = '1';
+            letter.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+    }
+
+    // Transição para o Vídeo
+    document.getElementById('btn-to-video').addEventListener('click', function() {
+        const letterContainer = document.getElementById('letter-container');
+        const videoContainer = document.getElementById('video-container');
+
+        letterContainer.style.opacity = '0';
+        setTimeout(() => {
+            letterContainer.style.display = 'none';
+            
+            videoContainer.style.display = 'block';
+            setTimeout(() => {
+                videoContainer.style.opacity = '1';
+                videoContainer.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }, 1000);
+    });
+</script>
+
+</body>
+</html>
