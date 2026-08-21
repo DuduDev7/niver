@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mapa de Recadinhos para Julia</title>
+    <title>Universo da Julia</title>
     <style>
         :root {
-            --bg-color: #f3efe6;
-            --overlay-color: rgba(26, 20, 18, 0.65);
-            --font-handwriting: 'Comic Sans MS', 'Caveat', cursive, sans-serif;
+            --bg-color: #0d1117;
+            --accent-color: #ff79c6;
+            --star-color: #8be9fd;
+            --line-color: rgba(139, 233, 253, 0.4);
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             --font-serif: 'Georgia', serif;
         }
 
@@ -20,146 +23,132 @@
 
         body {
             background-color: var(--bg-color);
-            background-image: 
-                radial-gradient(#e5decf 1px, transparent 1px),
-                radial-gradient(#e5decf 1px, var(--bg-color) 1px);
-            background-size: 40px 40px;
-            background-position: 0 0, 20px 20px;
-            font-family: var(--font-handwriting);
+            color: #f8f8f2;
+            font-family: var(--font-main);
             min-height: 100vh;
-            overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            overflow: hidden;
+            position: relative;
         }
 
         header {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
             text-align: center;
-            padding: 2rem 1rem 1rem;
             z-index: 10;
+            width: 90%;
+            max-width: 600px;
+            pointer-events: none;
         }
 
         h1 {
             font-family: var(--font-serif);
-            font-size: 2.2rem;
-            color: #4a3b32;
-            font-weight: 400;
-            letter-spacing: 1px;
+            font-size: 2rem;
+            color: var(--accent-color);
             margin-bottom: 0.5rem;
+            text-shadow: 0 0 10px rgba(255, 121, 198, 0.5);
         }
 
-        .counter {
-            background-color: rgba(255, 255, 255, 0.85);
-            padding: 0.5rem 1.2rem;
+        .progress-bar-container {
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 20px;
-            font-size: 0.95rem;
-            color: #6b5246;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            display: inline-block;
+            height: 12px;
+            width: 100%;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(5px);
         }
 
-        /* Área do Mural */
-        .board-container {
-            position: relative;
-            width: 100%;
-            max-width: 1200px;
-            min-height: 80vh;
-            margin: 1rem auto 4rem;
-            padding: 1rem;
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent-color), var(--star-color));
+            transition: width 0.4s ease;
+            box-shadow: 0 0 12px var(--star-color);
         }
 
-        /* Grid flexível e orgânico */
-        .board {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 2rem 1.5rem;
-            justify-items: center;
-            align-items: center;
-            padding: 2rem;
+        .counter-text {
+            font-size: 0.85rem;
+            margin-top: 6px;
+            color: #bd93f9;
         }
 
-        /* Post-its no Mural */
-        .postit {
-            width: 150px;
-            height: 150px;
-            padding: 1.2rem;
-            border-radius: 2px;
-            cursor: pointer;
-            position: relative;
-            box-shadow: 3px 5px 12px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.08);
-            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease, z-index 0.3s;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            user-select: none;
-            animation: floatSlightly 4s ease-in-out infinite alternate;
-        }
-
-        .postit:hover {
-            transform: scale(1.08) rotate(0deg) translateY(-5px) !important;
-            z-index: 20 !important;
-            box-shadow: 8px 12px 20px rgba(0,0,0,0.18);
-        }
-
-        /* Variações de cores pastéis sofisticadas */
-        .postit.c1 { background-color: #fef08a; } /* Amarelo suave */
-        .postit.c2 { background-color: #fbcfe8; } /* Rosa pálido */
-        .postit.c3 { background-color: #bfdbfe; } /* Azul delicado */
-        .postit.c4 { background-color: #bbf7d0; } /* Verde menta */
-        .postit.c5 { background-color: #fed7aa; } /* Pêssego */
-
-        .postit-preview {
-            font-size: 0.9rem;
-            color: #332d29;
-            line-height: 1.3;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 4;
-            -webkit-box-orient: vertical;
-        }
-
-        .postit-doodle {
-            align-self: flex-end;
-            font-size: 1.1rem;
-            opacity: 0.7;
-        }
-
-        .postit.read {
-            opacity: 0.85;
-        }
-
-        .postit.read::after {
-            content: '✓';
+        /* Canvas para linhas da constelação */
+        #constellationCanvas {
             position: absolute;
-            top: 5px;
-            right: 8px;
-            font-size: 0.8rem;
-            color: rgba(0,0,0,0.3);
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
         }
 
-        /* Efeito de Animação de Flutuação */
-        @keyframes floatSlightly {
-            0% { transform: translateY(0px) rotate(var(--rot)); }
-            100% { transform: translateY(-4px) rotate(calc(var(--rot) + 1deg)); }
+        /* Área dos Pontos/Estrelas */
+        .universe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 2;
         }
 
-        /* Modal (Post-it Ampliado) */
+        .star-node {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #282a36;
+            border: 2px solid var(--star-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            transform: translate(-50%, -50%);
+            animation: pulseGlow 3s infinite alternate;
+        }
+
+        .star-node:hover {
+            transform: translate(-50%, -50%) scale(1.4);
+            box-shadow: 0 0 15px var(--star-color);
+            z-index: 5;
+        }
+
+        .star-node.discovered {
+            background: var(--accent-color);
+            border-color: #fff;
+            box-shadow: 0 0 12px var(--accent-color);
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                box-shadow: 0 0 5px rgba(139, 233, 253, 0.4);
+            }
+
+            100% {
+                box-shadow: 0 0 15px rgba(139, 233, 253, 0.9);
+            }
+        }
+
+        /* Modal Interativo */
         .backdrop {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-color: var(--overlay-color);
-            backdrop-filter: blur(4px);
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.4s ease;
-            z-index: 100;
+            background: rgba(13, 17, 23, 0.85);
+            backdrop-filter: blur(8px);
             display: flex;
             justify-content: center;
             align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 100;
             padding: 1.5rem;
         }
 
@@ -168,379 +157,580 @@
             pointer-events: auto;
         }
 
-        .modal-postit {
+        .card-modal {
+            background: #1e1f29;
+            border: 1px solid rgba(255, 121, 198, 0.3);
+            border-radius: 12px;
             width: 100%;
-            max-width: 500px;
-            max-height: 80vh;
-            padding: 2.5rem 2rem 2rem;
-            border-radius: 2px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            max-width: 480px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             position: relative;
-            transform: scale(0.7) rotate(-5deg);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
         }
 
-        .backdrop.active .modal-postit {
-            transform: scale(1) rotate(0deg);
-        }
-
-        .modal-text {
-            font-size: 1.25rem;
-            color: #2c2520;
-            line-height: 1.6;
-            white-space: pre-line;
+        .backdrop.active .card-modal {
+            transform: translateY(0);
         }
 
         .close-btn {
             position: absolute;
-            top: 10px;
+            top: 15px;
             right: 15px;
             background: none;
             border: none;
-            font-size: 1.8rem;
-            color: #6b5246;
+            color: #6272a4;
+            font-size: 1.5rem;
             cursor: pointer;
-            line-height: 1;
-            opacity: 0.6;
-            transition: opacity 0.2s;
+            transition: color 0.2s;
         }
 
         .close-btn:hover {
-            opacity: 1;
+            color: #ff5555;
         }
 
-        /* Mensagem Final de Conclusão */
-        .final-wrapper {
-            display: none;
+        .card-tag {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent-color);
+            margin-bottom: 0.8rem;
+        }
+
+        .card-body {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: #f8f8f2;
+            white-space: pre-line;
+            margin-bottom: 1.5rem;
+        }
+
+        .interactive-area {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #bd93f9, #ff79c6);
+            border: none;
+            color: #fff;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+
+        .action-btn:hover {
+            opacity: 0.9;
+        }
+
+        .action-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* Tela Final */
+        .final-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-color: rgba(243, 239, 230, 0.95);
+            background: #0d1117;
             z-index: 200;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
             overflow-y: auto;
-            padding: 3rem 1.5rem;
-            text-align: center;
-            animation: fadeIn 1.5s ease forwards;
         }
 
-        .final-content {
+        .final-card {
+            background: #191a21;
+            border: 2px solid var(--accent-color);
+            border-radius: 16px;
             max-width: 650px;
-            margin: 0 auto;
-            background: #fff;
             padding: 3rem 2rem;
-            border-radius: 4px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            border: 1px solid #eae5d9;
+            text-align: center;
+            box-shadow: 0 0 40px rgba(255, 121, 198, 0.3);
+            animation: fadeIn 1s ease;
         }
 
         .final-title {
             font-family: var(--font-serif);
             font-size: 2.2rem;
-            color: #4a3b32;
+            color: var(--accent-color);
             margin-bottom: 1.5rem;
         }
 
         .final-text {
-            font-size: 1.15rem;
-            color: #443a33;
-            line-height: 1.8;
             text-align: left;
+            line-height: 1.8;
+            color: #f8f8f2;
             white-space: pre-line;
-        }
-
-        .heart-icon {
-            font-size: 2rem;
-            color: #e63946;
-            margin-bottom: 1rem;
+            font-size: 1.1rem;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Responsividade para Telas Menores */
-        @media (max-width: 600px) {
-            .board {
-                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-                gap: 1.2rem 1rem;
-                padding: 0.5rem;
+            from {
+                opacity: 0;
+                transform: scale(0.95);
             }
 
-            .postit {
-                width: 130px;
-                height: 130px;
-                padding: 0.9rem;
-            }
-
-            .postit-preview {
-                font-size: 0.8rem;
-            }
-
-            h1 {
-                font-size: 1.7rem;
-            }
-
-            .modal-text {
-                font-size: 1.1rem;
+            to {
+                opacity: 1;
+                transform: scale(1);
             }
         }
     </style>
 </head>
+
 <body>
 
     <header>
-        <h1>Recadinhos para Julia</h1>
-        <div class="counter" id="counter">Recadinhos descobertos: 0 / 20</div>
+        <h1>Mapa Estelar da Julia</h1>
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="counter-text" id="counterText">Conecte as memórias: 0 / 20</div>
     </header>
 
-    <div class="board-container">
-        <div class="board" id="board"></div>
-    </div>
+    <canvas id="constellationCanvas"></canvas>
+    <div class="universe" id="universe"></div>
 
-    <!-- Modal de Leitura -->
+    <!-- Modal de Leitura com Interatividade Interna -->
     <div class="backdrop" id="backdrop">
-        <div class="modal-postit" id="modalPostit">
+        <div class="card-modal">
             <button class="close-btn" id="closeBtn">&times;</button>
-            <div class="modal-text" id="modalText"></div>
+            <div class="card-tag" id="cardTag">Memória Secreta</div>
+            <div class="card-body" id="cardBody"></div>
+            <div class="interactive-area" id="interactiveArea"></div>
         </div>
     </div>
 
-    <!-- Tela Final Especial -->
-    <div class="final-wrapper" id="finalWrapper">
-        <div class="final-content">
-            <div class="heart-icon">♥</div>
-            <h2 class="final-title">Você encontrou todos.</h2>
+    <!-- Tela Final -->
+    <div class="final-screen" id="finalScreen">
+
+        <div class="final-card">
+
+            <h2 class="final-title">Constelação Concluída ✨</h2>
+
             <div class="final-text">
-PLACEHOLDER — Texto final sentimental.
 
-Escreva aqui sua declaração completa para a Julia. Este espaço foi pensado para um texto mais longo, bonito e marcante, que encerra a experiência depois que ela lê cada um dos 20 post-its espalhados pelo mural.
+                <p>
+                    Você chegou até o final.
+                </p>
 
-Você pode falar sobre o futuro, relembrar momentos marcantes da história de vocês, agradecer pelo tempo juntos e dizer tudo o que sente.
+                <p>
+                    E talvez pareça apenas que você acabou de conectar algumas estrelas na tela,
+                    mas, para mim, existe algo muito maior escondido aqui.
+                </p>
 
-Com todo o meu amor,
-[Seu Nome]
+                <p>
+                    Porque quando eu penso na nossa história, eu penso exatamente assim:
+                    pequenos pontos que, sozinhos, talvez não parecessem significar tanta coisa,
+                    mas que, quando colocados juntos, formam algo que eu jamais gostaria de perder.
+                </p>
+
+                <p>
+                    Um treino no CT.
+                    Uma conversa.
+                    Um sorriso.
+                    Uma foto.
+                    Um abraço.
+                    Uma noite.
+                    Uma brincadeira.
+                    Uma saudade.
+                    Um momento que parecia pequeno na hora, mas que hoje eu percebo que fazia parte
+                    de alguma coisa muito maior.
+                </p>
+
+                <p>
+                    Em 2025, você entrou na minha vida de uma maneira que nenhum de nós poderia imaginar.
+                    Você começou a treinar no CT onde eu dava aula, e naquele momento nós ainda éramos
+                    apenas duas pessoas vivendo suas próprias histórias.
+                </p>
+
+                <p>
+                    A gente não sabia o que viria depois.
+                    Não sabia que aquele lugar guardaria tantas lembranças.
+                    Não sabia que, em 2026, nós começaríamos a conversar de verdade.
+                    Não sabia que uma pessoa que inicialmente parecia apenas fazer parte da rotina
+                    acabaria se tornando uma das pessoas mais importantes da minha vida.
+                </p>
+
+                <p>
+                    E talvez seja isso que mais me encanta em tudo.
+                    A gente nunca percebe exatamente quando uma história começa.
+                    Só percebe depois, quando olha para trás e entende que alguns dos momentos
+                    que pareciam completamente comuns estavam, na verdade, construindo algo extraordinário.
+                </p>
+
+                <p>
+                    Você foi chegando aos poucos.
+                    Sem fazer barulho.
+                    Sem precisar de grandes acontecimentos.
+                    E, quando eu percebi, você já estava presente em lugares dentro de mim
+                    onde eu nem sabia que alguém poderia chegar.
+                </p>
+
+                <p>
+                    Hoje existem músicas que lembram você.
+                    Lugares que lembram você.
+                    Fotos que fazem eu sorrir antes mesmo de perceber.
+                    Pequenas coisas durante o dia que me fazem pensar:
+                    "A Julia iria gostar disso."
+                </p>
+
+                <p>
+                    E é engraçado como alguém pode se tornar parte da nossa vida dessa maneira.
+                    Não apenas nos momentos grandes, mas principalmente nos pequenos.
+                </p>
+
+                <p>
+                    É no detalhe.
+                    No jeito que você sorri.
+                    No jeito que você fala.
+                    Nas suas manias.
+                    Nas coisas que você gosta.
+                    Nos seus lírios.
+                    Nas nossas brincadeiras.
+                    Nas vezes em que você esteve na arquibancada me vendo jogar.
+                    Nas lembranças que talvez para qualquer outra pessoa não significassem nada,
+                    mas que para mim carregam você inteira.
+                </p>
+
+                <p>
+                    Eu poderia tentar explicar tudo isso durante horas,
+                    mas ainda assim provavelmente não conseguiria colocar em palavras
+                    o tamanho do carinho que eu tenho por você.
+                </p>
+
+                <p>
+                    Porque algumas pessoas simplesmente passam pela nossa história.
+                    Outras deixam lembranças.
+                    E existem aquelas raríssimas pessoas que fazem a própria história
+                    ganhar um significado diferente depois que chegam.
+                </p>
+
+                <p>
+                    Você é uma dessas pessoas para mim.
+                </p>
+
+                <p>
+                    E se existe alguma coisa que eu quero que você nunca esqueça,
+                    é que eu sou extremamente grato por ter te encontrado.
+                </p>
+
+                <p>
+                    Grato por cada conversa.
+                    Por cada risada.
+                    Por cada abraço.
+                    Por cada momento em que você escolheu ficar.
+                    Por cada lembrança que construímos sem nem perceber que um dia
+                    ela seria tão importante.
+                </p>
+
+                <p>
+                    Talvez daqui a alguns anos a gente olhe para tudo isso e perceba
+                    o quanto ainda éramos jovens quando começamos a escrever essa história.
+                    Talvez muita coisa mude.
+                    Talvez nossos caminhos nos levem a lugares que hoje nem conseguimos imaginar.
+                </p>
+
+                <p>
+                    Mas existe uma coisa que eu espero que nunca mude:
+                    a vontade de continuar criando memórias com você.
+                </p>
+
+                <p>
+                    Quero conhecer mais versões suas.
+                    Quero estar presente nas suas conquistas.
+                    Quero comemorar aquilo que fizer você sorrir.
+                    Quero estar perto quando os dias forem difíceis.
+                    Quero continuar descobrindo suas pequenas manias.
+                    Quero continuar te surpreendendo.
+                    Quero continuar recebendo seus abraços.
+                    Quero continuar tendo motivos para olhar para você e pensar:
+                    "Ainda bem que foi você."
+                </p>
+
+                <p>
+                    Porque, no fim, essa constelação não é sobre estrelas.
+                </p>
+
+                <p>
+                    É sobre nós.
+                </p>
+
+                <p>
+                    Sobre todos esses pequenos pontos que a vida colocou no nosso caminho
+                    e que, juntos, acabaram formando uma história que eu não trocaria por nenhuma outra.
+                </p>
+
+                <p>
+                    E talvez seja por isso que eu tenha escolhido uma constelação.
+                </p>
+
+                <p>
+                    Porque uma estrela sozinha pode ser linda.
+                    Mas quando várias encontram o lugar certo,
+                    elas conseguem formar algo que ninguém enxergaria olhando apenas para uma delas.
+                </p>
+
+                <p>
+                    Eu sinto que nós somos um pouco assim.
+                </p>
+
+                <p>
+                    Dois pontos que a vida colocou no mesmo céu
+                    e que, com o tempo, descobriram que juntos poderiam desenhar alguma coisa muito mais bonita.
+                </p>
+
+                <p>
+                    E eu ainda quero continuar desenhando.
+                </p>
+
+                <p>
+                    Quero que ainda existam muitos pontos nessa nossa história.
+                    Muitas datas.
+                    Muitas fotos.
+                    Muitos abraços.
+                    Muitas viagens.
+                    Muitos "lembra daquele dia?".
+                    Muitas histórias que um dia vamos contar rindo.
+                </p>
+
+                <p>
+                    Quero que, quando olharmos para trás, exista uma constelação inteira
+                    de momentos que só nós dois conseguimos entender.
+                </p>
+
+                <p>
+                    E se um dia você esquecer o quanto é especial para mim,
+                    volte para essas estrelas.
+                </p>
+
+                <p>
+                    Lembre que cada uma delas representa uma pequena parte
+                    daquilo que sinto por você.
+                </p>
+
+                <p>
+                    E que, mesmo depois de todas elas estarem conectadas,
+                    ainda vai existir muito mais para escrever.
+                </p>
+
+                <p>
+                    Porque essa não é uma história que eu quero terminar.
+                </p>
+
+                <p>
+                    É uma história que eu quero continuar vivendo.
+                </p>
+
+                <p>
+                    Com você.
+                </p>
+
+                <p>
+                    Obrigado por ter aparecido no meu caminho.
+                    Obrigado por ter ficado.
+                    Obrigado por ser exatamente quem você é.
+                </p>
+
+                <p>
+                    E, acima de tudo,
+                    obrigado por ter transformado tantos momentos comuns
+                    em algumas das minhas lembranças favoritas.
+                </p>
+
+                <p>
+                    Se eu pudesse voltar para qualquer ponto dessa constelação,
+                    eu voltaria para todos.
+                </p>
+
+                <p>
+                    Porque todos eles me levaram até você.
+                </p>
+
+                <p class="final-love">
+                    Eu te amo, Julia. ❤️
+                </p>
+
             </div>
+
         </div>
+
     </div>
 
     <script>
-        // Configuração dos 20 Post-its
-        const postitsData = [
-            {
-                type: "short",
-                preview: "Uma pequena lembrança...",
-                text: "PLACEHOLDER — escrever aqui uma lembrança nossa.",
-                color: "c1",
-                doodle: "♥"
-            },
-            {
-                type: "short",
-                preview: "Uma piada só nossa...",
-                text: "PLACEHOLDER — escrever aqui uma piada interna.",
-                color: "c2",
-                doodle: "✨"
-            },
-            {
-                type: "short",
-                preview: "Sobre você...",
-                text: "PLACEHOLDER — escrever aqui um elogio.",
-                color: "c3",
-                doodle: "❀"
-            },
-            {
-                type: "short",
-                preview: "Um segredo...",
-                text: "PLACEHOLDER — escrever aqui algo que eu nunca te falei.",
-                color: "c4",
-                doodle: "✉"
-            },
-            {
-                type: "short",
-                preview: "Guardado no coração...",
-                text: "PLACEHOLDER — escrever aqui uma memória de nós dois.",
-                color: "c5",
-                doodle: "★"
-            },
-            {
-                type: "long",
-                preview: "Uma história sobre nós...",
-                text: "PLACEHOLDER — TEXTO GRANDE.\n\nEscreva aqui um texto mais longo e detalhado. Pode ser o relato de um dia especial que vocês passaram juntos, desde o momento em que se encontraram até o final do dia.\n\nDetalhe os pequenos momentos, os sorrisos e o quanto esse dia significou para você.",
-                color: "c1",
-                doodle: "✦"
-            },
-            {
-                type: "short",
-                preview: "Seu sorriso...",
-                text: "PLACEHOLDER — escrever aqui um detalhe sobre o sorriso dela que você ama.",
-                color: "c2",
-                doodle: "♥"
-            },
-            {
-                type: "short",
-                preview: "Nosso futuro...",
-                text: "PLACEHOLDER — escrever aqui um plano ou sonho para vocês dois.",
-                color: "c3",
-                doodle: "🌙"
-            },
-            {
-                type: "long",
-                preview: "O que aprendi com você...",
-                text: "PLACEHOLDER — TEXTO GRANDE.\n\nEscreva aqui sobre como ela transformou sua vida e as coisas que você aprendeu ao lado dela.\n\nFale sobre o impacto positivo que ela traz para o seu dia a dia e como você se tornou uma pessoa melhor depois que a conheceu.",
-                color: "c4",
-                doodle: "✿"
-            },
-            {
-                type: "short",
-                preview: "Coisas simples...",
-                text: "PLACEHOLDER — escrever aqui um momento simples do cotidiano de vocês que você adora.",
-                color: "c5",
-                doodle: "☕"
-            },
-            {
-                type: "short",
-                preview: "Música...",
-                text: "PLACEHOLDER — escrever aqui sobre uma música que te lembra ela.",
-                color: "c1",
-                doodle: "♪"
-            },
-            {
-                type: "short",
-                preview: "Agradecimento...",
-                text: "PLACEHOLDER — escrever aqui um agradecimento por algo específico que ela fez.",
-                color: "c2",
-                doodle: "♥"
-            },
-            {
-                type: "long",
-                preview: "A primeira vez que...",
-                text: "PLACEHOLDER — TEXTO GRANDE.\n\nConte em detalhes sobre a primeira vez que você percebeu que estava apaixonado por ela.\n\nOnde vocês estavam, como estava o dia, o que ela estava vestindo e qual foi a sensação exata que você teve naquele momento.",
-                color: "c3",
-                doodle: "☼"
-            },
-            {
-                type: "short",
-                preview: "Seu jeito...",
-                text: "PLACEHOLDER — escrever aqui uma mania fofa dela que você observa.",
-                color: "c4",
-                doodle: "✨"
-            },
-            {
-                type: "short",
-                preview: "Lugar favorito...",
-                text: "PLACEHOLDER — escrever aqui sobre o seu lugar preferido no mundo quando está com ela.",
-                color: "c5",
-                doodle: "📍"
-            },
-            {
-                type: "short",
-                preview: "Um abraço...",
-                text: "PLACEHOLDER — escrever aqui o que você sente quando vocês se abraçam.",
-                color: "c1",
-                doodle: "☁"
-            },
-            {
-                type: "long",
-                preview: "Carta aberta...",
-                text: "PLACEHOLDER — TEXTO GRANDE.\n\nUm espaço dedicado para você escrever uma carta com pensamentos profundos sobre o amor de vocês.\n\nExplique como a presença dela traz paz e como você valoriza cada segundo dessa caminhada juntos.",
-                color: "c2",
-                doodle: "✉"
-            },
-            {
-                type: "short",
-                preview: "Promessa...",
-                text: "PLACEHOLDER — escrever aqui uma pequena promessa carinhosa.",
-                color: "c3",
-                doodle: "♥"
-            },
-            {
-                type: "short",
-                preview: "Para dias difíceis...",
-                text: "PLACEHOLDER — escrever aqui uma frase de apoio para quando ela estiver cansada.",
-                color: "c4",
-                doodle: "🌱"
-            },
-            {
-                type: "short",
-                preview: "Sempre...",
-                text: "PLACEHOLDER — escrever aqui uma mensagem final curta e carinhosa.",
-                color: "c5",
-                doodle: "♾"
-            }
+        // As coordenadas (x, y) foram organizadas para desenhar "J" e "4" na tela
+        const starsData = [
+
+            { tag: "O começo", text: "2025. Você apareceu no CT sem imaginar o tamanho da história que começaria ali.", x: 22, y: 25, interaction: null },
+
+            { tag: "Uma coincidência?", text: "Talvez tenha sido só acaso. Eu prefiro acreditar que foi o universo começando a aproximar a gente.", x: 30, y: 25, interaction: null },
+
+            { tag: "Seu sorriso", text: "Tem sorrisos bonitos. E tem o seu, que consegue mudar completamente o meu dia.", x: 38, y: 25, interaction: null },
+
+            { tag: "Um segredo", text: "Às vezes eu lembro de você do nada e começo a sorrir sozinho. E provavelmente você nem imagina.", x: 30, y: 35, interaction: null },
+
+            { tag: "Memória", text: "Algumas lembranças duram poucos minutos. Algumas ficam para sempre. As que têm você são as minhas favoritas.", x: 30, y: 48, interaction: null },
+
+            { tag: "Nossa música", text: "Tem músicas que eu escuto e não consigo mais ouvir como antes. Agora elas têm você dentro delas.", x: 30, y: 62, interaction: null },
+
+            { tag: "Uma mania sua", text: "Eu poderia escrever um livro inteiro sobre as pequenas coisas que você faz sem perceber e que eu acho absurdamente fofas.", x: 30, y: 75, interaction: null },
+
+            { tag: "Um detalhe", text: "Talvez você nem perceba, mas eu reparo em muito mais coisas em você do que você imagina.", x: 25, y: 80, interaction: null },
+
+            { tag: "O futuro", text: "Ainda existe muita coisa que eu quero viver com você. E talvez essa seja a parte mais bonita de todas.", x: 18, y: 76, interaction: null },
+
+            { tag: "Abraço", text: "Tem dias em que eu não preciso de nenhuma solução. Só preciso de você perto.", x: 16, y: 68, interaction: null },
+
+            { tag: "Pequenas coisas", text: "Eu gosto de nós também nos momentos em que não acontece absolutamente nada.", x: 72, y: 25, interaction: null },
+
+            { tag: "2026", text: "Foi o ano em que a gente começou a conversar de verdade. E eu não fazia ideia do quanto isso mudaria minha vida.", x: 64, y: 42, interaction: null },
+
+            { tag: "Obrigado", text: "Obrigado por cada vez que você escolheu ficar mais um pouco.", x: 56, y: 58, interaction: null },
+
+            { tag: "Nós", text: "Eu gosto da pessoa que sou quando estou com você.", x: 68, y: 58, interaction: null },
+
+            { tag: "Meu lugar", text: "Meu lugar favorito não é exatamente um lugar. É qualquer lugar onde você esteja.", x: 80, y: 58, interaction: null },
+
+            { tag: "Para dias difíceis", text: "Se algum dia tudo parecer pesado demais, lembra que você nunca precisa carregar tudo sozinha.", x: 72, y: 38, interaction: null },
+
+            { tag: "Você", text: "Entre tantas pessoas no mundo, ainda parece absurdo para mim que eu tenha encontrado justamente você.", x: 72, y: 50, interaction: null },
+
+            { tag: "Risadas", text: "Algumas das minhas melhores lembranças têm uma coisa em comum: você estava nelas.", x: 72, y: 68, interaction: null },
+
+            { tag: "Promessa", text: "Eu não prometo que todos os dias serão perfeitos. Prometo querer continuar construindo os nossos.", x: 72, y: 80, interaction: null },
+
+            { tag: "Para sempre", text: "Se ainda existem estrelas para conectar, ainda existem memórias para criar. E eu quero criar muitas delas com você.", x: 72, y: 88, interaction: null }
+
         ];
 
-        const board = document.getElementById('board');
+        // Ordem exata dos pontos para desenhar primeiro o J e depois o 4 sem traços tortos
+        const drawOrder = [0, 1, 2, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
+
+        const universe = document.getElementById('universe');
+        const canvas = document.getElementById('constellationCanvas');
+        const ctx = canvas.getContext('2d');
         const backdrop = document.getElementById('backdrop');
-        const modalPostit = document.getElementById('modalPostit');
-        const modalText = document.getElementById('modalText');
+        const cardTag = document.getElementById('cardTag');
+        const cardBody = document.getElementById('cardBody');
+        const interactiveArea = document.getElementById('interactiveArea');
         const closeBtn = document.getElementById('closeBtn');
-        const counter = document.getElementById('counter');
-        const finalWrapper = document.getElementById('finalWrapper');
+        const progressBar = document.getElementById('progressBar');
+        const counterText = document.getElementById('counterText');
+        const finalScreen = document.getElementById('finalScreen');
 
-        const readIndices = new Set();
-        const totalPostits = postitsData.length;
+        const discoveredIndices = new Set();
+        const total = starsData.length;
 
-        // Gerar os post-its no mural
-        postitsData.forEach((data, index) => {
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            drawLines();
+        }
+        window.addEventListener('resize', resizeCanvas);
+
+        // Renderizar estrelas
+        starsData.forEach((star, index) => {
             const el = document.createElement('div');
-            el.classList.add('postit', data.color);
-            
-            // Rotação aleatória realista (-8 deg a 8 deg)
-            const randomRot = (Math.random() * 16 - 8).toFixed(1);
-            el.style.setProperty('--rot', `${randomRot}deg`);
-            el.style.transform = `rotate(${randomRot}deg)`;
+            el.classList.add('star-node');
+            el.style.left = `${star.x}%`;
+            el.style.top = `${star.y}%`;
+            el.innerText = index + 1;
 
-            // Atraso de animação para flutuação assíncrona
-            el.style.animationDelay = `${(Math.random() * 2).toFixed(1)}s`;
-
-            el.innerHTML = `
-                <div class="postit-preview">${data.preview}</div>
-                <div class="postit-doodle">${data.doodle}</div>
-            `;
-
-            el.addEventListener('click', () => openModal(index, data, el));
-            board.appendChild(el);
+            el.addEventListener('click', () => openModal(index, star, el));
+            universe.appendChild(el);
+            star.element = el;
         });
 
-        function openModal(index, data, element) {
-            modalText.textContent = data.text;
-            modalPostit.className = `modal-postit ${data.color}`;
+        function openModal(index, star, element) {
+            cardTag.innerText = star.tag;
+            cardBody.innerText = star.text;
+            interactiveArea.innerHTML = '';
+
+            if (star.interaction) {
+                const btn = document.createElement('button');
+                btn.className = 'action-btn';
+                btn.innerText = star.interaction.label;
+                btn.onclick = () => {
+                    const resp = document.createElement('p');
+                    resp.style.marginTop = '10px';
+                    resp.style.color = '#8be9fd';
+                    resp.innerText = star.interaction.response;
+                    interactiveArea.appendChild(resp);
+                    btn.disabled = true;
+                };
+                interactiveArea.appendChild(btn);
+            }
+
             backdrop.classList.add('active');
 
-            if (!readIndices.has(index)) {
-                readIndices.add(index);
-                element.classList.add('read');
-                updateCounter();
+            if (!discoveredIndices.has(index)) {
+                discoveredIndices.add(index);
+                element.classList.add('discovered');
+                updateProgress();
+                drawLines();
             }
         }
 
         function closeModal() {
             backdrop.classList.remove('active');
-            
-            // Verificar se todos foram lidos para acionar o final
-            if (readIndices.size === totalPostits) {
+            if (discoveredIndices.size === total) {
                 setTimeout(() => {
-                    finalWrapper.style.display = 'block';
+                    finalScreen.style.display = 'flex';
                 }, 600);
             }
         }
 
-        function updateCounter() {
-            counter.textContent = `Recadinhos descobertos: ${readIndices.size} / ${totalPostits}`;
+        function updateProgress() {
+            const pct = (discoveredIndices.size / total) * 100;
+            progressBar.style.width = `${pct}%`;
+            counterText.innerText = `Conecte as memórias: ${discoveredIndices.size} / ${total}`;
+        }
+
+        // Desenhar a constelação conectando as linhas na ordem certa do desenho
+        function drawLines() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.strokeStyle = 'rgba(255, 121, 198, 0.7)';
+            ctx.lineWidth = 2.5;
+
+            for (let i = 0; i < drawOrder.length - 1; i++) {
+                const idx1 = drawOrder[i];
+                const idx2 = drawOrder[i + 1];
+
+                // Desenha a linha apenas se ambos os pontos já tiverem sido clicados
+                if (discoveredIndices.has(idx1) && discoveredIndices.has(idx2)) {
+                    const p1 = starsData[idx1];
+                    const p2 = starsData[idx2];
+
+                    const x1 = (p1.x / 100) * canvas.width;
+                    const y1 = (p1.y / 100) * canvas.height;
+                    const x2 = (p2.x / 100) * canvas.width;
+                    const y2 = (p2.y / 100) * canvas.height;
+
+                    ctx.beginPath();
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x2, y2);
+                    ctx.stroke();
+                }
+            }
         }
 
         closeBtn.addEventListener('click', closeModal);
-
         backdrop.addEventListener('click', (e) => {
-            if (e.target === backdrop) {
-                closeModal();
-            }
+            if (e.target === backdrop) closeModal();
         });
+
+        resizeCanvas();
     </script>
 </body>
+
 </html>
