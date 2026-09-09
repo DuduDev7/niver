@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>O Chute Inesquecível - Pênalti</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body,
+        html {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #02040a;
+            color: #ffffff;
+            user-select: none;
+        }
+
+        /* --- STADIUM STAGE CONTAINER --- */
+        #stadiumStage {
+            position: fixed;
+            inset: 0;
+            z-index: 10;
+            background: radial-gradient(circle at 50% 30%, #0d233a 0%, #030712 80%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: opacity 1.5s ease;
+        }
+
+        #stadiumStage.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #penaltyCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+        }
+
+        #penaltyCanvas:active {
+            cursor: grabbing;
+        }
+
+        .penalty-ui {
+            position: absolute;
+            top: 2rem;
+            width: 100%;
+            text-align: center;
+            z-index: 20;
+            pointer-events: none;
+            padding: 0 1rem;
+        }
+
+        .penalty-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, #ffffff, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+
+        .penalty-subtitle {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 1px;
+        }
+
+        .shoot-btn-wrapper {
+            position: absolute;
+            bottom: 2.5rem;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .btn-kick {
+            padding: 1.1rem 2.8rem;
+            font-size: 1.2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #fff;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 25px rgba(37, 99, 235, 0.6), 0 10px 20px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            outline: none;
+        }
+
+        .btn-kick:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 40px rgba(37, 99, 235, 0.9), 0 12px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-kick:active {
+            transform: scale(0.96);
+        }
+
+        .drag-hint {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: pulseHint 1.8s infinite ease-in-out;
+        }
+
+        @keyframes pulseHint {
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: translateY(0);
+            }
+
+            50% {
+                opacity: 0.8;
+                transform: translateY(-3px);
+            }
+        }
+
+        #flashOverlay {
+            position: fixed;
+            inset: 0;
+            background: #ffffff;
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s ease-out;
+        }
+
+        #flashOverlay.flash {
+            opacity: 1;
+            transition: opacity 0.05s ease-in;
+        }
+
+        /* --- CONTENT SECTION AFTER GOAL --- */
+        #contentSection {
+            position: relative;
+            z-index: 30;
+            width: 100%;
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 4rem 1.5rem;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1.5s ease, transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        #contentSection.visible {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .goal-badge {
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: 6px;
+            color: #fbbf24;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 15px rgba(251, 191, 36, 0.5);
+        }
+
+        .main-heading {
+            font-size: 3rem;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, #ffffff, #93c5fd, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+        }
+
+        .story-block {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(59, 130, 246, 0.25);
+            border-radius: 24px;
+            padding: 3rem;
+            width: 100%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            margin-bottom: 3.5rem;
+        }
+
+        .story-line {
+            font-size: 1.2rem;
+            line-height: 2;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1.8rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+            font-weight: 300;
+        }
+
+        .story-line.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .story-line:last-child {
+            margin-bottom: 0;
+        }
+
+        .video-box {
+            position: relative;
+            width: 100%;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(59, 130, 246, 0.3);
+            border: 2px solid rgba(96, 165, 250, 0.4);
+            opacity: 0;
+            transform: scale(0.92);
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            background: #000;
+        }
+
+        .video-box.revealed {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+        }
+
+        .video-wrapper video,
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        @media (max-width: 768px) {
+            .penalty-title {
+                font-size: 1.6rem;
+            }
+
+            .main-heading {
+                font-size: 2rem;
+            }
+
+            .story-block {
+                padding: 1.8rem;
+            }
+
+            .story-line {
+                font-size: 1.05rem;
+                line-height: 1.8;
+            }
+
+            .btn-kick {
+                padding: 1rem 2.2rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="stadiumStage">
+        <div class="penalty-ui">
+            <h1 class="penalty-title">O Momento Decisivo</h1>
+            <p class="penalty-subtitle">Arraste a bola para trás e solte para chutar no gol</p>
+        </div>
+
+        <canvas id="penaltyCanvas"></canvas>
+
+        <div class="shoot-btn-wrapper">
+            <div class="drag-hint">▼ Ou clique no botão abaixo ▼</div>
+            <button class="btn-kick" id="shootBtn">CHUTAR ⚽</button>
+        </div>
+    </div>
+
+    <div id="flashOverlay"></div>
+
+    <div id="contentSection">
+        <div class="goal-badge">✨ GOLAAAAÇO! ✨</div>
+        <h2 class="main-heading">Um Chute Direto Pro Coração</h2>
+
+        <div class="story-block">
+            <p class="story-line" id="line1">Talvez eu nunca consiga explicar exatamente o que passou pela minha cabeça
+                naquele momento. Era uma quarta de final, um campeonato, uma disputa de pênaltis e toda aquela pressão
+                de saber que qualquer erro poderia acabar com tudo. E, no meio de tudo isso, tinha você ali, assistindo.
+                O que você não sabia era que eu seria o primeiro a bater. E acho que, se soubesse antes, talvez tivesse
+                conseguido se preparar um pouquinho melhor para o que estava por vir... ou talvez não, porque você quase
+                desmaiou, passou mal e sua pressão baixou de tanto nervosismo. KKKKKKK. ❤️</p>
+
+            <p class="story-line" id="line2">Eu fui para a bola sem saber exatamente como aquele momento terminaria, mas
+                sabia de uma coisa: se eu fizesse aquele gol, ele teria que ser seu. E foi isso que aconteceu. Eu bati,
+                a bola entrou e, antes mesmo de pensar em comemorar, eu pensei em você. Aquele gol não foi simplesmente
+                mais um gol. Foi o gol que eu fiz e imediatamente procurei uma forma de dizer, sem precisar falar nada,
+                que aquele momento também era seu. Eu dediquei para você porque, de alguma forma, você estava fazendo
+                parte daquele momento comigo, mesmo estando do outro lado da quadra. E talvez você nem imagine o quanto
+                significou para mim olhar para você depois e saber que você estava ali.</p>
+
+            <p class="story-line" id="line3">Só que futebol, infelizmente, não conta histórias do jeito que a gente
+                gostaria. A gente acabou perdendo no final. E talvez essa seja justamente a parte dessa lembrança que eu
+                mais gosto de guardar. Porque seria muito fácil lembrar apenas do gol se tivéssemos saído vencedores.
+                Mas nós não saímos. O resultado não foi o que eu queria. Aquele momento de felicidade acabou dando lugar
+                à frustração de uma derrota. E, mesmo assim, quando eu penso naquele dia, uma das primeiras coisas que
+                me vêm à cabeça é você. Porque você estava lá. Você viu o gol. Você sentiu toda aquela tensão. Você
+                quase passou mal comigo sem nem saber que eu seria o primeiro a bater. E, quando tudo acabou, você
+                continuou ali.</p>
+
+            <p class="story-line" id="line4">E é isso que eu quero que você entenda: eu não quero você apenas nas minhas
+                vitórias. Eu não quero você somente quando existe alguma coisa para comemorar, quando eu faço um gol,
+                quando meu time ganha, quando tudo dá certo ou quando eu estou feliz. Eu quero você também nas derrotas.
+                Nos dias em que eu erro. Nos dias em que as coisas não saem como eu queria. Nos momentos em que eu fico
+                frustrado, cansado, triste ou simplesmente não sei o que fazer. Quero você quando existe uma medalha e
+                quando não existe nada. Quando existe comemoração e quando existe silêncio. Porque, no final das contas,
+                o que torna tudo realmente especial não é ter alguém ao nosso lado apenas quando tudo está perfeito. É
+                saber que existe alguém que escolhe continuar ali mesmo quando não está.</p>
+
+            <p class="story-line" id="line5">E, por isso, eu preciso terminar essa história dizendo uma coisa que talvez
+                eu nunca consiga agradecer o suficiente: muito obrigado por estar sempre comigo. Obrigado por estar nas
+                minhas vitórias, mas principalmente por estar também nas minhas derrotas. Obrigado por torcer, por se
+                preocupar, por sentir junto comigo, por ficar nervosa por mim a ponto de quase desmaiar KKKKKKK, por
+                comemorar meus gols como se fossem seus e por continuar do meu lado mesmo quando o resultado não foi
+                aquilo que eu queria. Muito obrigado por estar comigo em tudo. Nos jogos, nos dias bons, nos dias ruins,
+                nas conquistas, nas frustrações, nas risadas, nas preocupações e em todas aquelas pequenas coisas que
+                talvez nem pareçam importantes, mas que, quando eu olho para trás, percebo que foram justamente elas que
+                fizeram você se tornar tão importante para mim. Você talvez não tenha ideia do tamanho do espaço que
+                ocupa dentro da minha vida. Eu só tenho a agradecer por ter você nela. Agradecer por cada momento, cada
+                apoio, cada abraço, cada palavra, cada vez que você escolheu estar perto. Agradecer por ser você.
+                Agradecer por fazer parte da minha história e por me permitir fazer parte da sua. Se aquele gol foi meu
+                naquele dia, uma parte dele sempre vai ser sua também, porque você estava lá para assistir, torcer e
+                viver aquele momento comigo. E mesmo que o campeonato tenha terminado com uma derrota, eu saí daquele
+                dia carregando uma das coisas mais importantes que eu poderia ter: a certeza de que, independentemente
+                do placar, eu tinha você ali comigo. E isso vale muito mais do que qualquer vitória. Então, minha
+                princesa, de verdade: MUITO OBRIGADO. Obrigado por estar comigo em tudo. Obrigado por nunca fazer eu
+                sentir que preciso enfrentar as coisas sozinho. Obrigado por ser essa pessoa tão especial na minha vida.
+                Eu sou muito, muito grato por ter encontrado você e por poder chamar você de minha. Eu amo você, e
+                espero que, por muito tempo ainda, a gente continue comemorando juntos os gols, enfrentando juntos as
+                derrotas e vivendo juntos absolutamente tudo que ainda está por vir. ❤️</p>
+
+        </div>
+
+        <div class="video-box" id="videoContainer">
+            <div class="video-wrapper">
+                <video controls
+                    poster="https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=1200&q=80">
+                    <source src="zgol.mp4" type="video/mp4">
+                    <!-- VÍDEO SERÁ ADICIONADO DEPOIS -->
+                    Seu navegador não suporta a exibição deste vídeo.
+                </video>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('penaltyCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        let ball = { x: 0, y: 0, baseX: 0, baseY: 0, radius: 28, vx: 0, vy: 0, vz: 0, z: 1, rotation: 0 };
+        let goal = { x: 0, y: 0, width: 0, height: 0 };
+        let isDragging = false, dragStart = { x: 0, y: 0 }, dragCurrent = { x: 0, y: 0 };
+        let isKicked = false, hasScored = false, cameraShake = 0, trailParticles = [];
+
+        function initPositions() {
+            ball.baseX = width / 2;
+            ball.baseY = height * 0.78;
+            ball.x = ball.baseX;
+            ball.y = ball.baseY;
+            ball.z = 1;
+            ball.vx = 0; ball.vy = 0; ball.vz = 0;
+
+            goal.width = Math.min(width * 0.6, 450);
+            goal.height = goal.width * 0.45;
+            goal.x = (width - goal.width) / 2;
+            goal.y = height * 0.22;
+        }
+        initPositions();
+
+        function getEventPos(e) {
+            if (e.touches && e.touches.length > 0) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            return { x: e.clientX, y: e.clientY };
+        }
+
+        function onStart(e) {
+            if (isKicked) return;
+            const pos = getEventPos(e);
+            if (Math.hypot(pos.x - ball.x, pos.y - ball.y) < ball.radius * 2.5) {
+                isDragging = true;
+                dragStart = pos;
+                dragCurrent = pos;
+            }
+        }
+
+        function onMove(e) {
+            if (!isDragging || isKicked) return;
+            dragCurrent = getEventPos(e);
+            const dx = dragCurrent.x - dragStart.x;
+            const dy = dragCurrent.y - dragStart.y;
+            const maxDrag = 150;
+            const dist = Math.hypot(dx, dy);
+
+            if (dist > maxDrag) {
+                const angle = Math.atan2(dy, dx);
+                dragCurrent.x = dragStart.x + Math.cos(angle) * maxDrag;
+                dragCurrent.y = dragStart.y + Math.sin(angle) * maxDrag;
+            }
+
+            ball.x = ball.baseX + (dragCurrent.x - dragStart.x) * 0.5;
+            ball.y = ball.baseY + (dragCurrent.y - dragStart.y) * 0.5;
+        }
+
+        function onEnd() {
+            if (!isDragging || isKicked) return;
+            isDragging = false;
+            const dx = dragStart.x - dragCurrent.x;
+            const dy = dragStart.y - dragCurrent.y;
+            if (Math.hypot(dx, dy) > 20) {
+                shootBall(dx * 0.22, dy * 0.28);
+            } else {
+                ball.x = ball.baseX;
+                ball.y = ball.baseY;
+            }
+        }
+
+        canvas.addEventListener('mousedown', onStart);
+        canvas.addEventListener('mousemove', onMove);
+        window.addEventListener('mouseup', onEnd);
+        canvas.addEventListener('touchstart', onStart, { passive: true });
+        canvas.addEventListener('touchmove', onMove, { passive: true });
+        window.addEventListener('touchend', onEnd);
+
+        document.getElementById('shootBtn').addEventListener('click', () => {
+            if (!isKicked) shootBall((Math.random() - 0.5) * 15, 65);
+        });
+
+        function shootBall(vx, vy) {
+            isKicked = true;
+            ball.vx = vx;
+            ball.vy = -Math.abs(vy);
+            ball.vz = -0.015;
+            document.querySelector('.shoot-btn-wrapper').style.opacity = '0';
+            document.querySelector('.penalty-ui').style.opacity = '0';
+        }
+
+        function drawStadium() {
+            const fieldGrad = ctx.createLinearGradient(0, height * 0.2, 0, height);
+            fieldGrad.addColorStop(0, '#0d401b');
+            fieldGrad.addColorStop(0.5, '#15803d');
+            fieldGrad.addColorStop(1, '#052e16');
+
+            ctx.fillStyle = fieldGrad;
+            ctx.beginPath();
+            ctx.moveTo(0, height * 0.35);
+            ctx.lineTo(width, height * 0.35);
+            ctx.lineTo(width, height);
+            ctx.lineTo(0, height);
+            ctx.fill();
+
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+            ctx.lineWidth = 3;
+
+            const pBoxW = goal.width * 1.8;
+            ctx.beginPath();
+            ctx.moveTo(width / 2 - pBoxW / 2, height * 0.42);
+            ctx.lineTo(width / 2 + pBoxW / 2, height * 0.42);
+            ctx.lineTo(width / 2 + pBoxW * 0.9, height * 0.85);
+            ctx.lineTo(width / 2 - pBoxW * 0.9, height * 0.85);
+            ctx.closePath();
+            ctx.stroke();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(ball.baseX, ball.baseY + 10, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            drawGoal();
+        }
+
+        function drawGoal() {
+            const gx = goal.x, gy = goal.y, gw = goal.width, gh = goal.height;
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.lineWidth = 1;
+            for (let x = gx; x <= gx + gw; x += 15) {
+                ctx.beginPath();
+                ctx.moveTo(x, gy);
+                ctx.lineTo(x + (x - (gx + gw / 2)) * 0.1, gy + gh);
+                ctx.stroke();
+            }
+            for (let y = gy; y <= gy + gh; y += 15) {
+                ctx.beginPath();
+                ctx.moveTo(gx, y);
+                ctx.lineTo(gx + gw, y);
+                ctx.stroke();
+            }
+
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 8;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = '#ffffff';
+            ctx.beginPath();
+            ctx.moveTo(gx, gy + gh);
+            ctx.lineTo(gx, gy);
+            ctx.lineTo(gx + gw, gy);
+            ctx.lineTo(gx + gw, gy + gh);
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+        }
+
+        function drawTrajectory() {
+            if (!isDragging || isKicked) return;
+            const dx = dragStart.x - dragCurrent.x;
+            const dy = dragStart.y - dragCurrent.y;
+
+            ctx.save();
+            ctx.strokeStyle = 'rgba(96, 165, 250, 0.8)';
+            ctx.lineWidth = 4;
+            ctx.setLineDash([8, 8]);
+            ctx.beginPath();
+            ctx.moveTo(ball.x, ball.y);
+            const targetX = ball.x + dx * 2;
+            const targetY = ball.y + dy * 2;
+            ctx.lineTo(targetX, targetY);
+            ctx.stroke();
+
+            ctx.fillStyle = 'rgba(96, 165, 250, 0.4)';
+            ctx.beginPath();
+            ctx.arc(targetX, targetY, 15, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        function drawBall() {
+            ctx.save();
+            ctx.translate(ball.x, ball.y);
+            ctx.scale(ball.z, ball.z);
+            ctx.rotate(ball.rotation);
+
+            const r = ball.radius;
+            ctx.save();
+            ctx.scale(1, 0.3);
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+            ctx.beginPath();
+            ctx.arc(0, r * 2.5, r * 0.9, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = 'rgba(255,255,255,0.6)';
+            ctx.beginPath();
+            ctx.arc(0, 0, r, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            ctx.fillStyle = '#1e293b';
+            for (let i = 0; i < 5; i++) {
+                const angle = (i * Math.PI * 2) / 5;
+                ctx.beginPath();
+                ctx.arc(Math.cos(angle) * (r * 0.55), Math.sin(angle) * (r * 0.55), r * 0.22, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.restore();
+        }
+
+        function updatePhysics() {
+            if (!isKicked || hasScored) return;
+            ball.x += ball.vx;
+            ball.y += ball.vy;
+            ball.z += ball.vz;
+            ball.rotation += 0.15;
+            if (ball.z < 0.4) ball.z = 0.4;
+
+            trailParticles.push({ x: ball.x, y: ball.y, size: ball.radius * ball.z, alpha: 0.7 });
+            cameraShake = Math.random() * 4 - 2;
+
+            if (ball.y <= goal.y + goal.height * 0.6) triggerGoalSequence();
+        }
+
+        function drawTrail() {
+            for (let i = trailParticles.length - 1; i >= 0; i--) {
+                const p = trailParticles[i];
+                p.alpha -= 0.04;
+                if (p.alpha <= 0) { trailParticles.splice(i, 1); continue; }
+                ctx.fillStyle = `rgba(96, 165, 250, ${p.alpha})`;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size * 0.8, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function render() {
+            ctx.save();
+            if (cameraShake) ctx.translate(cameraShake, cameraShake);
+            ctx.clearRect(0, 0, width, height);
+
+            drawStadium();
+            drawTrajectory();
+            drawTrail();
+            drawBall();
+            updatePhysics();
+
+            ctx.restore();
+            requestAnimationFrame(render);
+        }
+        render();
+
+        function triggerGoalSequence() {
+            hasScored = true;
+            const flash = document.getElementById('flashOverlay');
+            flash.classList.add('flash');
+            setTimeout(() => flash.classList.remove('flash'), 300);
+
+            setTimeout(() => {
+                document.getElementById('stadiumStage').classList.add('fade-out');
+                document.getElementById('contentSection').classList.add('visible');
+                revealStoryLines();
+            }, 600);
+        }
+
+        function revealStoryLines() {
+            const lines = [
+                document.getElementById('line1'),
+                document.getElementById('line2'),
+                document.getElementById('line3'),
+                document.getElementById('line4'),
+                document.getElementById('line5')
+            ];
+
+            lines.forEach((line, index) => {
+                setTimeout(() => line.classList.add('revealed'), 800 * (index + 1));
+            });
+
+            setTimeout(() => {
+                document.getElementById('videoContainer').classList.add('revealed');
+            }, 800 * (lines.length + 1));
+        }
+    </script>
+</body>
+
+</html>

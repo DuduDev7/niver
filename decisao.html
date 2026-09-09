@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Garrudos x Engenios</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body,
+        html {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #050508;
+            color: #ffffff;
+        }
+
+        /* Canvas Background */
+        #bgCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Mouse Glow Filter */
+        .mouse-glow {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 70%);
+            pointer-events: none;
+            z-index: 2;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s ease;
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1.5rem;
+        }
+
+        /* --- INTRO SECTION --- */
+        #introScreen {
+            position: fixed;
+            inset: 0;
+            background: #030305;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), visibility 1s;
+        }
+
+        #introScreen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .intro-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 3rem;
+            animation: pulseText 2s infinite ease-in-out;
+            text-align: center;
+            padding: 0 1rem;
+        }
+
+        .emoji-stage {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3rem;
+            margin-bottom: 3rem;
+            height: 150px;
+        }
+
+        .intro-emoji {
+            font-size: 5rem;
+            opacity: 0;
+            transform: scale(0.1);
+            filter: blur(10px);
+            transition: all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            user-select: none;
+        }
+
+        .intro-emoji.crab.active {
+            opacity: 1;
+            transform: scale(1.2);
+            filter: blur(0px) drop-shadow(0 0 25px rgba(255, 50, 80, 0.8));
+        }
+
+        .intro-emoji.genie.active {
+            opacity: 1;
+            transform: scale(1.2);
+            filter: blur(0px) drop-shadow(0 0 25px rgba(212, 175, 55, 0.8));
+        }
+
+        .intro-emoji.settle {
+            transform: scale(1) !important;
+        }
+
+        .intro-vs {
+            font-size: 1.2rem;
+            font-weight: 900;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.3);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.8s ease;
+            letter-spacing: 2px;
+        }
+
+        .intro-vs.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .intro-buttons {
+            display: flex;
+            gap: 1.5rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .intro-buttons.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- BUTTON STYLES --- */
+        .btn-universe {
+            position: relative;
+            padding: 1.2rem 2.2rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: #ffffff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            letter-spacing: 1px;
+            outline: none;
+        }
+
+        .btn-garrudos {
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.8), rgba(37, 99, 235, 0.8));
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 20px rgba(220, 38, 38, 0.4), 0 0 30px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-engenios {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(212, 175, 55, 0.9));
+            color: #1a1a1a;
+            border: 1px solid rgba(255, 215, 0, 0.5);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4), 0 0 30px rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-universe:hover {
+            transform: translateY(-5px) scale(1.05);
+        }
+
+        .btn-garrudos:hover {
+            box-shadow: 0 0 35px rgba(220, 38, 38, 0.7), 0 0 45px rgba(37, 99, 235, 0.6);
+        }
+
+        .btn-engenios:hover {
+            box-shadow: 0 0 35px rgba(255, 215, 0, 0.8), 0 0 45px rgba(255, 255, 255, 0.8);
+        }
+
+        .btn-universe:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        /* --- UNIVERSE CONTENT SECTIONS --- */
+        .universe-section {
+            width: 100%;
+            max-width: 850px;
+            display: none;
+            opacity: 0;
+            transform: translateY(40px) scale(0.98);
+            transition: opacity 1s ease, transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 4rem;
+        }
+
+        .universe-section.active {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Header Title */
+        .universe-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .universe-title {
+            font-size: 3rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 0.5rem;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .garrudos-theme .universe-title {
+            background-image: linear-gradient(90deg, #ff2a5f, #00d2ff);
+        }
+
+        .engenios-theme .universe-title {
+            background-image: linear-gradient(135deg, #ffffff, #ffd700, #ff4b2b);
+        }
+
+        .universe-subtitle {
+            font-size: 0.95rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            opacity: 0.7;
+        }
+
+        /* Text Area Container */
+        .text-card {
+            background: rgba(15, 15, 25, 0.5);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 3rem;
+            margin-bottom: 3.5rem;
+            width: 100%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.5s ease;
+        }
+
+        .garrudos-theme .text-card {
+            border: 1px solid rgba(255, 65, 108, 0.25);
+            box-shadow: 0 15px 35px rgba(239, 68, 68, 0.15), 0 0 30px rgba(59, 130, 246, 0.15);
+        }
+
+        .engenios-theme .text-card {
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 15px 35px rgba(255, 215, 0, 0.15), 0 0 30px rgba(255, 255, 255, 0.1);
+        }
+
+        .text-card p {
+            font-size: 1.15rem;
+            line-height: 1.9;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+        }
+
+        .text-card p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Media / Image Container */
+        .image-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            transform: scale(0.9) translateY(30px);
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .universe-section.active .image-wrapper {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            transition-delay: 0.4s;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+
+        .image-wrapper:hover img {
+            transform: scale(1.03);
+        }
+
+        .garrudos-theme .image-wrapper {
+            border: 2px solid rgba(59, 130, 246, 0.4);
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.3), 0 0 50px rgba(59, 130, 246, 0.3);
+        }
+
+        .engenios-theme .image-wrapper {
+            border: 2px solid rgba(255, 215, 0, 0.6);
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.4), 0 0 60px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Floating Switcher Button */
+        .floating-switcher {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 50;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+            pointer-events: none;
+        }
+
+        .floating-switcher.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .btn-switch {
+            padding: 0.9rem 1.6rem;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(10, 10, 20, 0.8);
+            color: #fff;
+            backdrop-filter: blur(15px);
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-switch:hover {
+            transform: scale(1.08);
+            border-color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* --- PORTAL / TRANSITION OVERLAY --- */
+        #transitionOverlay {
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+            pointer-events: none;
+            opacity: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #transitionOverlay.active {
+            pointer-events: auto;
+            animation: transitionAnim 2.2s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+        }
+
+        .portal-emoji {
+            font-size: 8rem;
+            transform: scale(0);
+            opacity: 0;
+            filter: blur(10px);
+        }
+
+        #transitionOverlay.active .portal-emoji {
+            animation: portalEmojiAnim 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes transitionAnim {
+            0% {
+                opacity: 0;
+                clip-path: circle(0% at 50% 50%);
+            }
+
+            30% {
+                opacity: 1;
+                clip-path: circle(70% at 50% 50%);
+            }
+
+            70% {
+                opacity: 1;
+                clip-path: circle(120% at 50% 50%);
+            }
+
+            100% {
+                opacity: 0;
+                clip-path: circle(150% at 50% 50%);
+            }
+        }
+
+        @keyframes portalEmojiAnim {
+            0% {
+                transform: scale(0.1) rotate(-20deg);
+                opacity: 0;
+                filter: blur(20px);
+            }
+
+            40% {
+                transform: scale(1.4) rotate(0deg);
+                opacity: 1;
+                filter: blur(0px);
+            }
+
+            70% {
+                transform: scale(1.8) rotate(10deg);
+                opacity: 1;
+                filter: blur(4px);
+            }
+
+            100% {
+                transform: scale(3) rotate(20deg);
+                opacity: 0;
+                filter: blur(20px);
+            }
+        }
+
+        @keyframes pulseText {
+
+            0%,
+            100% {
+                opacity: 0.4;
+            }
+
+            50% {
+                opacity: 0.9;
+            }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .text-card {
+                padding: 1.8rem;
+                margin-bottom: 2rem;
+            }
+
+            .universe-title {
+                font-size: 2.2rem;
+            }
+
+            .intro-emoji {
+                font-size: 3.8rem;
+            }
+
+            .emoji-stage {
+                gap: 1.5rem;
+            }
+
+            .btn-universe {
+                width: 100%;
+                justify-content: center;
+                padding: 1.1rem;
+            }
+
+            .floating-switcher {
+                bottom: 1.2rem;
+                right: 50%;
+                transform: translateX(50%) translateY(20px);
+            }
+
+            .floating-switcher.visible {
+                transform: translateX(50%) translateY(0);
+            }
+
+            .btn-switch {
+                padding: 0.8rem 1.4rem;
+                font-size: 0.88rem;
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="bgCanvas"></canvas>
+    <div class="mouse-glow" id="mouseGlow"></div>
+
+    <!-- Intro Overlay -->
+    <div id="introScreen">
+        <div class="intro-title">Uma Experiência de Dois Universos</div>
+        <div class="emoji-stage">
+            <div class="intro-emoji crab" id="introCrab">🦀</div>
+            <div class="intro-vs" id="introVs">VS</div>
+            <div class="intro-emoji genie" id="introGenie">🧞</div>
+        </div>
+        <div class="intro-buttons" id="introButtons">
+            <button class="btn-universe btn-garrudos" onclick="selectUniverse('garrudos')">
+                <span>Garrudos</span> <span>🦀</span>
+            </button>
+            <button class="btn-universe btn-engenios" onclick="selectUniverse('engenios')">
+                <span>Engenios</span> <span>🧞</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Portal Transition -->
+    <div id="transitionOverlay">
+        <div class="portal-emoji" id="portalEmoji">🦀</div>
+    </div>
+
+    <div class="container">
+        <!-- Garrudos Section -->
+        <section id="garrudosSection" class="universe-section garrudos-theme">
+            <div class="universe-header">
+                <h1 class="universe-title">Garrudos 🦀</h1>
+                <div class="universe-subtitle">Intensidade, Paixão e Energia</div>
+            </div>
+            <div class="text-card">
+                <p>Eu acho engraçado pensar que tudo isso começou de um jeito tão simples. Era a abertura dos Jogos,
+                    aquela correria, aquela expectativa, todo mundo querendo participar, torcendo, tentando fazer o seu
+                    time ganhar pontos e, no meio disso tudo, tinha uma regra: se o time tivesse mais de 25 pessoas na
+                    abertura, ganhava pontos. O meu time conseguiu. O seu não. E, ai ja viu ne, tu falou que eu ia
+                    entrar com vocês... mais eu realmente não tava botando fé ksksksk</p>
+
+                <p>Porque você poderia simplesmente ter aceitado que o seu time não tinha conseguido os pontos. Poderia
+                    ter ficado ali, assistindo tudo acontecer e pronto. Mas você foi atrás do Thomas para
+                    tentar resolver. Foi falar com ele para eu poder entrar com você e ajudar. E foi aí que aconteceu
+                    uma coisa que, olhando agora, parece até engraçada: eu entrei com você. Eu fui parar ali, junto com
+                    você, ajudando o seu time. E talvez naquele momento eu ainda não tivesse percebido, mas acho que
+                    você estava, sem querer, me levando cada vez mais para dentro desse universo.</p>
+
+                <p>E hoje eu consigo falar com toda certeza: acho que eu já sou Garrudos. E sou Garrudos por MUITO.
+                    KKKKKKK. Mas o pior é que eu acho que a culpa é sua. Você conseguiu me colocar nesse meio de um
+                    jeito que, quando eu percebi, eu já estava ajudando, participando, me envolvendo, conhecendo as
+                    pessoas, vivendo os momentos e criando memórias que nem estavam nos meus planos.</p>
+
+                <p>E é isso que eu acho mais bonito em tudo. Porque quando a gente pensa em uma história, normalmente
+                    imagina que os grandes momentos são aqueles planejados, aqueles que a gente sabe que vão ser
+                    importantes. Mas, na verdade, muitas das melhores lembranças começam em coisas pequenas. Uma
+                    conversa que não parecia importante. Um convite que parecia qualquer coisa. Uma brincadeira. Uma
+                    ajuda. Uma situação que poderia ter acabado em poucos minutos, mas que, de algum jeito, acabou
+                    ficando.</p>
+
+                <p>E com a gente foi exatamente assim.</p>
+
+                <p>Você me chamou para perto de um universo que era seu, e eu fui. Primeiro talvez só para ajudar.
+                    Depois porque eu já estava ali. Depois porque eu gostava de estar ali. E, quando percebi, eu já
+                    tinha começado a criar meus próprios momentos dentro daquele lugar. Já não era só o seu time. Já não
+                    era só uma coisa que eu estava fazendo porque você pediu. Era um lugar onde eu também tinha começado
+                    a deixar um pouquinho de mim.</p>
+
+                <p>Até porque não foi só naquele dia.</p>
+
+                <p>Ontem mesmo eu estava lá ajudando a arrumar a bandeira que tinha caído. E pode parecer uma coisa
+                    completamente pequena para qualquer outra pessoa. Talvez alguém olhe e pense: “ele só ajudou a
+                    levantar uma bandeira”. Mas eu gosto justamente dessas pequenas coisas. Porque elas mostram como,
+                    aos poucos, eu fui entrando nesse universo sem nem perceber.</p>
+
+                <p>Eu fui ficando.</p>
+
+                <p>Fui ajudando.</p>
+
+                <p>Fui participando.</p>
+
+                <p>Fui vivendo.</p>
+
+                <p>E, no meio de tudo isso, tinha você.</p>
+
+                <p>Talvez você nem tenha noção do quanto uma pessoa pode mudar os caminhos de outra sem perceber. Você
+                    não precisou fazer nada grandioso. Não precisou planejar nada. Você simplesmente foi sendo você. E,
+                    por causa disso, eu fui conhecendo lugares, pessoas, momentos e situações que provavelmente não
+                    fariam parte da minha história se você não tivesse aparecido nela.</p>
+
+                <p>E talvez seja isso que eu mais gosto quando penso em nós: você não entrou simplesmente na minha vida.
+                    Você foi abrindo portas.</p>
+
+                <p>Uma porta levou a outra.</p>
+
+                <p>Uma situação levou a outra.</p>
+
+                <p>Um convite virou uma memória.</p>
+
+                <p>Uma memória virou outra.</p>
+
+                <p>E, quando eu percebi, já existia um monte de pequenas histórias que tinham uma coisa em comum: você.
+                </p>
+
+                <p>É engraçado porque, se alguém me perguntasse antes de tudo isso se eu algum dia estaria tão envolvido
+                    com os Garrudos, provavelmente eu daria risada. Eu não imaginaria que estaria ajudando em abertura
+                    de Jogos, entrando junto com você, ajudando com bandeira, participando das coisas e, principalmente,
+                    criando lembranças que hoje eu sei que vou lembrar por muito tempo.</p>
+
+                <p>Mas agora eu acho que não tem mais volta.</p>
+
+                <p>Eu já sou Garrudos.</p>
+
+                <p>E acho que você tem uma parcela ENORME de culpa nisso. KKKKKKK.</p>
+
+                <p>Mas, sinceramente? Eu não mudaria.</p>
+
+                <p>Porque no final das contas, não é sobre ser Garrudos ou qualquer outro time. Não é sobre ganhar
+                    pontos na abertura, ganhar uma competição ou conseguir fazer uma bandeira ficar em pé. É sobre as
+                    pessoas que estavam ali. É sobre os momentos que aconteceram enquanto todo mundo estava preocupado
+                    com coisas que pareciam importantes naquele instante.</p>
+
+                <p>E, entre todas essas pessoas, estava você.</p>
+
+                <p>E eu estava com você.</p>
+
+                <p>Talvez seja por isso que eu gosto tanto dessas lembranças. Porque elas não precisam ser enormes para
+                    serem especiais. Às vezes, basta lembrar de onde eu estava, quem estava comigo e o que estava
+                    acontecendo para eu sentir aquele mesmo carinho de novo.</p>
+
+                <p>Eu gosto de lembrar que você foi atrás de uma solução para conseguir que eu entrasse com você. Gosto
+                    de lembrar que eu aceitei. Gosto de lembrar que, no meio daquela abertura, a gente acabou
+                    compartilhando mais uma coisa. Gosto de lembrar que depois vieram outros momentos, outras ajudas,
+                    outras histórias e outras situações em que eu estava ali, fazendo parte.</p>
+
+                <p>E talvez você nunca tenha percebido, mas cada vez que você me chama para perto, eu sinto que estou
+                    ganhando mais um pedacinho da sua vida.</p>
+
+                <p>E isso significa muito para mim.</p>
+
+                <p>Porque eu não quero conhecer só os grandes momentos da sua vida. Eu quero conhecer os pequenos
+                    também. Quero estar nas coisas que talvez você nem considere importantes. Quero estar quando a
+                    bandeira cair e precisar de alguém para ajudar a levantar. Quero estar quando alguma coisa der
+                    errado. Quero estar quando tudo der certo. Quero estar nas risadas, nas comemorações, nas confusões,
+                    nos jogos, nos dias tranquilos e até naqueles momentos em que não acontece absolutamente nada.</p>
+
+                <p>Porque, para mim, estar com você já transforma o momento em alguma coisa que vale a pena guardar.</p>
+
+                <p>E talvez seja por isso que essa história dos Garrudos tenha ficado tão especial para mim.</p>
+
+                <p>Porque, no meio de uma abertura de Jogos, entre times, pontos, bandeiras, pessoas e toda aquela
+                    bagunça, eu ganhei mais uma lembrança nossa.</p>
+
+                <p>Mais uma daquelas histórias que, quando eu lembrar daqui a alguns anos, provavelmente vou sorrir e
+                    pensar: “caramba... olha onde tudo isso começou”.</p>
+
+                <p>E talvez seja isso que você faz comigo sem perceber.</p>
+
+                <p>Você transforma momentos comuns em lembranças que eu quero guardar.</p>
+
+                <p>Você me faz participar de coisas que eu nunca imaginei que participaria.</p>
+
+                <p>Você me faz querer estar perto até quando o motivo para estar perto parece ser a coisa mais simples
+                    do mundo.</p>
+
+                <p>E, no final, talvez eu nem esteja ajudando os Garrudos só porque gosto dos Garrudos.</p>
+
+                <p>Talvez eu esteja ajudando porque, de alguma forma, os Garrudos viraram mais um lugar onde eu encontro
+                    você.</p>
+
+                <p>E se for por sua causa que eu virei Garrudos...</p>
+
+                <p>então pode colocar meu nome na lista.</p>
+
+                <p>Porque eu já aceitei.</p>
+
+                <p>Sou Garrudos mesmo.</p>
+
+                <p>E, sinceramente, por sua culpa, acho que sou Garrudos até demais. KKKKKKK 🦀❤️</p>
+
+                <p>Mas se existe uma coisa que eu espero que você nunca esqueça é que, por trás de todas essas
+                    brincadeiras, todos esses jogos e todas essas histórias, existe algo muito maior que eu gosto de
+                    guardar: eu amo a forma como a vida foi encontrando pequenas maneiras de colocar você cada vez mais
+                    perto de mim.</p>
+
+                <p>E essa é só mais uma delas.</p>
+
+                <p>Mais um dia.</p>
+
+                <p>Mais uma história.</p>
+
+                <p>Mais uma memória.</p>
+
+                <p>Mais um motivo para eu olhar para você e pensar que, entre tantas coisas que poderiam ter acontecido
+                    naquele dia, a melhor delas foi simplesmente ter estado ali com você.</p>
+
+            </div>
+            <div class="image-wrapper">
+                <img src="imgs/abertura.png" alt="Abertura Garrudos"
+                    onerror="this.src='https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=1000&q=80'">
+            </div>
+        </section>
+
+        <!-- Engenios Section -->
+        <section id="engeniosSection" class="universe-section engenios-theme">
+            <div class="universe-header">
+                <h1 class="universe-title">Engenios 🧞</h1>
+                <div class="universe-subtitle">Elegância, Magia e Sofisticação</div>
+            </div>
+            <div class="text-card">
+                <p>Talvez essa foto pareça, para qualquer outra pessoa, apenas uma lembrança de um dia de futsal. Eu
+                    jogando, você assistindo, mais um daqueles momentos que acontecem no meio de tantos outros. Mas para
+                    mim, ela guarda uma coisa muito maior. Porque, quando eu olho para essa imagem, eu não vejo apenas
+                    uma pessoa na arquibancada ou uma camisa diferente. Eu vejo mais um daqueles pequenos momentos em
+                    que a nossa história foi acontecendo sem precisar pedir licença.</p>
+
+                <p>E existe uma coisa importante nessa história: nós já nos conhecíamos.</p>
+
+                <p>Você já fazia parte da minha vida de alguma forma. Eu já sabia quem você era, já conhecia seu jeito,
+                    já tinha minhas lembranças de você. Não era como se naquele dia eu estivesse vendo você pela
+                    primeira vez. Mas talvez seja justamente por isso que essa lembrança seja tão especial. Porque mesmo
+                    conhecendo você, mesmo já tendo tantas coisas guardadas sobre você dentro de mim, ainda existiam
+                    momentos em que você conseguia me surpreender de um jeito completamente novo.</p>
+
+                <p>E aí veio aquele dia da abertura dos Jogos.</p>
+
+                <p>No meio daquela bagunça toda, dos times, das pessoas, da competição e de tudo que estava acontecendo,
+                    eu lembro de ter falado para você:</p>
+
+                <p><strong>“Se eu entrar com a Garrudos, tu vai colocar a camisa da Engenios.”</strong></p>
+
+                <p>E você colocou.</p>
+
+                <p>KKKKKKKK.</p>
+
+                <p>Era para ser só uma brincadeira. Uma provocação. Uma daquelas coisas que a gente fala sem imaginar
+                    que, depois, vai virar uma memória tão específica que vai ficar marcada na cabeça.</p>
+
+                <p>Mas aí você apareceu com aquela camisa.</p>
+
+                <p>E eu preciso admitir uma coisa que talvez eu nem devesse falar...</p>
+
+                <p><strong>você ficou PERFEITA.</strong></p>
+
+                <p>Tipo... perfeita mesmo.</p>
+
+                <p>👀</p>
+
+                <p>E olha que, particularmente, eu sempre achei você muito bonita. Você sabe disso. Eu já tinha olhado
+                    para você de inúmeras formas, em inúmeros momentos, com diferentes roupas, diferentes cabelos,
+                    diferentes expressões e diferentes versões suas. Eu já tinha visto seu sorriso, já tinha visto você
+                    concentrada, rindo, brincando, cansada, distraída. Já tinha uma imagem sua que eu gostava muito.</p>
+
+                <p>Mas aquela camisa...</p>
+
+                <p>Eu não sei explicar.</p>
+
+                <p>O branco com o dourado simplesmente combinou com você de um jeito absurdo.</p>
+
+                <p>Talvez porque fosse diferente.</p>
+
+                <p>Talvez porque eu não estivesse acostumado a te ver daquela forma.</p>
+
+                <p>Talvez porque, naquele momento, eu já estivesse olhando para você com um carinho diferente.</p>
+
+                <p>Ou talvez porque você realmente tenha conseguido ficar bonita de um jeito que até eu tive que parar e
+                    pensar: “meu Deus...”</p>
+
+                <p>👀</p>
+
+                <p>E existe uma ironia muito boa nisso tudo.</p>
+
+                <p>Porque eu estava lá jogando futsal.</p>
+
+                <p>Você estava ali assistindo.</p>
+
+                <p>E, de alguma maneira, enquanto eu estava preocupado com o jogo, com a bola, com o que estava
+                    acontecendo dentro da quadra, você acabou sendo uma das coisas que mais ficou na minha memória fora
+                    dela.</p>
+
+                <p>É engraçado como algumas pessoas conseguem fazer isso.</p>
+
+                <p>Elas não precisam fazer nada extraordinário.</p>
+
+                <p>Não precisam falar alguma coisa inesquecível.</p>
+
+                <p>Não precisam preparar um momento perfeito.</p>
+
+                <p>Às vezes, basta simplesmente estarem ali.</p>
+
+                <p>E você estava.</p>
+
+                <p>Sentada, assistindo.</p>
+
+                <p>Com aquela camisa.</p>
+
+                <p>E eu estava vivendo mais um daqueles momentos que, na hora, pareciam apenas mais um dia, mas que
+                    depois acabam ganhando um lugar especial dentro da nossa história.</p>
+
+                <p>Porque hoje, quando eu penso nessa foto, eu não lembro apenas de um jogo de futsal.</p>
+
+                <p>Eu lembro de você.</p>
+
+                <p>Lembro da camisa.</p>
+
+                <p>Lembro da brincadeira.</p>
+
+                <p>Lembro de ter falado que, se eu fosse de Garrudos, você teria que ir de Engenios.</p>
+
+                <p>E lembro principalmente da sensação de olhar para você e perceber o quanto você ficava linda daquele
+                    jeito.</p>
+
+                <p>E talvez o mais bonito seja que essa foto representa exatamente uma coisa que eu gosto muito na nossa
+                    história: ela não é feita apenas de grandes acontecimentos.</p>
+
+                <p>Ela é feita dessas pequenas cenas.</p>
+
+                <p>Desses detalhes que talvez ninguém mais perceba.</p>
+
+                <p>De uma camisa.</p>
+
+                <p>De um jogo.</p>
+
+                <p>De uma frase boba.</p>
+
+                <p>De uma pessoa na arquibancada.</p>
+
+                <p>De um olhar que dura alguns segundos.</p>
+
+                <p>De uma lembrança que poderia facilmente ser esquecida, mas que, por algum motivo, eu escolhi guardar.
+                </p>
+
+                <p>E eu gosto disso.</p>
+
+                <p>Gosto de perceber que, quando penso em nós, não lembro apenas dos momentos que foram planejados.
+                    Lembro também dos momentos que simplesmente aconteceram.</p>
+
+                <p>Porque talvez seja assim que uma história de verdade seja construída.</p>
+
+                <p>Não em um único dia.</p>
+
+                <p>Não em um único acontecimento.</p>
+
+                <p>Mas em centenas de pequenos momentos que vão se acumulando até que, quando você percebe, existe uma
+                    história inteira ali.</p>
+
+                <p>E você já estava nessa história antes mesmo de eu perceber o tamanho que ela teria.</p>
+
+                <p>Antes de existirem tantas conversas.</p>
+
+                <p>Antes de existirem tantas lembranças.</p>
+
+                <p>Antes de eu começar a enxergar determinadas coisas em você de uma forma diferente.</p>
+
+                <p>Você já estava ali.</p>
+
+                <p>E talvez seja por isso que eu gosto tanto de olhar para trás.</p>
+
+                <p>Porque consigo encontrar pequenos pedaços da nossa história em lugares que, na época, pareciam
+                    completamente comuns.</p>
+
+                <p>Essa foto é um deles.</p>
+
+                <p>Um jogo de futsal.</p>
+
+                <p>Você assistindo.</p>
+
+                <p>Eu jogando.</p>
+
+                <p>Uma camisa dos Engenios.</p>
+
+                <p>E uma frase que começou como brincadeira e terminou virando mais uma memória nossa.</p>
+
+                <p>E, entre todas as coisas que poderiam ter ficado daquele dia, foi justamente você usando aquela
+                    camisa que ficou na minha cabeça.</p>
+
+                <p>Talvez porque naquele momento eu tenha percebido mais uma vez uma coisa que acontece comigo com você:
+                </p>
+
+                <p><strong>eu nunca consigo simplesmente olhar para você e achar que é só mais um momento.</strong></p>
+
+                <p>Sempre existe alguma coisa.</p>
+
+                <p>Algum detalhe.</p>
+
+                <p>Alguma sensação.</p>
+
+                <p>Alguma lembrança que fica.</p>
+
+                <p>Às vezes é o seu sorriso.</p>
+
+                <p>Às vezes é o jeito que você olha.</p>
+
+                <p>Às vezes é alguma coisa completamente idiota que você fala.</p>
+
+                <p>E, naquele dia, foi uma camisa branca e dourada.</p>
+
+                <p>Mas, no fundo, nunca foi realmente sobre a camisa.</p>
+
+                <p>Era sobre você.</p>
+
+                <p>Era sobre a forma como você consegue transformar uma lembrança simples em alguma coisa que eu quero
+                    guardar.</p>
+
+                <p>Era sobre como, mesmo em meio a um jogo, uma competição e toda a movimentação ao redor, eu conseguia
+                    encontrar um motivo para olhar para o lado e sorrir.</p>
+
+                <p>E talvez seja isso que eu mais gosto em nós.</p>
+
+                <p>Eu não preciso que aconteça alguma coisa gigantesca para sentir que um momento valeu a pena.</p>
+
+                <p>Às vezes, tudo que precisa acontecer é você estar lá.</p>
+
+                <p>Porque quando você está, até as coisas mais simples ganham outro significado.</p>
+
+                <p>Um jogo deixa de ser apenas um jogo.</p>
+
+                <p>Uma arquibancada deixa de ser apenas uma arquibancada.</p>
+
+                <p>Uma camisa deixa de ser apenas uma camisa.</p>
+
+                <p>Uma brincadeira deixa de ser apenas uma brincadeira.</p>
+
+                <p>E uma foto deixa de ser apenas uma foto.</p>
+
+                <p>Ela vira uma lembrança de nós.</p>
+
+                <p>De uma fase da nossa história.</p>
+
+                <p>De uma versão nossa que talvez nem imaginasse quantas outras lembranças ainda viriam depois.</p>
+
+                <p>E eu espero que a gente continue tendo muitas dessas.</p>
+
+                <p>Muitas fotos que hoje parecem simples e que, daqui a alguns anos, vão carregar histórias inteiras.
+                </p>
+
+                <p>Muitos jogos em que você vai estar me assistindo.</p>
+
+                <p>Muitas provocações.</p>
+
+                <p>Muitas brincadeiras.</p>
+
+                <p>Muitas vezes em que eu vou falar alguma coisa só para ver você fazendo exatamente o que eu pedi.</p>
+
+                <p>E muitas outras vezes em que eu vou olhar para você e pensar a mesma coisa que pensei naquele dia:
+                </p>
+
+                <p><strong>“Meu Deus... ela ficou linda assim.”</strong></p>
+
+                <p>👀</p>
+
+                <p>Mas, acima de tudo, eu espero que continuem existindo esses pequenos momentos em que a vida
+                    simplesmente coloca nós dois no mesmo lugar.</p>
+
+                <p>Porque foram eles que construíram tanta coisa até aqui.</p>
+
+                <p>Você não precisou aparecer na minha vida de uma forma cinematográfica.</p>
+
+                <p>Não precisou existir um grande acontecimento anunciando que alguma coisa começaria.</p>
+
+                <p>Você simplesmente foi ficando.</p>
+
+                <p>E eu fui ficando também.</p>
+
+                <p>E, pouco a pouco, aquilo que parecia pequeno foi ficando grande.</p>
+
+                <p>Até chegar no ponto em que eu olho para uma simples foto sua usando uma camisa de um time e consigo
+                    enxergar muito mais do que uma imagem.</p>
+
+                <p>Eu enxergo uma parte da nossa história.</p>
+
+                <p>Enxergo uma lembrança que é só nossa.</p>
+
+                <p>Enxergo você.</p>
+
+                <p>E, principalmente, enxergo o quanto eu sou feliz por ter vivido esse momento com você.</p>
+
+                <p>Então sim...</p>
+
+                <p>Eu posso admitir.</p>
+
+                <p>Você cumpriu sua parte do trato.</p>
+
+                <p>Eu entrei com a Garrudos.</p>
+
+                <p>Você colocou a camisa dos Engenios.</p>
+
+                <p>E acabou ficando bonita pra caralho nela.</p>
+
+                <p>KKKKKKKKKK.</p>
+
+                <p>Mas, brincadeiras à parte, acho que essa foto representa uma coisa muito maior para mim.</p>
+
+                <p>Representa mais uma prova de que, quando eu olho para trás, encontro você em cada vez mais lugares.
+                </p>
+
+                <p>E eu espero que continue assim.</p>
+
+                <p>Que ainda existam muitos jogos.</p>
+
+                <p>Muitas arquibancadas.</p>
+
+                <p>Muitas camisas.</p>
+
+                <p>Muitas brincadeiras.</p>
+
+                <p>Muitas fotos.</p>
+
+                <p>Muitos momentos inesperados.</p>
+
+                <p>E, principalmente, muito mais história para nós dois construirmos.</p>
+
+                <p>Porque se uma simples frase — “se eu entrar com a Garrudos, tu vai colocar a camisa da Engenios” —
+                    conseguiu virar uma lembrança que eu guardo desse jeito...</p>
+
+                <p>eu fico imaginando quantas outras pequenas coisas ainda vão acontecer entre nós.</p>
+
+                <p>E, sinceramente?</p>
+
+                <p>Eu quero viver todas.</p>
+
+                <p>Com você.</p>
+
+                <p>Do meu lado.</p>
+
+                <p>Na arquibancada.</p>
+
+                <p>Na quadra.</p>
+
+                <p>Nos dias bons.</p>
+
+                <p>Nos dias bagunçados.</p>
+
+                <p>Nas brincadeiras.</p>
+
+                <p>Nas pequenas coisas.</p>
+
+                <p>Em tudo aquilo que ainda nem aconteceu, mas que um dia vai virar mais uma lembrança nossa.</p>
+
+                <p>Porque, no final, é isso que você se tornou para mim:</p>
+
+                <p><strong>não apenas alguém que aparece nas minhas fotos, mas alguém que aparece cada vez mais na minha
+                        história.</strong></p>
+
+                <p>E essa, para mim, é uma das coisas mais bonitas que poderiam ter acontecido.</p>
+
+                <p>Eu amo você. ❤️</p>
+
+            </div>
+            <div class="image-wrapper">
+                <img src="imgs/juliaComEngenios.jpeg" alt="Julia com Engenios"
+                    onerror="this.src='https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1000&q=80'">
+            </div>
+        </section>
+    </div>
+
+    <!-- Floating Switch Button -->
+    <div class="floating-switcher" id="floatingSwitcher">
+        <button class="btn-switch" id="btnSwitch" onclick="toggleUniverse()">
+            <span id="switchText">Trocar para Engenios</span>
+            <span id="switchEmoji">🧞</span>
+        </button>
+    </div>
+
+    <script>
+        let currentUniverse = null;
+        let isTransitioning = false;
+
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, particles = [];
+
+        function resizeCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const mouseGlow = document.getElementById('mouseGlow');
+        let mouseX = width / 2, mouseY = height / 2;
+        let targetMouseX = width / 2, targetMouseY = height / 2;
+
+        window.addEventListener('mousemove', (e) => {
+            targetMouseX = e.clientX;
+            targetMouseY = e.clientY;
+            mouseGlow.style.left = `${e.clientX}px`;
+            mouseGlow.style.top = `${e.clientY}px`;
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (e.touches.length > 0) {
+                targetMouseX = e.touches[0].clientX;
+                targetMouseY = e.touches[0].clientY;
+            }
+        });
+
+        class Particle {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = (Math.random() - 0.5) * 0.8;
+                this.speedY = (Math.random() - 0.5) * 0.8;
+                this.alpha = Math.random() * 0.6 + 0.2;
+                if (currentUniverse === 'garrudos') {
+                    this.color = Math.random() > 0.5 ? '#ef4444' : '#3b82f6';
+                } else if (currentUniverse === 'engenios') {
+                    this.color = Math.random() > 0.5 ? '#ffd700' : '#ffffff';
+                } else {
+                    this.color = 'rgba(255, 255, 255, 0.4)';
+                }
+            }
+            update() {
+                this.x += this.speedX + (targetMouseX - width / 2) * 0.0005;
+                this.y += this.speedY + (targetMouseY - height / 2) * 0.0005;
+                if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) this.reset();
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const count = Math.min(Math.floor(width * 0.08), 80);
+            for (let i = 0; i < count; i++) particles.push(new Particle());
+        }
+        initParticles();
+
+        function animateCanvas() {
+            mouseX += (targetMouseX - mouseX) * 0.05;
+            mouseY += (targetMouseY - mouseY) * 0.05;
+            ctx.clearRect(0, 0, width, height);
+
+            if (currentUniverse === 'garrudos') {
+                const grad = ctx.createRadialGradient(mouseX, mouseY, 50, width / 2, height / 2, Math.max(width, height));
+                grad.addColorStop(0, 'rgba(220, 38, 38, 0.25)');
+                grad.addColorStop(0.5, 'rgba(37, 99, 235, 0.2)');
+                grad.addColorStop(1, '#050510');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, width, height);
+            } else if (currentUniverse === 'engenios') {
+                const grad = ctx.createRadialGradient(mouseX, mouseY, 50, width / 2, height / 2, Math.max(width, height));
+                grad.addColorStop(0, 'rgba(255, 215, 0, 0.2)');
+                grad.addColorStop(0.5, 'rgba(255, 255, 255, 0.12)');
+                grad.addColorStop(1, '#0b0805');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, width, height);
+            } else {
+                const grad = ctx.createRadialGradient(width / 2, height / 2, 100, width / 2, height / 2, Math.max(width, height));
+                grad.addColorStop(0, '#0f0f1a');
+                grad.addColorStop(1, '#030305');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, width, height);
+            }
+
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animateCanvas);
+        }
+        animateCanvas();
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => document.getElementById('introCrab').classList.add('active'), 600);
+            setTimeout(() => document.getElementById('introVs').classList.add('active'), 1400);
+            setTimeout(() => document.getElementById('introGenie').classList.add('active'), 2000);
+            setTimeout(() => {
+                document.getElementById('introCrab').classList.add('settle');
+                document.getElementById('introGenie').classList.add('settle');
+                document.getElementById('introButtons').classList.add('active');
+            }, 3200);
+        });
+
+        function selectUniverse(universe) {
+            if (isTransitioning) return;
+            isTransitioning = true;
+
+            const introScreen = document.getElementById('introScreen');
+            const overlay = document.getElementById('transitionOverlay');
+            const portalEmoji = document.getElementById('portalEmoji');
+
+            if (universe === 'garrudos') {
+                overlay.style.background = 'radial-gradient(circle, rgba(220, 38, 38, 0.95), rgba(37, 99, 235, 0.95))';
+                portalEmoji.textContent = '🦀';
+            } else {
+                overlay.style.background = 'radial-gradient(circle, rgba(255, 255, 255, 0.98), rgba(212, 175, 55, 0.95))';
+                portalEmoji.textContent = '🧞';
+            }
+
+            overlay.classList.add('active');
+
+            setTimeout(() => {
+                introScreen.classList.add('hidden');
+                currentUniverse = universe;
+                initParticles();
+
+                document.getElementById('garrudosSection').classList.remove('active');
+                document.getElementById('engeniosSection').classList.remove('active');
+                document.getElementById(`${universe}Section`).classList.add('active');
+
+                updateSwitcherButton();
+            }, 1000);
+
+            setTimeout(() => {
+                overlay.classList.remove('active');
+                document.getElementById('floatingSwitcher').classList.add('visible');
+                isTransitioning = false;
+            }, 2200);
+        }
+
+        function toggleUniverse() {
+            if (isTransitioning) return;
+            selectUniverse(currentUniverse === 'garrudos' ? 'engenios' : 'garrudos');
+        }
+
+        function updateSwitcherButton() {
+            document.getElementById('switchText').textContent = currentUniverse === 'garrudos' ? 'Trocar para Engenios' : 'Trocar para Garrudos';
+            document.getElementById('switchEmoji').textContent = currentUniverse === 'garrudos' ? '🧞' : '🦀';
+        }
+    </script>
+</body>
+
+</html>
