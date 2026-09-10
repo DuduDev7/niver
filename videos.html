@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#050505">
+<title>ARQUIVO #02 — Operação Julia</title>
+<style>
+:root{--bg:#030304;--panel:#09090c;--line:#ff174f;--hot:#ff2b67;--pink:#ff5b9a;--text:#f5f5f7;--muted:#85858f;--ok:#42ff9b;--bad:#ff365f}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font-family:Consolas,"Courier New",monospace}body{overflow-x:hidden}
+button{font:inherit}.screen{min-height:100svh;display:none;align-items:center;justify-content:center;padding:18px;position:relative;z-index:2}.screen.active{display:flex;animation:in .55s ease}
+@keyframes in{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:none}}
+.container{width:min(1050px,100%);margin:auto}.mission{background:linear-gradient(145deg,#0b0b0e,#050507);border:1px solid #ff174f55;padding:clamp(18px,4vw,38px);box-shadow:0 0 55px #ff174f0c}
+.center{text-align:center}.kicker{font-size:11px;letter-spacing:.18em;color:var(--hot)}h1,h2{letter-spacing:.05em}h1{font-size:clamp(25px,5vw,48px)}p{line-height:1.65}.muted{color:var(--muted)}
+.btn{min-height:52px;padding:14px 20px;border:1px solid var(--hot);background:#12070b;color:white;cursor:pointer;text-transform:uppercase;letter-spacing:.06em;transition:.18s;touch-action:manipulation}
+.btn:hover{transform:translateY(-2px);box-shadow:0 0 28px #ff174f44}.primary{background:var(--hot);color:#050505;font-weight:900}.green{border-color:var(--ok);background:#06170d}.wide{width:100%}
+#particles{position:fixed;inset:0;z-index:0;pointer-events:none}#scan{position:fixed;inset:0;pointer-events:none;z-index:80;opacity:.035;background:repeating-linear-gradient(0deg,transparent 0 3px,#fff 4px 5px)}
+.boot{min-height:450px;display:flex;flex-direction:column;justify-content:center}.terminal{font-size:clamp(13px,2vw,17px);line-height:1.9;white-space:pre-wrap}.cursor{color:var(--hot}
+.archive{border:1px solid #ff174f55;padding:22px;background:#08080b;position:relative;overflow:hidden}.archive:after{content:"";position:absolute;top:0;left:0;width:100%;height:2px;background:var(--hot);box-shadow:0 0 20px var(--hot);animation:scan 3s infinite}
+@keyframes scan{50%{transform:translateY(100px)}}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}.card{min-height:230px;padding:24px;border:1px solid #3a3a40;background:#0d0d10;cursor:pointer;transition:.25s}.card:hover{border-color:var(--hot);transform:translateY(-4px);box-shadow:0 15px 35px #000}.lock{font-size:42px}.badge{display:inline-block;margin-top:10px;padding:5px 8px;border:1px solid #555;color:#999;font-size:11px}.badge.ok{color:var(--ok);border-color:var(--ok)}
+.log{border-left:2px solid var(--hot);padding:9px 14px;color:#bbb;line-height:1.7;background:#08080a;margin:18px 0}.progress{height:7px;background:#1b1b20;margin:14px 0;overflow:hidden}.bar{height:100%;width:0;background:var(--hot);box-shadow:0 0 14px var(--hot);transition:.25s}.error{color:var(--bad);min-height:24px}
+.clues{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0}.clue{padding:14px;border:1px solid #35353b;background:#0c0c0f;min-height:85px;cursor:pointer;color:#bbb;transition:.2s}.clue:hover,.clue.open{border-color:var(--pink);color:white}.clue small{display:block;color:var(--muted);margin-top:8px}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;max-width:390px;margin:20px auto}.key{height:58px;background:#101014;border:1px solid #444;color:#fff;cursor:pointer}.key:hover{border-color:var(--pink)}.pin{height:52px;border:1px solid #444;background:#050507;display:flex;align-items:center;justify-content:center;letter-spacing:.35em;font-size:22px}.dots{color:var(--hot)}
+.timer{font-size:12px;color:var(--muted);text-align:right}.attempts{font-size:12px;color:var(--muted)}
+.run-wrap{position:relative;height:150px;margin-top:20px}.runaway{position:absolute;left:50%;transform:translateX(-50%);transition:.12s}
+.video-panel{padding:12px;border:1px solid #ff174f55;background:#030304}.video-panel video{width:100%;display:block;background:#000;max-height:68vh}
+.unlocked{color:var(--ok);text-shadow:0 0 16px #42ff9b66}.big{font-size:clamp(45px,9vw,80px);animation:pulse 1.1s infinite alternate}@keyframes pulse{to{transform:scale(1.03);text-shadow:0 0 35px #42ff9b77}}
+.drag-board{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch;margin-top:20px}.drag-source,.dropzone{min-height:270px;border:1px dashed #ff174f77;display:grid;place-items:center;position:relative;background:#09090b}.dropzone{border:2px dashed #555}.dropzone.near{border-color:var(--ok);box-shadow:0 0 35px #42ff9b22}
+.heart{font-size:62px;cursor:grab;touch-action:none;user-select:none;filter:drop-shadow(0 0 17px #ff174f);z-index:5}.heart:active{cursor:grabbing}.heart.small{font-size:35px;position:absolute;opacity:.25}
+.tracker{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:15px}.track{border:1px solid #29292f;padding:9px;text-align:center;color:#777;font-size:11px}.track.active{color:var(--hot);border-color:var(--hot)}.track.done{color:var(--ok);border-color:var(--ok)}
+.wa-box{border:1px solid #25d36666;background:#06140c;padding:20px;margin:25px 0}.wa-msg{padding:14px;background:#0c2516;border:1px solid #1d5e36;color:#d9ffe7;text-align:left;line-height:1.5}
+.final-symbol{font-size:clamp(55px,13vw,115px);letter-spacing:.12em;animation:float 2.4s ease-in-out infinite}@keyframes float{50%{transform:translateY(-9px)}}
+.hidden{display:none!important}.footer{margin-top:20px;color:#444;font-size:10px;text-align:center}
+.flash{position:fixed;inset:0;background:white;z-index:70;pointer-events:none;animation:flash .4s forwards}@keyframes flash{to{opacity:0}}
+.shake{animation:shake .4s}@keyframes shake{20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(4px)}}
+.confetti{position:fixed;width:7px;height:12px;z-index:75;animation:cf 1.1s forwards;pointer-events:none}@keyframes cf{to{transform:translate(var(--x),var(--y)) rotate(720deg);opacity:0}}
+@media(max-width:700px){.cards,.drag-board{grid-template-columns:1fr}.clues{grid-template-columns:1fr 1fr}.mission{padding:18px}.btn{width:100%}.boot{min-height:540px}.card{min-height:180px}}
+</style>
+</head>
+<body>
+<canvas id="particles"></canvas><div id="scan"></div>
+
+<section id="boot" class="screen active"><div class="container boot">
+<div id="terminal" class="terminal"></div>
+<div id="enter" class="hidden" style="margin-top:28px"><button class="btn primary" onclick="go('archive')">ENTRAR NO ARQUIVO →</button></div>
+</div></section>
+
+<section id="archive" class="screen"><div class="container">
+<div class="archive"><div class="kicker">CLASSIFIED // ACCESS LEVEL: JULIA</div><h1>ARQUIVO #02</h1><div>OPERAÇÃO: LIBERAR OS VÍDEOS</div><div id="status" class="muted">STATUS: 0/2 ARQUIVOS DESBLOQUEADOS</div></div>
+<div class="cards">
+<article class="card" onclick="openMission1()"><div class="lock" id="l1">🔒</div><div class="kicker">ARQUIVO 01</div><h2>VÍDEO 01</h2><span id="b1" class="badge">BLOQUEADO</span><p class="muted">Protocolo: descobrir a sequência, decifrar a pista e sobreviver ao sistema.</p></article>
+<article class="card" onclick="tryM2()"><div class="lock" id="l2">🔒</div><div class="kicker">ARQUIVO 02</div><h2>VÍDEO 02</h2><span id="b2" class="badge">BLOQUEADO</span><p class="muted">Protocolo: manipulação física + tempo + precisão.</p></article>
+</div><div class="footer">NO ATALHOS // EVERY ACCESS IS LOGGED</div>
+</div></section>
+
+<section id="mission1" class="screen"><div class="container"><div class="mission">
+<div class="kicker">ARQUIVO 01 // NÍVEL DE SEGURANÇA: ALTO</div><h1>PRIMEIRA MISSÃO: DECIFRE O ACESSO.</h1>
+<p>Não basta clicar na senha certa. O sistema exige <b>3 etapas</b>.</p>
+<div class="log" id="m1log">ETAPA 1/3 — encontre as pistas corretas entre os arquivos falsos.</div>
+<div class="clues" id="clues"></div>
+<div id="clueResult" class="muted"></div>
+<div id="pinStage" class="hidden">
+<p><b>ETAPA 2/3 — MONTE A CHAVE</b></p><p class="muted">A ordem correta está escondida nas pistas que você encontrou.</p>
+<div class="pin" id="pin">____</div><div class="keypad" id="keypad"></div><div class="attempts" id="attempts"></div>
+</div>
+<div id="finalCheck" class="hidden">
+<p><b>ETAPA 3/3 — ÚLTIMA CONFIRMAÇÃO</b></p><p>Você chegou até aqui. Agora prove que não foi sorte.</p>
+<button class="btn primary" onclick="m1Complete()">CONFIRMAR ACESSO</button>
+</div>
+<div class="error" id="m1error"></div>
+</div></div></section>
+
+<section id="wa1" class="screen"><div class="container"><div class="mission center">
+<div class="kicker">ARQUIVO 01 // HUMAN VERIFICATION</div><div class="big">🔓</div><h1>PRIMEIRO ARQUIVO QUASE LIBERADO.</h1>
+<p>O sistema precisa de uma confirmação fora dele.</p>
+<div class="wa-box"><div class="kicker" style="color:#42ff9b">MENSAGEM A SER ENVIADA</div><div class="wa-msg">SOS 🚨 Completei a primeira missão. Quero meu vídeo 01 KKKKK ❤️</div></div>
+<button class="btn green" onclick="openWA(1)">PEDIR O VÍDEO 01 PELO WHATSAPP</button>
+<p class="muted">A página não consegue verificar se você enviou a mensagem. Depois de enviar, volte aqui.</p>
+<button class="btn primary" onclick="release1()">JÁ MANDEI 😎</button>
+</div></div></section>
+
+<section id="video1" class="screen"><div class="container"><div class="mission">
+<div class="center"><div class="big">🔓</div><div class="kicker unlocked">ARQUIVO 01 DESBLOQUEADO</div><h1>VÍDEO 01 DISPONÍVEL.</h1></div>
+<div class="video-panel">
+<!-- ===== VÍDEO 1: COLOQUE SEU ARQUIVO OU URL .MP4 AQUI ===== -->
+<video id="videoOne" controls playsinline preload="metadata"><source src="COLOQUE_SEU_VIDEO_1_AQUI" type="video/mp4"></video>
+</div>
+<p>Primeiro nível concluído.</p><p class="muted">Mas o sistema detectou outro arquivo protegido.</p>
+<button class="btn primary" onclick="go('mission2')">ACEITAR O ARQUIVO 02 →</button>
+</div></div></section>
+
+<section id="mission2" class="screen"><div class="container"><div class="mission">
+<div class="kicker">PROTOCOLO 02 // NÍVEL DE SEGURANÇA: INSANO</div><h1>O SISTEMA AGORA QUER PROVA FÍSICA.</h1>
+<p>Você terá <b>12 segundos</b> para levar o ❤️ até o destino. E não é só arrastar: o coração precisa passar por <b>3 zonas de verificação</b>.</p>
+<div class="timer">TEMPO: <span id="time">12.0</span>s</div>
+<div class="tracker"><div id="t1" class="track">01 // CONTATO</div><div id="t2" class="track">02 // INTENÇÃO</div><div id="t3" class="track">03 // DESTINO</div></div>
+<div class="drag-board"><div class="drag-source"><div id="heart" class="heart">❤️</div><div class="heart small" style="top:20px;left:20px">❤️</div><div class="heart small" style="bottom:20px;right:20px">❤️</div></div><div id="drop" class="dropzone"><div><div style="font-size:35px">⬡</div><b>ÁREA FINAL</b><br><span class="muted">ENTREGUE O ❤️ AQUI</span></div></div></div>
+<div class="progress"><div id="dragBar" class="bar"></div></div><div class="log" id="m2log">AGUARDANDO CONTATO COM O OBJETO...</div>
+<button id="retry2" class="btn primary hidden" onclick="startMission2()">TENTAR NOVAMENTE</button>
+</div></div></section>
+
+<section id="wa2" class="screen"><div class="container"><div class="mission center">
+<div class="kicker">ARQUIVO 02 // CONFIRMAÇÃO FINAL</div><div class="big">❤️</div><h1>VOCÊ SOBREVIVEU AO PROTOCOLO.</h1>
+<p>Agora falta uma última confirmação humana.</p>
+<div class="wa-box"><div class="kicker" style="color:#42ff9b">MENSAGEM A SER ENVIADA</div><div class="wa-msg">🚨 SEGUNDA MISSÃO CONCLUÍDA. Agora libera meu vídeo 02, por favor KKKKK ❤️</div></div>
+<button class="btn green" onclick="openWA(2)">PEDIR O VÍDEO 02 PELO WHATSAPP</button>
+<p class="muted">Envie a mensagem para você liberar o segundo vídeo. A página não verifica o envio.</p>
+<button class="btn primary" onclick="release2()">JÁ MANDEI 😎</button>
+</div></div></section>
+
+<section id="video2" class="screen"><div class="container"><div class="mission">
+<div class="center"><div class="big">🔓</div><div class="kicker unlocked">CONFIRMAÇÃO RECEBIDA</div><h1>ARQUIVO 02 DESBLOQUEADO.</h1></div>
+<div class="video-panel">
+<!-- ===== VÍDEO 2: COLOQUE SEU ARQUIVO OU URL .MP4 AQUI ===== -->
+<video id="videoTwo" controls playsinline preload="metadata"><source src="COLOQUE_SEU_VIDEO_2_AQUI" type="video/mp4"></video>
+</div>
+<p>Parabéns.</p><p>Você enfrentou duas missões completamente desnecessárias...</p><p>...e ainda teve que mandar duas mensagens para mim. KKKKK</p><p>Mas pensando bem...</p><p>Se você queria tanto ver, acho que valeu a pena dificultar um pouquinho.</p><p>Agora você já pode dizer que conquistou oficialmente esses dois vídeos. ❤️</p>
+<button class="btn primary" onclick="finish()">CONCLUIR OPERAÇÃO →</button>
+</div></div></section>
+
+<section id="final" class="screen"><div class="container"><div class="mission center">
+<div class="kicker">2/2 ARQUIVOS DESBLOQUEADOS</div><h1>OPERAÇÃO CONCLUÍDA.</h1><div class="final-symbol">🔓 ❤️ 🔓</div>
+<h1 class="unlocked">MISSÃO CONCLUÍDA.</h1><p>Você conseguiu.</p><p>Agora os dois vídeos são oficialmente seus.</p>
+<p>Às vezes eu acho engraçado o quanto você consegue transformar até uma coisa simples em uma história nossa.</p><p>Obrigado por querer guardar até minhas coisas mais aleatórias. ❤️</p>
+<button class="btn primary" onclick="location.reload()">VOLTAR PARA NOSSA HISTÓRIA</button>
+</div></div></section>
+
+<script>
+const WHATSAPP="5547992856297";
+const WA1="SOS 🚨 Completei a primeira missão. Quero meu vídeo 01 KKKKK ❤️";
+const WA2="🚨 SEGUNDA MISSÃO CONCLUÍDA. Agora libera meu vídeo 02, por favor KKKKK ❤️";
+let unlocked1=false,unlocked2=false,m1done=false,m2done=false;
+
+const screens=[...document.querySelectorAll(".screen")];
+function go(id){screens.forEach(s=>s.classList.toggle("active",s.id===id));scrollTo({top:0,behavior:"smooth"});}
+
+function beep(freq=440,dur=.08,type="square"){try{const A=AudioContext||webkitAudioContext,c=new A(),o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(.025,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+dur);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+dur)}catch(e){}}
+function flash(){let x=document.createElement("div");x.className="flash";document.body.appendChild(x);setTimeout(()=>x.remove(),450)}
+function confetti(){for(let i=0;i<55;i++){let p=document.createElement("div");p.className="confetti";p.style.left="50%";p.style.top="45%";p.style.background=i%2?"#ff174f":"#fff";p.style.setProperty("--x",(Math.random()*90-45)+"vw");p.style.setProperty("--y",(Math.random()*80-15)+"vh");document.body.appendChild(p);setTimeout(()=>p.remove(),1200)}}
+function status(){document.getElementById("status").textContent=`STATUS: ${(unlocked1?1:0)+(unlocked2?1:0)}/2 ARQUIVOS DESBLOQUEADOS`}
+
+const bootLines=["CONEXÃO ESTABELECIDA...","ARQUIVO CONFIDENCIAL ENCONTRADO.","2 VÍDEOS FORAM LOCALIZADOS.","ACESSO RESTRITO.","","JULIA, EXISTEM COISAS QUE VOCÊ PEDE.","ALGUMAS DELAS...","EU NÃO POSSO SIMPLESMENTE ENTREGAR.","","VOCÊ VAI TER QUE MERECER. 😈"];
+let bl=0,bc=0;
+function boot(){if(bl>=bootLines.length){document.getElementById("enter").classList.remove("hidden");return}let text=bootLines.slice(0,bl).join("\n");document.getElementById("terminal").textContent=text+(text?"\n":"")+bootLines[bl].slice(0,bc)+"▌";bc++;if(bc>bootLines[bl].length){bl++;bc=0;setTimeout(boot,280)}else setTimeout(boot,25)}
+boot();
+
+function openMission1(){if(unlocked1)return;go("mission1");if(!document.getElementById("clues").children.length)buildClues()}
+function buildClues(){
+const data=[
+["ARQUIVO A","Rastro falso: 12",""],
+["ARQUIVO B","Registro: 4",""],
+["ARQUIVO C","Rastro falso: 7",""],
+["ARQUIVO D","Registro: 9",""],
+["ARQUIVO E","Rastro falso: 2",""],
+["ARQUIVO F","Registro: 4",""]
+];
+data.sort(()=>Math.random()-.5).forEach((d,i)=>{let b=document.createElement("button");b.className="clue";b.innerHTML=`<b>${d[0]}</b><small>${d[1]}</small>`;b.onclick=()=>pickClue(b,d[1]);document.getElementById("clues").appendChild(b)})
+}
+let picked=[];
+function pickClue(b,text){
+if(b.classList.contains("open"))return;
+b.classList.add("open");picked.push(text.match(/\d+/)[0]);
+document.getElementById("clueResult").textContent=`PISTAS COLETADAS: ${picked.length}/3`;
+beep(300+picked.length*120,.07);
+if(picked.length===3){
+document.getElementById("m1log").textContent="ETAPA 1 CONCLUÍDA — O sistema liberou o teclado. Agora descubra a sequência.";
+document.getElementById("pinStage").classList.remove("hidden");buildKeypad();
+}}
+function buildKeypad(){
+const vals=["1","2","3","4","5","6","7","8","9","⌫","0","OK"];
+vals.forEach(v=>{let b=document.createElement("button");b.className="key";b.textContent=v;b.onclick=()=>key(v);document.getElementById("keypad").appendChild(b)})
+}
+let pin="";
+const correct="4799";let attempts=3;
+function key(v){
+if(attempts<=0)return;
+if(v==="⌫"){pin=pin.slice(0,-1)}
+else if(v==="OK"){checkPin();return}
+else if(pin.length<4)pin+=v;
+document.getElementById("pin").innerHTML=pin.padEnd(4,"_").replace(/\d/g,"●");
+}
+function checkPin(){
+if(pin===correct){
+document.getElementById("m1log").textContent="ETAPA 2 CONCLUÍDA — 4799 ACEITO. A segurança agora exige confirmação manual.";
+document.getElementById("finalCheck").classList.remove("hidden");document.getElementById("m1error").textContent="";flash();confetti();beep(700,.1);beep(1000,.15);m1done=true;
+}else{
+attempts--;pin="";document.getElementById("pin").textContent="____";document.getElementById("attempts").textContent=`TENTATIVAS RESTANTES: ${attempts}`;document.getElementById("m1error").textContent=attempts?`CREDENCIAL REJEITADA. Restam ${attempts} tentativas.`:"SISTEMA BLOQUEADO. Recarregue a página para tentar novamente.";beep(100,.12,"sawtooth");
+}}
+function m1Complete(){if(!m1done)return;go("wa1")}
+function openWA(n){let msg=n===1?WA1:WA2;window.open("https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent(msg),"_blank","noopener")}
+function release1(){unlocked1=true;document.getElementById("l1").textContent="🔓";document.getElementById("b1").textContent="DESBLOQUEADO";document.getElementById("b1").classList.add("ok");status();flash();confetti();go("video1")}
+function tryM2(){if(!unlocked1){let c=document.getElementById("archive");c.classList.add("shake");setTimeout(()=>c.classList.remove("shake"),450);return}go("mission2");startMission2()}
+
+/* Missão 2: arraste em 3 zonas e termine em 12s */
+let drag=false,startTime=0,timer=null,stage=0;
+const heart=document.getElementById("heart"),drop=document.getElementById("drop");
+function startMission2(){
+document.getElementById("retry2").classList.add("hidden");heart.style.display="block";heart.style.position="";heart.style.left="";heart.style.top="";stage=0;setStage(0);
+document.getElementById("m2log").textContent="AGUARDANDO CONTATO COM O OBJETO...";document.getElementById("time").textContent="12.0";document.getElementById("dragBar").style.width="0%";
+clearInterval(timer);startTime=performance.now();timer=setInterval(()=>{let left=Math.max(0,12-(performance.now()-startTime)/1000);document.getElementById("time").textContent=left.toFixed(1);if(left<=0){clearInterval(timer);fail2("TEMPO ESGOTADO. O sistema concluiu que você demorou demais.");}},50)
+}
+function setStage(n){["t1","t2","t3"].forEach((id,i)=>document.getElementById(id).className="track "+(i<n?"done":i===n?"active":""))}
+function pt(e){return e.touches?e.touches[0]:e}
+function down(e){e.preventDefault();if(!timer)return;drag=true;heart.style.position="fixed";heart.style.zIndex=20;move(e)}
+function move(e){
+if(!drag)return;e.preventDefault();let p=pt(e);heart.style.left=(p.clientX-31)+"px";heart.style.top=(p.clientY-31)+"px";
+let r=heart.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+let d=drop.getBoundingClientRect(),dist=Math.hypot(cx-(d.left+d.width/2),cy-(d.top+d.height/2));
+let pct=Math.max(0,Math.min(100,100-dist/(Math.hypot(innerWidth,innerHeight)*.38)*100));document.getElementById("dragBar").style.width=pct+"%";
+if(stage===0){stage=1;setStage(1);document.getElementById("m2log").textContent="01/03 — CONTATO DETECTADO. AGORA LEVE O CORAÇÃO PARA A ZONA DE INTENÇÃO."}
+else if(stage===1&&pct>38){stage=2;setStage(2);document.getElementById("m2log").textContent="02/03 — INTENÇÃO CONFIRMADA. NÃO SOLTE. CHEGUE AO DESTINO."}
+else if(stage===2&&dist<115){stage=3;setStage(3);document.getElementById("m2log").textContent="03/03 — DESTINO LOCALIZADO. SOLTE AGORA."}
+drop.classList.toggle("near",stage>=3)
+}
+function up(){
+if(!drag)return;drag=false;let r=heart.getBoundingClientRect(),d=drop.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+if(stage===3&&cx>d.left&&cx<d.right&&cy>d.top&&cy<d.bottom){clearInterval(timer);timer=null;m2done=true;heart.style.display="none";document.getElementById("m2log").textContent="VERIFICAÇÃO CONCLUÍDA. ACESSO AUTORIZADO.";flash();confetti();beep(700,.1);beep(1100,.18);setTimeout(()=>go("wa2"),700)}
+else if(stage<3){fail2("FALHA DE PROTOCOLO. Você soltou antes de completar as 3 zonas.")}
+}
+function fail2(msg){clearInterval(timer);timer=null;document.getElementById("m2log").textContent=msg;document.getElementById("retry2").classList.remove("hidden");heart.style.position="";heart.style.left="";heart.style.top="";drop.classList.remove("near");beep(100,.14,"sawtooth")}
+heart.addEventListener("mousedown",down);heart.addEventListener("touchstart",down,{passive:false});
+document.addEventListener("mousemove",move);document.addEventListener("touchmove",move,{passive:false});document.addEventListener("mouseup",up);document.addEventListener("touchend",up);
+
+function release2(){unlocked2=true;document.getElementById("l2").textContent="🔓";document.getElementById("b2").textContent="DESBLOQUEADO";document.getElementById("b2").classList.add("ok");status();flash();confetti();go("video2")}
+function finish(){confetti();go("final")}
+
+/* fundo */
+const cv=document.getElementById("particles"),ctx=cv.getContext("2d");let ps=[];
+function resize(){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;cv.style.width=innerWidth+"px";cv.style.height=innerHeight+"px";ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}
+function init(){ps=Array.from({length:Math.min(100,Math.floor(innerWidth/9))},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,vx:(Math.random()-.5)*.2,vy:(Math.random()-.5)*.2,r:Math.random()*1.3+.2}))}
+function loop(){ctx.clearRect(0,0,innerWidth,innerHeight);ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=innerWidth;if(p.x>innerWidth)p.x=0;if(p.y<0)p.y=innerHeight;if(p.y>innerHeight)p.y=0;ctx.fillStyle=Math.random()>.8?"rgba(255,43,103,.45)":"rgba(255,255,255,.16)";ctx.fillRect(p.x,p.y,p.r,p.r)});requestAnimationFrame(loop)}
+addEventListener("resize",()=>{resize();init()});resize();init();loop();
+</script>
+</body>
+</html>
