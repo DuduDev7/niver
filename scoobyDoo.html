@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Operação: Coleta de Sangue</title>
+    <style>
+        /* ==========================================
+           RESET & BASE STYLES
+           ========================================== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+        }
+
+        body,
+        html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #050811;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            color: #e0e6ed;
+        }
+
+        /* Canvas de Partículas em Background */
+        #particleCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Efeito HUD / Scanlines Sci-Fi */
+        .scanline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom,
+                    rgba(255, 255, 255, 0),
+                    rgba(255, 255, 255, 0) 50%,
+                    rgba(0, 0, 0, 0.3) 50%,
+                    rgba(0, 0, 0, 0.3));
+            background-size: 100% 4px;
+            z-index: 20;
+            pointer-events: none;
+            opacity: 0.6;
+            transition: opacity 2s ease;
+        }
+
+        .hud-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 19;
+            pointer-events: none;
+            border: 10px solid rgba(0, 240, 255, 0.05);
+            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.8);
+            transition: all 2s ease;
+        }
+
+        /* Gerenciador de Seções */
+        .section {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s ease, visibility 1s ease;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .section.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Componentes de Texto & Interface Sci-Fi */
+        .glitch-text {
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.7);
+            letter-spacing: 2px;
+        }
+
+        .badge {
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid #00f0ff;
+            color: #00f0ff;
+            padding: 5px 15px;
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .terminal-box {
+            background: rgba(10, 16, 30, 0.85);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.1);
+            border-radius: 8px;
+            padding: 25px;
+            max-width: 500px;
+            width: 100%;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Animação do Indicador de Risco */
+        .risk-bar-container {
+            margin: 12px 0;
+            text-align: left;
+            font-size: 0.9rem;
+            font-family: monospace;
+        }
+
+        .risk-bar {
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .risk-fill {
+            height: 100%;
+            width: 0%;
+            transition: width 1.5s cubic-bezier(0.1, 0.5, 0.1, 1);
+        }
+
+        .btn-action {
+            background: linear-gradient(45deg, #00f0ff, #0077ff);
+            border: none;
+            color: #fff;
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            outline: none;
+        }
+
+        .btn-action:active {
+            transform: scale(0.95);
+        }
+
+        /* ==========================================
+           ESTÁGIO 2: A CADEIRA
+           ========================================== */
+        .chair-container {
+            position: relative;
+            cursor: pointer;
+            margin: 30px 0;
+        }
+
+        .chair-icon {
+            font-size: 80px;
+            display: inline-block;
+            transition: transform 0.2s ease;
+            filter: drop-shadow(0 0 15px rgba(0, 240, 255, 0.4));
+        }
+
+        .shake {
+            animation: shakeAnim 0.1s infinite alternate;
+        }
+
+        @keyframes shakeAnim {
+            0% {
+                transform: translate(2px, 1px) rotate(0deg);
+            }
+
+            10% {
+                transform: translate(-1px, -2px) rotate(-1deg);
+            }
+
+            20% {
+                transform: translate(-3px, 0px) rotate(1deg);
+            }
+
+            30% {
+                transform: translate(3px, 2px) rotate(0deg);
+            }
+
+            40% {
+                transform: translate(1px, -1px) rotate(1deg);
+            }
+
+            50% {
+                transform: translate(-1px, 2px) rotate(-1deg);
+            }
+
+            60% {
+                transform: translate(-3px, 1px) rotate(0deg);
+            }
+
+            70% {
+                transform: translate(3px, 1px) rotate(-1deg);
+            }
+
+            80% {
+                transform: translate(-1px, -1px) rotate(1deg);
+            }
+
+            90% {
+                transform: translate(1px, 2px) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(1px, -2px) rotate(-1deg);
+            }
+        }
+
+        .chair-fall {
+            animation: chairFallAnim 1s forwards ease-in;
+        }
+
+        @keyframes chairFallAnim {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(300px) rotate(90deg);
+                opacity: 0;
+            }
+        }
+
+        /* Transição de Túnel */
+        .tunnel-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 20%, #000 90%);
+            z-index: 15;
+            pointer-events: none;
+            opacity: 0;
+            transform: scale(3);
+            transition: transform 1.5s ease-in-out, opacity 1s ease;
+        }
+
+        .tunnel-effect.active {
+            opacity: 1;
+            transform: scale(0.8);
+        }
+
+        /* ==========================================
+           ESTÁGIO 3 & 4: SALA SCOOBY & MINI-GAME
+           ========================================== */
+        .scooby-theme {
+            background: radial-gradient(circle, #2a1b4e 0%, #0d0714 100%);
+        }
+
+        .game-canvas-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 320px;
+            background: rgba(20, 10, 35, 0.6);
+            border: 2px dashed #9d4edd;
+            border-radius: 16px;
+            margin: 15px 0;
+            touch-action: none;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(157, 78, 221, 0.2);
+        }
+
+        #gameCanvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .game-instruction {
+            font-size: 0.85rem;
+            color: #c77dff;
+            margin-top: 5px;
+        }
+
+        .floating-obstacle {
+            position: absolute;
+            font-size: 0.8rem;
+            background: rgba(255, 0, 85, 0.2);
+            border: 1px solid #ff0055;
+            color: #ff9ebb;
+            padding: 4px 8px;
+            border-radius: 12px;
+            pointer-events: none;
+            animation: floatAnim 3s infinite ease-in-out alternate;
+        }
+
+        @keyframes floatAnim {
+            0% {
+                transform: translateY(0px);
+            }
+
+            100% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* ==========================================
+           ESTÁGIO 5: A COLETA & HEARTBEAT
+           ========================================== */
+        .heartbeat-line {
+            width: 100%;
+            max-width: 400px;
+            height: 80px;
+            margin: 20px 0;
+        }
+
+        .pulse-text {
+            font-size: 1.5rem;
+            color: #ff0055;
+            text-shadow: 0 0 10px #ff0055;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        /* ==========================================
+           ESTÁGIO 6, 7, 8: A VIRADA ROMÂNTICA
+           ========================================== */
+        .romantic-bg {
+            background: radial-gradient(circle, #1a0913 0%, #050205 100%) !important;
+            transition: background 3s ease;
+        }
+
+        .romantic-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 182, 193, 0.15);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+            border-radius: 16px;
+            padding: 30px 20px;
+            max-width: 650px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+            max-height: 85vh;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #ff758f transparent;
+        }
+
+        .romantic-card::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .romantic-card::-webkit-scrollbar-thumb {
+            background-color: #ff758f;
+            border-radius: 3px;
+        }
+
+        .photo-frame {
+            position: relative;
+            width: 100%;
+            max-width: 320px;
+            margin: 0 auto 25px auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 0 25px rgba(255, 117, 143, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            opacity: 0;
+            transform: scale(0.9) translateY(20px);
+            transition: all 1.5s ease;
+        }
+
+        .photo-frame.visible {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: contrast(1.05) brightness(1.02);
+        }
+
+        .romantic-text-p {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: #f3d5d8;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 1s ease, transform 1s ease;
+            text-align: left;
+            font-weight: 300;
+        }
+
+        .romantic-text-p.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .btn-romantic {
+            background: linear-gradient(45deg, #ff4d6d, #ff758f);
+            border: none;
+            color: #fff;
+            padding: 16px 36px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 77, 109, 0.5);
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            outline: none;
+        }
+
+        .btn-romantic:hover {
+            box-shadow: 0 0 30px rgba(255, 77, 109, 0.8);
+            transform: translateY(-2px);
+        }
+
+        .ecg-svg {
+            width: 100%;
+            max-width: 300px;
+            height: 60px;
+            stroke: #ff4d6d;
+            stroke-width: 2;
+            fill: none;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: dash 3s linear infinite;
+        }
+
+        @keyframes dash {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        /* Ajustes Responsivos */
+        @media (max-width: 480px) {
+
+            .terminal-box,
+            .romantic-card {
+                padding: 18px;
+            }
+
+            .glitch-text {
+                font-size: 1.1rem;
+            }
+
+            .game-canvas-container {
+                height: 280px;
+            }
+
+            .chair-icon {
+                font-size: 60px;
+            }
+
+            .romantic-text-p {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Canvas para efeito visual de partículas -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Overlay de Interface Visual / Scanlines -->
+    <div class="scanline" id="scanline"></div>
+    <div class="hud-overlay" id="hudOverlay"></div>
+
+    <!-- Efeito Túnel de Transição -->
+    <div class="tunnel-effect" id="tunnel"></div>
+
+    <!-- ==========================================
+         ETAPA 1: ABERTURA
+         ========================================== -->
+    <section class="section active" id="stage1">
+        <div class="badge">Acesso Restrito</div>
+        <div class="terminal-box">
+            <h2 class="glitch-text" id="typewriterTitle" style="color: #00f0ff; margin-bottom: 10px;"></h2>
+            <h3 id="typewriterSubtitle" style="color: #fff; font-size: 1.1rem; margin-bottom: 20px; min-height: 24px;">
+            </h3>
+
+            <div id="patientInfo" style="opacity: 0; transition: opacity 1s ease;">
+                <p style="color: #ff0055; font-weight: bold; letter-spacing: 1px; margin-bottom: 15px;">PACIENTE: JULIA
+                </p>
+
+                <div style="text-align: left; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 6px;">
+                    <p style="font-size: 0.8rem; color: #888; margin-bottom: 8px;">AVALIAÇÃO DE RISCO:</p>
+
+                    <div class="risk-bar-container">
+                        <span>Coragem:</span>
+                        <div class="risk-bar">
+                            <div class="risk-fill" id="bar1" style="background: #00f0ff;"></div>
+                        </div>
+                    </div>
+                    <div class="risk-bar-container">
+                        <span>Medo da agulha:</span>
+                        <div class="risk-bar">
+                            <div class="risk-fill" id="bar2" style="background: #ffb703;"></div>
+                        </div>
+                    </div>
+                    <div class="risk-bar-container">
+                        <span>Chance de desmaio:</span>
+                        <div class="risk-bar">
+                            <div class="risk-fill" id="bar3" style="background: #ff0055;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="warningBox"
+                    style="opacity: 0; margin-top: 15px; color: #ffb703; font-size: 0.85rem; border-left: 3px solid #ffb703; padding-left: 8px; text-align: left; transition: opacity 1s ease;">
+                    ⚠️ ATENÇÃO: Paciente não pode realizar o procedimento sentada.<br>
+                    <strong>PROTOCOLO ALTERNATIVO NECESSÁRIO.</strong>
+                </div>
+
+                <button class="btn-action" id="btnStage1" style="opacity: 0; transition: opacity 1s ease;"
+                    onclick="goToStage2()">INICIAR AVALIAÇÃO</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         ETAPA 2: A CADEIRA
+         ========================================== -->
+    <section class="section" id="stage2">
+        <div class="badge" style="border-color: #ffb703; color: #ffb703;">TENTATIVA 1</div>
+        <div class="terminal-box">
+            <h3 style="color: #fff; margin-bottom: 10px;">Posicionamento da Paciente</h3>
+            <p style="font-size: 0.9rem; color: #aaa; margin-bottom: 20px;">Toque na cadeira para acomodar a Julia</p>
+
+            <div class="chair-container" onclick="interactChair()">
+                <div class="chair-icon" id="chairIcon">💺</div>
+            </div>
+
+            <div id="chairStatus" style="min-height: 50px; font-weight: bold; color: #ff0055; margin-top: 10px;"></div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         ETAPA 3 & 4: SALA DO SCOOBY & MINI-GAME
+         ========================================== -->
+    <section class="section" id="stage3">
+        <div class="badge" style="border-color: #9d4edd; color: #c77dff;">AMBULATÓRIO ESPECIAL</div>
+        <h2 style="color: #c77dff; font-size: 1.3rem; margin-bottom: 5px;">SALA DO SCOOBY</h2>
+        <p class="game-instruction">Mantenha a paciente estável! Arraste a gota 🩸 até o tubo 🧪</p>
+
+        <div class="game-canvas-container" id="gameContainer">
+            <!-- Obstáculos visuais dinâmicos -->
+            <div class="floating-obstacle" style="top: 15%; left: 10%;">😵 Pressão baixando</div>
+            <div class="floating-obstacle" style="top: 60%; left: 50%;">😨 Medo da agulha</div>
+            <div class="floating-obstacle" style="top: 25%; right: 15%;">💫 Não desmaia</div>
+            <div class="floating-obstacle" style="bottom: 15%; left: 20%;">🛏️ Procedimento deitado</div>
+            <div class="floating-obstacle" style="top: 70%; right: 25%;">🐶 Scooby detectado</div>
+
+            <canvas id="gameCanvas"></canvas>
+        </div>
+
+        <div id="gameFeedback" style="font-size: 0.9rem; font-weight: bold; color: #ffb703; height: 20px;"></div>
+    </section>
+
+    <!-- ==========================================
+         ETAPA 5: A COLETA & FINALIZAÇÃO DA MISSAO
+         ========================================== -->
+    <section class="section" id="stage4">
+        <div class="badge" style="border-color: #00f0ff; color: #00f0ff;">EXECUTANDO PROCEDIMENTO</div>
+        <div class="terminal-box">
+            <h3 style="color: #fff; margin-bottom: 15px;">Monitor de Sinais Vitais</h3>
+
+            <svg class="heartbeat-line" viewBox="0 0 500 100">
+                <path id="pulsePath" d="M 0 50 L 150 50 L 160 20 L 175 80 L 190 10 L 205 90 L 215 50 L 500 50"
+                    stroke="#00f0ff" stroke-width="3" fill="none" stroke-dasharray="1000" stroke-dashoffset="1000" />
+            </svg>
+
+            <div class="pulse-text" id="pulseBip">BIP...</div>
+            <div id="coletaStatus" style="margin-top: 15px; color: #aaa; font-size: 0.95rem;"></div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         ETAPA 6, 7 & 8: A VIRADA ROMÂNTICA & FINAL
+         ========================================== -->
+    <section class="section" id="stage5">
+        <div class="romantic-card">
+
+            <!-- Foto com caminho preservado -->
+            <div class="photo-frame" id="photoFrame">
+                <img src="imgs/scooby.jpeg" alt="Nosso momento especial"
+                    onerror="this.src='https://via.placeholder.com/400x300/2a1b4e/ffffff?text=Foto:+imgs/scooby.jpeg';">
+            </div>
+
+            <!-- Área dos Textos Curinga / Declaração -->
+            <!-- Declaração final -->
+            <div id="romanticTextContainer">
+
+                <p class="romantic-text-p">
+                    Naquele dia, a missão parecia simples: ir fazer um exame de sangue. Só isso. Uma coisa comum,
+                    rápida, que provavelmente passaria despercebida no meio de tantos outros dias.
+                </p>
+
+                <p class="romantic-text-p">
+                    Mas, quando se trata de você, até os momentos mais simples acabam ganhando um significado diferente
+                    para mim. Eu lembro que você não podia simplesmente sentar para tirar sangue, porque existia aquela
+                    possibilidade de você passar mal ou até desmaiar. Então, em vez de fazer o exame como qualquer outra
+                    pessoa, você precisou fazer de um jeito diferente. E foi assim que acabamos na sala do Scooby-Doo,
+                    com você fazendo o procedimento deitada.
+                </p>
+
+                <p class="romantic-text-p">
+                    E talvez seja justamente isso que eu gosto tanto nas nossas lembranças. Elas não precisam ser
+                    enormes, perfeitas ou planejadas para se tornarem importantes para mim. Às vezes, é só um exame de
+                    sangue. Uma sala diferente. Uma situação inesperada. Nós dois juntos em um momento que, para
+                    qualquer outra pessoa, talvez fosse apenas mais um dia.
+                </p>
+
+                <p class="romantic-text-p">
+                    Mas eu estava ali com você.
+                </p>
+
+                <p class="romantic-text-p">
+                    E eu gosto de estar. Gosto de poder estar perto quando você precisa. Gosto de poder cuidar,
+                    acompanhar, esperar, conversar, rir ou simplesmente ficar do seu lado. Porque, para mim, estar com
+                    você nunca foi apenas sobre estar presente nos momentos bonitos.
+                </p>
+
+                <p class="romantic-text-p">
+                    Eu quero estar também nos momentos estranhos, nos dias difíceis, nas situações inesperadas e até
+                    naquelas que começam com um simples "vou fazer um exame rapidinho" e terminam em uma sala do
+                    Scooby-Doo. ❤️
+                </p>
+
+                <p class="romantic-text-p">
+                    Talvez você nem perceba o quanto essas pequenas coisas ficam guardadas em mim. Mas ficam. Aquele dia
+                    ficou.
+                </p>
+
+                <p class="romantic-text-p">
+                    E quando eu penso nele hoje, eu não lembro apenas do exame. Eu lembro de você. Lembro de nós dois
+                    compartilhando mais um daqueles pequenos momentos que, sem perceber, vão construindo a nossa
+                    história.
+                </p>
+
+                <p class="romantic-text-p">
+                    E acho bonito pensar que, no meio de tantas coisas que poderiam ter acontecido naquele dia, uma das
+                    que mais importa para mim foi simplesmente ter estado ao seu lado.
+                </p>
+
+                <p class="romantic-text-p">
+                    Porque eu não quero estar com você somente quando tudo estiver perfeito. Eu quero estar quando você
+                    estiver nervosa. Quero estar quando você estiver com medo. Quero estar quando alguma coisa estiver
+                    te deixando mal. Quero estar quando você estiver feliz. Quero estar quando você estiver rindo sem
+                    conseguir parar.
+                </p>
+
+                <p class="romantic-text-p">
+                    Quero estar nos dias tranquilos e também nos dias complicados. Quero ser aquela pessoa que você olha
+                    e pensa: "ele está aqui."
+                </p>
+
+                <p class="romantic-text-p">
+                    Porque, no final, talvez seja isso que eu mais quero te oferecer: a certeza de que você nunca
+                    precisa enfrentar tudo sozinha enquanto eu puder estar ao seu lado.
+                </p>
+
+                <div style="text-align: center; margin: 30px 0 20px 0;">
+                    <svg class="ecg-svg" viewBox="0 0 300 60">
+                        <path d="M 0 30 L 100 30 L 110 10 L 120 50 L 130 0 L 140 60 L 150 30 L 300 30" />
+                    </svg>
+                </div>
+
+                <p class="romantic-text-p"
+                    style="text-align: center; font-style: italic; color: #ff758f; font-weight: 400;">
+                    "Como a importância que você tem para mim."
+                </p>
+
+                <p class="romantic-text-p" style="text-align: center; font-weight: 400;">
+                    Obrigado por deixar eu estar ao seu lado até nos momentos em que você mais precisa. ❤️
+                </p>
+
+                <p class="romantic-text-p">
+                    E é engraçado pensar que uma simples coleta de sangue conseguiu virar uma lembrança tão bonita para
+                    mim. Não pelo exame. Não pela sala. Nem pelo Scooby-Doo.
+                </p>
+
+                <p class="romantic-text-p">
+                    Mas porque naquele momento eu estava com você.
+                </p>
+
+                <p class="romantic-text-p">
+                    E se existe alguma coisa que eu aprendi desde que você entrou na minha vida, é que são justamente
+                    esses pequenos momentos que acabam se tornando os mais importantes.
+                </p>
+
+                <p class="romantic-text-p">
+                    Talvez daqui a muito tempo a gente nem lembre exatamente de todos os detalhes daquele dia. Mas eu
+                    espero lembrar sempre da sensação de estar ali com você. De saber que, mesmo em uma situação
+                    simples, eu queria estar perto.
+                </p>
+
+                <p class="romantic-text-p">
+                    De perceber que cuidar de você não parece uma obrigação. Parece exatamente onde eu quero estar.
+                </p>
+
+                <p class="romantic-text-p">
+                    E talvez nenhum exame consiga medir isso.
+                </p>
+
+                <p class="romantic-text-p">
+                    Nenhuma máquina consegue colocar em números o carinho que eu sinto por você. Nenhum resultado
+                    consegue mostrar o tamanho da importância que você ganhou na minha vida.
+                </p>
+
+                <p class="romantic-text-p">
+                    Porque existem coisas que simplesmente não aparecem em uma tela, em uma ficha médica ou em um
+                    resultado de laboratório.
+                </p>
+
+                <p class="romantic-text-p">
+                    Existem coisas que a gente sente.
+                </p>
+
+                <p class="romantic-text-p">
+                    E eu sinto você em tantas partes da minha vida que, às vezes, até parece impossível explicar.
+                </p>
+
+                <p class="romantic-text-p">
+                    Você está nas minhas lembranças favoritas. Está nos momentos em que eu sorrio sozinho lembrando de
+                    alguma coisa. Está nas histórias que eu gosto de contar. Está nos dias bons. Está nos dias difíceis.
+                    Está nas pequenas coisas que, depois que acontecem, nunca mais parecem tão pequenas.
+                </p>
+
+                <p class="romantic-text-p">
+                    E naquele dia, em uma sala do Scooby-Doo, enquanto você fazia um exame de sangue, eu estava vivendo
+                    mais uma dessas pequenas coisas que eu quero guardar para sempre.
+                </p>
+
+                <p class="romantic-text-p">
+                    Mais uma lembrança nossa. Mais um momento em que eu pude estar perto de você. Mais um pedacinho da
+                    nossa história.
+                </p>
+
+                <p class="romantic-text-p">
+                    E se eu pudesse escolher novamente, mesmo sabendo de tudo, eu escolheria estar ali outra vez.
+                </p>
+
+                <p class="romantic-text-p">
+                    Porque quando a pessoa que eu amo precisa de alguém ao lado, eu quero ser essa pessoa. Sempre que eu
+                    puder.
+                </p>
+
+                <p class="romantic-text-p">
+                    E talvez essa seja a verdadeira coisa que aquele exame revelou.
+                </p>
+
+                <p class="romantic-text-p">
+                    Não alguma coisa sobre o seu sangue. Mas alguma coisa sobre nós.
+                </p>
+
+                <p class="romantic-text-p">
+                    Revelou o quanto eu gosto de cuidar de você. O quanto eu gosto de estar perto. O quanto momentos
+                    simples com você conseguem se transformar em memórias que significam muito para mim.
+                </p>
+
+                <p class="romantic-text-p">
+                    E revelou, mais uma vez, uma coisa que eu já sei há muito tempo:
+                </p>
+
+                <p class="romantic-text-p"
+                    style="text-align: center; font-size: 1.35rem; color: #ff758f; font-weight: 600;">
+                    Eu amo ter você na minha vida. ❤️
+                </p>
+
+                <p class="romantic-text-p">
+                    Obrigado por cada pequena lembrança que você, mesmo sem perceber, ajuda a construir comigo. Obrigado
+                    por cada momento em que você me deixa estar perto. Obrigado por ser você.
+                </p>
+
+                <p class="romantic-text-p"
+                    style="text-align: center; font-size: 1.4rem; color: #ff758f; font-weight: 600;">
+                    Eu amo você, minha princesa. ❤️
+                </p>
+
+            </div>
+    </section>
+
+    <!-- ==========================================
+         JAVASCRIPT PURA E LÓGICA DE INTERAÇÃO
+         ========================================== -->
+    <script>
+        /* --- EFEITO DE PARTÍCULAS INTERATIVO --- */
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let particleMode = 'tech'; // 'tech' ou 'romantic'
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * (particleMode === 'tech' ? 2 : 3) + 1;
+                this.speedX = (Math.random() - 0.5) * 0.8;
+                this.speedY = (Math.random() - 0.5) * 0.8;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                if (particleMode === 'tech') {
+                    ctx.fillStyle = `rgba(0, 240, 255, ${this.opacity})`;
+                } else {
+                    ctx.fillStyle = `rgba(255, 117, 143, ${this.opacity})`;
+                }
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 60; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+
+        /* --- GERENCIAMENTO DAS ETAPAS DA PÁGINA --- */
+        function switchStage(currentId, nextId) {
+            document.getElementById(currentId).classList.remove('active');
+            setTimeout(() => {
+                document.getElementById(nextId).classList.add('active');
+            }, 600);
+        }
+
+        /* --- ETAPA 1: DIGITAÇÃO E BARRAS --- */
+        function typeWriter(elementId, text, speed, callback) {
+            let i = 0;
+            const elem = document.getElementById(elementId);
+            elem.innerHTML = '';
+            function type() {
+                if (i < text.length) {
+                    elem.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            type();
+        }
+
+        window.onload = () => {
+            setTimeout(() => {
+                typeWriter('typewriterTitle', 'ARQUIVO CONFIDENCIAL', 70, () => {
+                    setTimeout(() => {
+                        typeWriter('typewriterSubtitle', 'OPERAÇÃO: COLETA DE SANGUE', 50, () => {
+                            document.getElementById('patientInfo').style.opacity = '1';
+                            setTimeout(() => {
+                                document.getElementById('bar1').style.width = '50%';
+                                document.getElementById('bar2').style.width = '90%';
+                                document.getElementById('bar3').style.width = '100%';
+                                setTimeout(() => {
+                                    document.getElementById('warningBox').style.opacity = '1';
+                                    document.getElementById('btnStage1').style.opacity = '1';
+                                }, 1200);
+                            }, 500);
+                        });
+                    }, 400);
+                });
+            }, 500);
+        };
+
+        function goToStage2() {
+            switchStage('stage1', 'stage2');
+        }
+
+
+        /* --- ETAPA 2: A CADEIRA INTERATIVA --- */
+        let chairClicks = 0;
+        function interactChair() {
+            const chair = document.getElementById('chairIcon');
+            const status = document.getElementById('chairStatus');
+
+            chairClicks++;
+
+            if (chairClicks === 1) {
+                chair.classList.add('shake');
+                status.innerHTML = "AVISO: Instabilidade detectada...";
+            } else if (chairClicks === 2) {
+                status.innerHTML = "ERRO! POSIÇÃO SENTADA NÃO RECOMENDADA!";
+            } else if (chairClicks >= 3) {
+                chair.classList.remove('shake');
+                chair.classList.add('chair-fall');
+                status.innerHTML = "PROTOCOLO DE SEGURANÇA ATIVADO.<br>TRANSFERINDO PACIENTE...";
+
+                setTimeout(() => {
+                    // Ativar Túnel de Transição
+                    const tunnel = document.getElementById('tunnel');
+                    tunnel.classList.add('active');
+                    document.body.classList.add('scooby-theme');
+
+                    setTimeout(() => {
+                        switchStage('stage2', 'stage3');
+                        tunnel.classList.remove('active');
+                        initMiniGame();
+                    }, 1200);
+                }, 1000);
+            }
+        }
+
+
+        /* --- ETAPA 3 & 4: MINI-GAME CANVAS (TOUCH & MOUSE) --- */
+        let gCanvas, gCtx;
+        let isDragging = false;
+        let bloodPos = { x: 50, y: 150 };
+        let tubePos = { x: 450, y: 150 };
+        let bloodRadius = 18;
+        let tubeRadius = 25;
+        let gameCompleted = false;
+
+        function initMiniGame() {
+            const container = document.getElementById('gameContainer');
+            gCanvas = document.getElementById('gameCanvas');
+            gCanvas.width = container.clientWidth;
+            gCanvas.height = container.clientHeight;
+            gCtx = gCanvas.getContext('2d');
+
+            bloodPos = { x: 40, y: gCanvas.height / 2 };
+            tubePos = { x: gCanvas.width - 50, y: gCanvas.height / 2 };
+
+            // Listeners Mouse
+            gCanvas.addEventListener('mousedown', startDrag);
+            window.addEventListener('mousemove', moveDrag);
+            window.addEventListener('mouseup', endDrag);
+
+            // Listeners Touch
+            gCanvas.addEventListener('touchstart', (e) => startDrag(e.touches[0]));
+            window.addEventListener('touchmove', (e) => {
+                if (isDragging) {
+                    e.preventDefault();
+                    moveDrag(e.touches[0]);
+                }
+            }, { passive: false });
+            window.addEventListener('touchend', endDrag);
+
+            drawGame();
+        }
+
+        function getCanvasCoords(e) {
+            const rect = gCanvas.getBoundingClientRect();
+            return {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+        }
+
+        function startDrag(e) {
+            if (gameCompleted) return;
+            const coords = getCanvasCoords(e);
+            const dist = Math.hypot(coords.x - bloodPos.x, coords.y - bloodPos.y);
+            if (dist < bloodRadius + 15) {
+                isDragging = true;
+            }
+        }
+
+        function moveDrag(e) {
+            if (!isDragging || gameCompleted) return;
+            const coords = getCanvasCoords(e);
+
+            // Manter dentro do canvas
+            bloodPos.x = Math.max(bloodRadius, Math.min(gCanvas.width - bloodRadius, coords.x));
+            bloodPos.y = Math.max(bloodRadius, Math.min(gCanvas.height - bloodRadius, coords.y));
+
+            // Verificar Chegada no Objetivo
+            const distToTube = Math.hypot(bloodPos.x - tubePos.x, bloodPos.y - tubePos.y);
+            if (distToTube < bloodRadius + tubeRadius) {
+                gameCompleted = true;
+                isDragging = false;
+                bloodPos.x = tubePos.x;
+                bloodPos.y = tubePos.y;
+                document.getElementById('gameFeedback').innerHTML = "COLETA AUTORIZADA! 🎉";
+                setTimeout(startColetaSequence, 1200);
+            }
+
+            drawGame();
+        }
+
+        function endDrag() {
+            if (isDragging && !gameCompleted) {
+                isDragging = false;
+                const msgs = ["CALMA, JULIA!", "VOCÊ AINDA NÃO PODE DESMAIAR!", "QUASE!", "RESPIRA..."];
+                const randomMsg = msgs[Math.floor(Math.random() * msgs.length)];
+                document.getElementById('gameFeedback').innerHTML = randomMsg;
+            }
+        }
+
+        function drawGame() {
+            gCtx.clearRect(0, 0, gCanvas.width, gCanvas.height);
+
+            // Desenhar Linha/Rota Guia
+            gCtx.beginPath();
+            gCtx.setLineDash([6, 6]);
+            gCtx.moveTo(40, gCanvas.height / 2);
+            gCtx.lineTo(gCanvas.width - 50, gCanvas.height / 2);
+            gCtx.strokeStyle = "rgba(199, 125, 255, 0.4)";
+            gCtx.lineWidth = 2;
+            gCtx.stroke();
+            gCtx.setLineDash([]);
+
+            // Desenhar Tubo de Coleta (Destino)
+            gCtx.font = "32px Arial";
+            gCtx.textAlign = "center";
+            gCtx.textBaseline = "middle";
+            gCtx.fillText("🧪", tubePos.x, tubePos.y);
+
+            // Desenhar Gota de Sangue (Arrastável)
+            gCtx.font = "30px Arial";
+            gCtx.fillText("🩸", bloodPos.x, bloodPos.y);
+        }
+
+
+        /* --- ETAPA 5: SEQUÊNCIA DA COLETA & HEARTBEAT --- */
+        function startColetaSequence() {
+            switchStage('stage3', 'stage4');
+
+            const pulsePath = document.getElementById('pulsePath');
+            const pulseBip = document.getElementById('pulseBip');
+            const status = document.getElementById('coletaStatus');
+
+            // Animação da Linha de ECG
+            pulsePath.style.transition = "stroke-dashoffset 4s linear";
+            pulsePath.style.strokeDashoffset = "0";
+
+            let speed = 800;
+            let bipCount = 0;
+
+            function playBip() {
+                if (bipCount < 6) {
+                    pulseBip.style.opacity = '1';
+                    setTimeout(() => { pulseBip.style.opacity = '0.3'; }, 150);
+                    bipCount++;
+                    if (bipCount === 3) speed = 300; // Acelera o ritmo cardíaco
+                    setTimeout(playBip, speed);
+                } else {
+                    pulseBip.innerHTML = "PRESSÃO ESTÁVEL ❤️";
+                    pulseBip.style.color = "#00f0ff";
+                    pulseBip.style.opacity = '1';
+                    status.innerHTML = "PACIENTE SOBREVIVEU!<br><strong style='color:#00f0ff;'>COLETA CONCLUÍDA COM SUCESSO.</strong>";
+
+                    setTimeout(startRomanticTransition, 2500);
+                }
+            }
+            playBip();
+        }
+
+
+        /* --- ETAPA 6: A GRANDE VIRADA ROMÂNTICA --- */
+        function startRomanticTransition() {
+            // Mudar atmosfera visual
+            document.body.classList.add('romantic-bg');
+            document.getElementById('scanline').style.opacity = '0.1';
+            document.getElementById('hudOverlay').style.borderColor = 'rgba(255, 117, 143, 0.1)';
+            particleMode = 'romantic';
+
+            switchStage('stage4', 'stage5');
+
+            setTimeout(() => {
+                // Revelar Foto
+                document.getElementById('photoFrame').classList.add('visible');
+
+                // Revelar Textos Progressivamente
+                const paragraphs = document.querySelectorAll('.romantic-text-p');
+                paragraphs.forEach((p, index) => {
+                    setTimeout(() => {
+                        p.classList.add('visible');
+                    }, 800 * (index + 1));
+                });
+            }, 800);
+        }
+
+        /* --- FINALIZAR --- */
+        function finishStory() {
+            alert("Obrigado por viver essa história comigo! ❤️");
+        }
+    </script>
+</body>
+
+</html>

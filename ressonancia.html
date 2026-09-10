@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Exame de Ressonância - Diagnóstico de Memória</title>
+    <style>
+        /* ==========================================================================
+           RESET & ESTILOS BASE
+           ========================================================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #030706;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #e0f2fe;
+            touch-action: none;
+        }
+
+        /* Canvas de Partículas / Fundo */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Container Principal das Cenas */
+        .viewport {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .scene {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1), visibility 1s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .scene.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Global UI Elements & Glows */
+        .medical-green {
+            color: #10b981;
+            text-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+        }
+
+        .medical-glow-bg {
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-action {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid #10b981;
+            color: #34d399;
+            padding: 16px 36px;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-action:hover, .btn-action:active {
+            background: rgba(16, 185, 129, 0.35);
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.6);
+            transform: scale(1.03);
+        }
+
+        /* ==========================================================================
+           CENA 1: ABERTURA / INTERFACE MÉDICA
+           ========================================================================== */
+        #scene-1 {
+            background: #ffffff;
+            transition: background-color 2.5s ease;
+        }
+
+        #scene-1.darkened {
+            background: #030706;
+        }
+
+        .intro-circle {
+            width: 16px;
+            height: 16px;
+            background-color: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 20px #10b981;
+            animation: pulse-intro 1.5s infinite ease-in-out;
+            margin-bottom: 30px;
+            transition: all 1s ease;
+        }
+
+        @keyframes pulse-intro {
+            0% { transform: scale(0.8); opacity: 0.5; box-shadow: 0 0 10px #10b981; }
+            50% { transform: scale(1.6); opacity: 1; box-shadow: 0 0 30px #10b981, 0 0 50px #10b981; }
+            100% { transform: scale(0.8); opacity: 0.5; box-shadow: 0 0 10px #10b981; }
+        }
+
+        .hud-card {
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            background: rgba(3, 7, 6, 0.75);
+            backdrop-filter: blur(8px);
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 450px;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .hud-card::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px;
+            width: 12px; height: 12px;
+            border-top: 2px solid #10b981;
+            border-left: 2px solid #10b981;
+        }
+
+        .hud-card::after {
+            content: '';
+            position: absolute;
+            bottom: -2px; right: -2px;
+            width: 12px; height: 12px;
+            border-bottom: 2px solid #10b981;
+            border-right: 2px solid #10b981;
+        }
+
+        .hud-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hud-line {
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #6ee7b7;
+            margin: 12px 0;
+            text-align: left;
+            letter-spacing: 1.5px;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.5s ease;
+        }
+
+        .hud-line.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Efeito de Vibração e Som Visual */
+        .vibrating {
+            animation: mri-vibe 0.08s infinite alternate;
+        }
+
+        @keyframes mri-vibe {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            100% { transform: translate(-1px, -1px) rotate(0.2deg); }
+        }
+
+        .sound-wave-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            height: 30px;
+            margin-top: 15px;
+        }
+
+        .wave-bar {
+            width: 3px;
+            height: 100%;
+            background: #10b981;
+            border-radius: 3px;
+            animation: wave-anim 0.6s infinite ease-in-out alternate;
+        }
+
+        @keyframes wave-anim {
+            0% { height: 15%; opacity: 0.3; }
+            100% { height: 100%; opacity: 1; box-shadow: 0 0 10px #10b981; }
+        }
+
+        /* ==========================================================================
+           CENA 2: TÚNEL INTERATIVO DE ARRASTAR
+           ========================================================================== */
+        #scene-2 {
+            cursor: grab;
+            background: radial-gradient(circle, #062016 0%, #030706 90%);
+        }
+
+        #scene-2:active {
+            cursor: grabbing;
+        }
+
+        .tunnel-wrapper {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            perspective: 800px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .tunnel-ring {
+            position: absolute;
+            border: 2px dashed rgba(16, 185, 129, 0.25);
+            border-radius: 50%;
+            transition: transform 0.1s linear;
+            pointer-events: none;
+        }
+
+        .drag-instruction {
+            position: absolute;
+            top: 12%;
+            width: 100%;
+            text-align: center;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .drag-instruction h3 {
+            font-size: 1.4rem;
+            letter-spacing: 3px;
+            color: #a7f3d0;
+            text-transform: uppercase;
+        }
+
+        .drag-instruction p {
+            font-size: 0.85rem;
+            color: #6ee7b7;
+            margin-top: 6px;
+            opacity: 0.8;
+        }
+
+        .depth-gauge {
+            position: absolute;
+            bottom: 10%;
+            width: 280px;
+            background: rgba(3, 7, 6, 0.8);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            padding: 12px;
+            border-radius: 6px;
+            z-index: 10;
+            pointer-events: none;
+            font-family: monospace;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 10px;
+            background: rgba(16, 185, 129, 0.15);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-bar-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #059669, #34d399);
+            box-shadow: 0 0 10px #34d399;
+            transition: width 0.1s ease-out;
+        }
+
+        .layer-text {
+            position: absolute;
+            z-index: 5;
+            max-width: 80%;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+            color: #ecfdf5;
+        }
+
+        .layer-text h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #34d399;
+            text-shadow: 0 0 15px rgba(52, 211, 153, 0.6);
+        }
+
+        .layer-text p {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            color: #a7f3d0;
+        }
+
+        .layer-text.active-layer {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* ==========================================================================
+           CENA 3: REVELAÇÃO DA FOTO & DIAGNÓSTICO
+           ========================================================================== */
+        #scene-3 {
+            background: #030706;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            display: block;
+        }
+
+        .flash-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #ffffff;
+            z-index: 99;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .photo-wrapper {
+            position: relative;
+            max-width: 600px;
+            margin: 40px auto 20px;
+            padding: 10px;
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            opacity: 0;
+            transform: scale(1.15);
+            filter: blur(15px);
+            transition: all 2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .photo-wrapper.revealed {
+            opacity: 1;
+            transform: scale(1);
+            filter: blur(0);
+        }
+
+        .photo-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 4px;
+            filter: saturate(1.1);
+            transition: filter 1.5s ease;
+        }
+
+        .photo-overlay-hud {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: #34d399;
+            background: rgba(3, 7, 6, 0.7);
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            pointer-events: none;
+        }
+
+        .photo-details {
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: left;
+            font-family: monospace;
+            color: #a7f3d0;
+            font-size: 0.95rem;
+        }
+
+        .photo-details p {
+            margin: 8px 0;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.6s ease;
+        }
+
+        .photo-details p.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Modal / Overlay de Diagnóstico Humorístico */
+        .diagnosis-box {
+            background: rgba(3, 7, 6, 0.95);
+            border: 2px solid #10b981;
+            border-radius: 8px;
+            padding: 24px;
+            margin: 20px auto;
+            max-width: 500px;
+            box-shadow: 0 0 40px rgba(16, 185, 129, 0.3);
+            display: none;
+            text-align: left;
+            font-family: monospace;
+        }
+
+        .diagnosis-item {
+            margin: 12px 0;
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .diagnosis-item.show {
+            opacity: 1;
+        }
+
+        /* ==========================================================================
+           CENA 4: A GRANDE VIRADA & TEXTÃO
+           ========================================================================== */
+        #scene-4 {
+            background: #030706;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            display: block;
+            padding: 60px 20px;
+        }
+
+        .transition-phrase {
+            max-width: 650px;
+            margin: 40px auto;
+            font-size: 1.3rem;
+            line-height: 1.8;
+            color: #d1fae5;
+            font-style: italic;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+
+        .transition-phrase.show {
+            opacity: 1;
+        }
+
+        .long-text-container {
+            max-width: 680px;
+            margin: 60px auto;
+            text-align: left;
+            font-size: 1.15rem;
+            line-height: 2;
+            color: #e2e8f0;
+            font-weight: 300;
+        }
+
+        .paragraph {
+            margin-bottom: 32px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .paragraph.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ==========================================================================
+           CENA 5: SCANNER FINAL DE MEMÓRIAS
+           ========================================================================== */
+        #scene-5 {
+            background: #030706;
+        }
+
+        .scanner-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #34d399;
+            box-shadow: 0 0 15px #34d399, 0 0 30px #34d399;
+            opacity: 0;
+            z-index: 10;
+        }
+
+        .scanner-line.scanning {
+            opacity: 1;
+            animation: scan-anim 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes scan-anim {
+            0% { top: 10%; }
+            100% { top: 90%; }
+        }
+
+        .memory-tag {
+            font-family: monospace;
+            font-size: 1.5rem;
+            letter-spacing: 4px;
+            color: #34d399;
+            margin: 15px 0;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-shadow: 0 0 10px rgba(52, 211, 153, 0.5);
+        }
+
+        /* ==========================================================================
+           CENA 6: FINAL EMOCIONAL
+           ========================================================================== */
+        #scene-6 {
+            background: #020403;
+            overflow-y: auto;
+            display: block;
+            padding: 80px 20px 60px;
+        }
+
+        .final-photo-mini {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #10b981;
+            margin: 0 auto 30px;
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.4);
+            transition: all 3s ease;
+            transform: scale(0.9);
+        }
+
+        .final-photo-mini.expand {
+            transform: scale(1.25);
+            box-shadow: 0 0 50px rgba(16, 185, 129, 0.7);
+        }
+
+        .poetic-block {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .poetic-line {
+            font-size: 1.25rem;
+            line-height: 1.8;
+            margin: 20px 0;
+            color: #f0fdf4;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+
+        .poetic-line.show {
+            opacity: 1;
+        }
+
+        .poetic-line.highlight {
+            color: #34d399;
+            font-size: 1.4rem;
+            font-weight: 500;
+            text-shadow: 0 0 12px rgba(52, 211, 153, 0.4);
+        }
+
+        .heart-icon {
+            font-size: 2.5rem;
+            color: #ef4444;
+            margin: 30px 0;
+            animation: pulse-heart 1.5s infinite ease-in-out;
+            display: inline-block;
+        }
+
+        @keyframes pulse-heart {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.25); }
+        }
+
+        /* Responsividade Específica */
+        @media (max-width: 600px) {
+            .layer-text h2 { font-size: 1.4rem; }
+            .layer-text p { font-size: 0.95rem; }
+            .long-text-container { font-size: 1rem; line-height: 1.8; }
+            .poetic-line { font-size: 1.1rem; }
+            .poetic-line.highlight { font-size: 1.2rem; }
+            .btn-action { width: 100%; max-width: 300px; padding: 14px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Canvas de Efeitos de Fundo/Partículas -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Overlay para Flash Transitions -->
+    <div class="flash-overlay" id="flash-overlay"></div>
+
+    <div class="viewport">
+
+        <!-- ==========================================================================
+             CENA 1: ABERTURA / HUD MÉDICO
+             ========================================================================== -->
+        <section class="scene active" id="scene-1">
+            <div class="intro-circle" id="intro-circle"></div>
+
+            <div class="hud-card" id="hud-card">
+                <div class="hud-line" id="hud-line-1">&gt; EXAME INICIADO.</div>
+                <div class="hud-line" id="hud-line-2">&gt; RESSONÂNCIA MAGNÉTICA</div>
+                <div class="hud-line" id="hud-line-3">&gt; PACIENTE: JULIA</div>
+                <div class="hud-line" id="hud-line-4">&gt; ACOMPANHANTE: EU ❤️</div>
+
+                <div class="sound-wave-container" id="sound-wave" style="opacity: 0;">
+                    <div class="wave-bar" style="animation-delay: 0.1s;"></div>
+                    <div class="wave-bar" style="animation-delay: 0.3s;"></div>
+                    <div class="wave-bar" style="animation-delay: 0.2s;"></div>
+                    <div class="wave-bar" style="animation-delay: 0.4s;"></div>
+                    <div class="wave-bar" style="animation-delay: 0.15s;"></div>
+                </div>
+            </div>
+
+            <button class="btn-action" id="btn-scene-1" style="opacity: 0; pointer-events: none;">AVANÇAR &gt;</button>
+        </section>
+
+        <!-- ==========================================================================
+             CENA 2: TÚNEL INTERATIVO DE ENTRADA
+             ========================================================================== -->
+        <section class="scene" id="scene-2">
+            <div class="drag-instruction">
+                <h3>Para iniciar o exame...</h3>
+                <p>Arraste para frente (para cima)</p>
+            </div>
+
+            <div class="tunnel-wrapper" id="tunnel-container">
+                <!-- Anéis do túnel gerados dinamicamente via JS -->
+            </div>
+
+            <!-- Textos de Camadas -->
+            <div class="layer-text" id="layer-1">
+                <h2>O que estamos procurando?</h2>
+                <p>Talvez a gente tenha entrado aqui procurando uma imagem, mas eu gosto de pensar que, no fundo, eu só queria encontrar mais uma lembrança nossa.</p>
+            </div>
+
+            <div class="layer-text" id="layer-2">
+                <h2>Uma lembrança.</h2>
+                <p>Porque existem momentos pequenos que parecem simples quando acontecem, mas que depois ganham um lugar enorme dentro da gente. E estar ao seu lado naquele dia é um deles.</p>
+            </div>
+
+            <div class="layer-text" id="layer-3">
+                <h2>Um momento.</h2>
+                <p>Um daqueles momentos em que eu percebo que não preciso de nada extraordinário para ser feliz. Às vezes, basta você estar perto de mim para um dia comum se transformar em uma memória que eu nunca quero perder.</p>
+            </div>
+
+            <div class="layer-text" id="layer-4">
+                <h2>Você.</h2>
+            </div>
+
+            <div class="depth-gauge">
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #6ee7b7;">
+                    <span>PROFUNDIDADE DO EXAME</span>
+                    <span id="depth-percentage">0%</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="depth-bar"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+             CENA 3: EXIBIÇÃO DA FOTO & DIAGNÓSTICO
+             ========================================================================== -->
+        <section class="scene" id="scene-3">
+            <div style="padding-top: 30px;">
+                <div class="photo-wrapper" id="photo-frame">
+                    <img src="imgs/ressonancia.jpeg" alt="Momento Ressonância" class="photo-img" id="main-photo">
+                    <div class="photo-overlay-hud">SCAN #0823 // REF: RESS-VERDE</div>
+                </div>
+
+                <div class="photo-details">
+                    <p id="detail-1">&gt; IMAGEM REGISTRADA.</p>
+                                                        </div>
+
+                <button class="btn-action" id="btn-diagnosis" style="display: none; margin: 0 auto 30px;">DIAGNÓSTICO?</button>
+
+                <div class="diagnosis-box" id="diagnosis-modal">
+                    <div style="text-align: center; color: #34d399; margin-bottom: 15px; font-weight: bold;">ANÁLISE CONCLUÍDA</div>
+                    <div class="diagnosis-item" id="diag-1"><span>PEQUENA LESÃO:</span><span style="color:#f59e0b;">DETECTADA</span></div>
+                    <div class="diagnosis-item" id="diag-2"><span>SAUDADE:</span><span style="color:#34d399;">DETECTADA</span></div>
+                    <div class="diagnosis-item" id="diag-3"><span>CARINHO:</span><span style="color:#34d399;">ELEVADO</span></div>
+                    <div class="diagnosis-item" id="diag-4"><span>AMOR:</span><span style="color:#ef4444; font-weight:bold;">FORA DA ESCALA ❤️</span></div>
+
+                    <button class="btn-action" id="btn-to-turn" style="width: 100%; margin-top: 20px;">CONTINUAR &gt;</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+             CENA 4: A GRANDE VIRADA & TEXTÃO
+             ========================================================================== -->
+        <section class="scene" id="scene-4">
+            <div class="transition-phrase" id="turn-phrase-1">
+                "Mas, pensando bem..."
+            </div>
+            <div class="transition-phrase" id="turn-phrase-2">
+                "Talvez aquela ressonância tenha encontrado outra coisa."
+            </div>
+            <div class="transition-phrase" id="turn-phrase-3">
+                "Porque existem marcas que nenhum exame consegue mostrar."
+            </div>
+
+            <div class="long-text-container" id="long-text-block" style="display: none;">
+                <div class="paragraph">Eu lembro de estar com você naquele dia e penso em como algumas situações, mesmo quando parecem pequenas, conseguem mostrar exatamente o que uma pessoa significa para a gente. Você estava ali, passando por um exame, usando aquela roupa verde que acabou virando parte de uma lembrança que eu guardaria com muito carinho. E eu estava ali com você. Não porque precisava existir alguma coisa grandiosa acontecendo, mas simplesmente porque eu queria estar.</div>
+                <div class="paragraph">Eu lembro daquele ambiente, daquele momento e, principalmente, de você. No meio de uma situação que poderia ser apenas mais um exame, acabou existindo uma lembrança que hoje tem um significado enorme para mim. E talvez seja justamente isso que eu mais gosto em nós: até os dias mais comuns acabam encontrando uma maneira de virar alguma coisa especial quando eu estou com você.</div>
+                <div class="paragraph">Estar com você também me ensinou que carinho não precisa de grandes demonstrações. Às vezes ele está simplesmente em acompanhar, esperar, perguntar se está tudo bem e permanecer por perto. Eu gosto de poder ser essa pessoa para você. Gosto de saber que, quando alguma coisa te deixa insegura ou assustada, eu posso estar ali. Mesmo que eu não consiga resolver tudo, pelo menos você não precisa passar por aquilo sozinha.</div>
+                <div class="paragraph">E eu espero que você saiba que estar ao seu lado nunca foi uma obrigação para mim. Eu estava ali porque queria. Assim como eu quero estar nas suas conquistas, quero estar nos seus dias difíceis também. Quero estar quando você estiver feliz, quando estiver nervosa, quando estiver cansada, quando precisar de alguém e até quando você disser que não precisa de ninguém, mas ainda assim quiser que eu fique por perto. Porque amar você, para mim, também é escolher estar.</div>
+                <div class="paragraph">A ressonância consegue mostrar coisas que estão dentro do corpo. Consegue encontrar detalhes, imagens e sinais que nossos olhos não conseguem enxergar. Mas, por mais avançada que seja qualquer máquina, existe uma coisa que ela nunca conseguiria encontrar: tudo aquilo que você deixou dentro de mim. Nenhum exame conseguiria medir o carinho que eu sinto, a saudade que aparece quando você não está, a paz que eu sinto quando você está perto ou o quanto a minha vida ficou mais bonita depois que você passou a fazer parte dela.</div>
+
+                <button class="btn-action" id="btn-to-scanner" style="margin: 40px auto; display: block;">PROSSEGUIR &gt;</button>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+             CENA 5: SCANNER FINAL DE MEMÓRIAS
+             ========================================================================== -->
+        <section class="scene" id="scene-5">
+            <div class="scanner-line" id="scanner-line"></div>
+            
+            <div style="font-family: monospace; color: #6ee7b7; font-size: 0.9rem; margin-bottom: 20px;">
+                &gt; ESCANEANDO CAMADAS PROFUNDAS...
+            </div>
+
+            <div class="memory-tag" id="memory-display">---</div>
+
+            <div id="final-analysis-status" style="margin-top: 30px; font-family: monospace; opacity: 0; transition: opacity 1s;">
+                <p style="color: #10b981; font-size: 1.1rem; margin-bottom: 8px;">ANÁLISE FINALIZADA.</p>
+                <p style="color: #a7f3d0; font-size: 1.2rem;">Resultado impossível de medir.</p>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+             CENA 6: FINAL EMOCIONAL
+             ========================================================================== -->
+        <section class="scene" id="scene-6">
+            <img src="imgs/ressonancia.jpeg" class="final-photo-mini" id="final-photo" alt="Memória">
+
+            <div class="poetic-block">
+                <div class="poetic-line" id="p-line-1">Algumas coisas podem ser vistas em uma ressonância.</div>
+                <div class="poetic-line" id="p-line-2">Um osso.</div>
+                <div class="poetic-line" id="p-line-3">Uma lesão.</div>
+                <div class="poetic-line" id="p-line-4">Uma imagem.</div>
+                <div class="poetic-line highlight" id="p-line-5" style="margin-top: 30px;">Mas aquilo que eu sinto quando estou com você...</div>
+                <div class="poetic-line highlight" id="p-line-6">...não cabe em nenhuma máquina.</div>
+                
+                <div class="poetic-line" id="p-line-7" style="margin-top: 40px;">Você deixou marcas em mim.</div>
+                <div class="poetic-line" id="p-line-8">E essas eu espero que nunca desapareçam.</div>
+
+                <div id="heart-wrapper" style="opacity: 0; transition: opacity 1.5s; margin-top: 20px;">
+                    <div class="heart-icon">❤️</div>
+                </div>
+
+                <div class="poetic-line" id="p-line-9" style="font-size: 1.1rem; margin-top: 30px;">
+                    E talvez essa seja a parte mais importante de tudo isso: eu não preciso de uma máquina para saber o quanto você é importante para mim. Eu sei porque sinto. Sinto quando lembro de você do nada e sorrio sozinho. Sinto quando alguma coisa acontece e a primeira pessoa que eu quero contar é você. Sinto quando estou com você e percebo que não preciso que aquele momento seja perfeito, porque a sua presença já faz ele valer a pena. Obrigado por cada momento em que você deixou eu estar perto, por cada lembrança que construímos e por todas as que ainda vamos construir. Eu quero continuar sendo a pessoa que fica ao seu lado, não apenas quando tudo está bem, mas também quando o dia estiver difícil. Quero continuar cuidando de você, rindo com você, fazendo você rir e guardando cada pequeno pedaço da nossa história. Porque, no fim, talvez a coisa mais bonita que essa ressonância pudesse ter encontrado não fosse nada dentro do seu pé. Fui eu percebendo, mais uma vez, o quanto existe de você dentro da minha vida. E eu espero que exista por muito, muito tempo. Eu amo você, minha princesa. ❤️
+                </div>
+
+                <div id="final-footer" style="opacity: 0; transition: opacity 1.5s; margin-top: 40px; border-top: 1px solid rgba(16,185,129,0.2); padding-top: 30px;">
+                    <p style="font-family: monospace; color: #6ee7b7; letter-spacing: 2px;">EXAME ENCERRADO.</p>
+                    <p style="color: #ecfdf5; font-size: 1.2rem; margin: 10px 0 20px;">Mas a nossa história continua.</p>
+                    <button class="btn-action" onclick="alert('❤️ Te amo!')">Continuar ❤️</button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ==========================================================================
+         LÓGICA JAVASCRIPT
+         ========================================================================== -->
+    <script>
+        /* --- ESTADO E ELEMENTOS --- */
+        const state = {
+            currentScene: 1,
+            dragDepth: 0,
+            isDragging: false,
+            startY: 0,
+            touchStartY: 0
+        };
+
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+
+        /* --- REDIMENSIONAMENTO DO CANVAS DE PARTÍCULAS --- */
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        /* --- GERENCIADOR DE PARTÍCULAS (VERDE AMBIENTAL) --- */
+        const particles = Array.from({ length: 65 }, () => ({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 2 + 0.5,
+            speedX: (Math.random() - 0.5) * 0.4,
+            speedY: (Math.random() - 0.5) * 0.4,
+            opacity: Math.random() * 0.6 + 0.1
+        }));
+
+        function renderParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.x += p.speedX;
+                p.y += p.speedY;
+
+                if (p.x < 0) p.x = canvas.width;
+                if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height;
+                if (p.y > canvas.height) p.y = 0;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(16, 185, 129, ${p.opacity})`;
+                ctx.fill();
+            });
+            requestAnimationFrame(renderParticles);
+        }
+        renderParticles();
+
+        /* --- TROCA DE CENAS --- */
+        function goToScene(sceneNumber) {
+            document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById(`scene-${sceneNumber}`);
+            if (target) {
+                target.classList.add('active');
+                state.currentScene = sceneNumber;
+            }
+        }
+
+        /* --- CENA 1: SEQUÊNCIA DE ENTRADA --- */
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('scene-1').classList.add('darkened');
+            }, 800);
+
+            setTimeout(() => {
+                document.getElementById('hud-card').classList.add('visible');
+                
+                const lines = [1, 2, 3, 4];
+                lines.forEach((num, idx) => {
+                    setTimeout(() => {
+                        document.getElementById(`hud-line-${num}`).classList.add('show');
+                    }, idx * 600 + 400);
+                });
+
+                setTimeout(() => {
+                    const wave = document.getElementById('sound-wave');
+                    wave.style.opacity = '1';
+                    document.getElementById('scene-1').classList.add('vibrating');
+                }, 2800);
+
+                setTimeout(() => {
+                    const btn = document.getElementById('btn-scene-1');
+                    btn.style.opacity = '1';
+                    btn.style.pointerEvents = 'auto';
+                }, 3800);
+
+            }, 1800);
+        });
+
+        document.getElementById('btn-scene-1').addEventListener('click', () => {
+            document.getElementById('scene-1').classList.remove('vibrating');
+            goToScene(2);
+            initTunnel();
+        });
+
+        /* --- CENA 2: CONSTRUÇÃO E LÓGICA DO TÚNEL 3D --- */
+        const tunnelContainer = document.getElementById('tunnel-container');
+        const totalRings = 18;
+
+        function initTunnel() {
+            tunnelContainer.innerHTML = '';
+            for (let i = 0; i < totalRings; i++) {
+                const ring = document.createElement('div');
+                ring.className = 'tunnel-ring';
+                const size = 100 + i * 40;
+                ring.style.width = `${size}px`;
+                ring.style.height = `${size}px`;
+                ring.style.transform = `translateZ(${-i * 120}px)`;
+                tunnelContainer.appendChild(ring);
+            }
+        }
+
+        function updateTunnelProgress(deltaY) {
+            state.dragDepth = Math.max(0, Math.min(100, state.dragDepth + deltaY * 0.12));
+            
+            // Atualizar UI de progresso
+            document.getElementById('depth-percentage').innerText = `${Math.round(state.dragDepth)}%`;
+            document.getElementById('depth-bar').style.width = `${state.dragDepth}%`;
+
+            // Transformar anéis
+            const rings = document.querySelectorAll('.tunnel-ring');
+            rings.forEach((ring, idx) => {
+                const zPos = (-idx * 120) + (state.dragDepth * 18);
+                ring.style.transform = `translateZ(${zPos}px)`;
+                ring.style.borderColor = `rgba(16, 185, 129, ${0.1 + (state.dragDepth / 100) * 0.6})`;
+            });
+
+            // Lógica de camadas por porcentagem
+            toggleLayer('layer-1', state.dragDepth >= 15 && state.dragDepth < 40);
+            toggleLayer('layer-2', state.dragDepth >= 40 && state.dragDepth < 65);
+            toggleLayer('layer-3', state.dragDepth >= 65 && state.dragDepth < 88);
+            toggleLayer('layer-4', state.dragDepth >= 88);
+
+            // Transição ao atingir 100%
+            if (state.dragDepth >= 100) {
+                state.dragDepth = 100;
+                triggerScene3Transition();
+            }
+        }
+
+        function toggleLayer(id, active) {
+            const el = document.getElementById(id);
+            if (active) el.classList.add('active-layer');
+            else el.classList.remove('active-layer');
+        }
+
+        // Handlers para Arrastar (Mouse & Touch)
+        const scene2 = document.getElementById('scene-2');
+
+        scene2.addEventListener('mousedown', e => {
+            state.isDragging = true;
+            state.startY = e.clientY;
+        });
+
+        window.addEventListener('mousemove', e => {
+            if (!state.isDragging || state.currentScene !== 2) return;
+            const deltaY = state.startY - e.clientY;
+            state.startY = e.clientY;
+            updateTunnelProgress(deltaY);
+        });
+
+        window.addEventListener('mouseup', () => { state.isDragging = false; });
+
+        scene2.addEventListener('touchstart', e => {
+            state.isDragging = true;
+            state.touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        scene2.addEventListener('touchmove', e => {
+            if (!state.isDragging || state.currentScene !== 2) return;
+            const deltaY = state.touchStartY - e.touches[0].clientY;
+            state.touchStartY = e.touches[0].clientY;
+            updateTunnelProgress(deltaY);
+        }, { passive: true });
+
+        scene2.addEventListener('touchend', () => { state.isDragging = false; });
+
+        /* --- CENA 3: REVELAÇÃO E DIAGNÓSTICO --- */
+        function triggerScene3Transition() {
+            const flash = document.getElementById('flash-overlay');
+            flash.style.opacity = '1';
+
+            setTimeout(() => {
+                goToScene(3);
+                flash.style.opacity = '0';
+
+                setTimeout(() => {
+                    document.getElementById('photo-frame').classList.add('revealed');
+                }, 300);
+
+                setTimeout(() => {
+                    document.getElementById('detail-1').classList.add('show');
+                }, 1200);
+
+                setTimeout(() => {
+                    document.getElementById('detail-2').classList.add('show');
+                }, 1800);
+
+                setTimeout(() => {
+                    document.getElementById('detail-3').classList.add('show');
+                }, 2400);
+
+                setTimeout(() => {
+                    document.getElementById('btn-diagnosis').style.display = 'block';
+                }, 3000);
+
+            }, 600);
+        }
+
+        document.getElementById('btn-diagnosis').addEventListener('click', () => {
+            document.getElementById('btn-diagnosis').style.display = 'none';
+            const modal = document.getElementById('diagnosis-modal');
+            modal.style.display = 'block';
+
+            const items = ['diag-1', 'diag-2', 'diag-3', 'diag-4'];
+            items.forEach((id, index) => {
+                setTimeout(() => {
+                    document.getElementById(id).classList.add('show');
+                }, index * 600);
+            });
+        });
+
+        document.getElementById('btn-to-turn').addEventListener('click', () => {
+            goToScene(4);
+            startScene4Sequence();
+        });
+
+        /* --- CENA 4: A GRANDE VIRADA --- */
+        function startScene4Sequence() {
+            setTimeout(() => {
+                document.getElementById('turn-phrase-1').classList.add('show');
+            }, 500);
+
+            setTimeout(() => {
+                document.getElementById('turn-phrase-2').classList.add('show');
+            }, 2500);
+
+            setTimeout(() => {
+                document.getElementById('turn-phrase-3').classList.add('show');
+            }, 4800);
+
+            setTimeout(() => {
+                document.getElementById('long-text-block').style.display = 'block';
+                
+                // Observador de Rolagem para os Parágrafos
+                const paragraphs = document.querySelectorAll('.paragraph');
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                        }
+                    });
+                }, { threshold: 0.2 });
+
+                paragraphs.forEach(p => observer.observe(p));
+
+            }, 7000);
+        }
+
+        document.getElementById('btn-to-scanner').addEventListener('click', () => {
+            goToScene(5);
+            startScannerSequence();
+        });
+
+        /* --- CENA 5: SCANNER DE MEMÓRIAS --- */
+        function startScannerSequence() {
+            const scannerLine = document.getElementById('scanner-line');
+            const memoryDisplay = document.getElementById('memory-display');
+            scannerLine.classList.add('scanning');
+
+            const memories = [
+                "MEMÓRIAS...",
+                "RISADAS...",
+                "ABRAÇOS...",
+                "OLHARES...",
+                "DIAS DIFÍCEIS...",
+                "DIAS FELIZES...",
+                "VOCÊ..."
+            ];
+
+            memories.forEach((text, i) => {
+                setTimeout(() => {
+                    memoryDisplay.style.opacity = '0';
+                    setTimeout(() => {
+                        memoryDisplay.innerText = text;
+                        memoryDisplay.style.opacity = '1';
+                    }, 200);
+                }, i * 1100);
+            });
+
+            setTimeout(() => {
+                scannerLine.classList.remove('scanning');
+                document.getElementById('final-analysis-status').style.opacity = '1';
+
+                setTimeout(() => {
+                    goToScene(6);
+                    startFinalSceneSequence();
+                }, 3000);
+
+            }, memories.length * 1100 + 800);
+        }
+
+        /* --- CENA 6: FINAL EMOCIONAL --- */
+        function startFinalSceneSequence() {
+            setTimeout(() => {
+                document.getElementById('final-photo').classList.add('expand');
+            }, 800);
+
+            const poeticLines = [
+                'p-line-1', 'p-line-2', 'p-line-3', 'p-line-4',
+                'p-line-5', 'p-line-6', 'p-line-7', 'p-line-8', 'p-line-9'
+            ];
+
+            poeticLines.forEach((id, index) => {
+                setTimeout(() => {
+                    document.getElementById(id).classList.add('show');
+                }, index * 1400 + 1500);
+            });
+
+            setTimeout(() => {
+                document.getElementById('heart-wrapper').style.opacity = '1';
+            }, poeticLines.length * 1400 + 1200);
+
+            setTimeout(() => {
+                document.getElementById('final-footer').style.opacity = '1';
+            }, poeticLines.length * 1400 + 2400);
+        }
+
+        /* --- EFEITO PARALLAX MOUSE EM DESKTOP --- */
+        window.addEventListener('mousemove', (e) => {
+            if (window.innerWidth < 768) return; // apenas para desktop
+            const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
+            const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
+
+            const activePhoto = document.querySelector('.scene.active .photo-wrapper');
+            if (activePhoto) {
+                activePhoto.style.transform = `translate(${moveX * 2}px, ${moveY * 2}px)`;
+            }
+        });
+    </script>
+</body>
+</html>
