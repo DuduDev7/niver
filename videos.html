@@ -1,236 +1,2093 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#050505">
-<title>ARQUIVO #02 — Operação Julia</title>
-<style>
-:root{--bg:#030304;--panel:#09090c;--line:#ff174f;--hot:#ff2b67;--pink:#ff5b9a;--text:#f5f5f7;--muted:#85858f;--ok:#42ff9b;--bad:#ff365f}
-*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font-family:Consolas,"Courier New",monospace}body{overflow-x:hidden}
-button{font:inherit}.screen{min-height:100svh;display:none;align-items:center;justify-content:center;padding:18px;position:relative;z-index:2}.screen.active{display:flex;animation:in .55s ease}
-@keyframes in{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:none}}
-.container{width:min(1050px,100%);margin:auto}.mission{background:linear-gradient(145deg,#0b0b0e,#050507);border:1px solid #ff174f55;padding:clamp(18px,4vw,38px);box-shadow:0 0 55px #ff174f0c}
-.center{text-align:center}.kicker{font-size:11px;letter-spacing:.18em;color:var(--hot)}h1,h2{letter-spacing:.05em}h1{font-size:clamp(25px,5vw,48px)}p{line-height:1.65}.muted{color:var(--muted)}
-.btn{min-height:52px;padding:14px 20px;border:1px solid var(--hot);background:#12070b;color:white;cursor:pointer;text-transform:uppercase;letter-spacing:.06em;transition:.18s;touch-action:manipulation}
-.btn:hover{transform:translateY(-2px);box-shadow:0 0 28px #ff174f44}.primary{background:var(--hot);color:#050505;font-weight:900}.green{border-color:var(--ok);background:#06170d}.wide{width:100%}
-#particles{position:fixed;inset:0;z-index:0;pointer-events:none}#scan{position:fixed;inset:0;pointer-events:none;z-index:80;opacity:.035;background:repeating-linear-gradient(0deg,transparent 0 3px,#fff 4px 5px)}
-.boot{min-height:450px;display:flex;flex-direction:column;justify-content:center}.terminal{font-size:clamp(13px,2vw,17px);line-height:1.9;white-space:pre-wrap}.cursor{color:var(--hot}
-.archive{border:1px solid #ff174f55;padding:22px;background:#08080b;position:relative;overflow:hidden}.archive:after{content:"";position:absolute;top:0;left:0;width:100%;height:2px;background:var(--hot);box-shadow:0 0 20px var(--hot);animation:scan 3s infinite}
-@keyframes scan{50%{transform:translateY(100px)}}
-.cards{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}.card{min-height:230px;padding:24px;border:1px solid #3a3a40;background:#0d0d10;cursor:pointer;transition:.25s}.card:hover{border-color:var(--hot);transform:translateY(-4px);box-shadow:0 15px 35px #000}.lock{font-size:42px}.badge{display:inline-block;margin-top:10px;padding:5px 8px;border:1px solid #555;color:#999;font-size:11px}.badge.ok{color:var(--ok);border-color:var(--ok)}
-.log{border-left:2px solid var(--hot);padding:9px 14px;color:#bbb;line-height:1.7;background:#08080a;margin:18px 0}.progress{height:7px;background:#1b1b20;margin:14px 0;overflow:hidden}.bar{height:100%;width:0;background:var(--hot);box-shadow:0 0 14px var(--hot);transition:.25s}.error{color:var(--bad);min-height:24px}
-.clues{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0}.clue{padding:14px;border:1px solid #35353b;background:#0c0c0f;min-height:85px;cursor:pointer;color:#bbb;transition:.2s}.clue:hover,.clue.open{border-color:var(--pink);color:white}.clue small{display:block;color:var(--muted);margin-top:8px}
-.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;max-width:390px;margin:20px auto}.key{height:58px;background:#101014;border:1px solid #444;color:#fff;cursor:pointer}.key:hover{border-color:var(--pink)}.pin{height:52px;border:1px solid #444;background:#050507;display:flex;align-items:center;justify-content:center;letter-spacing:.35em;font-size:22px}.dots{color:var(--hot)}
-.timer{font-size:12px;color:var(--muted);text-align:right}.attempts{font-size:12px;color:var(--muted)}
-.run-wrap{position:relative;height:150px;margin-top:20px}.runaway{position:absolute;left:50%;transform:translateX(-50%);transition:.12s}
-.video-panel{padding:12px;border:1px solid #ff174f55;background:#030304}.video-panel video{width:100%;display:block;background:#000;max-height:68vh}
-.unlocked{color:var(--ok);text-shadow:0 0 16px #42ff9b66}.big{font-size:clamp(45px,9vw,80px);animation:pulse 1.1s infinite alternate}@keyframes pulse{to{transform:scale(1.03);text-shadow:0 0 35px #42ff9b77}}
-.drag-board{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch;margin-top:20px}.drag-source,.dropzone{min-height:270px;border:1px dashed #ff174f77;display:grid;place-items:center;position:relative;background:#09090b}.dropzone{border:2px dashed #555}.dropzone.near{border-color:var(--ok);box-shadow:0 0 35px #42ff9b22}
-.heart{font-size:62px;cursor:grab;touch-action:none;user-select:none;filter:drop-shadow(0 0 17px #ff174f);z-index:5}.heart:active{cursor:grabbing}.heart.small{font-size:35px;position:absolute;opacity:.25}
-.tracker{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:15px}.track{border:1px solid #29292f;padding:9px;text-align:center;color:#777;font-size:11px}.track.active{color:var(--hot);border-color:var(--hot)}.track.done{color:var(--ok);border-color:var(--ok)}
-.wa-box{border:1px solid #25d36666;background:#06140c;padding:20px;margin:25px 0}.wa-msg{padding:14px;background:#0c2516;border:1px solid #1d5e36;color:#d9ffe7;text-align:left;line-height:1.5}
-.final-symbol{font-size:clamp(55px,13vw,115px);letter-spacing:.12em;animation:float 2.4s ease-in-out infinite}@keyframes float{50%{transform:translateY(-9px)}}
-.hidden{display:none!important}.footer{margin-top:20px;color:#444;font-size:10px;text-align:center}
-.flash{position:fixed;inset:0;background:white;z-index:70;pointer-events:none;animation:flash .4s forwards}@keyframes flash{to{opacity:0}}
-.shake{animation:shake .4s}@keyframes shake{20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(4px)}}
-.confetti{position:fixed;width:7px;height:12px;z-index:75;animation:cf 1.1s forwards;pointer-events:none}@keyframes cf{to{transform:translate(var(--x),var(--y)) rotate(720deg);opacity:0}}
-@media(max-width:700px){.cards,.drag-board{grid-template-columns:1fr}.clues{grid-template-columns:1fr 1fr}.mission{padding:18px}.btn{width:100%}.boot{min-height:540px}.card{min-height:180px}}
-</style>
-</head>
-<body>
-<canvas id="particles"></canvas><div id="scan"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#050505" />
+    <title>ARQUIVO #02 — JULIA</title>
 
-<section id="boot" class="screen active"><div class="container boot">
-<div id="terminal" class="terminal"></div>
-<div id="enter" class="hidden" style="margin-top:28px"><button class="btn primary" onclick="go('archive')">ENTRAR NO ARQUIVO →</button></div>
-</div></section>
+    <style>
+      :root {
+        --bg: #050505;
+        --bg2: #0b0b0b;
+        --panel: rgba(15, 15, 15, 0.94);
+        --red: #ff1838;
+        --red-dark: #8f071c;
+        --green: #39ff88;
+        --white: #f4f4f4;
+        --gray: #929292;
+        --border: rgba(255, 24, 56, 0.38);
+        --shadow: 0 0 30px rgba(255, 24, 56, 0.12);
+      }
 
-<section id="archive" class="screen"><div class="container">
-<div class="archive"><div class="kicker">CLASSIFIED // ACCESS LEVEL: JULIA</div><h1>ARQUIVO #02</h1><div>OPERAÇÃO: LIBERAR OS VÍDEOS</div><div id="status" class="muted">STATUS: 0/2 ARQUIVOS DESBLOQUEADOS</div></div>
-<div class="cards">
-<article class="card" onclick="openMission1()"><div class="lock" id="l1">🔒</div><div class="kicker">ARQUIVO 01</div><h2>VÍDEO 01</h2><span id="b1" class="badge">BLOQUEADO</span><p class="muted">Protocolo: descobrir a sequência, decifrar a pista e sobreviver ao sistema.</p></article>
-<article class="card" onclick="tryM2()"><div class="lock" id="l2">🔒</div><div class="kicker">ARQUIVO 02</div><h2>VÍDEO 02</h2><span id="b2" class="badge">BLOQUEADO</span><p class="muted">Protocolo: manipulação física + tempo + precisão.</p></article>
-</div><div class="footer">NO ATALHOS // EVERY ACCESS IS LOGGED</div>
-</div></section>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-<section id="mission1" class="screen"><div class="container"><div class="mission">
-<div class="kicker">ARQUIVO 01 // NÍVEL DE SEGURANÇA: ALTO</div><h1>PRIMEIRA MISSÃO: DECIFRE O ACESSO.</h1>
-<p>Não basta clicar na senha certa. O sistema exige <b>3 etapas</b>.</p>
-<div class="log" id="m1log">ETAPA 1/3 — encontre as pistas corretas entre os arquivos falsos.</div>
-<div class="clues" id="clues"></div>
-<div id="clueResult" class="muted"></div>
-<div id="pinStage" class="hidden">
-<p><b>ETAPA 2/3 — MONTE A CHAVE</b></p><p class="muted">A ordem correta está escondida nas pistas que você encontrou.</p>
-<div class="pin" id="pin">____</div><div class="keypad" id="keypad"></div><div class="attempts" id="attempts"></div>
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background: radial-gradient(
+            circle at 50% 0%,
+            rgba(255, 24, 56, 0.08),
+            transparent 35%
+          ),
+          #050505;
+        color: var(--white);
+        font-family: 'Courier New', Courier, monospace;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* CRT */
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 9998;
+        background: repeating-linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0.025) 0px,
+          rgba(255, 255, 255, 0.025) 1px,
+          transparent 1px,
+          transparent 4px
+        );
+        mix-blend-mode: overlay;
+        opacity: 0.32;
+      }
+
+      body::after {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 9997;
+        box-shadow: inset 0 0 140px rgba(0, 0, 0, 0.85);
+      }
+
+      button,
+      input {
+        font-family: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      /* Particles */
+      #particles {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 1;
+      }
+
+      .particle {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background: var(--red);
+        box-shadow: 0 0 8px var(--red);
+        opacity: 0.5;
+        animation: floatParticle linear infinite;
+      }
+
+      @keyframes floatParticle {
+        from {
+          transform: translateY(105vh);
+          opacity: 0;
+        }
+        15% {
+          opacity: 0.6;
+        }
+        85% {
+          opacity: 0.35;
+        }
+        to {
+          transform: translateY(-10vh);
+          opacity: 0;
+        }
+      }
+
+      /* Terminal */
+      #terminal {
+        position: fixed;
+        inset: 0;
+        z-index: 5000;
+        background: #020202;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 25px;
+        transition: opacity 0.9s ease, visibility 0.9s ease;
+      }
+
+      #terminal.hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .terminal-box {
+        width: min(900px, 100%);
+        min-height: 480px;
+        border: 1px solid rgba(57, 255, 136, 0.35);
+        background: linear-gradient(
+            rgba(57, 255, 136, 0.015),
+            rgba(57, 255, 136, 0.015)
+          ),
+          #030303;
+        box-shadow: 0 0 40px rgba(57, 255, 136, 0.08),
+          inset 0 0 40px rgba(57, 255, 136, 0.025);
+        padding: 28px;
+        position: relative;
+      }
+
+      .terminal-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-bottom: 1px solid rgba(57, 255, 136, 0.15);
+        padding-bottom: 15px;
+        margin-bottom: 22px;
+        color: var(--green);
+        font-size: 12px;
+      }
+
+      .terminal-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--red);
+        box-shadow: 0 0 8px var(--red);
+      }
+
+      .terminal-content {
+        color: var(--green);
+        font-size: clamp(12px, 2vw, 16px);
+        line-height: 2;
+        min-height: 330px;
+      }
+
+      .terminal-line {
+        min-height: 32px;
+      }
+
+      .cursor {
+        display: inline-block;
+        width: 8px;
+        height: 18px;
+        background: var(--green);
+        vertical-align: middle;
+        animation: blink 0.8s infinite;
+      }
+
+      @keyframes blink {
+        0%,
+        45% {
+          opacity: 1;
+        }
+        46%,
+        100% {
+          opacity: 0;
+        }
+      }
+
+      .enter-btn {
+        margin-top: 15px;
+        border: 1px solid var(--green);
+        color: var(--green);
+        background: rgba(57, 255, 136, 0.04);
+        padding: 14px 24px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        transition: 0.25s;
+        box-shadow: 0 0 15px rgba(57, 255, 136, 0.08);
+      }
+
+      .enter-btn:hover {
+        background: var(--green);
+        color: #000;
+        box-shadow: 0 0 30px rgba(57, 255, 136, 0.4);
+      }
+
+      /* Main */
+      #app {
+        position: relative;
+        z-index: 2;
+        max-width: 1180px;
+        margin: auto;
+        padding: 25px 18px 80px;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+      }
+
+      #app.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .topbar {
+        border: 1px solid var(--border);
+        background: rgba(5, 5, 5, 0.85);
+        box-shadow: var(--shadow);
+        padding: 17px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 25px;
+        position: sticky;
+        top: 10px;
+        z-index: 100;
+        backdrop-filter: blur(10px);
+      }
+
+      .brand {
+        font-size: 12px;
+        color: var(--red);
+        letter-spacing: 2px;
+      }
+
+      .status {
+        font-size: 12px;
+        color: var(--green);
+      }
+
+      .hero {
+        text-align: center;
+        padding: 35px 15px 25px;
+      }
+
+      .glitch {
+        position: relative;
+        color: var(--white);
+        font-size: clamp(30px, 7vw, 70px);
+        font-weight: 900;
+        letter-spacing: 5px;
+        text-shadow: 2px 0 var(--red), -2px 0 var(--green);
+        animation: glitchText 4s infinite;
+      }
+
+      @keyframes glitchText {
+        0%,
+        88%,
+        100% {
+          transform: translate(0);
+        }
+        89% {
+          transform: translate(-3px, 2px);
+        }
+        90% {
+          transform: translate(3px, -2px);
+        }
+        91% {
+          transform: translate(-1px, 0);
+        }
+        92% {
+          transform: translate(0);
+        }
+      }
+
+      .operation {
+        color: var(--gray);
+        margin-top: 12px;
+        letter-spacing: 3px;
+        font-size: 12px;
+      }
+
+      .progress-wrap {
+        margin: 25px auto 0;
+        width: min(650px, 100%);
+      }
+
+      .progress-info {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        color: var(--gray);
+        margin-bottom: 7px;
+      }
+
+      .progress {
+        height: 7px;
+        border: 1px solid #292929;
+        background: #0d0d0d;
+        overflow: hidden;
+      }
+
+      .progress-bar {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(
+          90deg,
+          var(--red-dark),
+          var(--red),
+          var(--green)
+        );
+        box-shadow: 0 0 15px var(--red);
+        transition: width 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+      }
+
+      /* Video cards */
+      .videos {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin: 25px 0 45px;
+      }
+
+      .video-card {
+        min-height: 145px;
+        border: 1px solid #272727;
+        background: linear-gradient(145deg, #101010, #070707);
+        padding: 25px;
+        position: relative;
+        overflow: hidden;
+        transition: 0.4s;
+      }
+
+      .video-card::before {
+        content: '';
+        position: absolute;
+        inset: -100%;
+        background: linear-gradient(
+          120deg,
+          transparent 40%,
+          rgba(255, 255, 255, 0.05),
+          transparent 60%
+        );
+        transform: rotate(10deg);
+        transition: 0.6s;
+      }
+
+      .video-card:hover::before {
+        inset: 100%;
+      }
+
+      .video-card.unlocked {
+        border-color: var(--green);
+        box-shadow: 0 0 25px rgba(57, 255, 136, 0.12);
+      }
+
+      .video-icon {
+        font-size: 30px;
+        margin-bottom: 12px;
+      }
+
+      .video-title {
+        font-weight: bold;
+        letter-spacing: 2px;
+      }
+
+      .video-status {
+        color: var(--gray);
+        font-size: 11px;
+        margin-top: 8px;
+      }
+
+      .video-card.unlocked .video-status {
+        color: var(--green);
+      }
+
+      /* Mission */
+      .mission {
+        border: 1px solid #292929;
+        background: rgba(10, 10, 10, 0.93);
+        margin: 22px 0;
+        padding: clamp(20px, 4vw, 35px);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .mission.locked {
+        opacity: 0.43;
+        filter: grayscale(0.5);
+      }
+
+      .mission.completed {
+        border-color: rgba(57, 255, 136, 0.45);
+        box-shadow: 0 0 35px rgba(57, 255, 136, 0.06);
+      }
+
+      .mission::after {
+        content: 'CLASSIFIED';
+        position: absolute;
+        right: -35px;
+        top: 22px;
+        transform: rotate(35deg);
+        color: rgba(255, 24, 56, 0.07);
+        font-size: 35px;
+        font-weight: bold;
+        pointer-events: none;
+      }
+
+      .mission-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        align-items: flex-start;
+        margin-bottom: 28px;
+      }
+
+      .mission-number {
+        color: var(--red);
+        font-size: 11px;
+        letter-spacing: 2px;
+        margin-bottom: 8px;
+      }
+
+      .mission h2 {
+        font-size: clamp(18px, 4vw, 27px);
+        letter-spacing: 2px;
+      }
+
+      .mission-description {
+        color: #b8b8b8;
+        font-size: 13px;
+        line-height: 1.8;
+        max-width: 780px;
+        margin-bottom: 25px;
+      }
+
+      .mission-description strong {
+        color: var(--white);
+      }
+
+      .lock-label {
+        color: var(--red);
+        font-size: 11px;
+        border: 1px solid rgba(255, 24, 56, 0.35);
+        padding: 7px 10px;
+        white-space: nowrap;
+      }
+
+      /* Logs */
+      .logs {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-bottom: 28px;
+      }
+
+      .log {
+        border: 1px solid #292929;
+        background: #080808;
+        padding: 15px 10px;
+        min-height: 80px;
+        color: var(--gray);
+        text-align: left;
+        transition: 0.25s;
+      }
+
+      .log:hover {
+        border-color: var(--red);
+        transform: translateY(-2px);
+      }
+
+      .log-title {
+        color: var(--red);
+        font-size: 10px;
+        margin-bottom: 8px;
+        letter-spacing: 1px;
+      }
+
+      .log-number {
+        font-size: 12px;
+        color: #aaa;
+      }
+
+      .log.revealed {
+        grid-column: span 1;
+        border-color: rgba(57, 255, 136, 0.45);
+        background: rgba(57, 255, 136, 0.035);
+      }
+
+      .log.revealed .log-title {
+        color: var(--green);
+      }
+
+      .log-info {
+        font-size: 11px;
+        line-height: 1.5;
+        color: #ddd;
+        margin-top: 8px;
+      }
+
+      /* Password */
+      .password-area {
+        border-top: 1px dashed #292929;
+        padding-top: 25px;
+        display: grid;
+        grid-template-columns: 1fr 230px;
+        gap: 25px;
+        align-items: start;
+      }
+
+      .password-display {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+      }
+
+      .pass-slot {
+        width: 58px;
+        height: 58px;
+        border: 1px solid #444;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        color: var(--green);
+        background: #030303;
+      }
+
+      .keypad {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 7px;
+      }
+
+      .key {
+        min-height: 48px;
+        background: #0b0b0b;
+        border: 1px solid #2b2b2b;
+        color: var(--white);
+        font-size: 16px;
+        transition: 0.15s;
+      }
+
+      .key:hover {
+        border-color: var(--red);
+        color: var(--red);
+      }
+
+      .key:active {
+        transform: scale(0.92);
+      }
+
+      .key.confirm {
+        color: var(--green);
+        border-color: rgba(57, 255, 136, 0.35);
+      }
+
+      .key.clear {
+        color: var(--red);
+      }
+
+      .feedback {
+        min-height: 30px;
+        font-size: 12px;
+        margin-top: 10px;
+      }
+
+      .feedback.error {
+        color: var(--red);
+      }
+
+      .feedback.success {
+        color: var(--green);
+      }
+
+      /* Buttons */
+      .main-btn {
+        border: 1px solid var(--red);
+        background: rgba(255, 24, 56, 0.06);
+        color: var(--white);
+        padding: 13px 20px;
+        letter-spacing: 2px;
+        font-weight: bold;
+        transition: 0.25s;
+        margin-top: 15px;
+      }
+
+      .main-btn:hover {
+        background: var(--red);
+        color: #000;
+        box-shadow: 0 0 25px rgba(255, 24, 56, 0.3);
+        transform: translateY(-2px);
+      }
+
+      .main-btn.green {
+        border-color: var(--green);
+        color: var(--green);
+      }
+
+      .main-btn.green:hover {
+        background: var(--green);
+        color: #000;
+      }
+
+      /* Hearts */
+      .heart-counter {
+        text-align: center;
+        font-size: 15px;
+        color: var(--green);
+        margin: 15px 0;
+        letter-spacing: 2px;
+      }
+
+      .heart-hint {
+        text-align: center;
+        min-height: 28px;
+        color: var(--gray);
+        font-size: 11px;
+        margin-bottom: 15px;
+      }
+
+      .heart-grid {
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        gap: 7px;
+        width: min(620px, 100%);
+        margin: auto;
+      }
+
+      .heart-cell {
+        aspect-ratio: 1;
+        background: #090909;
+        border: 1px solid #222;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: clamp(14px, 3vw, 22px);
+        transition: transform 0.18s, border-color 0.18s, background 0.18s;
+        user-select: none;
+      }
+
+      .heart-cell:hover {
+        border-color: #555;
+        transform: scale(1.05);
+      }
+
+      .heart-cell.broken.clicked {
+        animation: shake 0.3s;
+        border-color: var(--red);
+      }
+
+      .heart-cell.found {
+        border-color: var(--green);
+        background: rgba(57, 255, 136, 0.12);
+        box-shadow: inset 0 0 15px rgba(57, 255, 136, 0.08),
+          0 0 12px rgba(57, 255, 136, 0.1);
+        animation: heartFound 0.5s ease;
+      }
+
+      @keyframes heartFound {
+        0% {
+          transform: scale(0.5) rotate(-15deg);
+        }
+        60% {
+          transform: scale(1.2) rotate(5deg);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-5px);
+        }
+        75% {
+          transform: translateX(5px);
+        }
+      }
+
+      /* Morse */
+      .morse-table {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+        margin: 20px 0;
+      }
+
+      .morse-item {
+        border: 1px solid #2a2a2a;
+        background: #080808;
+        padding: 14px 8px;
+        text-align: center;
+      }
+
+      .morse-letter {
+        display: block;
+        color: var(--red);
+        font-weight: bold;
+        margin-bottom: 6px;
+      }
+
+      .morse-code {
+        color: var(--green);
+        font-size: 14px;
+      }
+
+      .morse-input {
+        width: 100%;
+        min-height: 70px;
+        resize: none;
+        background: #020202;
+        border: 1px solid #383838;
+        color: var(--green);
+        outline: none;
+        padding: 17px;
+        font-size: 16px;
+        letter-spacing: 2px;
+        transition: 0.25s;
+      }
+
+      .morse-input:focus {
+        border-color: var(--green);
+        box-shadow: 0 0 20px rgba(57, 255, 136, 0.08);
+      }
+
+      .morse-feedback {
+        min-height: 25px;
+        margin-top: 10px;
+        font-size: 12px;
+      }
+
+      /* Final */
+      #finalScreen {
+        display: none;
+        min-height: 70vh;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 50px 15px;
+      }
+
+      #finalScreen.active {
+        display: flex;
+      }
+
+      .final-box {
+        width: min(750px, 100%);
+        border: 1px solid rgba(57, 255, 136, 0.45);
+        background: rgba(5, 5, 5, 0.94);
+        padding: clamp(30px, 7vw, 65px) 25px;
+        box-shadow: 0 0 60px rgba(57, 255, 136, 0.08);
+        animation: finalAppear 0.8s ease;
+      }
+
+      @keyframes finalAppear {
+        from {
+          opacity: 0;
+          transform: scale(0.92);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .final-heart {
+        font-size: 65px;
+        animation: heartPulse 1.5s infinite;
+        filter: drop-shadow(0 0 15px rgba(255, 24, 56, 0.5));
+      }
+
+      @keyframes heartPulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.13);
+        }
+      }
+
+      .final-box h1 {
+        color: var(--green);
+        margin: 20px 0 10px;
+        font-size: clamp(24px, 6vw, 43px);
+        letter-spacing: 3px;
+      }
+
+      .final-status {
+        color: var(--green);
+        font-size: 13px;
+        margin: 20px 0;
+      }
+
+      .final-box p {
+        color: #bbb;
+        line-height: 1.8;
+        font-size: 13px;
+        margin: 8px 0;
+      }
+
+      .warning {
+        border: 1px solid rgba(255, 24, 56, 0.4);
+        background: rgba(255, 24, 56, 0.04);
+        margin: 30px 0 20px;
+        padding: 20px;
+      }
+
+      .warning-title {
+        color: var(--red);
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .whatsapp-area {
+        border-top: 1px dashed #333;
+        margin-top: 30px;
+        padding-top: 25px;
+      }
+
+      .whatsapp-area h3 {
+        color: var(--white);
+        margin-bottom: 12px;
+      }
+
+      .whatsapp-area p {
+        margin-bottom: 10px;
+      }
+
+      .whatsapp-btn {
+        display: inline-block;
+        text-decoration: none;
+        border: 1px solid #39ff88;
+        color: #39ff88;
+        padding: 15px 25px;
+        margin-top: 10px;
+        transition: 0.25s;
+        font-weight: bold;
+        letter-spacing: 1px;
+      }
+
+      .whatsapp-btn:hover {
+        background: var(--green);
+        color: #000;
+        box-shadow: 0 0 30px rgba(57, 255, 136, 0.3);
+      }
+
+      .disclaimer {
+        color: #666 !important;
+        font-size: 10px !important;
+        margin-top: 14px !important;
+      }
+
+      .already-btn {
+        background: transparent;
+        color: #777;
+        border: 1px solid #333;
+        padding: 10px 16px;
+        margin-top: 10px;
+        transition: 0.2s;
+      }
+
+      .already-btn:hover {
+        color: var(--white);
+        border-color: #777;
+      }
+
+      /* Success overlay */
+      #successFlash {
+        position: fixed;
+        inset: 0;
+        background: rgba(57, 255, 136, 0.07);
+        pointer-events: none;
+        z-index: 9000;
+        opacity: 0;
+      }
+
+      #successFlash.active {
+        animation: flash 0.7s ease;
+      }
+
+      @keyframes flash {
+        0% {
+          opacity: 0;
+        }
+        30% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+
+      .screen-shake {
+        animation: screenShake 0.35s ease;
+      }
+
+      @keyframes screenShake {
+        0%,
+        100% {
+          transform: translate(0);
+        }
+        20% {
+          transform: translate(-5px, 2px);
+        }
+        40% {
+          transform: translate(5px, -2px);
+        }
+        60% {
+          transform: translate(-3px, -1px);
+        }
+        80% {
+          transform: translate(3px, 1px);
+        }
+      }
+
+      /* Toast */
+      #toast {
+        position: fixed;
+        left: 50%;
+        bottom: 25px;
+        transform: translate(-50%, 120px);
+        z-index: 9999;
+        background: #080808;
+        border: 1px solid var(--red);
+        padding: 13px 18px;
+        color: var(--white);
+        font-size: 11px;
+        max-width: calc(100% - 30px);
+        text-align: center;
+        transition: transform 0.35s ease;
+        box-shadow: 0 0 25px rgba(255, 24, 56, 0.2);
+      }
+
+      #toast.show {
+        transform: translate(-50%, 0);
+      }
+
+      /* Mobile */
+      @media (max-width: 700px) {
+        #app {
+          padding: 15px 10px 60px;
+        }
+
+        .topbar {
+          position: relative;
+          top: 0;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+        }
+
+        .videos {
+          grid-template-columns: 1fr;
+        }
+
+        .logs {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .password-area {
+          grid-template-columns: 1fr;
+        }
+
+        .keypad {
+          width: min(320px, 100%);
+          margin: auto;
+        }
+
+        .password-display {
+          justify-content: center;
+        }
+
+        .morse-table {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .heart-grid {
+          gap: 4px;
+        }
+
+        .heart-cell {
+          border-width: 1px;
+        }
+
+        .mission-head {
+          flex-direction: column;
+        }
+
+        .terminal-box {
+          min-height: 420px;
+          padding: 18px;
+        }
+
+        .terminal-content {
+          line-height: 1.7;
+        }
+
+        .glitch {
+          letter-spacing: 2px;
+        }
+      }
+
+      @media (max-width: 380px) {
+        .heart-grid {
+          gap: 3px;
+        }
+
+        .heart-cell {
+          font-size: 13px;
+        }
+
+        .logs {
+          gap: 6px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="particles"></div>
+    <div id="successFlash"></div>
+    <div id="toast"></div>
+
+    <!-- TERMINAL DE ABERTURA -->
+    <section id="terminal">
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <span class="terminal-dot"></span>
+          <span>SECURE_TERMINAL // CONNECTION_444</span>
+        </div>
+
+        <div class="terminal-content" id="terminalContent"></div>
+
+        <button class="enter-btn" id="enterBtn" style="display: none">
+          [ ENTRAR NO ARQUIVO ]
+        </button>
+      </div>
+    </section>
+
+    <!-- APLICAÇÃO -->
+    <main id="app">
+      <div class="topbar">
+        <div class="brand">◉ SECURE SYSTEM // FILE #02</div>
+        <div class="status" id="systemStatus">● SISTEMA ONLINE</div>
+      </div>
+
+      <section class="hero">
+        <div class="glitch">ARQUIVO #02</div>
+        <div class="operation">OPERAÇÃO: LIBERAR os vídeos</div>
+
+        <div class="progress-wrap">
+          <div class="progress-info">
+            <span>PROGRESSO DA OPERAÇÃO</span>
+            <span id="progressText">0/3</span>
+          </div>
+
+          <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VÍDEOS -->
+      <section class="videos">
+        <div class="video-card" id="video1">
+          <div class="video-icon">🔒</div>
+          <div class="video-title">VÍDEO 01</div>
+          <div class="video-status">ARQUIVO BLOQUEADO</div>
+        </div>
+
+        <div class="video-card" id="video2">
+          <div class="video-icon">🔒</div>
+          <div class="video-title">VÍDEO 02</div>
+          <div class="video-status">ARQUIVO BLOQUEADO</div>
+        </div>
+      </section>
+
+      <!-- MISSÃO 01 -->
+      <section class="mission" id="mission1">
+        <div class="mission-head">
+          <div>
+            <div class="mission-number">MISSÃO 01 // ARQUIVO 444</div>
+            <h2>DESCUBRA A SENHA</h2>
+          </div>
+
+          <div class="lock-label" id="mission1Status">● EM ANDAMENTO</div>
+        </div>
+
+        <div class="mission-description">
+          Existem <strong>REGISTROS</strong> e
+          <strong>REGISTROS FALSOS</strong>.<br /><br />
+
+          Os registros verdadeiros contêm as informações necessárias. Os falsos
+          foram colocados para te confundir.<br /><br />
+
+          A senha possui <strong>3 dígitos</strong>. Leia os registros e
+          descubra a combinação.
+        </div>
+
+        <div class="logs" id="logs"></div>
+
+        <div class="password-area">
+          <div>
+            <div class="password-display">
+              <div class="pass-slot" id="slot1">_</div>
+              <div class="pass-slot" id="slot2">_</div>
+              <div class="pass-slot" id="slot3">_</div>
+            </div>
+
+            <div class="feedback" id="passFeedback"></div>
+          </div>
+
+          <div class="keypad">
+            <button class="key" data-key="1">1</button>
+            <button class="key" data-key="2">2</button>
+            <button class="key" data-key="3">3</button>
+
+            <button class="key" data-key="4">4</button>
+            <button class="key" data-key="5">5</button>
+            <button class="key" data-key="6">6</button>
+
+            <button class="key" data-key="7">7</button>
+            <button class="key" data-key="8">8</button>
+            <button class="key" data-key="9">9</button>
+
+            <button class="key clear" data-key="C">C</button>
+            <button class="key" data-key="0">0</button>
+            <button class="key confirm" data-key="✓">✓</button>
+          </div>
+        </div>
+        <button class="main-btn" id="continue1" style="display: none">
+          <a
+            class="whatsapp-btn"
+            id="whatsappBtn"
+            href="https://wa.me/5547992856297?text=Consegui%20liberar%20o%20primeiro%20v%C3%ADdeo%2C%20manda%20a%C3%AA%21%20%F0%9F%94%A5"
+            target="_blank"
+          >
+            target="_blank" rel="noopener noreferrer" > 💬 MANDAR MENSAGEM
+          </a>
+        </button>
+        <button class="main-btn" id="continue1" style="display: none">
+          CONTINUAR →
+        </button>
+      </section>
+
+      <!-- MISSÃO 02 -->
+      <section class="mission locked" id="mission2">
+        <div class="mission-head">
+          <div>
+            <div class="mission-number">MISSÃO 02 // PROTOCOLO ❤️</div>
+            <h2>ENCONTRE OS CORAÇÕES</h2>
+          </div>
+
+          <div class="lock-label" id="mission2Status">🔒 BLOQUEADA</div>
+        </div>
+
+        <div class="mission-description">
+          O sistema detectou <strong>64 arquivos</strong>.<br /><br />
+
+          A maioria está corrompida.<br />
+          Apenas <strong>5 corações estão intactos.</strong><br /><br />
+
+          Encontre os 5 ❤️.
+        </div>
+
+        <div class="heart-counter">
+          CORAÇÕES ENCONTRADOS:
+          <span id="heartCount">0/5</span>
+        </div>
+
+        <div class="heart-hint" id="heartHint">
+          💡 Procure pelos ❤️ entre os 💔.
+        </div>
+
+        <div class="heart-grid" id="heartGrid"></div>
+        <button class="main-btn" id="continue2" style="display: none">
+          <a
+            class="whatsapp-btn"
+            id="whatsappBtn"
+            href="https://wa.me/5547992856297?text=Consegui%20liberar%20o%202%C2%BA%20v%C3%ADdeo%20kkkkk%2C%20mandaaa%21%20%F0%9F%98%88"
+            target="_blank"
+          >
+            target="_blank" rel="noopener noreferrer" > 💬 MANDAR MENSAGEM
+          </a>
+        </button>
+
+        <button class="main-btn" id="continue2" style="display: none">
+          CONTINUAR →
+        </button>
+      </section>
+
+      <!-- MISSÃO 03 -->
+      <section class="mission locked" id="mission3">
+        <div class="mission-head">
+          <div>
+            <div class="mission-number">MISSÃO 03 // COMUNICAÇÃO SECRETA</div>
+            <h2>TRANSMISSÃO MORSE</h2>
+          </div>
+
+          <div class="lock-label" id="mission3Status">🔒 BLOQUEADA</div>
+        </div>
+
+        <div class="mission-description">
+          Última barreira, Julia.<br /><br />
+
+          Para confirmar sua identidade, escreva
+          <strong>JULIA</strong> em código Morse.
+        </div>
+
+        <div class="mission-description">💡 Você pode consultar a tabela:</div>
+
+        <!-- <div class="morse-table">
+
+<div class="morse-item">
+<span class="morse-letter">J</span>
+<span class="morse-code">.---</span>
 </div>
-<div id="finalCheck" class="hidden">
-<p><b>ETAPA 3/3 — ÚLTIMA CONFIRMAÇÃO</b></p><p>Você chegou até aqui. Agora prove que não foi sorte.</p>
-<button class="btn primary" onclick="m1Complete()">CONFIRMAR ACESSO</button>
+
+<div class="morse-item">
+<span class="morse-letter">U</span>
+<span class="morse-code">..-</span>
 </div>
-<div class="error" id="m1error"></div>
-</div></div></section>
 
-<section id="wa1" class="screen"><div class="container"><div class="mission center">
-<div class="kicker">ARQUIVO 01 // HUMAN VERIFICATION</div><div class="big">🔓</div><h1>PRIMEIRO ARQUIVO QUASE LIBERADO.</h1>
-<p>O sistema precisa de uma confirmação fora dele.</p>
-<div class="wa-box"><div class="kicker" style="color:#42ff9b">MENSAGEM A SER ENVIADA</div><div class="wa-msg">SOS 🚨 Completei a primeira missão. Quero meu vídeo 01 KKKKK ❤️</div></div>
-<button class="btn green" onclick="openWA(1)">PEDIR O VÍDEO 01 PELO WHATSAPP</button>
-<p class="muted">A página não consegue verificar se você enviou a mensagem. Depois de enviar, volte aqui.</p>
-<button class="btn primary" onclick="release1()">JÁ MANDEI 😎</button>
-</div></div></section>
-
-<section id="video1" class="screen"><div class="container"><div class="mission">
-<div class="center"><div class="big">🔓</div><div class="kicker unlocked">ARQUIVO 01 DESBLOQUEADO</div><h1>VÍDEO 01 DISPONÍVEL.</h1></div>
-<div class="video-panel">
-<!-- ===== VÍDEO 1: COLOQUE SEU ARQUIVO OU URL .MP4 AQUI ===== -->
-<video id="videoOne" controls playsinline preload="metadata"><source src="COLOQUE_SEU_VIDEO_1_AQUI" type="video/mp4"></video>
+<div class="morse-item">
+<span class="morse-letter">L</span>
+<span class="morse-code">.-..</span>
 </div>
-<p>Primeiro nível concluído.</p><p class="muted">Mas o sistema detectou outro arquivo protegido.</p>
-<button class="btn primary" onclick="go('mission2')">ACEITAR O ARQUIVO 02 →</button>
-</div></div></section>
 
-<section id="mission2" class="screen"><div class="container"><div class="mission">
-<div class="kicker">PROTOCOLO 02 // NÍVEL DE SEGURANÇA: INSANO</div><h1>O SISTEMA AGORA QUER PROVA FÍSICA.</h1>
-<p>Você terá <b>12 segundos</b> para levar o ❤️ até o destino. E não é só arrastar: o coração precisa passar por <b>3 zonas de verificação</b>.</p>
-<div class="timer">TEMPO: <span id="time">12.0</span>s</div>
-<div class="tracker"><div id="t1" class="track">01 // CONTATO</div><div id="t2" class="track">02 // INTENÇÃO</div><div id="t3" class="track">03 // DESTINO</div></div>
-<div class="drag-board"><div class="drag-source"><div id="heart" class="heart">❤️</div><div class="heart small" style="top:20px;left:20px">❤️</div><div class="heart small" style="bottom:20px;right:20px">❤️</div></div><div id="drop" class="dropzone"><div><div style="font-size:35px">⬡</div><b>ÁREA FINAL</b><br><span class="muted">ENTREGUE O ❤️ AQUI</span></div></div></div>
-<div class="progress"><div id="dragBar" class="bar"></div></div><div class="log" id="m2log">AGUARDANDO CONTATO COM O OBJETO...</div>
-<button id="retry2" class="btn primary hidden" onclick="startMission2()">TENTAR NOVAMENTE</button>
-</div></div></section>
-
-<section id="wa2" class="screen"><div class="container"><div class="mission center">
-<div class="kicker">ARQUIVO 02 // CONFIRMAÇÃO FINAL</div><div class="big">❤️</div><h1>VOCÊ SOBREVIVEU AO PROTOCOLO.</h1>
-<p>Agora falta uma última confirmação humana.</p>
-<div class="wa-box"><div class="kicker" style="color:#42ff9b">MENSAGEM A SER ENVIADA</div><div class="wa-msg">🚨 SEGUNDA MISSÃO CONCLUÍDA. Agora libera meu vídeo 02, por favor KKKKK ❤️</div></div>
-<button class="btn green" onclick="openWA(2)">PEDIR O VÍDEO 02 PELO WHATSAPP</button>
-<p class="muted">Envie a mensagem para você liberar o segundo vídeo. A página não verifica o envio.</p>
-<button class="btn primary" onclick="release2()">JÁ MANDEI 😎</button>
-</div></div></section>
-
-<section id="video2" class="screen"><div class="container"><div class="mission">
-<div class="center"><div class="big">🔓</div><div class="kicker unlocked">CONFIRMAÇÃO RECEBIDA</div><h1>ARQUIVO 02 DESBLOQUEADO.</h1></div>
-<div class="video-panel">
-<!-- ===== VÍDEO 2: COLOQUE SEU ARQUIVO OU URL .MP4 AQUI ===== -->
-<video id="videoTwo" controls playsinline preload="metadata"><source src="COLOQUE_SEU_VIDEO_2_AQUI" type="video/mp4"></video>
+<div class="morse-item">
+<span class="morse-letter">I</span>
+<span class="morse-code">..</span>
 </div>
-<p>Parabéns.</p><p>Você enfrentou duas missões completamente desnecessárias...</p><p>...e ainda teve que mandar duas mensagens para mim. KKKKK</p><p>Mas pensando bem...</p><p>Se você queria tanto ver, acho que valeu a pena dificultar um pouquinho.</p><p>Agora você já pode dizer que conquistou oficialmente esses dois vídeos. ❤️</p>
-<button class="btn primary" onclick="finish()">CONCLUIR OPERAÇÃO →</button>
-</div></div></section>
 
-<section id="final" class="screen"><div class="container"><div class="mission center">
-<div class="kicker">2/2 ARQUIVOS DESBLOQUEADOS</div><h1>OPERAÇÃO CONCLUÍDA.</h1><div class="final-symbol">🔓 ❤️ 🔓</div>
-<h1 class="unlocked">MISSÃO CONCLUÍDA.</h1><p>Você conseguiu.</p><p>Agora os dois vídeos são oficialmente seus.</p>
-<p>Às vezes eu acho engraçado o quanto você consegue transformar até uma coisa simples em uma história nossa.</p><p>Obrigado por querer guardar até minhas coisas mais aleatórias. ❤️</p>
-<button class="btn primary" onclick="location.reload()">VOLTAR PARA NOSSA HISTÓRIA</button>
-</div></div></section>
+<div class="morse-item">
+<span class="morse-letter">A</span>
+<span class="morse-code">.-</span>
+</div>
 
-<script>
-const WHATSAPP="5547992856297";
-const WA1="SOS 🚨 Completei a primeira missão. Quero meu vídeo 01 KKKKK ❤️";
-const WA2="🚨 SEGUNDA MISSÃO CONCLUÍDA. Agora libera meu vídeo 02, por favor KKKKK ❤️";
-let unlocked1=false,unlocked2=false,m1done=false,m2done=false;
+</div> -->
 
-const screens=[...document.querySelectorAll(".screen")];
-function go(id){screens.forEach(s=>s.classList.toggle("active",s.id===id));scrollTo({top:0,behavior:"smooth"});}
+        <textarea
+          class="morse-input"
+          id="morseInput"
+          placeholder="Digite o código Morse aqui..."
+          spellcheck="false"
+          autocomplete="off"
+        ></textarea>
 
-function beep(freq=440,dur=.08,type="square"){try{const A=AudioContext||webkitAudioContext,c=new A(),o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(.025,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+dur);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+dur)}catch(e){}}
-function flash(){let x=document.createElement("div");x.className="flash";document.body.appendChild(x);setTimeout(()=>x.remove(),450)}
-function confetti(){for(let i=0;i<55;i++){let p=document.createElement("div");p.className="confetti";p.style.left="50%";p.style.top="45%";p.style.background=i%2?"#ff174f":"#fff";p.style.setProperty("--x",(Math.random()*90-45)+"vw");p.style.setProperty("--y",(Math.random()*80-15)+"vh");document.body.appendChild(p);setTimeout(()=>p.remove(),1200)}}
-function status(){document.getElementById("status").textContent=`STATUS: ${(unlocked1?1:0)+(unlocked2?1:0)}/2 ARQUIVOS DESBLOQUEADOS`}
+        <div class="morse-feedback" id="morseFeedback"></div>
 
-const bootLines=["CONEXÃO ESTABELECIDA...","ARQUIVO CONFIDENCIAL ENCONTRADO.","2 VÍDEOS FORAM LOCALIZADOS.","ACESSO RESTRITO.","","JULIA, EXISTEM COISAS QUE VOCÊ PEDE.","ALGUMAS DELAS...","EU NÃO POSSO SIMPLESMENTE ENTREGAR.","","VOCÊ VAI TER QUE MERECER. 😈"];
-let bl=0,bc=0;
-function boot(){if(bl>=bootLines.length){document.getElementById("enter").classList.remove("hidden");return}let text=bootLines.slice(0,bl).join("\n");document.getElementById("terminal").textContent=text+(text?"\n":"")+bootLines[bl].slice(0,bc)+"▌";bc++;if(bc>bootLines[bl].length){bl++;bc=0;setTimeout(boot,280)}else setTimeout(boot,25)}
-boot();
+        <button class="main-btn" id="morseCheck">TRANSMITIR →</button>
+      </section>
 
-function openMission1(){if(unlocked1)return;go("mission1");if(!document.getElementById("clues").children.length)buildClues()}
-function buildClues(){
-const data=[
-["ARQUIVO A","Rastro falso: 12",""],
-["ARQUIVO B","Registro: 4",""],
-["ARQUIVO C","Rastro falso: 7",""],
-["ARQUIVO D","Registro: 9",""],
-["ARQUIVO E","Rastro falso: 2",""],
-["ARQUIVO F","Registro: 4",""]
-];
-data.sort(()=>Math.random()-.5).forEach((d,i)=>{let b=document.createElement("button");b.className="clue";b.innerHTML=`<b>${d[0]}</b><small>${d[1]}</small>`;b.onclick=()=>pickClue(b,d[1]);document.getElementById("clues").appendChild(b)})
-}
-let picked=[];
-function pickClue(b,text){
-if(b.classList.contains("open"))return;
-b.classList.add("open");picked.push(text.match(/\d+/)[0]);
-document.getElementById("clueResult").textContent=`PISTAS COLETADAS: ${picked.length}/3`;
-beep(300+picked.length*120,.07);
-if(picked.length===3){
-document.getElementById("m1log").textContent="ETAPA 1 CONCLUÍDA — O sistema liberou o teclado. Agora descubra a sequência.";
-document.getElementById("pinStage").classList.remove("hidden");buildKeypad();
-}}
-function buildKeypad(){
-const vals=["1","2","3","4","5","6","7","8","9","⌫","0","OK"];
-vals.forEach(v=>{let b=document.createElement("button");b.className="key";b.textContent=v;b.onclick=()=>key(v);document.getElementById("keypad").appendChild(b)})
-}
-let pin="";
-const correct="4799";let attempts=3;
-function key(v){
-if(attempts<=0)return;
-if(v==="⌫"){pin=pin.slice(0,-1)}
-else if(v==="OK"){checkPin();return}
-else if(pin.length<4)pin+=v;
-document.getElementById("pin").innerHTML=pin.padEnd(4,"_").replace(/\d/g,"●");
-}
-function checkPin(){
-if(pin===correct){
-document.getElementById("m1log").textContent="ETAPA 2 CONCLUÍDA — 4799 ACEITO. A segurança agora exige confirmação manual.";
-document.getElementById("finalCheck").classList.remove("hidden");document.getElementById("m1error").textContent="";flash();confetti();beep(700,.1);beep(1000,.15);m1done=true;
-}else{
-attempts--;pin="";document.getElementById("pin").textContent="____";document.getElementById("attempts").textContent=`TENTATIVAS RESTANTES: ${attempts}`;document.getElementById("m1error").textContent=attempts?`CREDENCIAL REJEITADA. Restam ${attempts} tentativas.`:"SISTEMA BLOQUEADO. Recarregue a página para tentar novamente.";beep(100,.12,"sawtooth");
-}}
-function m1Complete(){if(!m1done)return;go("wa1")}
-function openWA(n){let msg=n===1?WA1:WA2;window.open("https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent(msg),"_blank","noopener")}
-function release1(){unlocked1=true;document.getElementById("l1").textContent="🔓";document.getElementById("b1").textContent="DESBLOQUEADO";document.getElementById("b1").classList.add("ok");status();flash();confetti();go("video1")}
-function tryM2(){if(!unlocked1){let c=document.getElementById("archive");c.classList.add("shake");setTimeout(()=>c.classList.remove("shake"),450);return}go("mission2");startMission2()}
+      <!-- FINAL -->
+      <section id="finalScreen">
+        <div class="final-box">
+          <div class="final-heart">🔓</div>
 
-/* Missão 2: arraste em 3 zonas e termine em 12s */
-let drag=false,startTime=0,timer=null,stage=0;
-const heart=document.getElementById("heart"),drop=document.getElementById("drop");
-function startMission2(){
-document.getElementById("retry2").classList.add("hidden");heart.style.display="block";heart.style.position="";heart.style.left="";heart.style.top="";stage=0;setStage(0);
-document.getElementById("m2log").textContent="AGUARDANDO CONTATO COM O OBJETO...";document.getElementById("time").textContent="12.0";document.getElementById("dragBar").style.width="0%";
-clearInterval(timer);startTime=performance.now();timer=setInterval(()=>{let left=Math.max(0,12-(performance.now()-startTime)/1000);document.getElementById("time").textContent=left.toFixed(1);if(left<=0){clearInterval(timer);fail2("TEMPO ESGOTADO. O sistema concluiu que você demorou demais.");}},50)
-}
-function setStage(n){["t1","t2","t3"].forEach((id,i)=>document.getElementById(id).className="track "+(i<n?"done":i===n?"active":""))}
-function pt(e){return e.touches?e.touches[0]:e}
-function down(e){e.preventDefault();if(!timer)return;drag=true;heart.style.position="fixed";heart.style.zIndex=20;move(e)}
-function move(e){
-if(!drag)return;e.preventDefault();let p=pt(e);heart.style.left=(p.clientX-31)+"px";heart.style.top=(p.clientY-31)+"px";
-let r=heart.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
-let d=drop.getBoundingClientRect(),dist=Math.hypot(cx-(d.left+d.width/2),cy-(d.top+d.height/2));
-let pct=Math.max(0,Math.min(100,100-dist/(Math.hypot(innerWidth,innerHeight)*.38)*100));document.getElementById("dragBar").style.width=pct+"%";
-if(stage===0){stage=1;setStage(1);document.getElementById("m2log").textContent="01/03 — CONTATO DETECTADO. AGORA LEVE O CORAÇÃO PARA A ZONA DE INTENÇÃO."}
-else if(stage===1&&pct>38){stage=2;setStage(2);document.getElementById("m2log").textContent="02/03 — INTENÇÃO CONFIRMADA. NÃO SOLTE. CHEGUE AO DESTINO."}
-else if(stage===2&&dist<115){stage=3;setStage(3);document.getElementById("m2log").textContent="03/03 — DESTINO LOCALIZADO. SOLTE AGORA."}
-drop.classList.toggle("near",stage>=3)
-}
-function up(){
-if(!drag)return;drag=false;let r=heart.getBoundingClientRect(),d=drop.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
-if(stage===3&&cx>d.left&&cx<d.right&&cy>d.top&&cy<d.bottom){clearInterval(timer);timer=null;m2done=true;heart.style.display="none";document.getElementById("m2log").textContent="VERIFICAÇÃO CONCLUÍDA. ACESSO AUTORIZADO.";flash();confetti();beep(700,.1);beep(1100,.18);setTimeout(()=>go("wa2"),700)}
-else if(stage<3){fail2("FALHA DE PROTOCOLO. Você soltou antes de completar as 3 zonas.")}
-}
-function fail2(msg){clearInterval(timer);timer=null;document.getElementById("m2log").textContent=msg;document.getElementById("retry2").classList.remove("hidden");heart.style.position="";heart.style.left="";heart.style.top="";drop.classList.remove("near");beep(100,.14,"sawtooth")}
-heart.addEventListener("mousedown",down);heart.addEventListener("touchstart",down,{passive:false});
-document.addEventListener("mousemove",move);document.addEventListener("touchmove",move,{passive:false});document.addEventListener("mouseup",up);document.addEventListener("touchend",up);
+          <h1>OPERAÇÃO CONCLUÍDA</h1>
 
-function release2(){unlocked2=true;document.getElementById("l2").textContent="🔓";document.getElementById("b2").textContent="DESBLOQUEADO";document.getElementById("b2").classList.add("ok");status();flash();confetti();go("video2")}
-function finish(){confetti();go("final")}
+          <div class="final-status">MISSÕES COMPLETAS: 3/3</div>
 
-/* fundo */
-const cv=document.getElementById("particles"),ctx=cv.getContext("2d");let ps=[];
-function resize(){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;cv.style.width=innerWidth+"px";cv.style.height=innerHeight+"px";ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}
-function init(){ps=Array.from({length:Math.min(100,Math.floor(innerWidth/9))},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,vx:(Math.random()-.5)*.2,vy:(Math.random()-.5)*.2,r:Math.random()*1.3+.2}))}
-function loop(){ctx.clearRect(0,0,innerWidth,innerHeight);ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=innerWidth;if(p.x>innerWidth)p.x=0;if(p.y<0)p.y=innerHeight;if(p.y>innerHeight)p.y=0;ctx.fillStyle=Math.random()>.8?"rgba(255,43,103,.45)":"rgba(255,255,255,.16)";ctx.fillRect(p.x,p.y,p.r,p.r)});requestAnimationFrame(loop)}
-addEventListener("resize",()=>{resize();init()});resize();init();loop();
-</script>
-</body>
+          <p>Todos os protocolos foram concluídos.</p>
+          <p>Os arquivos 01 e 02 foram autorizados.</p>
+
+          <div class="warning">
+            <div class="warning-title">⚠️ AVISO IMPORTANTE</div>
+
+            <p>OS 2 VÍDEOS SÃO PERMANENTES.</p>
+
+            <p>
+              Agora você precisa avisar o responsável para receber os vídeos.
+            </p>
+          </div>
+
+          <button class="main-btn green" id="releaseBtn">LIBERAR ENVIO</button>
+
+          <div class="whatsapp-area" id="whatsappArea" style="display: none">
+              <h3>📲 ÚLTIMA TRANSMISSÃO</h3>
+            
+              <p>Você chegou até o final.</p>
+            
+              <p>Agora mande a confirmação para o responsável.</p>
+            
+              <a
+                class="whatsapp-btn"
+                id="whatsappBtn"
+                href="https://wa.me/5547992856297?text=Amor%21%21%21%21%20Completei%20as%203%20miss%C3%B5es%20e%20descobri%20o%20c%C3%B3digo%20Morse.%20Pode%20liberar%20os%202%20v%C3%ADdeos%20permanentes.%20%E2%9D%A4%EF%B8%8F"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                💬 MANDAR MENSAGEM
+              </a>
+            
+              <p class="disclaimer">
+                *O site não consegue verificar se a mensagem foi enviada.
+              </p>
+            
+              <button class="already-btn" id="alreadyBtn">
+                JÁ MANDEI 😎
+              </button>
+            </div>
+            <p class="disclaimer">
+              *O site não consegue verificar se a mensagem foi enviada.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      /* =========================================================
+  CONFIGURAÇÕES
+  ========================================================= */
+
+      const PASSWORD = '444'
+      const MORSE_CODE = '.--- ..- .-.. .. .-'
+
+      /* =========================================================
+  ELEMENTOS
+  ========================================================= */
+
+      const terminal = document.getElementById('terminal')
+      const terminalContent = document.getElementById('terminalContent')
+      const enterBtn = document.getElementById('enterBtn')
+      const app = document.getElementById('app')
+
+      const progressBar = document.getElementById('progressBar')
+      const progressText = document.getElementById('progressText')
+
+      const mission1 = document.getElementById('mission1')
+      const mission2 = document.getElementById('mission2')
+      const mission3 = document.getElementById('mission3')
+
+      const continue1 = document.getElementById('continue1')
+      const continue2 = document.getElementById('continue2')
+
+      const finalScreen = document.getElementById('finalScreen')
+
+      const successFlash = document.getElementById('successFlash')
+      const toast = document.getElementById('toast')
+
+      /* =========================================================
+  PARTÍCULAS
+  ========================================================= */
+
+      function createParticles() {
+        const container = document.getElementById('particles')
+
+        for (let i = 0; i < 65; i++) {
+          const p = document.createElement('span')
+          p.className = 'particle'
+
+          p.style.left = Math.random() * 100 + '%'
+          p.style.animationDuration = 8 + Math.random() * 18 + 's'
+          p.style.animationDelay = -Math.random() * 20 + 's'
+
+          if (Math.random() > 0.78) {
+            p.style.background = '#39ff88'
+            p.style.boxShadow = '0 0 8px #39ff88'
+          }
+
+          container.appendChild(p)
+        }
+      }
+
+      createParticles()
+
+      /* =========================================================
+  TERMINAL DE ABERTURA
+  ========================================================= */
+
+      const terminalMessages = [
+        'CONEXÃO ESTABELECIDA...',
+        'ARQUIVO CONFIDENCIAL ENCONTRADO.',
+        '2 VÍDEOS FORAM LOCALIZADOS.',
+        'ACESSO RESTRITO.',
+        'JULIA, EXISTEM COISAS QUE VOCÊ PEDE.',
+        'ALGUMAS DELAS...',
+        'EU NÃO POSSO SIMPLESMENTE ENTREGAR.',
+        '',
+        'VOCÊ VAI TER QUE MERECER. 😈'
+      ]
+
+      function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms))
+      }
+
+      async function typeTerminal() {
+        await sleep(700)
+
+        for (let i = 0; i < terminalMessages.length; i++) {
+          const line = document.createElement('div')
+          line.className = 'terminal-line'
+          terminalContent.appendChild(line)
+
+          const text = terminalMessages[i]
+
+          if (text === '') {
+            await sleep(900)
+            continue
+          }
+
+          for (let j = 0; j < text.length; j++) {
+            line.textContent += text[j]
+            await sleep(i === 8 ? 48 : 22)
+          }
+
+          if (i === 6) {
+            await sleep(1000)
+          } else {
+            await sleep(350)
+          }
+        }
+
+        const cursor = document.createElement('span')
+        cursor.className = 'cursor'
+        terminalContent.appendChild(cursor)
+
+        await sleep(900)
+
+        enterBtn.style.display = 'inline-block'
+      }
+
+      typeTerminal()
+
+      /* =========================================================
+  ENTRAR
+  ========================================================= */
+
+      enterBtn.addEventListener('click', () => {
+        terminal.classList.add('hidden')
+        app.classList.add('visible')
+
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        })
+      })
+
+      /* =========================================================
+  TOAST
+  ========================================================= */
+
+      let toastTimer
+
+      function showToast(message) {
+        clearTimeout(toastTimer)
+
+        toast.textContent = message
+        toast.classList.add('show')
+
+        toastTimer = setTimeout(() => {
+          toast.classList.remove('show')
+        }, 2300)
+      }
+
+      /* =========================================================
+  EFEITO DE SUCESSO
+  ========================================================= */
+
+      function successEffect() {
+        successFlash.classList.remove('active')
+
+        void successFlash.offsetWidth
+
+        successFlash.classList.add('active')
+
+        document.body.classList.remove('screen-shake')
+
+        void document.body.offsetWidth
+
+        document.body.classList.add('screen-shake')
+
+        setTimeout(() => {
+          document.body.classList.remove('screen-shake')
+        }, 400)
+      }
+
+      /* =========================================================
+  PROGRESSO
+  ========================================================= */
+
+      let completedMissions = 0
+
+      function updateProgress() {
+        progressText.textContent = completedMissions + '/3'
+
+        progressBar.style.width = (completedMissions / 3) * 100 + '%'
+      }
+
+      /* =========================================================
+  MISSÃO 01 — REGISTROS
+  ========================================================= */
+
+      const logsData = [
+        {
+          title: 'REGISTRO',
+          number: 'LOG 001',
+          text: 'A senha possui três posições.'
+        },
+
+        {
+          title: 'REGISTRO FALSO',
+          number: 'LOG 002',
+          text: 'O primeiro dígito é 7. Confie em mim. Talvez.'
+        },
+
+        {
+          title: 'REGISTRO',
+          number: 'LOG 003',
+          text: 'O primeiro dígito é 4.'
+        },
+
+        {
+          title: 'REGISTRO FALSO',
+          number: 'LOG 004',
+          text: 'O segundo dígito é 9. O sistema obviamente jamais mentiria.'
+        },
+
+        {
+          title: 'REGISTRO',
+          number: 'LOG 005',
+          text: 'O segundo dígito é igual ao primeiro.'
+        },
+
+        {
+          title: 'REGISTRO FALSO',
+          number: 'LOG 006',
+          text: 'O terceiro dígito é diferente dos anteriores.'
+        },
+
+        {
+          title: 'REGISTRO',
+          number: 'LOG 007',
+          text: 'O terceiro dígito é igual ao segundo.'
+        },
+
+        {
+          title: 'REGISTRO FALSO',
+          number: 'LOG 008',
+          text: 'A senha começa com 123. Boa tentativa.'
+        },
+
+        {
+          title: 'REGISTRO',
+          number: 'LOG 009',
+          text: 'Os três dígitos da senha são iguais.'
+        },
+
+        {
+          title: 'REGISTRO FALSO',
+          number: 'LOG 010',
+          text: 'Talvez sejam quatro dígitos. O sistema está confuso.'
+        },
+
+        {
+          title: 'REGISTRO FALSO',
+          number: 'LOG 011',
+          text: 'O primeiro número pode ser 8. Não pergunte por quê.'
+        },
+
+        {
+          title: 'REGISTRO',
+          number: 'LOG 012',
+          text: 'Se o primeiro é igual ao segundo e ao terceiro, basta descobrir o primeiro.'
+        }
+      ]
+
+      const logsContainer = document.getElementById('logs')
+
+      logsData.forEach((log, index) => {
+        const card = document.createElement('button')
+
+        card.className = 'log'
+        card.type = 'button'
+
+        card.innerHTML = `
+  <div class="log-title">${log.title}</div>
+  <div class="log-number">${log.number}</div>
+  `
+
+        card.addEventListener('click', () => {
+          if (card.classList.contains('revealed')) {
+            return
+          }
+
+          card.classList.add('revealed')
+
+          card.innerHTML = `
+  <div class="log-title">${log.title}</div>
+  <div class="log-number">${log.number}</div>
+  <div class="log-info">${log.text}</div>
+  `
+
+          if (log.title === 'REGISTRO FALSO') {
+            showToast('⚠️ REGISTRO SUSPEITO. Não acredite em tudo que lê.')
+          } else {
+            showToast('✓ Registro verdadeiro analisado.')
+          }
+        })
+
+        logsContainer.appendChild(card)
+      })
+
+      /* =========================================================
+  TECLADO DA SENHA
+  ========================================================= */
+
+      let passwordInput = ''
+
+      const slots = [
+        document.getElementById('slot1'),
+        document.getElementById('slot2'),
+        document.getElementById('slot3')
+      ]
+
+      function updatePasswordDisplay() {
+        slots.forEach((slot, index) => {
+          slot.textContent = passwordInput[index] || '_'
+        })
+      }
+
+      document.querySelectorAll('.key').forEach(button => {
+        button.addEventListener('click', () => {
+          const key = button.dataset.key
+
+          if (key === 'C') {
+            passwordInput = ''
+            updatePasswordDisplay()
+
+            document.getElementById('passFeedback').textContent = ''
+
+            return
+          }
+
+          if (key === '✓') {
+            checkPassword()
+            return
+          }
+
+          if (passwordInput.length < 3) {
+            passwordInput += key
+            updatePasswordDisplay()
+          }
+        })
+      })
+
+      function checkPassword() {
+        const feedback = document.getElementById('passFeedback')
+
+        if (passwordInput === PASSWORD) {
+          feedback.className = 'feedback success'
+          feedback.textContent =
+            '✓ ACESSO CONCEDIDO — Você passou pela primeira barreira.'
+
+          mission1.classList.add('completed')
+
+          document.getElementById('mission1Status').textContent = '✓ CONCLUÍDA'
+
+          continue1.style.display = 'inline-block'
+
+          completedMissions = 1
+          updateProgress()
+
+          successEffect()
+
+          showToast('🔓 SENHA CORRETA. Nada mal, Julia.')
+        } else {
+          feedback.className = 'feedback error'
+          feedback.textContent =
+            '✕ SENHA INCORRETA. LEIA OS REGISTROS NOVAMENTE.'
+
+          passwordInput = ''
+          updatePasswordDisplay()
+
+          document.body.classList.remove('screen-shake')
+
+          void document.body.offsetWidth
+
+          document.body.classList.add('screen-shake')
+        }
+      }
+
+      /* =========================================================
+  CONTINUAR PARA MISSÃO 02
+  ========================================================= */
+
+      continue1.addEventListener('click', () => {
+        mission2.classList.remove('locked')
+
+        document.getElementById('mission2Status').textContent = '● EM ANDAMENTO'
+
+        showToast('🔓 PROTOCOLO ❤️ DESBLOQUEADO.')
+
+        mission2.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        })
+      })
+
+      /* =========================================================
+  MISSÃO 02 — GRADE 8x8
+  ========================================================= */
+
+      /*
+  EXATAMENTE 64 CÉLULAS:
+  59 💔
+  5 ❤️
+  
+  As posições abaixo são únicas.
+  */
+
+      const heartPositions = [4, 17, 29, 46, 61]
+
+      function createHeartGrid() {
+        const grid = document.getElementById('heartGrid')
+
+        grid.innerHTML = ''
+
+        for (let i = 0; i < 64; i++) {
+          const cell = document.createElement('button')
+
+          cell.type = 'button'
+          cell.className = 'heart-cell'
+
+          const isHeart = heartPositions.includes(i)
+
+          cell.dataset.heart = isHeart ? 'true' : 'false'
+
+          cell.textContent = isHeart ? '❤️' : '💔'
+
+          cell.addEventListener('click', () => {
+            if (cell.classList.contains('found')) {
+              return
+            }
+
+            if (isHeart) {
+              cell.classList.add('found')
+              cell.disabled = true
+
+              foundHearts++
+
+              document.getElementById('heartCount').textContent =
+                foundHearts + '/5'
+
+              updateHeartHint()
+
+              successEffect()
+
+              showToast('❤️ CORAÇÃO INTACTO ENCONTRADO!')
+
+              if (foundHearts === 5) {
+                completeMission2()
+              }
+            } else {
+              cell.classList.add('clicked')
+
+              setTimeout(() => {
+                cell.classList.remove('clicked')
+              }, 350)
+
+              const messages = [
+                '💔 Esse está quebrado. Procure um ❤️.',
+                '💔 Aí não, Julia. Esse coração sofreu.',
+                '💔 Definitivamente não é esse.',
+                '💔 O sistema acabou de rir de você.',
+                '💔 Coração partido. Literalmente.',
+                '💔 Quase... mentira, nem perto.'
+              ]
+
+              showToast(messages[Math.floor(Math.random() * messages.length)])
+            }
+          })
+
+          grid.appendChild(cell)
+        }
+      }
+
+      let foundHearts = 0
+
+      function updateHeartHint() {
+        const hint = document.getElementById('heartHint')
+
+        const hints = [
+          '💡 Procure pelos ❤️ entre os 💔.',
+          '👀 Eles estão espalhados pela grade.',
+          '🔥 Você já encontrou alguns. Continue.',
+          '😈 Só falta mais um...',
+          '❤️ O último está escondido por aí...',
+          '🏆 Você encontrou todos!'
+        ]
+
+        hint.textContent = hints[foundHearts]
+      }
+
+      createHeartGrid()
+
+      function completeMission2() {
+        mission2.classList.add('completed')
+
+        document.getElementById('mission2Status').textContent = '✓ CONCLUÍDA'
+
+        document.getElementById('heartHint').textContent =
+          '❤️ TODOS OS 5 CORAÇÕES ENCONTRADOS!'
+
+        continue2.style.display = 'inline-block'
+
+        completedMissions = 2
+        updateProgress()
+
+        successEffect()
+
+        showToast('❤️ TODOS OS 5 CORAÇÕES ENCONTRADOS!')
+      }
+
+      /* =========================================================
+  CONTINUAR PARA MISSÃO 03
+  ========================================================= */
+
+      continue2.addEventListener('click', () => {
+        mission3.classList.remove('locked')
+
+        document.getElementById('mission3Status').textContent = '● EM ANDAMENTO'
+
+        showToast('🔓 ÚLTIMA BARREIRA DESBLOQUEADA.')
+
+        mission3.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        })
+      })
+
+      /* =========================================================
+  MISSÃO 03 — MORSE
+  ========================================================= */
+
+      const morseInput = document.getElementById('morseInput')
+      const morseFeedback = document.getElementById('morseFeedback')
+
+      document.getElementById('morseCheck').addEventListener('click', () => {
+        const normalized = morseInput.value.trim().replace(/\s+/g, ' ')
+
+        if (normalized === MORSE_CODE) {
+          morseFeedback.style.color = 'var(--green)'
+          morseFeedback.textContent =
+            '✓ TRANSMISSÃO ACEITA. IDENTIDADE CONFIRMADA.'
+
+          mission3.classList.add('completed')
+
+          document.getElementById('mission3Status').textContent = '✓ CONCLUÍDA'
+
+          completedMissions = 3
+          updateProgress()
+
+          successEffect()
+
+          showToast('✓ IDENTIDADE CONFIRMADA. JULIA DETECTADA.')
+
+          setTimeout(() => {
+            unlockFinal()
+          }, 1100)
+        } else {
+          morseFeedback.style.color = 'var(--red)'
+          morseFeedback.textContent = '✕ CÓDIGO INCORRETO.'
+
+          morseInput.focus()
+
+          document.body.classList.remove('screen-shake')
+
+          void document.body.offsetWidth
+
+          document.body.classList.add('screen-shake')
+        }
+      })
+
+      /* =========================================================
+  FINAL
+  ========================================================= */
+
+      function unlockFinal() {
+        document.getElementById('video1').classList.add('unlocked')
+        document.getElementById('video2').classList.add('unlocked')
+
+        document.querySelector('#video1 .video-icon').textContent = '🔓'
+        document.querySelector('#video2 .video-icon').textContent = '🔓'
+
+        document.querySelector('#video1 .video-status').textContent =
+          'ARQUIVO AUTORIZADO'
+
+        document.querySelector('#video2 .video-status').textContent =
+          'ARQUIVO AUTORIZADO'
+
+        finalScreen.classList.add('active')
+
+        finalScreen.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        })
+
+        showToast('🔓 OPERAÇÃO CONCLUÍDA. OS ARQUIVOS FORAM AUTORIZADOS.')
+      }
+
+      /* =========================================================
+  LIBERAR ENVIO
+  ========================================================= */
+
+      document.getElementById('releaseBtn').addEventListener('click', () => {
+        const whatsappArea = document.getElementById('whatsappArea')
+
+        whatsappArea.style.display = 'block'
+
+        document.getElementById('releaseBtn').style.display = 'none'
+
+        whatsappArea.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        })
+
+        showToast('📲 CANAL DE TRANSMISSÃO ABERTO.')
+      })
+
+      /* =========================================================
+  JÁ MANDEI
+  ========================================================= */
+
+      document.getElementById('alreadyBtn').addEventListener('click', () => {
+        showToast('😎 Beleza. Agora confira o WhatsApp.')
+
+        setTimeout(() => {
+          window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: 'smooth'
+          })
+        }, 500)
+      })
+
+      /* =========================================================
+  EFEITO DE CLIQUE GLOBAL
+  ========================================================= */
+
+      document.addEventListener('click', event => {
+        if (event.target.tagName === 'BUTTON') {
+          event.target.style.transform = 'scale(.97)'
+
+          setTimeout(() => {
+            if (event.target.classList.contains('main-btn')) {
+              event.target.style.transform = ''
+            } else {
+              event.target.style.transform = ''
+            }
+          }, 100)
+        }
+      })
+
+      /* =========================================================
+  TECLA ENTER NO MORSE
+  ========================================================= */
+
+      morseInput.addEventListener('keydown', event => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+          event.preventDefault()
+
+          document.getElementById('morseCheck').click()
+        }
+      })
+
+      /* =========================================================
+  TECLADO FÍSICO PARA SENHA
+  ========================================================= */
+
+      document.addEventListener('keydown', event => {
+        if (
+          document.activeElement === morseInput ||
+          document.activeElement.tagName === 'INPUT' ||
+          document.activeElement.tagName === 'TEXTAREA'
+        ) {
+          return
+        }
+
+        if (/^[0-9]$/.test(event.key)) {
+          const button = document.querySelector(`.key[data-key="${event.key}"]`)
+
+          if (button) {
+            button.click()
+          }
+        }
+
+        if (event.key === 'Backspace') {
+          passwordInput = passwordInput.slice(0, -1)
+          updatePasswordDisplay()
+        }
+
+        if (event.key === 'Enter') {
+          checkPassword()
+        }
+
+        if (event.key.toLowerCase() === 'c') {
+          passwordInput = ''
+          updatePasswordDisplay()
+        }
+      })
+
+      /* =========================================================
+  STATUS DINÂMICO
+  ========================================================= */
+
+      setInterval(() => {
+        const status = document.getElementById('systemStatus')
+
+        if (Math.random() > 0.75) {
+          status.textContent = '◌ MONITORANDO...'
+          status.style.color = '#ff1838'
+
+          setTimeout(() => {
+            status.textContent = '● SISTEMA ONLINE'
+            status.style.color = '#39ff88'
+          }, 500)
+        }
+      }, 4500)
+
+      /* =========================================================
+  GARANTIA DA GRADE:
+  64 CÉLULAS / 5 CORAÇÕES / 59 CORAÇÕES QUEBRADOS
+  ========================================================= */
+
+      console.assert(
+        heartPositions.length === 5,
+        'ERRO: devem existir exatamente 5 posições de coração.'
+      )
+
+      console.assert(
+        new Set(heartPositions).size === 5,
+        'ERRO: posições dos corações devem ser únicas.'
+      )
+
+      console.assert(
+        heartPositions.every(position => position >= 0 && position < 64),
+        'ERRO: posição de coração fora da grade 8x8.'
+      )
+
+      console.assert(
+        document.querySelectorAll('.heart-cell').length === 64,
+        'ERRO: a grade deve possuir exatamente 64 células.'
+      )
+
+      console.assert(
+        document.querySelectorAll('.heart-cell[data-heart="true"]').length ===
+          5,
+        'ERRO: devem existir exatamente 5 corações.'
+      )
+
+      console.assert(
+        document.querySelectorAll('.heart-cell[data-heart="false"]').length ===
+          59,
+        'ERRO: devem existir exatamente 59 corações quebrados.'
+      )
+
+      /* =========================================================
+  FIM
+  ========================================================= */
+    </script>
+  </body>
 </html>
