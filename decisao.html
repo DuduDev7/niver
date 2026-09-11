@@ -521,14 +521,14 @@
         <div class="emoji-stage">
             <div class="intro-emoji crab" id="introCrab">🦀</div>
             <div class="intro-vs" id="introVs">VS</div>
-            <div class="intro-emoji genie" id="introGenie">🧞</div>
+            <div class="intro-emoji genie" id="introGenie">🧞‍♂️</div>
         </div>
         <div class="intro-buttons" id="introButtons">
             <button class="btn-universe btn-garrudos" onclick="selectUniverse('garrudos')">
                 <span>Garrudos</span> <span>🦀</span>
             </button>
             <button class="btn-universe btn-engenios" onclick="selectUniverse('engenios')">
-                <span>Engenios</span> <span>🧞</span>
+                <span>Engenios</span> <span>🧞‍♂️</span>
             </button>
         </div>
     </div>
@@ -717,7 +717,7 @@
         <!-- Engenios Section -->
         <section id="engeniosSection" class="universe-section engenios-theme">
             <div class="universe-header">
-                <h1 class="universe-title">Engenios 🧞</h1>
+                <h1 class="universe-title">Engenios 🧞‍♂️</h1>
                 <div class="universe-subtitle">Elegância, Magia e Sofisticação</div>
             </div>
             <div class="text-card">
@@ -1206,7 +1206,7 @@
                 portalEmoji.textContent = '🦀';
             } else {
                 overlay.style.background = 'radial-gradient(circle, rgba(255, 255, 255, 0.98), rgba(212, 175, 55, 0.95))';
-                portalEmoji.textContent = '🧞';
+                portalEmoji.textContent = '🧞‍♂️';
             }
 
             overlay.classList.add('active');
@@ -1237,7 +1237,7 @@
 
         function updateSwitcherButton() {
             document.getElementById('switchText').textContent = currentUniverse === 'garrudos' ? 'Trocar para Engenios' : 'Trocar para Garrudos';
-            document.getElementById('switchEmoji').textContent = currentUniverse === 'garrudos' ? '🧞' : '🦀';
+            document.getElementById('switchEmoji').textContent = currentUniverse === 'garrudos' ? '🧞‍♂️' : '🦀';
         }
     </script>
 </body>
