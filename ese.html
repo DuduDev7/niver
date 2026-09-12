@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>E SE... | Realidade Alternativa</title>
+  <style>
+    /* ==========================================
+       RESET & BASE STYLES
+       ========================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: radial-gradient(circle at center, #120203 0%, #050001 60%, #000000 100%);
+      color: #f0f0f0;
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+      cursor: default;
+    }
+
+    /* Custom Cursor (Desktop) */
+    @media (min-width: 769px) {
+      body {
+        cursor: none;
+      }
+      #custom-cursor {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        background: #ff1a1a;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        transition: transform 0.08s ease, background-color 0.2s ease, width 0.2s ease, height 0.2s ease;
+        box-shadow: 0 0 12px #ff0000, 0 0 24px #ff0000;
+      }
+      #custom-cursor-follower {
+        position: fixed;
+        width: 38px;
+        height: 38px;
+        border: 1px solid rgba(255, 30, 30, 0.4);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9998;
+        transform: translate(-50%, -50%);
+        transition: transform 0.18s ease-out;
+      }
+      body.hovering #custom-cursor {
+        width: 18px;
+        height: 18px;
+        background: #ffffff;
+        box-shadow: 0 0 15px #ffffff, 0 0 30px #ff0000;
+      }
+      body.hovering #custom-cursor-follower {
+        width: 54px;
+        height: 54px;
+        border-color: rgba(255, 255, 255, 0.8);
+      }
+    }
+
+    /* Background FX Layer */
+    #canvas-particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .scanline {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        to bottom,
+        rgba(255,255,255,0),
+        rgba(255,255,255,0) 50%,
+        rgba(0, 0, 0, 0.4) 50%,
+        rgba(0, 0, 0, 0.4)
+      );
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 90;
+      opacity: 0.35;
+    }
+
+    .vignette {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, transparent 40%, rgba(0, 0, 0, 0.85) 90%);
+      pointer-events: none;
+      z-index: 89;
+    }
+
+    /* Flash & Glitch Overlay */
+    #flash-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #ffffff;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1000;
+      transition: opacity 0.08s ease-out;
+    }
+
+    #glitch-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(180, 0, 0, 0.15);
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0;
+      mix-blend-mode: color-dodge;
+    }
+
+    .shake {
+      animation: shakeAnim 0.45s cubic-bezier(.36,.07,.19,.97) both;
+    }
+
+    @keyframes shakeAnim {
+      10%, 90% { transform: translate3d(-3px, 2px, 0) scale(1.002); }
+      20%, 80% { transform: translate3d(4px, -3px, 0) scale(0.998); }
+      30%, 50%, 70% { transform: translate3d(-6px, 4px, 0) rotate(-0.3deg); }
+      40%, 60% { transform: translate3d(6px, -4px, 0) rotate(0.3deg); }
+    }
+
+    /* HUD Header & Indicator */
+    #hud-header {
+      position: fixed;
+      top: 20px;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 35px;
+      z-index: 100;
+      font-family: monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: rgba(255, 255, 255, 0.5);
+      pointer-events: none;
+    }
+
+    .hud-sys-info {
+      color: #ff3333;
+      text-shadow: 0 0 8px rgba(255, 0, 0, 0.6);
+      font-weight: bold;
+    }
+
+    .progress-tracker {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .progress-step {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .progress-step.active {
+      background: #ff1a1a;
+      box-shadow: 0 0 12px #ff1a1a, 0 0 25px #ff1a1a;
+      transform: scale(1.4);
+    }
+
+    .progress-step.completed {
+      background: #ffffff;
+      box-shadow: 0 0 8px rgba(255,255,255,0.6);
+    }
+
+    .progress-line {
+      width: 25px;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* ==========================================
+       SCENE MANAGEMENT
+       ========================================== */
+    .scene-container {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      z-index: 10;
+    }
+
+    .scene {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), filter 1.2s ease;
+      padding: 20px;
+      text-align: center;
+      transform: scale(0.92) translateY(20px);
+      filter: blur(12px);
+    }
+
+    .scene.active {
+      opacity: 1;
+      visibility: visible;
+      transform: scale(1) translateY(0);
+      filter: blur(0px);
+    }
+
+    /* ==========================================
+       TYPOGRAPHY & BUTTONS
+       ========================================== */
+    h1, h2, h3 {
+      font-weight: 300;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .scene-tag {
+      font-family: monospace;
+      font-size: 11px;
+      color: #ff3333;
+      letter-spacing: 4px;
+      margin-bottom: 15px;
+      text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+      display: inline-block;
+      padding: 5px 14px;
+      border: 1px solid rgba(255, 0, 0, 0.35);
+      background: rgba(180, 0, 0, 0.1);
+      border-radius: 2px;
+      backdrop-filter: blur(4px);
+    }
+
+    .typewriter-text {
+      font-size: 1.45rem;
+      line-height: 1.7;
+      max-width: 800px;
+      min-height: 3.5em;
+      color: #e2e2e2;
+      font-weight: 300;
+      text-shadow: 0 0 15px rgba(0,0,0,0.8);
+    }
+
+    .glitch-text-red {
+      color: #ff2a2a;
+      text-shadow: 0 0 12px rgba(255, 42, 42, 0.9), 0 0 25px rgba(255, 0, 0, 0.5);
+      font-weight: bold;
+    }
+
+    /* Cinematic Buttons */
+    .btn-cinematic {
+      position: relative;
+      margin-top: 25px;
+      padding: 16px 42px;
+      background: linear-gradient(135deg, rgba(20, 5, 5, 0.9), rgba(10, 0, 0, 0.95));
+      border: 1px solid rgba(255, 40, 40, 0.5);
+      color: #ffffff;
+      font-family: 'Segoe UI', monospace, sans-serif;
+      font-size: 13px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      cursor: pointer;
+      outline: none;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.9), inset 0 0 15px rgba(255, 0, 0, 0.15);
+      backdrop-filter: blur(8px);
+      border-radius: 2px;
+    }
+
+    .btn-cinematic::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 50, 50, 0.5), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .btn-cinematic:hover::before {
+      left: 100%;
+    }
+
+    .btn-cinematic:hover {
+      border-color: #ff4d4d;
+      box-shadow: 0 0 30px rgba(255, 0, 0, 0.7), inset 0 0 20px rgba(255, 0, 0, 0.4);
+      color: #ffffff;
+      transform: translateY(-2px);
+    }
+
+    .btn-cinematic:active {
+      transform: translateY(1px);
+    }
+
+    .btn-pulse {
+      animation: pulseGlow 2.2s infinite alternate;
+    }
+
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 12px rgba(255, 0, 0, 0.4); border-color: rgba(255, 30, 30, 0.4); }
+      100% { box-shadow: 0 0 35px rgba(255, 0, 0, 0.95), 0 0 15px #ffffff; border-color: #ff6666; }
+    }
+
+    /* Secondary Button */
+    .btn-subtle {
+      padding: 10px 22px;
+      background: rgba(10, 10, 10, 0.6);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.7);
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-radius: 2px;
+    }
+    .btn-subtle:hover {
+      border-color: #ffffff;
+      color: #ffffff;
+      background: rgba(255,255,255,0.1);
+    }
+
+    /* ==========================================
+       SCENE SPECIFIC STYLES & OBJECT-FIT: CONTAIN
+       ========================================== */
+
+    /* Image Wrapper with Object-Fit Contain */
+    .img-frame {
+      position: relative;
+      max-width: 700px;
+      width: 92%;
+      height: 48vh;
+      margin: 15px auto;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.95), 0 0 35px rgba(255, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: #000000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: transform 0.12s ease-out, box-shadow 0.4s ease;
+    }
+
+    .img-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* Ensures complete photo is visible without cropping */
+      display: block;
+      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .img-frame:hover img {
+      transform: scale(1.02);
+    }
+
+    /* Contract Document Container */
+    .contract-container {
+      position: relative;
+      max-width: 620px;
+      width: 92%;
+      max-height: 64vh;
+      background: #080808;
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.95), 0 0 45px rgba(184, 134, 11, 0.18);
+      border-radius: 3px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .contract-img-wrapper {
+      position: relative;
+      width: 100%;
+      height: 40vh;
+      background: #000000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .contract-img-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* Keeps contract fully readable */
+      display: block;
+      filter: brightness(0.96) contrast(1.05);
+    }
+
+    /* Light Sweep Effect on Contract */
+    .contract-container::after {
+      content: '';
+      position: absolute;
+      top: -150%;
+      left: -150%;
+      width: 300%;
+      height: 300%;
+      background: linear-gradient(
+        45deg,
+        transparent 45%,
+        rgba(255, 255, 255, 0.08) 50%,
+        transparent 55%
+      );
+      pointer-events: none;
+      animation: lightSweep 9s infinite linear;
+    }
+
+    @keyframes lightSweep {
+      0% { transform: translate(-30%, -30%); }
+      100% { transform: translate(30%, 30%); }
+    }
+
+    /* Interactive Signature Area */
+    .signature-section {
+      width: 100%;
+      padding: 14px 18px;
+      background: rgba(12, 12, 12, 0.98);
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      z-index: 5;
+    }
+
+    .signature-canvas-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+      height: 110px;
+      background: rgba(4, 4, 4, 0.9);
+      border: 1px dashed rgba(255, 40, 40, 0.45);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    #signature-canvas {
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+      cursor: crosshair;
+    }
+
+    .signature-guide-line {
+      position: absolute;
+      bottom: 25px;
+      left: 8%;
+      width: 84%;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.15);
+      pointer-events: none;
+    }
+
+    .signature-placeholder {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.28);
+      letter-spacing: 2px;
+      pointer-events: none;
+      text-transform: uppercase;
+      transition: opacity 0.3s ease;
+    }
+
+    /* Virtual Pen Tool Visual */
+    #virtual-pen {
+      position: fixed;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 0 15px #ff1a1a, 0 0 30px #ff0000;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 999;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.3s ease;
+    }
+
+    .signature-controls {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      width: 100%;
+    }
+
+    /* Dual Layer Transformation Visual Stage */
+    .transform-stage {
+      position: relative;
+      max-width: 700px;
+      width: 92%;
+      height: 48vh;
+      margin: 15px auto;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.95), 0 0 40px rgba(255, 0, 0, 0.3);
+      border: 1px solid rgba(255, 30, 30, 0.35);
+      background: #000000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .transform-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* Full photo visible in transformation */
+    }
+
+    #layer-before {
+      z-index: 2;
+    }
+
+    #layer-after {
+      z-index: 3;
+      opacity: 0;
+      filter: contrast(1.1) brightness(1.05);
+    }
+
+    .transform-scan-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: #ff1a1a;
+      box-shadow: 0 0 18px #ff0000, 0 0 35px #ffffff;
+      z-index: 10;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Status Badge */
+    .status-badge {
+      font-family: monospace;
+      font-size: 11px;
+      color: #00ff66;
+      background: rgba(0, 255, 102, 0.08);
+      border: 1px solid rgba(0, 255, 102, 0.3);
+      padding: 5px 12px;
+      border-radius: 2px;
+      letter-spacing: 2px;
+      margin-top: 10px;
+      display: inline-block;
+      text-shadow: 0 0 6px rgba(0, 255, 102, 0.5);
+    }
+
+    /* Keyframes */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsive Overrides */
+    @media (max-height: 700px) {
+      .typewriter-text { font-size: 1.2rem; }
+      .img-frame, .transform-stage { height: 40vh; }
+      .contract-container { max-height: 72vh; }
+      .contract-img-wrapper { height: 35vh; }
+      .signature-canvas-wrapper { height: 90px; }
+      .btn-cinematic { padding: 13px 32px; font-size: 12px; }
+    }
+
+    @media (max-width: 480px) {
+      #hud-header { padding: 0 15px; top: 15px; }
+      .typewriter-text { font-size: 1.1rem; min-height: 4em; }
+      .btn-cinematic { width: 100%; padding: 15px 20px; }
+      .signature-controls { flex-direction: column; gap: 8px; }
+      .btn-subtle { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Custom Cursor Elements -->
+  <div id="custom-cursor"></div>
+  <div id="custom-cursor-follower"></div>
+
+  <!-- Background Canvas & FX Layer -->
+  <canvas id="canvas-particles"></canvas>
+  <div class="scanline"></div>
+  <div class="vignette"></div>
+  <div id="flash-overlay"></div>
+  <div id="glitch-overlay"></div>
+
+  <!-- Global HUD Header -->
+  <div id="hud-header">
+    <div class="hud-sys-info" id="hud-status">REALITY_ENGINE: ONLINE</div>
+    <div class="progress-tracker">
+      <div class="progress-step active" id="p-step-1"></div>
+      <div class="progress-line"></div>
+      <div class="progress-step" id="p-step-2"></div>
+      <div class="progress-line"></div>
+      <div class="progress-step" id="p-step-3"></div>
+      <div class="progress-line"></div>
+      <div class="progress-step" id="p-step-4"></div>
+    </div>
+  </div>
+
+  <!-- Main Scene Container -->
+  <div class="scene-container">
+
+    <!-- CENA 1: INTRODUÇÃO -->
+    <div class="scene active" id="scene-1">
+      <div class="scene-tag">SIMULADOR DE LINHA TEMPORAL</div>
+      <div class="typewriter-text" id="typewriter-1"></div>
+      <button class="btn-cinematic" id="btn-scene-1" style="opacity: 0; pointer-events: none; transition: opacity 0.8s ease;">E SE?</button>
+    </div>
+
+    <!-- CENA 2: FOTO ASSINANDO -->
+    <div class="scene" id="scene-2">
+      <div class="scene-tag">REALIDADE ALTERNATIVA #01</div>
+      <p style="color: #aaa; font-size: 13px; letter-spacing: 2px; margin-bottom: 8px;">Você escolheu outro caminho.</p>
+      
+      <div class="img-frame" id="frame-scene-2">
+        <img src="imgs/assinando.jpeg" alt="Assinando">
+      </div>
+
+      <p style="color: #dddddd; font-size: 1rem; margin-top: 12px; font-weight: 300;">E se isso realmente tivesse acontecido?</p>
+      <p style="color: #888888; font-size: 0.85rem; margin-top: 4px;">Existe apenas uma forma de descobrir.</p>
+
+      <button class="btn-cinematic btn-pulse" onclick="goToScene(3)">ASSINAR O DESTINO</button>
+    </div>
+
+    <!-- CENA 3 & 4: CONTRATO E ASSINATURA INTERATIVA -->
+    <div class="scene" id="scene-3">
+      <div class="scene-tag">DOCUMENTO DE REALIDADE ALTERNATIVA</div>
+      
+      <div class="contract-container">
+        <div class="contract-img-wrapper">
+          <img src="imgs/contrato.jpeg" alt="Contrato Confidencial">
+        </div>
+
+        <div class="signature-section">
+          <p style="font-size: 11px; letter-spacing: 2px; color: #cccccc; text-transform: uppercase;">
+            ASSINE ABAIXO PARA CONFIRMAR ESTA REALIDADE.
+          </p>
+
+          <div class="signature-canvas-wrapper" id="canvas-container">
+            <div class="signature-placeholder" id="sig-placeholder">DESENHE SUA ASSINATURA AQUI</div>
+            <div class="signature-guide-line"></div>
+            <canvas id="signature-canvas"></canvas>
+            <div id="virtual-pen"></div>
+          </div>
+
+          <div class="signature-controls">
+            <button class="btn-subtle" onclick="clearSignature()">LIMPAR</button>
+            <button class="btn-cinematic" style="margin-top:0; padding: 10px 25px; font-size: 12px;" onclick="confirmSignature()">CONFIRMAR ASSINATURA</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="signature-status" class="status-badge" style="display: none; margin-top: 10px;">
+        STATUS: AGUARDANDO ASSINATURA
+      </div>
+    </div>
+
+    <!-- CENA 5: CONSEQUÊNCIA -->
+    <div class="scene" id="scene-5">
+      <div class="scene-tag">CONSEQUÊNCIA TEMPORAL</div>
+      
+      <div class="typewriter-text" id="typewriter-5" style="min-height: 2.5em; margin-bottom: 10px;"></div>
+
+      <div class="img-frame" id="frame-scene-5" style="display: none;">
+        <img src="imgs/jogando.jpeg" alt="Jogando">
+      </div>
+
+      <p id="subtext-scene-5" style="color: #cccccc; font-size: 1.1rem; margin-top: 12px; opacity: 0; transition: opacity 0.8s ease;">
+        Essa seria a realidade?
+      </p>
+
+      <button class="btn-cinematic btn-pulse" id="btn-scene-5" style="opacity: 0; pointer-events: none; transition: opacity 0.8s ease;" onclick="goToScene(6)">
+        E SE FOSSE MESMO?
+      </button>
+    </div>
+
+    <!-- CENA 6 & 7: TRANSFORMAÇÃO GARRUDOS & NOVA REALIDADE -->
+    <div class="scene" id="scene-6">
+      <div class="scene-tag">REALIDADE ALTERNATIVA #02</div>
+
+      <div class="transform-stage" id="transform-stage">
+        <div class="transform-scan-line" id="scan-line"></div>
+        <img src="imgs/jogando.jpeg" id="layer-before" class="transform-layer" alt="Antes">
+        <img src="imgs/mantoGarrudos.png" id="layer-after" class="transform-layer" alt="Depois - Garrudos">
+      </div>
+
+      <div id="transform-title" style="margin-top: 10px; opacity: 0; transition: opacity 0.8s ease;">
+        <h2 class="glitch-text-red" style="font-size: 2.2rem; letter-spacing: 6px;">GARRUDOS</h2>
+        <p style="color: #ffffff; font-size: 1rem; margin-top: 6px; font-weight: 300;">E se essa tivesse sido a minha realidade?</p>
+        <div class="status-badge" style="margin-top: 8px;">REALIDADE ALTERADA — STATUS: CONFIRMADA</div>
+      </div>
+
+      <button class="btn-cinematic" id="btn-scene-6" style="opacity: 0; pointer-events: none; margin-top: 18px; transition: opacity 0.8s ease;" onclick="goToScene(7)">
+        PROSSEGUIR
+      </button>
+    </div>
+
+    <!-- CENA 8: FINAL / CONCLUSÃO -->
+    <div class="scene" id="scene-7">
+      <div class="scene-tag">SIMULAÇÃO CONCLUÍDA</div>
+
+      <div class="typewriter-text" id="typewriter-7"></div>
+
+      <p> E se fosse verdade?</p>
+      <p> Seria bom?</p>
+      <p>Você gostaria?</p>
+      <p>EU TE AMO MUITO</p>
+    </div>
+
+  </div>
+
+  <script>
+    /* ==========================================
+       GLOBAL STATE
+       ========================================== */
+    const state = {
+      currentScene: 1,
+      isSigning: false,
+      hasSigned: false,
+      canvasDrawn: false,
+      particles: [],
+      mouseX: 0,
+      mouseY: 0
+    };
+
+    /* ==========================================
+       CUSTOM CURSOR
+       ========================================== */
+    const cursor = document.getElementById('custom-cursor');
+    const follower = document.getElementById('custom-cursor-follower');
+
+    document.addEventListener('mousemove', (e) => {
+      state.mouseX = e.clientX;
+      state.mouseY = e.clientY;
+      
+      if (cursor && follower) {
+        cursor.style.left = `${e.clientX}px`;
+        cursor.style.top = `${e.clientY}px`;
+        follower.style.transform = `translate(${e.clientX - 19}px, ${e.clientY - 19}px)`;
+      }
+    });
+
+    document.querySelectorAll('button, canvas, .img-frame').forEach(el => {
+      el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+      el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+    });
+
+    /* ==========================================
+       BACKGROUND PARTICLES
+       ========================================== */
+    const pCanvas = document.getElementById('canvas-particles');
+    const pCtx = pCanvas.getContext('2d');
+
+    function resizeParticleCanvas() {
+      pCanvas.width = window.innerWidth;
+      pCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeParticleCanvas);
+    resizeParticleCanvas();
+
+    class Particle {
+      constructor(x, y, colorType = 'normal') {
+        this.x = x || Math.random() * pCanvas.width;
+        this.y = y || Math.random() * pCanvas.height;
+        this.size = Math.random() * 2 + 0.5;
+        this.vx = (Math.random() - 0.5) * 0.6;
+        this.vy = (Math.random() - 0.5) * 0.6 - 0.2;
+        this.alpha = Math.random() * 0.65 + 0.1;
+        this.colorType = colorType;
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        if (this.x < 0) this.x = pCanvas.width;
+        if (this.x > pCanvas.width) this.x = 0;
+        if (this.y < 0) this.y = pCanvas.height;
+        if (this.y > pCanvas.height) this.y = 0;
+      }
+
+      draw() {
+        pCtx.save();
+        pCtx.globalAlpha = this.alpha;
+        if (this.colorType === 'red') {
+          pCtx.fillStyle = '#ff1a1a';
+          pCtx.shadowBlur = 10;
+          pCtx.shadowColor = '#ff0000';
+        } else if (this.colorType === 'gold') {
+          pCtx.fillStyle = '#d4af37';
+          pCtx.shadowBlur = 8;
+          pCtx.shadowColor = '#d4af37';
+        } else {
+          pCtx.fillStyle = '#ffffff';
+        }
+        pCtx.beginPath();
+        pCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        pCtx.fill();
+        pCtx.restore();
+      }
+    }
+
+    function initParticles() {
+      state.particles = [];
+      const count = Math.floor((pCanvas.width * pCanvas.height) / 14000);
+      for (let i = 0; i < count; i++) {
+        const type = Math.random() > 0.8 ? 'red' : (Math.random() > 0.9 ? 'gold' : 'normal');
+        state.particles.push(new Particle(null, null, type));
+      }
+    }
+    initParticles();
+
+    function renderParticles() {
+      pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
+      state.particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(renderParticles);
+    }
+    renderParticles();
+
+    function triggerBurst(x, y, count = 35, color = 'red') {
+      for (let i = 0; i < count; i++) {
+        const p = new Particle(x, y, color);
+        p.vx = (Math.random() - 0.5) * 7;
+        p.vy = (Math.random() - 0.5) * 7;
+        p.size = Math.random() * 3.5 + 1;
+        p.alpha = 1;
+        state.particles.push(p);
+      }
+    }
+
+    /* ==========================================
+       CINEMATIC TRANSITIONS
+       ========================================== */
+    function triggerFlash() {
+      const flash = document.getElementById('flash-overlay');
+      flash.style.opacity = '0.9';
+      setTimeout(() => { flash.style.opacity = '0'; }, 100);
+    }
+
+    function triggerShake() {
+      document.body.classList.add('shake');
+      setTimeout(() => { document.body.classList.remove('shake'); }, 450);
+    }
+
+    function updateProgress(step) {
+      for (let i = 1; i <= 4; i++) {
+        const el = document.getElementById(`p-step-${i}`);
+        if (i < step) {
+          el.className = 'progress-step completed';
+        } else if (i === step) {
+          el.className = 'progress-step active';
+        } else {
+          el.className = 'progress-step';
+        }
+      }
+    }
+
+    function goToScene(sceneNum) {
+      triggerFlash();
+      triggerShake();
+
+      const current = document.getElementById(`scene-${state.currentScene}`);
+      if (current) current.classList.remove('active');
+
+      state.currentScene = sceneNum;
+      const next = document.getElementById(`scene-${sceneNum}`);
+
+      setTimeout(() => {
+        if (next) next.classList.add('active');
+        onSceneActivate(sceneNum);
+      }, 350);
+    }
+
+    function onSceneActivate(sceneNum) {
+      const hudStatus = document.getElementById('hud-status');
+
+      if (sceneNum === 1) {
+        updateProgress(1);
+        hudStatus.innerText = 'REALITY_ENGINE: ONLINE';
+        startScene1Sequence();
+      } else if (sceneNum === 2) {
+        updateProgress(1);
+        hudStatus.innerText = 'TIMELINE: ALTERNATIVE #01';
+      } else if (sceneNum === 3) {
+        updateProgress(2);
+        hudStatus.innerText = 'CONTRACT: PENDING_SIGNATURE';
+        initCanvas();
+      } else if (sceneNum === 5) {
+        updateProgress(3);
+        hudStatus.innerText = 'TIMELINE: BRANCHING';
+        startScene5Sequence();
+      } else if (sceneNum === 6) {
+        updateProgress(4);
+        hudStatus.innerText = 'REALITY_STATUS: ALTERED';
+        startTransformation();
+      } else if (sceneNum === 7) {
+        updateProgress(4);
+        hudStatus.innerText = 'SIMULATION: END_OF_LINE';
+        startScene7Sequence();
+      }
+    }
+
+    /* ==========================================
+       TYPEWRITER UTILITY
+       ========================================== */
+    function typeWriter(elementId, textArray, speed = 40, callback = null) {
+      const container = document.getElementById(elementId);
+      container.innerHTML = '';
+      let lineIndex = 0;
+      let charIndex = 0;
+
+      function typeLine() {
+        if (lineIndex >= textArray.length) {
+          if (callback) callback();
+          return;
+        }
+
+        const currentLine = textArray[lineIndex];
+        
+        if (charIndex === 0) {
+          const p = document.createElement('div');
+          p.id = `${elementId}-line-${lineIndex}`;
+          p.style.marginBottom = '8px';
+          container.appendChild(p);
+        }
+
+        const currentP = document.getElementById(`${elementId}-line-${lineIndex}`);
+        
+        if (charIndex < currentLine.length) {
+          if (currentLine.substring(charIndex).startsWith('<span')) {
+            const endSpan = currentLine.indexOf('</span>', charIndex) + 7;
+            currentP.innerHTML += currentLine.substring(charIndex, endSpan);
+            charIndex = endSpan;
+          } else {
+            currentP.innerHTML += currentLine.charAt(charIndex);
+            charIndex++;
+          }
+          setTimeout(typeLine, speed);
+        } else {
+          charIndex = 0;
+          lineIndex++;
+          setTimeout(typeLine, 600);
+        }
+      }
+
+      typeLine();
+    }
+
+    /* ==========================================
+       SCENE LOGIC SEQUENCES
+       ========================================== */
+
+    function startScene1Sequence() {
+      const lines = [
+        "E SE...",
+        "Algumas escolhas mudam tudo.",
+        "Mas e se você tivesse escolhido diferente?",
+        "e se eu tivesse ido para a UNISOCIESC invés da Católica?",
+        "e se eu fosse <span class='glitch-text-red'>Garrudos</span>?",
+        "e se essa foto fosse real?"
+      ];
+
+      const btn = document.getElementById('btn-scene-1');
+      btn.style.opacity = '0';
+      btn.style.pointerEvents = 'none';
+
+      typeWriter('typewriter-1', lines, 35, () => {
+        btn.style.opacity = '1';
+        btn.style.pointerEvents = 'auto';
+        btn.onclick = () => goToScene(2);
+      });
+    }
+
+    function startScene5Sequence() {
+      const lines = [
+        "Contrato assinado.",
+        "Agora só existe uma pergunta.",
+        "E se fosse mesmo?"
+      ];
+
+      const imgFrame = document.getElementById('frame-scene-5');
+      const subtext = document.getElementById('subtext-scene-5');
+      const btn = document.getElementById('btn-scene-5');
+
+      imgFrame.style.display = 'none';
+      subtext.style.opacity = '0';
+      btn.style.opacity = '0';
+      btn.style.pointerEvents = 'none';
+
+      typeWriter('typewriter-5', lines, 40, () => {
+        imgFrame.style.display = 'flex';
+        imgFrame.style.animation = 'fadeInUp 1s forwards';
+        
+        setTimeout(() => {
+          subtext.style.opacity = '1';
+          btn.style.opacity = '1';
+          btn.style.pointerEvents = 'auto';
+        }, 800);
+      });
+    }
+
+    function startScene7Sequence() {
+      const lines = [
+        "Talvez algumas escolhas nunca tenham acontecido.",
+        "Mas e se...",
+        "tivessem acontecido?",
+        "<span style='color:#ff1a1a; font-weight:bold; letter-spacing:4px;'>FIM DA SIMULAÇÃO.</span>"
+      ];
+
+      const btn = document.getElementById('btn-restart');
+      btn.style.opacity = '0';
+      btn.style.pointerEvents = 'none';
+
+      typeWriter('typewriter-7', lines, 45, () => {
+        btn.style.opacity = '1';
+        btn.style.pointerEvents = 'auto';
+      });
+    }
+
+    /* ==========================================
+       SCENE 4: CANVAS SIGNATURE SYSTEM
+       ========================================== */
+    let canvas, ctx;
+
+    function initCanvas() {
+      canvas = document.getElementById('signature-canvas');
+      ctx = canvas.getContext('2d');
+      const container = document.getElementById('canvas-container');
+
+      canvas.width = container.clientWidth;
+      canvas.height = container.clientHeight;
+
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2.5;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      let drawing = false;
+
+      function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+          x: clientX - rect.left,
+          y: clientY - rect.top
+        };
+      }
+
+      function startDraw(e) {
+        if (state.hasSigned) return;
+        drawing = true;
+        state.canvasDrawn = true;
+        document.getElementById('sig-placeholder').style.opacity = '0';
+        const pos = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+      }
+
+      function draw(e) {
+        if (!drawing || state.hasSigned) return;
+        const pos = getPos(e);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+
+        if (Math.random() > 0.7) {
+          triggerBurst(e.touches ? e.touches[0].clientX : e.clientX, e.touches ? e.touches[0].clientY : e.clientY, 2, 'gold');
+        }
+      }
+
+      function stopDraw() {
+        drawing = false;
+      }
+
+      canvas.removeEventListener('mousedown', startDraw);
+      canvas.removeEventListener('mousemove', draw);
+      window.removeEventListener('mouseup', stopDraw);
+
+      canvas.addEventListener('mousedown', startDraw);
+      canvas.addEventListener('mousemove', draw);
+      window.addEventListener('mouseup', stopDraw);
+
+      canvas.addEventListener('touchstart', startDraw, { passive: true });
+      canvas.addEventListener('touchmove', draw, { passive: true });
+      canvas.addEventListener('touchend', stopDraw);
+    }
+
+    function clearSignature() {
+      if (state.hasSigned) return;
+      if (ctx && canvas) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        state.canvasDrawn = false;
+        document.getElementById('sig-placeholder').style.opacity = '1';
+      }
+    }
+
+    function confirmSignature() {
+      if (state.hasSigned) return;
+      state.hasSigned = true;
+
+      // Fade out user drawing
+      let alpha = 1;
+      const fadeInterval = setInterval(() => {
+        alpha -= 0.08;
+        if (alpha <= 0) {
+          clearInterval(fadeInterval);
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          animateAutoSignature();
+        } else {
+          ctx.save();
+          ctx.globalCompositeOperation = 'destination-out';
+          ctx.fillStyle = `rgba(0, 0, 0, 0.15)`;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.restore();
+        }
+      }, 30);
+
+      triggerShake();
+      const rect = canvas.getBoundingClientRect();
+      triggerBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, 40, 'red');
+    }
+
+    /* Animated Cursive Signature for "Eduardo Oliveira" */
+    function animateAutoSignature() {
+      const pen = document.getElementById('virtual-pen');
+      pen.style.opacity = '1';
+
+      ctx.strokeStyle = '#ff2a2a';
+      ctx.shadowColor = '#ff0000';
+      ctx.shadowBlur = 10;
+      ctx.lineWidth = 2.6;
+
+      const w = canvas.width;
+      const h = canvas.height;
+      
+      // Coordinates forming stylized cursive "Eduardo Oliveira"
+      const points = [
+        // E
+        { x: w * 0.08, y: h * 0.30 },
+        { x: w * 0.14, y: h * 0.25 },
+        { x: w * 0.09, y: h * 0.48 },
+        { x: w * 0.13, y: h * 0.48 },
+        { x: w * 0.08, y: h * 0.52 },
+        { x: w * 0.14, y: h * 0.72 },
+        { x: w * 0.07, y: h * 0.76 },
+        // d - u - a - r - d - o
+        { x: w * 0.17, y: h * 0.60 },
+        { x: w * 0.20, y: h * 0.32 }, // d stem
+        { x: w * 0.19, y: h * 0.65 },
+        { x: w * 0.23, y: h * 0.55 }, // u
+        { x: w * 0.25, y: h * 0.65 },
+        { x: w * 0.28, y: h * 0.55 }, // a
+        { x: w * 0.31, y: h * 0.65 },
+        { x: w * 0.33, y: h * 0.52 }, // r
+        { x: w * 0.36, y: h * 0.65 },
+        { x: w * 0.38, y: h * 0.32 }, // d stem
+        { x: w * 0.38, y: h * 0.65 },
+        { x: w * 0.42, y: h * 0.58 }, // o
+        { x: w * 0.45, y: h * 0.62 },
+        // Space to Oliveira (O)
+        { x: w * 0.52, y: h * 0.35 }, // O start
+        { x: w * 0.48, y: h * 0.55 },
+        { x: w * 0.53, y: h * 0.75 },
+        { x: w * 0.58, y: h * 0.50 },
+        { x: w * 0.54, y: h * 0.30 },
+        // l - i - v - e - i - r - a
+        { x: w * 0.61, y: h * 0.28 }, // l loop
+        { x: w * 0.63, y: h * 0.65 },
+        { x: w * 0.66, y: h * 0.52 }, // i
+        { x: w * 0.68, y: h * 0.65 },
+        { x: w * 0.71, y: h * 0.55 }, // v
+        { x: w * 0.74, y: h * 0.62 },
+        { x: w * 0.77, y: h * 0.55 }, // e
+        { x: w * 0.80, y: h * 0.65 },
+        { x: w * 0.83, y: h * 0.52 }, // i
+        { x: w * 0.85, y: h * 0.65 },
+        { x: w * 0.88, y: h * 0.55 }, // r
+        { x: w * 0.91, y: h * 0.65 },
+        { x: w * 0.94, y: h * 0.58 }, // a
+        { x: w * 0.97, y: h * 0.65 }
+      ];
+
+      let ptIdx = 0;
+      let progress = 0;
+
+      function step() {
+        if (ptIdx >= points.length - 1) {
+          pen.style.opacity = '0';
+          onSignatureComplete();
+          return;
+        }
+
+        const p1 = points[ptIdx];
+        const p2 = points[ptIdx + 1];
+
+        const curX = p1.x + (p2.x - p1.x) * progress;
+        const curY = p1.y + (p2.y - p1.y) * progress;
+
+        const rect = canvas.getBoundingClientRect();
+        pen.style.left = `${rect.left + curX}px`;
+        pen.style.top = `${rect.top + curY}px`;
+
+        ctx.beginPath();
+        ctx.moveTo(p1.x + (p2.x - p1.x) * Math.max(0, progress - 0.2), p1.y + (p2.y - p1.y) * Math.max(0, progress - 0.2));
+        ctx.lineTo(curX, curY);
+        ctx.stroke();
+
+        progress += 0.16;
+        if (progress >= 1) {
+          progress = 0;
+          ptIdx++;
+        }
+
+        requestAnimationFrame(step);
+      }
+
+      step();
+    }
+
+    function onSignatureComplete() {
+      const badge = document.getElementById('signature-status');
+      badge.style.display = 'inline-block';
+      badge.innerText = 'ASSINADO POR EDUARDO OLIVEIRA — REALIDADE ALTERNATIVA ATIVADA';
+      badge.style.color = '#00ff66';
+      badge.style.borderColor = 'rgba(0,255,102,0.4)';
+
+      triggerBurst(window.innerWidth / 2, window.innerHeight / 2, 55, 'gold');
+
+      setTimeout(() => {
+        goToScene(5);
+      }, 2000);
+    }
+
+    /* ==========================================
+       SCENE 6: REALITY TRANSFORMATION (GARRUDOS)
+       ========================================== */
+    function startTransformation() {
+      const layerBefore = document.getElementById('layer-before');
+      const layerAfter = document.getElementById('layer-after');
+      const scanLine = document.getElementById('scan-line');
+      const glitchOverlay = document.getElementById('glitch-overlay');
+      const title = document.getElementById('transform-title');
+      const btn = document.getElementById('btn-scene-6');
+
+      layerAfter.style.opacity = '0';
+      scanLine.style.opacity = '1';
+      title.style.opacity = '0';
+      btn.style.opacity = '0';
+
+      let step = 0;
+      const interval = setInterval(() => {
+        step++;
+
+        // Intense Cinematic Glitch Distortion
+        const glitchVal = Math.random() * 25;
+        layerBefore.style.filter = `hue-rotate(${glitchVal * 12}deg) contrast(${100 + glitchVal * 6}%) blur(${glitchVal < 6 ? 3 : 0}px)`;
+        glitchOverlay.style.opacity = (Math.random() * 0.7).toString();
+        
+        scanLine.style.top = `${(step * 3.5) % 100}%`;
+
+        if (step % 3 === 0) {
+          triggerShake();
+        }
+
+        if (step > 15) {
+          // Reveal imgs/mantoGarrudos.jpeg
+          layerAfter.style.opacity = `${(step - 15) / 15}`;
+          layerAfter.style.filter = `contrast(1.2) brightness(${1.6 - (step - 15) / 25})`;
+        }
+
+        if (step >= 30) {
+          clearInterval(interval);
+          layerAfter.style.opacity = '1';
+          layerAfter.style.filter = 'none';
+          layerBefore.style.filter = 'none';
+          glitchOverlay.style.opacity = '0';
+          scanLine.style.opacity = '0';
+
+          triggerFlash();
+          triggerBurst(window.innerWidth / 2, window.innerHeight / 2, 70, 'red');
+
+          setTimeout(() => {
+            title.style.opacity = '1';
+            btn.style.opacity = '1';
+            btn.style.pointerEvents = 'auto';
+          }, 400);
+        }
+      }, 75);
+    }
+
+    /* ==========================================
+       RESTART EXPERIENCE
+       ========================================== */
+    function resetExperience() {
+      state.currentScene = 1;
+      state.hasSigned = false;
+      state.canvasDrawn = false;
+      if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
+      document.getElementById('sig-placeholder').style.opacity = '1';
+      document.getElementById('signature-status').style.display = 'none';
+
+      goToScene(1);
+    }
+
+    /* ==========================================
+       PARALLAX TILT EFFECT (DESKTOP)
+       ========================================== */
+    document.addEventListener('mousemove', (e) => {
+      if (window.innerWidth < 769) return;
+      const x = (e.clientX / window.innerWidth - 0.5) * 16;
+      const y = (e.clientY / window.innerHeight - 0.5) * 16;
+
+      const activeFrames = document.querySelectorAll('.scene.active .img-frame, .scene.active .contract-container, .scene.active .transform-stage');
+      activeFrames.forEach(frame => {
+        frame.style.transform = `perspective(1000px) rotateY(${x}deg) rotateX(${-y}deg)`;
+      });
+    });
+
+    /* Initialize Experience */
+    window.addEventListener('load', () => {
+      onSceneActivate(1);
+    });
+  </script>
+</body>
+</html>
