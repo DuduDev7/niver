@@ -1,0 +1,2702 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JULIA CASINO</title>
+
+<style>
+:root{
+    --black:#050505;
+    --black2:#0c0c0f;
+    --red:#d40018;
+    --red2:#ff1735;
+    --gold:#d7a928;
+    --gold2:#ffe27a;
+    --white:#f8f8f8;
+    --gray:#9b9b9b;
+    --green:#00e676;
+    --blue:#249cff;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    background:
+        radial-gradient(circle at 50% -10%, rgba(180,0,20,.18), transparent 35%),
+        radial-gradient(circle at 10% 80%, rgba(215,169,40,.05), transparent 25%),
+        #030303;
+    color:var(--white);
+    font-family:Arial, Helvetica, sans-serif;
+    min-height:100vh;
+    overflow-x:hidden;
+}
+
+button{
+    font-family:inherit;
+}
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:9999;
+    background:
+        linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px);
+    background-size:100% 4px;
+    opacity:.15;
+}
+
+/* =========================
+   PARTICLES
+========================= */
+
+#particles{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+    z-index:1;
+}
+
+.particle{
+    position:absolute;
+    width:3px;
+    height:3px;
+    background:var(--gold2);
+    border-radius:50%;
+    opacity:.5;
+    box-shadow:0 0 8px var(--gold);
+    animation:floatParticle linear infinite;
+}
+
+@keyframes floatParticle{
+    from{
+        transform:translateY(110vh) translateX(0);
+        opacity:0;
+    }
+    15%{opacity:.6}
+    85%{opacity:.4}
+    to{
+        transform:translateY(-10vh) translateX(80px);
+        opacity:0;
+    }
+}
+
+/* =========================
+   INTRO
+========================= */
+
+.screen{
+    min-height:100vh;
+    position:relative;
+    z-index:2;
+}
+
+#intro{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:30px;
+    overflow:hidden;
+}
+
+.intro-light{
+    position:absolute;
+    width:600px;
+    height:600px;
+    border-radius:50%;
+    background:radial-gradient(circle,rgba(190,0,20,.18),transparent 68%);
+    animation:pulseLight 4s infinite alternate;
+}
+
+@keyframes pulseLight{
+    from{transform:scale(.8);opacity:.5}
+    to{transform:scale(1.15);opacity:1}
+}
+
+.intro-content{
+    max-width:850px;
+    position:relative;
+    z-index:3;
+}
+
+.kicker{
+    color:var(--gold2);
+    letter-spacing:7px;
+    font-size:12px;
+    margin-bottom:25px;
+    text-transform:uppercase;
+}
+
+.logo{
+    font-size:clamp(55px,11vw,125px);
+    line-height:.85;
+    font-weight:1000;
+    letter-spacing:-6px;
+    background:linear-gradient(
+        180deg,
+        #fff,
+        #ffe88c 35%,
+        #c99a24 60%,
+        #fff1a8
+    );
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    text-shadow:0 0 30px rgba(255,210,80,.18);
+}
+
+.logo span{
+    color:var(--red2);
+    -webkit-text-fill-color:var(--red2);
+    text-shadow:0 0 25px rgba(255,0,30,.5);
+}
+
+.intro-text{
+    font-size:clamp(16px,2vw,22px);
+    color:#ddd;
+    margin:35px auto 15px;
+    max-width:700px;
+    line-height:1.6;
+}
+
+.prize-intro{
+    color:var(--gold2);
+    font-weight:bold;
+    letter-spacing:2px;
+    margin-bottom:35px;
+}
+
+.main-btn{
+    border:1px solid var(--gold);
+    background:
+        linear-gradient(135deg,#8e0b16,#3c0208);
+    color:white;
+    padding:17px 38px;
+    border-radius:5px;
+    font-size:14px;
+    font-weight:bold;
+    letter-spacing:3px;
+    cursor:pointer;
+    position:relative;
+    overflow:hidden;
+    box-shadow:
+        0 0 20px rgba(210,0,30,.2),
+        inset 0 0 20px rgba(255,255,255,.03);
+    transition:.3s;
+}
+
+.main-btn::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:-120%;
+    width:70%;
+    height:100%;
+    background:linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.3),
+        transparent
+    );
+    transform:skewX(-20deg);
+    transition:.6s;
+}
+
+.main-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:
+        0 10px 35px rgba(220,0,30,.3),
+        0 0 20px rgba(215,169,40,.2);
+}
+
+.main-btn:hover::before{
+    left:150%;
+}
+
+/* =========================
+   GAME HEADER
+========================= */
+
+#game{
+    display:none;
+    padding-bottom:100px;
+}
+
+.topbar{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:rgba(3,3,3,.88);
+    backdrop-filter:blur(15px);
+    border-bottom:1px solid rgba(215,169,40,.15);
+    padding:14px 5%;
+}
+
+.topbar-inner{
+    max-width:1200px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+}
+
+.casino-mini{
+    font-weight:1000;
+    letter-spacing:2px;
+    color:var(--gold2);
+}
+
+.round-info{
+    min-width:250px;
+}
+
+.round-text{
+    display:flex;
+    justify-content:space-between;
+    font-size:11px;
+    letter-spacing:2px;
+    margin-bottom:6px;
+    color:#aaa;
+}
+
+.progress{
+    width:100%;
+    height:5px;
+    background:#1c1c1c;
+    overflow:hidden;
+    border-radius:10px;
+}
+
+.progress-fill{
+    height:100%;
+    width:20%;
+    background:linear-gradient(90deg,var(--red),var(--gold2));
+    box-shadow:0 0 12px var(--red);
+    transition:.7s cubic-bezier(.2,.8,.2,1);
+}
+
+.chips{
+    border:1px solid rgba(215,169,40,.3);
+    padding:8px 14px;
+    border-radius:5px;
+    color:var(--gold2);
+    font-weight:bold;
+    font-size:13px;
+    min-width:100px;
+    text-align:center;
+    transition:.2s;
+}
+
+.chips.bump{
+    animation:chipBump .4s;
+}
+
+@keyframes chipBump{
+    50%{transform:scale(1.2);box-shadow:0 0 25px rgba(255,200,40,.6)}
+}
+
+/* =========================
+   ROUND
+========================= */
+
+.round{
+    display:none;
+    max-width:1150px;
+    margin:auto;
+    padding:70px 25px;
+    min-height:calc(100vh - 80px);
+    position:relative;
+}
+
+.round.active{
+    display:block;
+    animation:roundIn .7s ease;
+}
+
+@keyframes roundIn{
+    from{
+        opacity:0;
+        transform:translateY(30px) scale(.98);
+    }
+    to{
+        opacity:1;
+        transform:none;
+    }
+}
+
+.round-title{
+    text-align:center;
+    margin-bottom:45px;
+}
+
+.round-number{
+    color:var(--red2);
+    letter-spacing:5px;
+    font-size:12px;
+    margin-bottom:10px;
+}
+
+.round-title h2{
+    font-size:clamp(35px,6vw,65px);
+    text-transform:uppercase;
+    letter-spacing:-2px;
+}
+
+.round-title p{
+    color:#999;
+    margin-top:12px;
+}
+
+/* =========================
+   ROUND 1 SLOT
+========================= */
+
+.casino-machine{
+    max-width:700px;
+    margin:0 auto;
+    background:
+        linear-gradient(145deg,#191919,#050505 60%,#171717);
+    border:2px solid #725615;
+    border-radius:22px;
+    padding:35px;
+    box-shadow:
+        0 30px 80px rgba(0,0,0,.7),
+        inset 0 0 50px rgba(255,255,255,.025),
+        0 0 35px rgba(180,0,20,.12);
+    position:relative;
+}
+
+.machine-top{
+    text-align:center;
+    color:var(--gold2);
+    font-weight:bold;
+    letter-spacing:5px;
+    margin-bottom:25px;
+}
+
+.slot-window{
+    display:flex;
+    gap:15px;
+    justify-content:center;
+    background:#020202;
+    border:10px solid #282828;
+    border-radius:12px;
+    padding:20px;
+    box-shadow:
+        inset 0 0 35px #000,
+        0 0 20px rgba(0,0,0,.8);
+}
+
+.reel{
+    width:150px;
+    height:150px;
+    background:
+        linear-gradient(90deg,#111,#292929,#111);
+    border:2px solid #555;
+    border-radius:8px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:70px;
+    position:relative;
+    overflow:hidden;
+    box-shadow:inset 0 0 20px #000;
+}
+
+.reel.blur{
+    animation:reelBlur .08s linear infinite;
+}
+
+@keyframes reelBlur{
+    0%{filter:blur(0)}
+    50%{filter:blur(5px)}
+    100%{filter:blur(1px)}
+}
+
+.machine-bottom{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-top:30px;
+}
+
+.lever-area{
+    position:relative;
+    width:100px;
+    height:170px;
+}
+
+.lever-base{
+    position:absolute;
+    bottom:0;
+    left:25px;
+    width:35px;
+    height:90px;
+    border-radius:20px;
+    background:linear-gradient(90deg,#333,#aaa,#333);
+    transform-origin:bottom center;
+    transition:.3s cubic-bezier(.2,1.5,.5,1);
+}
+
+.lever-ball{
+    position:absolute;
+    top:-15px;
+    left:-14px;
+    width:63px;
+    height:63px;
+    border-radius:50%;
+    background:radial-gradient(circle at 30% 25%,#ff4558,#9b0010 60%,#350006);
+    box-shadow:0 0 25px rgba(255,0,30,.5);
+}
+
+.lever-area:hover .lever-base{
+    transform:rotate(4deg);
+}
+
+.lever-area.pulled .lever-base{
+    transform:rotate(28deg);
+}
+
+.pull-label{
+    position:absolute;
+    bottom:-28px;
+    left:-15px;
+    width:130px;
+    text-align:center;
+    color:#aaa;
+    font-size:10px;
+    letter-spacing:2px;
+}
+
+.machine-result{
+    text-align:center;
+    min-height:70px;
+    margin-top:25px;
+}
+
+.jackpot{
+    color:var(--gold2);
+    font-size:40px;
+    font-weight:1000;
+    animation:jackpot 1s infinite alternate;
+}
+
+@keyframes jackpot{
+    from{text-shadow:0 0 5px var(--gold)}
+    to{text-shadow:0 0 30px var(--gold),0 0 60px rgba(255,200,50,.4)}
+}
+
+/* =========================
+   ROUND 2 WHEEL
+========================= */
+
+.wheel-area{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+}
+
+.wheel-wrap{
+    position:relative;
+    width:min(430px,82vw);
+    height:min(430px,82vw);
+}
+
+.wheel{
+    width:100%;
+    height:100%;
+    border-radius:50%;
+    border:12px solid #33270e;
+    box-shadow:
+        0 0 0 3px #9c7925,
+        0 0 45px rgba(215,169,40,.15),
+        inset 0 0 30px #000;
+    background:
+        conic-gradient(
+            #740815 0deg 72deg,
+            #111 72deg 144deg,
+            #8d111e 144deg 216deg,
+            #111 216deg 288deg,
+            #8d111e 288deg 360deg
+        );
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    user-select:none;
+    touch-action:none;
+    cursor:grab;
+    transition:transform .1s linear;
+}
+
+.wheel:active{
+    cursor:grabbing;
+}
+
+.wheel::after{
+    content:"";
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    background:radial-gradient(circle,#222,#050505);
+    border:4px solid var(--gold);
+    box-shadow:0 0 20px rgba(215,169,40,.3);
+}
+
+.wheel-label{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:100%;
+    height:100%;
+    transform:translate(-50%,-50%);
+    pointer-events:none;
+}
+
+.wheel-label span{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform-origin:0 0;
+    font-size:13px;
+    font-weight:bold;
+    white-space:nowrap;
+}
+
+.pointer{
+    position:absolute;
+    top:-20px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:5;
+    width:0;
+    height:0;
+    border-left:18px solid transparent;
+    border-right:18px solid transparent;
+    border-top:35px solid var(--gold2);
+    filter:drop-shadow(0 0 8px rgba(255,220,100,.7));
+}
+
+.wheel-result{
+    margin-top:40px;
+    text-align:center;
+    min-height:120px;
+}
+
+/* =========================
+   ROUND 3 CARDS
+========================= */
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:18px;
+    max-width:900px;
+    margin:0 auto;
+}
+
+.card{
+    height:250px;
+    perspective:1000px;
+    cursor:pointer;
+}
+
+.card-inner{
+    width:100%;
+    height:100%;
+    position:relative;
+    transition:transform .8s cubic-bezier(.2,.8,.2,1);
+    transform-style:preserve-3d;
+}
+
+.card.flipped .card-inner{
+    transform:rotateY(180deg);
+}
+
+.card-front,
+.card-back{
+    position:absolute;
+    inset:0;
+    backface-visibility:hidden;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.card-front{
+    background:
+        repeating-linear-gradient(
+            45deg,
+            #600611 0 8px,
+            #160205 8px 16px
+        );
+    border:2px solid #a67e24;
+    box-shadow:0 15px 30px rgba(0,0,0,.5);
+    font-size:45px;
+}
+
+.card-front::after{
+    content:"J";
+    color:var(--gold2);
+    font-weight:bold;
+    font-size:70px;
+    opacity:.7;
+}
+
+.card-back{
+    transform:rotateY(180deg);
+    background:linear-gradient(145deg,#171717,#050505);
+    border:2px solid var(--gold);
+    box-shadow:0 0 30px rgba(215,169,40,.3);
+    flex-direction:column;
+    padding:15px;
+    text-align:center;
+}
+
+.card-back.special{
+    border-color:var(--red2);
+    box-shadow:0 0 50px rgba(255,0,30,.5);
+}
+
+.card-icon{
+    font-size:45px;
+    margin-bottom:15px;
+}
+
+/* =========================
+   ROUND 4 WIRES
+========================= */
+
+.machine-broken{
+    max-width:900px;
+    margin:auto;
+    border:1px solid #292929;
+    background:#080808;
+    padding:35px;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 25px 70px #000;
+}
+
+.warning{
+    text-align:center;
+    color:#ff253e;
+    letter-spacing:5px;
+    font-weight:bold;
+    animation:warningBlink .6s infinite alternate;
+    margin-bottom:30px;
+}
+
+@keyframes warningBlink{
+    from{opacity:.35}
+    to{opacity:1;text-shadow:0 0 15px red}
+}
+
+.glitch-title{
+    text-align:center;
+    font-size:clamp(30px,6vw,65px);
+    margin-bottom:40px;
+    font-weight:1000;
+}
+
+.glitch-title::before,
+.glitch-title::after{
+    content:"SYSTEM ERROR";
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    opacity:.3;
+}
+
+.glitch-title::before{
+    color:red;
+    clip-path:inset(20% 0 60% 0);
+    transform:translateX(-52%);
+}
+
+.glitch-title::after{
+    color:cyan;
+    clip-path:inset(60% 0 15% 0);
+    transform:translateX(-48%);
+}
+
+.wire-game{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:30px;
+    position:relative;
+}
+
+.ports{
+    display:flex;
+    flex-direction:column;
+    gap:25px;
+}
+
+.port{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    padding:15px;
+    border:1px solid #222;
+    background:#0d0d0d;
+}
+
+.port-dot{
+    width:25px;
+    height:25px;
+    border-radius:50%;
+    flex-shrink:0;
+    box-shadow:0 0 15px currentColor;
+}
+
+.red{color:#ff1d3d;background:#ff1d3d}
+.green{color:#00e676;background:#00e676}
+.blue{color:#259bff;background:#259bff}
+
+.wire{
+    height:42px;
+    border:1px solid #333;
+    background:#151515;
+    border-radius:30px;
+    display:flex;
+    align-items:center;
+    padding:5px;
+    cursor:grab;
+    touch-action:none;
+}
+
+.wire:active{
+    cursor:grabbing;
+}
+
+.wire-ball{
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    background:currentColor;
+    box-shadow:0 0 15px currentColor;
+}
+
+.wire-text{
+    margin-left:10px;
+    font-size:11px;
+    letter-spacing:2px;
+}
+
+.connected{
+    border-color:var(--green);
+    box-shadow:0 0 20px rgba(0,230,118,.15);
+}
+
+.system-message{
+    text-align:center;
+    margin-top:35px;
+    min-height:60px;
+}
+
+/* =========================
+   ROUND 5 DOORS
+========================= */
+
+.final-round{
+    text-align:center;
+}
+
+.doors{
+    display:flex;
+    justify-content:center;
+    gap:25px;
+    margin:60px auto;
+    max-width:900px;
+}
+
+.door{
+    width:220px;
+    height:330px;
+    background:
+        linear-gradient(90deg,#171717,#4a1015,#141414);
+    border:3px solid #805f1c;
+    position:relative;
+    cursor:pointer;
+    transition:.4s;
+    box-shadow:0 25px 50px #000;
+}
+
+.door:hover{
+    transform:translateY(-10px);
+    box-shadow:0 35px 60px rgba(255,0,30,.2);
+}
+
+.door-number{
+    position:absolute;
+    top:20px;
+    left:0;
+    right:0;
+    font-size:25px;
+    color:var(--gold2);
+}
+
+.door-handle{
+    position:absolute;
+    right:25px;
+    top:50%;
+    width:15px;
+    height:15px;
+    border-radius:50%;
+    background:var(--gold2);
+    box-shadow:0 0 15px var(--gold);
+}
+
+.countdown{
+    font-size:clamp(60px,15vw,150px);
+    font-weight:1000;
+    color:var(--red2);
+    text-shadow:0 0 40px rgba(255,0,30,.6);
+    display:none;
+}
+
+.final-reveal{
+    display:none;
+    animation:reveal .9s cubic-bezier(.2,.8,.2,1);
+}
+
+@keyframes reveal{
+    from{
+        opacity:0;
+        transform:scale(.2) rotate(-5deg);
+    }
+    to{
+        opacity:1;
+        transform:none;
+    }
+}
+
+.final-reveal h2{
+    font-size:clamp(45px,9vw,100px);
+    color:var(--gold2);
+    text-shadow:0 0 30px rgba(255,210,70,.5);
+}
+
+.prize-card{
+    max-width:650px;
+    margin:30px auto;
+    padding:35px;
+    border:1px solid var(--gold);
+    background:linear-gradient(145deg,#161616,#070707);
+    box-shadow:0 0 50px rgba(215,169,40,.12);
+}
+
+.prize-card img,
+.prize-card video{
+    max-width:100%;
+    max-height:450px;
+    border-radius:8px;
+    display:none;
+    margin:auto;
+}
+
+.prize-text{
+    color:#ddd;
+    font-size:18px;
+    line-height:1.7;
+}
+
+/* =========================
+   END
+========================= */
+
+#ending{
+    display:none;
+    min-height:100vh;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:30px;
+    position:relative;
+    z-index:2;
+}
+
+.end-content{
+    max-width:900px;
+}
+
+.trophy{
+    font-size:100px;
+    animation:trophyFloat 2s infinite ease-in-out;
+}
+
+@keyframes trophyFloat{
+    50%{transform:translateY(-15px) rotate(2deg)}
+}
+
+.jackpot-big{
+    font-size:clamp(60px,13vw,150px);
+    font-weight:1000;
+    background:linear-gradient(#fff,#ffe076,#b27b10);
+    -webkit-background-clip:text;
+    color:transparent;
+    text-shadow:0 0 30px rgba(255,200,50,.2);
+}
+
+.end-content h2{
+    font-size:clamp(22px,4vw,45px);
+    margin:20px 0;
+}
+
+.end-content p{
+    color:#aaa;
+    line-height:1.7;
+    max-width:650px;
+    margin:0 auto 30px;
+}
+
+.end-buttons{
+    display:flex;
+    gap:15px;
+    justify-content:center;
+    flex-wrap:wrap;
+}
+
+.secondary-btn{
+    background:#111;
+    border:1px solid #555;
+    color:white;
+    padding:15px 25px;
+    cursor:pointer;
+    border-radius:4px;
+    transition:.3s;
+}
+
+.secondary-btn:hover{
+    border-color:var(--gold);
+    transform:translateY(-3px);
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:750px){
+
+    .topbar-inner{
+        flex-wrap:wrap;
+    }
+
+    .casino-mini{
+        display:none;
+    }
+
+    .round-info{
+        flex:1;
+        min-width:180px;
+    }
+
+    .casino-machine{
+        padding:20px 12px;
+    }
+
+    .slot-window{
+        padding:10px 5px;
+        gap:5px;
+        border-width:6px;
+    }
+
+    .reel{
+        width:29vw;
+        height:29vw;
+        max-width:130px;
+        max-height:130px;
+        font-size:48px;
+    }
+
+    .cards{
+        grid-template-columns:repeat(2,1fr);
+        max-width:500px;
+    }
+
+    .card{
+        height:210px;
+    }
+
+    .card:last-child{
+        grid-column:span 2;
+        width:calc(50% - 9px);
+        justify-self:center;
+    }
+
+    .wire-game{
+        grid-template-columns:1fr;
+    }
+
+    .doors{
+        gap:10px;
+    }
+
+    .door{
+        width:30vw;
+        height:230px;
+    }
+
+    .door-number{
+        font-size:18px;
+    }
+
+    .machine-bottom{
+        margin-top:20px;
+    }
+
+    .round{
+        padding:50px 15px;
+    }
+
+    .main-btn{
+        padding:17px 25px;
+        width:100%;
+        max-width:350px;
+    }
+}
+
+@media(max-width:430px){
+
+    .doors{
+        gap:7px;
+    }
+
+    .door{
+        width:29vw;
+        height:190px;
+    }
+
+    .door-handle{
+        right:12px;
+    }
+
+    .cards{
+        gap:10px;
+    }
+
+    .card{
+        height:190px;
+    }
+
+    .card:last-child{
+        width:calc(50% - 5px);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="particles"></div>
+
+<!-- =========================================================
+     INTRO
+========================================================= -->
+
+<section id="intro" class="screen">
+
+    <div class="intro-light"></div>
+
+    <div class="intro-content">
+
+        <div class="kicker">
+            EXPERIÊNCIA EXCLUSIVA
+        </div>
+
+        <div class="logo">
+            JULIA <span>CASINO</span>
+        </div>
+
+        <p class="intro-text">
+            <!-- CURINGA: FRASE DE INTRODUÇÃO -->
+            "VOCÊ ESTÁ PRESTES A ENTRAR EM UM JOGO QUE NÃO DEVERIA EXISTIR."
+        </p>
+
+        <div class="prize-intro">
+            PRÊMIO FINAL:
+            <!-- CURINGA: PRÊMIO -->
+            UMA SURPRESA QUE VOCÊ NÃO ESTÁ ESPERANDO
+        </div>
+
+        <button class="main-btn" onclick="startCasino()">
+            ENTRAR NO CASSINO
+        </button>
+
+    </div>
+</section>
+
+
+<!-- =========================================================
+     GAME
+========================================================= -->
+
+<section id="game">
+
+    <header class="topbar">
+
+        <div class="topbar-inner">
+
+            <div class="casino-mini">
+                JULIA CASINO
+            </div>
+
+            <div class="round-info">
+
+                <div class="round-text">
+                    <span id="roundLabel">RODADA 01 / 05</span>
+                    <span id="roundPercent">20%</span>
+                </div>
+
+                <div class="progress">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+
+            </div>
+
+            <div class="chips" id="chipCounter">
+                0000 FICHAS
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         ROUND 1
+    ====================================================== -->
+
+    <section class="round active" id="round1">
+
+        <div class="round-title">
+
+            <div class="round-number">
+                RODADA 01
+            </div>
+
+            <h2>CAÇA-NÍQUEL</h2>
+
+            <p>
+                Puxe a alavanca. Deixe a sorte decidir.
+            </p>
+
+        </div>
+
+
+        <div class="casino-machine">
+
+            <div class="machine-top">
+                JULIA'S LUCK
+            </div>
+
+            <div class="slot-window">
+
+                <div class="reel" id="reel1">🍒</div>
+                <div class="reel" id="reel2">⭐</div>
+                <div class="reel" id="reel3">💎</div>
+
+            </div>
+
+
+            <div class="machine-bottom">
+
+                <div
+                    class="lever-area"
+                    id="lever"
+                    onclick="pullLever()"
+                    ontouchstart="pullLever()"
+                >
+
+                    <div class="lever-base">
+                        <div class="lever-ball"></div>
+                    </div>
+
+                    <div class="pull-label">
+                        PUXE A ALAVANCA
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="machine-result" id="slotResult"></div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         ROUND 2
+    ====================================================== -->
+
+    <section class="round" id="round2">
+
+        <div class="round-title">
+
+            <div class="round-number">
+                RODADA 02
+            </div>
+
+            <h2>ROLE A RODA</h2>
+
+            <p>
+                Arraste a roda. Quanto mais rápido, melhor.
+            </p>
+
+        </div>
+
+
+        <div class="wheel-area">
+
+            <div class="wheel-wrap">
+
+                <div class="pointer"></div>
+
+                <div class="wheel" id="wheel">
+
+                    <div class="wheel-label">
+
+                        <span style="transform:rotate(36deg) translateX(125px) rotate(-36deg)">
+                            ❤️ MEMÓRIA
+                        </span>
+
+                        <span style="transform:rotate(108deg) translateX(125px) rotate(-108deg)">
+                            😂 VERGONHA
+                        </span>
+
+                        <span style="transform:rotate(180deg) translateX(125px) rotate(-180deg)">
+                            📸 FOTO
+                        </span>
+
+                        <span style="transform:rotate(252deg) translateX(125px) rotate(-252deg)">
+                            💬 PERGUNTA
+                        </span>
+
+                        <span style="transform:rotate(324deg) translateX(125px) rotate(-324deg)">
+                            🎁 SURPRESA
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="wheel-result" id="wheelResult">
+
+                <p style="color:#777">
+                    Arraste para girar.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         ROUND 3
+    ====================================================== -->
+
+    <section class="round" id="round3">
+
+        <div class="round-title">
+
+            <div class="round-number">
+                RODADA 03
+            </div>
+
+            <h2>A CARTA ESCONDIDA</h2>
+
+            <p>
+                Uma delas não deveria estar aqui.
+            </p>
+
+        </div>
+
+
+        <div class="cards" id="cards">
+
+            <div class="card" onclick="chooseCard(this,0)">
+                <div class="card-inner">
+                    <div class="card-front">🂠</div>
+                    <div class="card-back">
+                        <div class="card-icon">♠</div>
+                        <small>NEUTRA</small>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card" onclick="chooseCard(this,1)">
+                <div class="card-inner">
+                    <div class="card-front">🂠</div>
+                    <div class="card-back">
+                        <div class="card-icon">♦</div>
+                        <small>NEUTRA</small>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card" onclick="chooseCard(this,2)">
+                <div class="card-inner">
+                    <div class="card-front">🂠</div>
+                    <div class="card-back special">
+                        <div class="card-icon">❤️</div>
+                        <strong>VOCÊ ENCONTROU.</strong>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card" onclick="chooseCard(this,3)">
+                <div class="card-inner">
+                    <div class="card-front">🂠</div>
+                    <div class="card-back">
+                        <div class="card-icon">♣</div>
+                        <small>NEUTRA</small>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card" onclick="chooseCard(this,4)">
+                <div class="card-inner">
+                    <div class="card-front">🂠</div>
+                    <div class="card-back">
+                        <div class="card-icon">♦</div>
+                        <small>NEUTRA</small>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div
+            id="cardMessage"
+            style="
+                text-align:center;
+                min-height:120px;
+                margin-top:40px;
+            "
+        ></div>
+
+    </section>
+
+
+    <!-- =====================================================
+         ROUND 4
+    ====================================================== -->
+
+    <section class="round" id="round4">
+
+        <div class="round-title">
+
+            <div class="round-number">
+                RODADA 04
+            </div>
+
+            <h2>MÁQUINA QUEBRADA</h2>
+
+            <p>
+                Algo deu errado.
+            </p>
+
+        </div>
+
+
+        <div class="machine-broken">
+
+            <div class="warning">
+                ⚠ WARNING — SYSTEM ERROR ⚠
+            </div>
+
+            <div class="glitch-title">
+                SYSTEM ERROR
+            </div>
+
+
+            <div class="wire-game">
+
+                <div class="ports">
+
+                    <div class="wire" data-color="red">
+                        <div class="wire-ball red"></div>
+                        <div class="wire-text">CABO RED</div>
+                    </div>
+
+                    <div class="wire" data-color="green">
+                        <div class="wire-ball green"></div>
+                        <div class="wire-text">CABO GREEN</div>
+                    </div>
+
+                    <div class="wire" data-color="blue">
+                        <div class="wire-ball blue"></div>
+                        <div class="wire-text">CABO BLUE</div>
+                    </div>
+
+                </div>
+
+
+                <div class="ports">
+
+                    <div
+                        class="port"
+                        data-target="red"
+                        ondragover="allowDrop(event)"
+                        ondrop="connectWire(event)"
+                    >
+                        <div class="port-dot red"></div>
+                        <span>PORTA A</span>
+                    </div>
+
+                    <div
+                        class="port"
+                        data-target="green"
+                        ondragover="allowDrop(event)"
+                        ondrop="connectWire(event)"
+                    >
+                        <div class="port-dot green"></div>
+                        <span>PORTA B</span>
+                    </div>
+
+                    <div
+                        class="port"
+                        data-target="blue"
+                        ondragover="allowDrop(event)"
+                        ondrop="connectWire(event)"
+                    >
+                        <div class="port-dot blue"></div>
+                        <span>PORTA C</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="system-message" id="systemMessage">
+                <span style="color:#777">
+                    Arraste cada cabo para a porta correspondente.
+                </span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         ROUND 5
+    ====================================================== -->
+
+    <section class="round final-round" id="round5">
+
+        <div class="round-title">
+
+            <div class="round-number">
+                RODADA 05
+            </div>
+
+            <h2>APOSTA FINAL</h2>
+
+            <p>
+                Última rodada.
+            </p>
+
+        </div>
+
+
+        <div id="doorGame">
+
+            <h3 style="
+                font-size:clamp(25px,5vw,45px);
+                margin-top:50px;
+            ">
+                QUAL PORTA VOCÊ ESCOLHE?
+            </h3>
+
+
+            <div class="doors">
+
+                <div class="door" onclick="chooseDoor(1)">
+                    <div class="door-number">01</div>
+                    <div class="door-handle"></div>
+                </div>
+
+                <div class="door" onclick="chooseDoor(2)">
+                    <div class="door-number">02</div>
+                    <div class="door-handle"></div>
+                </div>
+
+                <div class="door" onclick="chooseDoor(3)">
+                    <div class="door-number">03</div>
+                    <div class="door-handle"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="countdown" id="countdown">
+            3
+        </div>
+
+
+        <div class="final-reveal" id="finalReveal">
+
+            <div style="font-size:20px;letter-spacing:5px;color:#aaa">
+                VOCÊ ESCOLHEU A PORTA
+            </div>
+
+            <div
+                id="chosenDoor"
+                style="
+                    color:var(--gold2);
+                    font-size:35px;
+                    font-weight:bold;
+                    margin:10px;
+                "
+            ></div>
+
+            <h2>
+                REVELAÇÃO
+            </h2>
+
+            <div class="prize-card">
+
+                <!-- CURINGA: IMAGEM DO PRÊMIO -->
+
+                <img
+                    id="prizeImage"
+                    src="imgs/bestImg.jpeg"
+                    alt="Prêmio final"
+                >
+
+                <div class="prize-text">
+
+                    <!-- CURINGA: REVELAÇÃO FINAL -->
+
+                    [CURINGA: REVELAÇÃO FINAL]
+
+                    <br><br>
+
+                    <!-- CURINGA: MENSAGEM FINAL -->
+
+                    "VOCÊ CHEGOU ATÉ O FIM."
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="main-btn"
+                onclick="finishCasino()"
+            >
+                DESBLOQUEAR PRÊMIO
+            </button>
+
+        </div>
+
+    </section>
+
+</section>
+
+
+<!-- =========================================================
+     ENDING
+========================================================= -->
+
+<section id="ending">
+
+    <div class="end-content">
+
+        <div class="trophy">
+            🎰
+        </div>
+
+        <div class="jackpot-big">
+            JACKPOT
+        </div>
+
+        <h2>
+            <!-- CURINGA: FRASE FINAL -->
+            [CURINGA: FRASE FINAL]
+        </h2>
+
+        <p>
+
+            <!-- CURINGA: MENSAGEM FINAL -->
+
+            [CURINGA: MENSAGEM FINAL]
+
+        </p>
+
+        <div
+            style="
+                color:var(--gold2);
+                letter-spacing:5px;
+                font-size:13px;
+                margin-bottom:35px;
+            "
+        >
+            PRÊMIO DESBLOQUEADO.
+        </div>
+
+
+        <div class="end-buttons">
+
+            <button
+                class="main-btn"
+                onclick="location.reload()"
+            >
+                JOGAR NOVAMENTE
+            </button>
+
+            <button
+                class="secondary-btn"
+                onclick="showPrizeAgain()"
+            >
+                VER PRÊMIO
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<script>
+
+/* =========================================================
+   CURINGAS — EDITE AQUI
+========================================================= */
+
+const PREMIO_FINAL = "imgs/casacoAzul.jpeg";
+
+/*
+    CURINGA: RESULTADO DA MÁQUINA
+*/
+const TEXTO_JACKPOT =
+    "JACKPOT. A sorte resolveu escolher você.";
+
+/*
+    CURINGAS DA RODA
+*/
+const WHEEL_CONTENT = {
+
+    "MEMÓRIA": {
+        titulo: "UMA MEMÓRIA",
+        texto: "[CURINGA: TEXTO DA MEMÓRIA]",
+        imagem: "[CURINGA: FOTO DA MEMÓRIA]"
+    },
+
+    "VERGONHA": {
+        titulo: "UM MOMENTO QUE NÃO DEVERIA SER LEMBRADO",
+        texto: "[CURINGA: HISTÓRIA ENGRAÇADA]",
+        imagem: ""
+    },
+
+    "FOTO": {
+        titulo: "ARQUIVO ENCONTRADO",
+        texto: "[CURINGA: TEXTO DA FOTO]",
+        imagem: "[CURINGA: FOTO]"
+    },
+
+    "PERGUNTA": {
+        titulo: "PERGUNTA DO CASSINO",
+        texto: "[CURINGA: PERGUNTA]",
+        imagem: ""
+    },
+
+    "SURPRESA": {
+        titulo: "SURPRESA",
+        texto: "[CURINGA: TEXTO DA SURPRESA]",
+        imagem: ""
+    }
+
+};
+
+
+/* =========================================================
+   ESTADO
+========================================================= */
+
+let currentRound = 1;
+let chips = 0;
+
+let slotPlayed = false;
+let wheelPlayed = false;
+let cardPlayed = false;
+let wiresCompleted = false;
+let finalPlayed = false;
+
+
+/* =========================================================
+   PARTICLES
+========================================================= */
+
+const particleContainer =
+    document.getElementById("particles");
+
+for(let i=0;i<70;i++){
+
+    const p =
+        document.createElement("div");
+
+    p.className = "particle";
+
+    p.style.left =
+        Math.random()*100 + "%";
+
+    p.style.animationDuration =
+        (5 + Math.random()*12) + "s";
+
+    p.style.animationDelay =
+        (-Math.random()*15) + "s";
+
+    p.style.transform =
+        `scale(${.5 + Math.random()*1.5})`;
+
+    particleContainer.appendChild(p);
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+function startCasino(){
+
+    document.getElementById("intro").style.display="none";
+
+    document.getElementById("game").style.display="block";
+
+    updateRound();
+
+    window.scrollTo({
+        top:0,
+        behavior:"instant"
+    });
+}
+
+
+/* =========================================================
+   CHIPS
+========================================================= */
+
+function addChips(amount){
+
+    chips += amount;
+
+    const counter =
+        document.getElementById("chipCounter");
+
+    counter.classList.remove("bump");
+
+    void counter.offsetWidth;
+
+    counter.classList.add("bump");
+
+    animateNumber(counter, chips);
+}
+
+
+function animateNumber(element, target){
+
+    const start =
+        parseInt(
+            element.textContent.replace(/\D/g,"")
+        ) || 0;
+
+    const duration = 600;
+
+    const startTime = performance.now();
+
+    function animate(time){
+
+        const progress =
+            Math.min(
+                (time-startTime)/duration,
+                1
+            );
+
+        const value =
+            Math.floor(
+                start+(target-start)*progress
+            );
+
+        element.textContent =
+            String(value).padStart(4,"0")
+            + " FICHAS";
+
+        if(progress < 1){
+            requestAnimationFrame(animate);
+        }
+    }
+
+    requestAnimationFrame(animate);
+}
+
+
+/* =========================================================
+   ROUND NAVIGATION
+========================================================= */
+
+function updateRound(){
+
+    document.querySelectorAll(".round")
+        .forEach(r => r.classList.remove("active"));
+
+    const target =
+        document.getElementById(
+            "round"+currentRound
+        );
+
+    if(target){
+        target.classList.add("active");
+    }
+
+    const percent =
+        currentRound * 20;
+
+    document.getElementById("roundLabel")
+        .textContent =
+        `RODADA ${String(currentRound).padStart(2,"0")} / 05`;
+
+    document.getElementById("roundPercent")
+        .textContent =
+        percent + "%";
+
+    document.getElementById("progressFill")
+        .style.width =
+        percent + "%";
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+}
+
+
+function nextRound(){
+
+    if(currentRound >= 5){
+        return;
+    }
+
+    currentRound++;
+
+    updateRound();
+}
+
+
+/* =========================================================
+   ROUND 1 — SLOT
+========================================================= */
+
+const symbols = [
+    "🍒",
+    "⭐",
+    "💎",
+    "❤️",
+    "7️⃣",
+    "🍀"
+];
+
+let slotBusy = false;
+
+function pullLever(){
+
+    if(slotBusy || slotPlayed)
+        return;
+
+    slotBusy = true;
+
+    const lever =
+        document.getElementById("lever");
+
+    lever.classList.add("pulled");
+
+    const reels = [
+        document.getElementById("reel1"),
+        document.getElementById("reel2"),
+        document.getElementById("reel3")
+    ];
+
+    reels.forEach(r =>
+        r.classList.add("blur")
+    );
+
+
+    let intervals = [];
+
+    reels.forEach((reel,index)=>{
+
+        const interval =
+            setInterval(()=>{
+
+                reel.textContent =
+                    symbols[
+                        Math.floor(
+                            Math.random()*symbols.length
+                        )
+                    ];
+
+            },70);
+
+        intervals.push(interval);
+
+
+        setTimeout(()=>{
+
+            clearInterval(interval);
+
+            reel.classList.remove("blur");
+
+            reel.textContent =
+                symbols[
+                    Math.floor(
+                        Math.random()*symbols.length
+                    )
+                ];
+
+        },1100 + index*550);
+
+    });
+
+
+    setTimeout(()=>{
+
+        lever.classList.remove("pulled");
+
+        const result =
+            document.getElementById("slotResult");
+
+        result.innerHTML =
+            `<div class="jackpot">JACKPOT.</div>
+             <p style="color:#aaa;margin-top:10px">
+                ${TEXTO_JACKPOT}
+             </p>`;
+
+        addChips(250);
+
+        slotPlayed = true;
+
+        setTimeout(()=>{
+            nextRound();
+        },2500);
+
+    },3000);
+}
+
+
+/* =========================================================
+   ROUND 2 — WHEEL
+========================================================= */
+
+const wheel =
+    document.getElementById("wheel");
+
+let wheelDragging = false;
+let wheelLastAngle = 0;
+let wheelVelocity = 0;
+let wheelRotation = 0;
+let wheelStartTime = 0;
+let wheelLastTime = 0;
+
+function getAngle(e){
+
+    const rect =
+        wheel.getBoundingClientRect();
+
+    const clientX =
+        e.clientX ??
+        (e.touches ? e.touches[0].clientX : 0);
+
+    const clientY =
+        e.clientY ??
+        (e.touches ? e.touches[0].clientY : 0);
+
+    return Math.atan2(
+        clientY - (rect.top+rect.height/2),
+        clientX - (rect.left+rect.width/2)
+    ) * 180 / Math.PI;
+
+}
+
+
+function startWheel(e){
+
+    if(wheelPlayed)
+        return;
+
+    wheelDragging = true;
+
+    wheelLastAngle =
+        getAngle(e);
+
+    wheelLastTime =
+        performance.now();
+
+    wheelStartTime =
+        wheelLastTime;
+
+    wheel.setPointerCapture?.(e.pointerId);
+}
+
+
+function moveWheel(e){
+
+    if(!wheelDragging)
+        return;
+
+    const now =
+        performance.now();
+
+    const angle =
+        getAngle(e);
+
+    let delta =
+        angle-wheelLastAngle;
+
+    if(delta > 180) delta -= 360;
+    if(delta < -180) delta += 360;
+
+    const dt =
+        Math.max(
+            now-wheelLastTime,
+            1
+        );
+
+    wheelVelocity =
+        delta/dt;
+
+    wheelRotation += delta;
+
+    wheel.style.transform =
+        `rotate(${wheelRotation}deg)`;
+
+    wheelLastAngle = angle;
+    wheelLastTime = now;
+}
+
+
+function endWheel(){
+
+    if(!wheelDragging)
+        return;
+
+    wheelDragging = false;
+
+    const velocity =
+        Math.max(
+            Math.min(wheelVelocity*90,40),
+            -40
+        );
+
+    let speed = velocity;
+
+    function inertia(){
+
+        if(Math.abs(speed) < .1){
+
+            finishWheel();
+
+            return;
+        }
+
+        wheelRotation += speed;
+
+        wheel.style.transform =
+            `rotate(${wheelRotation}deg)`;
+
+        speed *= .965;
+
+        requestAnimationFrame(inertia);
+    }
+
+    inertia();
+}
+
+
+wheel.addEventListener("pointerdown",startWheel);
+wheel.addEventListener("pointermove",moveWheel);
+wheel.addEventListener("pointerup",endWheel);
+wheel.addEventListener("pointercancel",endWheel);
+
+
+function finishWheel(){
+
+    if(wheelPlayed)
+        return;
+
+    wheelPlayed = true;
+
+    const categories = [
+        "MEMÓRIA",
+        "VERGONHA",
+        "FOTO",
+        "PERGUNTA",
+        "SURPRESA"
+    ];
+
+    const chosen =
+        categories[
+            Math.floor(
+                Math.random()*categories.length
+            )
+        ];
+
+    const content =
+        WHEEL_CONTENT[chosen];
+
+    document.getElementById("wheelResult")
+        .innerHTML = `
+
+            <div style="
+                color:var(--gold2);
+                font-size:28px;
+                font-weight:bold;
+                margin-bottom:15px;
+            ">
+                ${content.titulo}
+            </div>
+
+            <div style="
+                color:#ccc;
+                line-height:1.6;
+            ">
+                ${content.texto}
+            </div>
+
+        `;
+
+    addChips(250);
+
+    setTimeout(()=>{
+        nextRound();
+    },3500);
+}
+
+
+/* =========================================================
+   ROUND 3 — CARDS
+========================================================= */
+
+function chooseCard(card,index){
+
+    if(cardPlayed)
+        return;
+
+    if(card.classList.contains("flipped"))
+        return;
+
+    card.classList.add("flipped");
+
+    if(index === 2){
+
+        cardPlayed = true;
+
+        document.getElementById("cardMessage")
+            .innerHTML = `
+
+                <div style="
+                    color:var(--gold2);
+                    font-size:32px;
+                    font-weight:bold;
+                    margin-bottom:15px;
+                ">
+                    VOCÊ ENCONTROU.
+                </div>
+
+                <p style="
+                    color:#ccc;
+                    line-height:1.7;
+                ">
+                    <!-- CURINGA: MENSAGEM DA CARTA -->
+                    [CURINGA: MENSAGEM DA CARTA]
+                </p>
+
+            `;
+
+        addChips(500);
+
+        setTimeout(()=>{
+            nextRound();
+        },3500);
+
+    }else{
+
+        document.getElementById("cardMessage")
+            .innerHTML = `
+
+                <span style="color:#777">
+                    Essa não.
+                </span>
+
+            `;
+
+    }
+}
+
+
+/* =========================================================
+   ROUND 4 — WIRES
+========================================================= */
+
+const wires =
+    document.querySelectorAll(".wire");
+
+wires.forEach(wire=>{
+
+    wire.draggable = true;
+
+    wire.addEventListener(
+        "dragstart",
+        e=>{
+
+            e.dataTransfer.setData(
+                "color",
+                wire.dataset.color
+            );
+
+        }
+    );
+
+    /*
+       TOUCH
+       transforma o arraste em clique simples
+       para funcionar melhor no celular.
+    */
+
+    wire.addEventListener(
+        "click",
+        ()=>{
+
+            if(wire.classList.contains("connected"))
+                return;
+
+            const target =
+                document.querySelector(
+                    `.port[data-target="${wire.dataset.color}"]`
+                );
+
+            if(target){
+                connectWireMobile(
+                    wire,
+                    target
+                );
+            }
+
+        }
+    );
+
+});
+
+
+function allowDrop(e){
+    e.preventDefault();
+}
+
+
+function connectWire(e){
+
+    e.preventDefault();
+
+    const color =
+        e.dataTransfer.getData("color");
+
+    const target =
+        e.currentTarget.dataset.target;
+
+    const wire =
+        document.querySelector(
+            `.wire[data-color="${color}"]`
+        );
+
+    if(color === target){
+
+        connectWireMobile(
+            wire,
+            e.currentTarget
+        );
+
+    }else{
+
+        wrongWire();
+
+    }
+
+}
+
+
+function connectWireMobile(wire,target){
+
+    if(!wire || wiresCompleted)
+        return;
+
+    if(
+        wire.classList.contains("connected") ||
+        target.classList.contains("connected")
+    )
+        return;
+
+    if(wire.dataset.color !== target.dataset.target){
+
+        wrongWire();
+
+        return;
+    }
+
+    wire.classList.add("connected");
+    target.classList.add("connected");
+
+    wire.style.opacity = ".4";
+
+    checkWires();
+}
+
+
+function wrongWire(){
+
+    const message =
+        document.getElementById(
+            "systemMessage"
+        );
+
+    message.innerHTML = `
+        <span style="color:#ff263f">
+            ✕ CONEXÃO INCORRETA
+        </span>
+    `;
+
+    setTimeout(()=>{
+
+        message.innerHTML = `
+            <span style="color:#777">
+                Tente novamente.
+            </span>
+        `;
+
+    },1000);
+}
+
+
+function checkWires(){
+
+    const connected =
+        document.querySelectorAll(
+            ".wire.connected"
+        ).length;
+
+    if(connected === 3){
+
+        wiresCompleted = true;
+
+        document.getElementById(
+            "systemMessage"
+        ).innerHTML = `
+
+            <div style="
+                color:var(--green);
+                font-size:25px;
+                font-weight:bold;
+                text-shadow:0 0 15px rgba(0,230,118,.5);
+            ">
+                ✓ VOCÊ CONSERTOU O SISTEMA.
+            </div>
+
+        `;
+
+        addChips(750);
+
+        setTimeout(()=>{
+            nextRound();
+        },3000);
+    }
+}
+
+
+/* =========================================================
+   ROUND 5 — DOORS
+========================================================= */
+
+function chooseDoor(number){
+
+    if(finalPlayed)
+        return;
+
+    finalPlayed = true;
+
+    document.getElementById(
+        "doorGame"
+    ).style.display = "none";
+
+    const countdown =
+        document.getElementById("countdown");
+
+    countdown.style.display = "block";
+
+    let numberCount = 3;
+
+    countdown.textContent =
+        numberCount;
+
+    const interval =
+        setInterval(()=>{
+
+            numberCount--;
+
+            if(numberCount > 0){
+
+                countdown.textContent =
+                    numberCount;
+
+            }else{
+
+                clearInterval(interval);
+
+                countdown.style.display =
+                    "none";
+
+                revealFinal(number);
+
+            }
+
+        },1000);
+
+}
+
+
+function revealFinal(number){
+
+    document.getElementById(
+        "chosenDoor"
+    ).textContent =
+    "0" + number;
+
+    const reveal =
+        document.getElementById(
+            "finalReveal"
+        );
+
+    reveal.style.display = "block";
+
+    addChips(1000);
+
+    createExplosion();
+
+}
+
+
+/* =========================================================
+   EXPLOSION / PARTICLES FINAL
+========================================================= */
+
+function createExplosion(){
+
+    for(let i=0;i<80;i++){
+
+        const p =
+            document.createElement("div");
+
+        p.style.position = "fixed";
+        p.style.left = "50%";
+        p.style.top = "50%";
+        p.style.width = "4px";
+        p.style.height = "4px";
+        p.style.background =
+            i%2
+                ? "#ffd95c"
+                : "#ff1835";
+        p.style.borderRadius = "50%";
+        p.style.zIndex = "999";
+        p.style.pointerEvents = "none";
+
+        const angle =
+            Math.random()*Math.PI*2;
+
+        const distance =
+            150 + Math.random()*500;
+
+        p.animate(
+            [
+                {
+                    transform:"translate(-50%,-50%) scale(1)",
+                    opacity:1
+                },
+                {
+                    transform:
+                        `translate(
+                            calc(-50% + ${Math.cos(angle)*distance}px),
+                            calc(-50% + ${Math.sin(angle)*distance}px)
+                        )
+                        scale(0)`,
+                    opacity:0
+                }
+            ],
+            {
+                duration:
+                    900+Math.random()*1000,
+                easing:"cubic-bezier(.1,.7,.2,1)"
+            }
+        );
+
+        document.body.appendChild(p);
+
+        setTimeout(()=>{
+            p.remove();
+        },2000);
+    }
+}
+
+
+/* =========================================================
+   FINAL
+========================================================= */
+
+function finishCasino(){
+
+    document.getElementById("game")
+        .style.display = "none";
+
+    document.getElementById("ending")
+        .style.display = "flex";
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+    createExplosion();
+
+    setTimeout(createExplosion,700);
+}
+
+
+function showPrizeAgain(){
+
+    const image =
+        document.getElementById("prizeImage");
+
+    image.src =
+        PREMIO_FINAL;
+
+    image.style.display = "block";
+
+    image.onerror = function(){
+
+        image.style.display = "none";
+
+    };
+
+    alert(
+        "PRÊMIO FINAL:\n\n" +
+        "[CURINGA: MENSAGEM / SURPRESA]"
+    );
+}
+
+
+/* =========================================================
+   CARREGAR IMAGEM DO PRÊMIO
+========================================================= */
+
+document.getElementById("prizeImage").src =
+    PREMIO_FINAL;
+
+document.getElementById("prizeImage").onerror =
+function(){
+
+    this.style.display = "none";
+
+};
+
+
+/* =========================================================
+   PARALLAX DESKTOP
+========================================================= */
+
+document.addEventListener(
+    "mousemove",
+    e=>{
+
+        if(window.innerWidth < 800)
+            return;
+
+        const x =
+            (e.clientX/window.innerWidth-.5);
+
+        const y =
+            (e.clientY/window.innerHeight-.5);
+
+        const light =
+            document.querySelector(
+                ".intro-light"
+            );
+
+        if(light){
+
+            light.style.transform =
+                `translate(
+                    ${x*30}px,
+                    ${y*30}px
+                )`;
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   TECLADO
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    e=>{
+
+        if(e.key === "Enter"){
+
+            if(
+                document.getElementById("intro")
+                    .style.display !== "none"
+            ){
+
+                startCasino();
+
+            }
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>O CASO JULIA - Arquivo Confidencial</title>
+    <style>
+        :root {
+            --bg-dark: #0a0a0c;
+            --bg-panel: #121217;
+            --red-dark: #8b0000;
+            --red-bright: #ff2a2a;
+            --red-glow: rgba(255, 42, 42, 0.4);
+            --gold-accent: #d4af37;
+            --green-status: #00ff66;
+            --white-crisp: #f0f0f5;
+            --text-muted: #8a8a9e;
+            --font-mono: 'Courier New', Courier, monospace;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: var(--bg-dark);
+            color: var(--white-crisp);
+            font-family: var(--font-mono);
+            cursor: crosshair;
+        }
+
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%, 
+                rgba(0, 0, 0, 0.25) 50%
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 998;
+            opacity: 0.6;
+        }
+
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.9);
+            pointer-events: none;
+            z-index: 997;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+            z-index: 10;
+        }
+
+        .screen.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #screen-intro {
+            background-color: #050507;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .terminal-box {
+            background: rgba(18, 18, 23, 0.8);
+            border: 1px solid #2a2a35;
+            border-left: 3px solid var(--red-bright);
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8), 0 0 15px rgba(255, 42, 42, 0.1);
+            position: relative;
+        }
+
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #2a2a35;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: var(--green-status);
+            border-radius: 50%;
+            margin-right: 5px;
+            box-shadow: 0 0 8px var(--green-status);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+
+        .typing-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            min-height: 100px;
+            text-align: left;
+            color: var(--white-crisp);
+            margin-bottom: 25px;
+        }
+
+        .btn-main {
+            background: linear-gradient(180deg, #1f0505 0%, #0d0202 100%);
+            border: 1px solid var(--red-bright);
+            color: var(--white-crisp);
+            padding: 14px 28px;
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px var(--red-glow);
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .btn-main:hover {
+            background: var(--red-bright);
+            color: #000;
+            box-shadow: 0 0 25px var(--red-bright);
+            transform: translateY(-2px);
+        }
+
+        .btn-main:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            border-color: #444;
+            box-shadow: none;
+        }
+
+        #screen-desk {
+            overflow: hidden;
+            background: radial-gradient(circle at center, #181820 0%, #08080a 100%);
+        }
+
+        .desk-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 50;
+            background: linear-gradient(180deg, rgba(10,10,12,0.9) 0%, rgba(10,10,12,0) 100%);
+            pointer-events: none;
+        }
+
+        .desk-header * {
+            pointer-events: auto;
+        }
+
+        .case-title-hud {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .case-title-hud h1 {
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            color: var(--white-crisp);
+        }
+
+        .case-title-hud span {
+            font-size: 0.75rem;
+            color: var(--red-bright);
+        }
+
+        .evidence-counter {
+            background: rgba(18, 18, 23, 0.8);
+            border: 1px solid var(--red-dark);
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .desk-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .desk-item {
+            position: absolute;
+            cursor: grab;
+            transition: box-shadow 0.2s ease, transform 0.1s ease;
+            touch-action: none;
+            z-index: 10;
+        }
+
+        .desk-item:active {
+            cursor: grabbing;
+            z-index: 100 !important;
+        }
+
+        /* Polaroid Photo Style */
+        .item-photo {
+            background: #e8e6e1;
+            padding: 10px 10px 25px 10px;
+            box-shadow: 3px 5px 15px rgba(0,0,0,0.7);
+            width: 140px;
+            border-radius: 2px;
+        }
+
+        .item-photo img {
+            width: 100%;
+            height: 110px;
+            object-fit: cover;
+            filter: sepia(0.3) contrast(1.1);
+            pointer-events: none;
+            background-color: #222;
+        }
+
+        .item-photo .caption {
+            color: #222;
+            font-size: 0.65rem;
+            text-align: center;
+            margin-top: 8px;
+            font-family: var(--font-sans);
+            font-weight: bold;
+        }
+
+        /* Document / Letter Style */
+        .item-doc {
+            background: #dcd6cd;
+            color: #111;
+            padding: 15px;
+            width: 160px;
+            height: 200px;
+            box-shadow: 2px 4px 12px rgba(0,0,0,0.6);
+            border-left: 4px solid var(--red-dark);
+            font-size: 0.65rem;
+            line-height: 1.3;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .item-doc::before {
+            content: "CONFIDENCIAL";
+            position: absolute;
+            top: 40%;
+            left: 10%;
+            font-size: 1.2rem;
+            color: rgba(139, 0, 0, 0.2);
+            font-weight: bold;
+            transform: rotate(-30deg);
+            pointer-events: none;
+        }
+
+        /* Post-It Note Style */
+        .item-postit {
+            background: #e2c95a;
+            color: #111;
+            padding: 12px;
+            width: 110px;
+            height: 110px;
+            box-shadow: 3px 3px 10px rgba(0,0,0,0.5);
+            font-size: 0.7rem;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+        }
+
+        /* Folder / Object Style */
+        .item-folder {
+            background: #3a2e2b;
+            border: 1px solid #5a4843;
+            color: #ddd;
+            padding: 15px;
+            width: 170px;
+            height: 120px;
+            border-radius: 4px;
+            box-shadow: 4px 6px 18px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .item-folder .folder-tag {
+            background: var(--red-dark);
+            color: white;
+            font-size: 0.6rem;
+            padding: 2px 6px;
+            width: fit-content;
+            border-radius: 2px;
+        }
+
+        .tape {
+            position: absolute;
+            top: -10px;
+            left: 30%;
+            width: 40px;
+            height: 18px;
+            background: rgba(255,255,255,0.4);
+            transform: rotate(-5deg);
+            pointer-events: none;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 5, 8, 0.85);
+            backdrop-filter: blur(5px);
+            z-index: 500;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--bg-panel);
+            border: 1px solid var(--red-dark);
+            box-shadow: 0 0 30px var(--red-glow);
+            width: 90%;
+            max-width: 550px;
+            padding: 25px;
+            position: relative;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2a2a35;
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            color: var(--red-bright);
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: var(--white-crisp);
+        }
+
+        .modal-body {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #ccc;
+        }
+
+        .modal-img {
+            width: 100%;
+            max-height: 250px;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 1px solid #333;
+            background-color: #151515;
+        }
+
+        /* Camera Flash Overlay Effect */
+        .flash-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .flash-active {
+            animation: cameraFlash 0.4s ease-out;
+        }
+
+        @keyframes cameraFlash {
+            0% { opacity: 0.9; }
+            100% { opacity: 0; }
+        }
+
+        /* Screen Shake Effect */
+        .shake {
+            animation: screenShake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes screenShake {
+            10%, 90% { transform: translate3d(-2px, 0, 0); }
+            20%, 80% { transform: translate3d(4px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+            40%, 60% { transform: translate3d(6px, 0, 0); }
+        }
+
+        #screen-connect {
+            background: #0d0d12;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding-top: 70px;
+        }
+
+        .connect-svg-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 15;
+        }
+
+        .connection-line {
+            stroke: var(--red-bright);
+            stroke-width: 3;
+            stroke-dasharray: 6;
+            animation: dash 20s linear infinite;
+            filter: drop-shadow(0px 0px 4px var(--red-bright));
+        }
+
+        @keyframes dash {
+            to {
+                stroke-dashoffset: 1000;
+            }
+        }
+
+        .connect-nodes-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            max-width: 900px;
+            width: 95%;
+            z-index: 20;
+            margin-top: 20px;
+        }
+
+        .node-card {
+            background: var(--bg-panel);
+            border: 2px solid #2a2a35;
+            padding: 15px;
+            width: 160px;
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .node-card:hover {
+            border-color: var(--red-bright);
+            transform: translateY(-3px);
+        }
+
+        .node-card.selected {
+            border-color: var(--gold-accent);
+            box-shadow: 0 0 15px var(--gold-accent);
+            background: #1b1b24;
+        }
+
+        .node-card.connected {
+            border-color: var(--green-status);
+            box-shadow: 0 0 10px var(--green-status);
+        }
+
+        .node-card h4 {
+            font-size: 0.85rem;
+            color: var(--white-crisp);
+            margin-bottom: 5px;
+        }
+
+        .node-card p {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .connect-hud {
+            position: absolute;
+            top: 15px;
+            text-align: center;
+            z-index: 30;
+        }
+
+        .connect-status-msg {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            height: 25px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        #screen-final {
+            background: #000;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .glitch-text {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--red-bright);
+            text-shadow: 0 0 10px var(--red-glow);
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+        }
+
+        .final-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--gold-accent);
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.15);
+            margin-bottom: 25px;
+        }
+
+        .outro-title {
+            color: var(--gold-accent);
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+        }
+
+        .outro-p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #ddd;
+            margin-bottom: 10px;
+        }
+
+        /* Responsiveness Adjustments */
+        @media (max-width: 600px) {
+            .typing-text { font-size: 0.95rem; }
+            .node-card { width: 130px; padding: 10px; }
+            .node-card h4 { font-size: 0.75rem; }
+            .item-doc { width: 130px; height: 160px; }
+            .item-photo { width: 110px; }
+            .item-photo img { height: 80px; }
+            .item-folder { width: 140px; height: 100px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Canvas for Floating Particles -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Visual Polish Layers -->
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+    <div id="flash-overlay" class="flash-effect"></div>
+
+    <div id="screen-intro" class="screen active">
+        <div class="terminal-box">
+            <div class="terminal-header">
+                <span><span class="status-dot"></span>SISTEMA CENTRAL</span>
+                <span id="case-id-display">CASO # ---</span>
+            </div>
+            <div id="intro-typing" class="typing-text"></div>
+            <button id="btn-start" class="btn-main" disabled>ABRIR CASO</button>
+        </div>
+    </div>
+
+    <div id="screen-desk" class="screen">
+        <div class="desk-header">
+            <div class="case-title-hud">
+                <h1 id="hud-main-title">O CASO JULIA</h1>
+                <span id="hud-subtitle">Existem coisas que talvez você não deveria descobrir.</span>
+            </div>
+            <div class="evidence-counter">
+                EVIDÊNCIAS: <span id="evidence-count" style="color: var(--red-bright);">0</span>/5
+            </div>
+        </div>
+
+        <div id="desk-container" class="desk-container">
+            <!-- Items injected dynamically via JS -->
+        </div>
+    </div>
+
+    <div id="evidence-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="modal-tag" class="modal-title">EVIDÊNCIA [00/05]</span>
+                <button id="modal-close-btn" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <img id="modal-image" class="modal-img" src="" alt="Evidência" style="display:none;">
+                <p id="modal-text">Descrição da evidência...</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-connect" class="screen">
+        <div class="connect-hud">
+            <h2 style="color: var(--red-bright); letter-spacing: 2px;">5 EVIDÊNCIAS RECUPERADAS</h2>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">CONECTE OS PARES DE EVIDÊNCIAS CORRESPONDENTES</p>
+            <div id="connect-msg" class="connect-status-msg"></div>
+        </div>
+
+        <svg id="svg-connections" class="connect-svg-layer"></svg>
+
+        <div id="nodes-container" class="connect-nodes-container">
+            <!-- Connection nodes injected dynamically -->
+        </div>
+    </div>
+
+    <div id="screen-reveal" class="screen" style="background:#050508; text-align:center;">
+        <div class="glitch-text">CASO RESOLVIDO</div>
+        <p id="reveal-phrase" style="font-size: 1.1rem; color: var(--white-crisp); margin-bottom: 30px; max-width: 80%;"></p>
+        <button id="btn-open-final" class="btn-main">ARQUIVO CONFIDENCIAL</button>
+    </div>
+
+    <div id="screen-final" class="screen">
+        <div class="final-card">
+            <h2 class="outro-title">RELATÓRIO ENCLOSED</h2>
+            <p id="outro-phrase-1" class="outro-p"></p>
+            <p id="outro-phrase-2" class="outro-p" style="color: var(--gold-accent); margin-top: 15px; font-weight: bold;"></p>
+        </div>
+        <button id="btn-restart" class="btn-main">REABRIR O CASO</button>
+    </div>
+
+    <script>
+
+        // ==================================================
+        // IMAGES CONSTANTS (EDITABLE)
+        // ==================================================
+        const IMAGEM_EVIDENCIA_01 = "imgs/COLOQUE-AQUI.jpeg"; // TROQUE AQUI PELA FOTO QUE QUISER
+        const IMAGEM_EVIDENCIA_02 = "imgs/COLOQUE-AQUI.jpeg"; // TROQUE AQUI PELA FOTO QUE QUISER
+        const IMAGEM_EVIDENCIA_03 = "imgs/COLOQUE-AQUI.jpeg"; // TROQUE AQUI PELA FOTO QUE QUISER
+        const IMAGEM_EVIDENCIA_04 = "imgs/COLOQUE-AQUI.jpeg"; // TROQUE AQUI PELA FOTO QUE QUISER
+        const IMAGEM_EVIDENCIA_05 = "imgs/COLOQUE-AQUI.jpeg"; // TROQUE AQUI PELA FOTO QUE QUISER
+        const ARQUIVO_FINAL_IMAGEM = "imgs/COLOQUE-AQUI.jpeg"; // TROQUE AQUI PELA FOTO FINAL
+
+        // Fallback image generator to ensure beautiful UI even before custom images are linked
+        function getImgFallback(text) {
+            return `https://placehold.co/400x300/121217/d4af37?text=${encodeURIComponent(text)}`;
+        }
+
+        // ==================================================
+        // WILDCARD TEXT CONSTANTS (EDITABLE)
+        // ==================================================
+        const TITULO_PRINCIPAL = "O CASO JULIA";
+        const SUBTITULO = "Existem coisas que talvez você não deveria descobrir.";
+        
+        const INTRO_FRASE_1 = "JULIA, UMA PARTE DA HISTÓRIA FOI APAGADA.";
+        const INTRO_FRASE_2 = "ALGUMAS EVIDÊNCIAS AINDA ESTÃO AQUI.";
+        const INTRO_MISSAO = "ENCONTRE 5 EVIDÊNCIAS.";
+        
+        const CASO_NUMERO = "404-J";
+        
+        const MSG_EVIDENCIA_FALSA = "Você realmente achou que seria tão fácil?";
+        const FRASE_REVELACAO = "VOCÊ ACHOU O QUE ESTAVA PROCURANDO.";
+        
+        const FRASE_FINAL_1 = "ALGUMAS HISTÓRIAS NÃO PRECISAM SER INVESTIGADAS.";
+        const FRASE_FINAL_2 = "MAS ESSA VALIA A PENA.";
+
+        // Real Evidence Descriptions
+        const EVIDENCIAS_TEXTOS = [
+            "Fotografia antiga com coordenadas anotadas no verso. O carimbo indica o ano de 2012.",
+            "Relatório confidencial parcialmente queimado. Uma assinatura reconhecível permanece intacta no rodapé.",
+            "Carta manuscrita selada com cera escura. O remetente conhecia todos os seus passos.",
+            "Dispositivo encriptado contendo registros de chamadas não rastreadas das últimas 48 horas.",
+            "Dossiê gravado em microfilme com mapas de rotas secretas e carimbos de acesso restrito."
+        ];
+
+        // False Evidence Jokes/Texts
+        const FALSAS_MENSAGENS = [
+            "Apenas uma xícara de café fria de 3 dias atrás.",
+            "Um recibo de padaria amassado. Nada de suspeito aqui.",
+            "Anotações aleatórias sobre compras de mercado.",
+            "Um post-it escrito: 'Não se esqueça de alimentar o gato'."
+        ];
+
+        let state = {
+            foundEvidences: new Set(),
+            selectedNode: null,
+            connections: [],
+            draggedElem: null,
+            dragOffset: { x: 0, y: 0 }
+        };
+
+        // Canvas Ambient Particle System
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedY = -(Math.random() * 0.5 + 0.1);
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.opacity = Math.random() * 0.5 + 0.1;
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                if (this.y < 0) this.reset();
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 42, 42, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 40; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+
+        const introTypingElem = document.getElementById('intro-typing');
+        const btnStart = document.getElementById('btn-start');
+        document.getElementById('case-id-display').innerText = `CASO # ${CASO_NUMERO}`;
+
+        const fullIntroText = `${INTRO_FRASE_1}\n\n${INTRO_FRASE_2}\n\n${INTRO_MISSAO}`;
+        let charIndex = 0;
+
+        function typeIntroText() {
+            if (charIndex < fullIntroText.length) {
+                const char = fullIntroText.charAt(charIndex);
+                introTypingElem.innerHTML += char === '\n' ? '<br>' : char;
+                charIndex++;
+                setTimeout(typeIntroText, 35);
+            } else {
+                btnStart.disabled = false;
+            }
+        }
+
+        function switchScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        btnStart.addEventListener('click', () => {
+            triggerFlash();
+            switchScreen('screen-desk');
+            setupDeskItems();
+        });
+
+        function setupDeskItems() {
+            const desk = document.getElementById('desk-container');
+            desk.innerHTML = '';
+
+            document.getElementById('hud-main-title').innerText = TITULO_PRINCIPAL;
+            document.getElementById('hud-subtitle').innerText = SUBTITULO;
+
+            // Generate 5 Real Evidences + 4 False Items
+            const itemsData = [
+                // Real 1
+                { isReal: true, id: 1, type: 'photo', title: 'FOTO #01', img: IMAGEM_EVIDENCIA_01, text: EVIDENCIAS_TEXTOS[0] },
+                // Real 2
+                { isReal: true, id: 2, type: 'doc', title: 'DOCUMENTO #02', img: IMAGEM_EVIDENCIA_02, text: EVIDENCIAS_TEXTOS[1] },
+                // Real 3
+                { isReal: true, id: 3, type: 'doc', title: 'CARTA #03', img: IMAGEM_EVIDENCIA_03, text: EVIDENCIAS_TEXTOS[2] },
+                // Real 4
+                { isReal: true, id: 4, type: 'folder', title: 'DISPOSITIVO #04', img: IMAGEM_EVIDENCIA_04, text: EVIDENCIAS_TEXTOS[3] },
+                // Real 5
+                { isReal: true, id: 5, type: 'photo', title: 'ARQUIVO #05', img: IMAGEM_EVIDENCIA_05, text: EVIDENCIAS_TEXTOS[4] },
+                
+                // False Items
+                { isReal: false, id: 'f1', type: 'postit', title: 'POST-IT', text: FALSAS_MENSAGENS[0] },
+                { isReal: false, id: 'f2', type: 'doc', title: 'PAPEL VELHO', text: FALSAS_MENSAGENS[1] },
+                { isReal: false, id: 'f3', type: 'postit', title: 'LEMBRETE', text: FALSAS_MENSAGENS[2] },
+                { isReal: false, id: 'f4', type: 'folder', title: 'PASTA VAZIA', text: FALSAS_MENSAGENS[3] }
+            ];
+
+            // Shuffle items positioning
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+
+            itemsData.forEach((item, index) => {
+                const elem = document.createElement('div');
+                elem.className = `desk-item item-${item.type}`;
+                elem.setAttribute('data-evidence', item.isReal ? 'true' : 'false');
+                elem.setAttribute('data-id', item.id);
+
+                // Initial random layout calculation avoiding tight clustering
+                const posX = Math.random() * (width - 180) + 20;
+                const posY = Math.random() * (height - 250) + 80;
+                const rot = (Math.random() - 0.5) * 30;
+
+                elem.style.left = `${posX}px`;
+                elem.style.top = `${posY}px`;
+                elem.style.transform = `rotate(${rot}deg)`;
+
+                // Internal HTML structure based on item type
+                if (item.type === 'photo') {
+                    const imgSrc = item.img.includes('COLOQUE-AQUI') ? getImgFallback(item.title) : item.img;
+                    elem.innerHTML = `
+                        <div class="tape"></div>
+                        <img src="${imgSrc}" alt="Evidência" onerror="this.src='${getImgFallback(item.title)}'">
+                        <div class="caption">${item.title}</div>
+                    `;
+                } else if (item.type === 'doc') {
+                    elem.innerHTML = `
+                        <div style="font-weight:bold; margin-bottom:5px;">${item.title}</div>
+                        <div>RESTRITO - ACESSO NÍVEL 4</div>
+                    `;
+                } else if (item.type === 'postit') {
+                    elem.innerHTML = `<strong>${item.title}</strong><br>${item.text}`;
+                } else if (item.type === 'folder') {
+                    elem.innerHTML = `
+                        <div class="folder-tag">DOSSIÊ</div>
+                        <div style="font-weight:bold; font-size:0.8rem;">${item.title}</div>
+                    `;
+                }
+
+                // Attach Pointer Drag & Click handlers
+                attachDragAndClick(elem, item);
+                desk.appendChild(elem);
+            });
+        }
+
+        function attachDragAndClick(elem, itemData) {
+            let startX, startY;
+            let isDragging = false;
+
+            elem.addEventListener('pointerdown', (e) => {
+                startX = e.clientX;
+                startY = e.clientY;
+                isDragging = false;
+                state.draggedElem = elem;
+
+                const rect = elem.getBoundingClientRect();
+                state.dragOffset.x = e.clientX - rect.left;
+                state.dragOffset.y = e.clientY - rect.top;
+
+                elem.setPointerCapture(e.pointerId);
+                elem.style.zIndex = 200;
+            });
+
+            elem.addEventListener('pointermove', (e) => {
+                if (!state.draggedElem) return;
+                
+                const dist = Math.hypot(e.clientX - startX, e.clientY - startY);
+                if (dist > 5) isDragging = true;
+
+                if (isDragging) {
+                    const x = e.clientX - state.dragOffset.x;
+                    const y = e.clientY - state.dragOffset.y;
+                    elem.style.left = `${x}px`;
+                    elem.style.top = `${y}px`;
+                }
+            });
+
+            elem.addEventListener('pointerup', (e) => {
+                if (!state.draggedElem) return;
+                elem.releasePointerCapture(e.pointerId);
+                state.draggedElem = null;
+
+                if (!isDragging) {
+                    // Item was clicked, not dragged
+                    handleItemClick(elem, itemData);
+                }
+            });
+        }
+
+        function handleItemClick(elem, itemData) {
+            if (itemData.isReal) {
+                triggerFlash();
+                state.foundEvidences.add(itemData.id);
+                document.getElementById('evidence-count').innerText = state.foundEvidences.size;
+
+                // Show Modal
+                openModal(`EVIDÊNCIA [0${state.foundEvidences.size}/05]`, itemData.text, itemData.img, itemData.title);
+
+                // Visual found indicator
+                elem.style.outline = '2px solid var(--green-status)';
+
+                // Check completion
+                if (state.foundEvidences.size === 5) {
+                    setTimeout(() => {
+                        triggerFlash();
+                        startConnectionPhase();
+                    }, 1800);
+                }
+            } else {
+                // False Evidence Feedback
+                document.body.classList.add('shake');
+                setTimeout(() => document.body.classList.remove('shake'), 400);
+
+                openModal("❌ EVIDÊNCIA FALSA", `${MSG_EVIDENCIA_FALSA}\n\n"${itemData.text}"`, null, null);
+            }
+        }
+
+        function triggerFlash() {
+            const flash = document.getElementById('flash-overlay');
+            flash.classList.add('flash-active');
+            setTimeout(() => flash.classList.remove('flash-active'), 400);
+        }
+
+        function openModal(title, text, imgSrc, imgTitle) {
+            const modal = document.getElementById('evidence-modal');
+            document.getElementById('modal-tag').innerText = title;
+            document.getElementById('modal-text').innerText = text;
+
+            const imgElem = document.getElementById('modal-image');
+            if (imgSrc) {
+                const finalSrc = imgSrc.includes('COLOQUE-AQUI') ? getImgFallback(imgTitle || 'EVIDÊNCIA') : imgSrc;
+                imgElem.src = finalSrc;
+                imgElem.onerror = () => { imgElem.src = getImgFallback(imgTitle || 'EVIDÊNCIA'); };
+                imgElem.style.display = 'block';
+            } else {
+                imgElem.style.display = 'none';
+            }
+
+            modal.classList.add('active');
+        }
+
+        document.getElementById('modal-close-btn').addEventListener('click', () => {
+            document.getElementById('evidence-modal').classList.remove('active');
+        });
+
+        const connectionPairs = [
+            { a: 1, b: 2 }, // Pairs that form valid connections
+            { a: 3, b: 4 }
+        ];
+
+        function startConnectionPhase() {
+            switchScreen('screen-connect');
+            const container = document.getElementById('nodes-container');
+            container.innerHTML = '';
+
+            const nodeData = [
+                { id: 1, title: 'COORDENADAS', desc: 'Foto do local secreto' },
+                { id: 2, title: 'ASSINATURA', desc: 'Relatório queimado' },
+                { id: 3, title: 'REMETENTE', desc: 'Carta manuscrita' },
+                { id: 4, title: 'REGISTROS', desc: 'Chamadas encriptadas' },
+                { id: 5, title: 'ROTA FINAL', desc: 'Dossiê em microfilme' }
+            ];
+
+            nodeData.forEach(n => {
+                const card = document.createElement('div');
+                card.className = 'node-card';
+                card.setAttribute('data-id', n.id);
+                card.innerHTML = `<h4>${n.title}</h4><p>${n.desc}</p>`;
+                
+                card.addEventListener('click', () => handleNodeClick(card, n.id));
+                container.appendChild(card);
+            });
+        }
+
+        function handleNodeClick(cardElem, id) {
+            const msgElem = document.getElementById('connect-msg');
+
+            if (!state.selectedNode) {
+                // First Node Selection
+                state.selectedNode = { elem: cardElem, id: id };
+                cardElem.classList.add('selected');
+                msgElem.style.color = 'var(--gold-accent)';
+                msgElem.innerText = 'SELECIONE A SEGUNDA EVIDÊNCIA PARA CONECTAR...';
+            } else if (state.selectedNode.id === id) {
+                // Deselect
+                state.selectedNode.elem.classList.remove('selected');
+                state.selectedNode = null;
+                msgElem.innerText = '';
+            } else {
+                // Try Connection
+                const firstId = state.selectedNode.id;
+                const secondId = id;
+
+                const isValid = connectionPairs.some(
+                    p => (p.a === firstId && p.b === secondId) || (p.a === secondId && p.b === firstId)
+                ) || (firstId === 5 || secondId === 5); // Node 5 links to all as nexus
+
+                if (isValid) {
+                    msgElem.style.color = 'var(--green-status)';
+                    msgElem.innerText = '✓ CONEXÃO CONFIRMADA';
+
+                    state.selectedNode.elem.classList.remove('selected');
+                    state.selectedNode.elem.classList.add('connected');
+                    cardElem.classList.add('connected');
+
+                    drawSvgLine(state.selectedNode.elem, cardElem);
+                    state.connections.push([firstId, secondId]);
+
+                    state.selectedNode = null;
+
+                    if (state.connections.length >= 2) {
+                        setTimeout(() => {
+                            triggerGlitchReveal();
+                        }, 1200);
+                    }
+                } else {
+                    msgElem.style.color = 'var(--red-bright)';
+                    msgElem.innerText = '⚠ CONEXÃO INVÁLIDA';
+                    document.body.classList.add('shake');
+                    setTimeout(() => document.body.classList.remove('shake'), 400);
+
+                    state.selectedNode.elem.classList.remove('selected');
+                    state.selectedNode = null;
+                }
+            }
+        }
+
+        function drawSvgLine(elemA, elemB) {
+            const svg = document.getElementById('svg-connections');
+            const rectA = elemA.getBoundingClientRect();
+            const rectB = elemB.getBoundingClientRect();
+
+            const x1 = rectA.left + rectA.width / 2;
+            const y1 = rectA.top + rectA.height / 2;
+            const x2 = rectB.left + rectB.width / 2;
+            const y2 = rectB.top + rectB.height / 2;
+
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', x1);
+            line.setAttribute('y1', y1);
+            line.setAttribute('x2', x2);
+            line.setAttribute('y2', y2);
+            line.setAttribute('class', 'connection-line');
+
+            svg.appendChild(line);
+        }
+
+        function triggerGlitchReveal() {
+            triggerFlash();
+            switchScreen('screen-reveal');
+            document.getElementById('reveal-phrase').innerText = FRASE_REVELACAO;
+        }
+
+        document.getElementById('btn-open-final').addEventListener('click', () => {
+            triggerFlash();
+            openModal("ARQUIVO CONFIDENCIAL", "DOCUMENTO FINAL DESBLOQUEADO", ARQUIVO_FINAL_IMAGEM, "ARQUIVO CONFIDENCIAL");
+            
+            setTimeout(() => {
+                switchScreen('screen-final');
+                document.getElementById('outro-phrase-1').innerText = FRASE_FINAL_1;
+                document.getElementById('outro-phrase-2').innerText = FRASE_FINAL_2;
+            }, 3000);
+        });
+
+        document.getElementById('btn-restart').addEventListener('click', () => {
+            location.reload();
+        });
+
+        window.onload = function() {
+            animateParticles();
+            typeIntroText();
+        };
+    </script>
+</body>
+</html>
