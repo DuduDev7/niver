@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -14,7 +15,8 @@
             touch-action: manipulation;
         }
 
-        body, html {
+        body,
+        html {
             width: 100%;
             height: 100%;
             overflow: hidden;
@@ -40,19 +42,39 @@
 
         /* Glitch & FX Overlays */
         .camera-shake {
-            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+            animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both;
         }
 
         @keyframes shake {
-            10%, 90% { transform: translate3d(-2px, 0, 0); }
-            20%, 80% { transform: translate3d(4px, 0, 0); }
-            30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
-            40%, 60% { transform: translate3d(6px, 0, 0); }
+
+            10%,
+            90% {
+                transform: translate3d(-2px, 0, 0);
+            }
+
+            20%,
+            80% {
+                transform: translate3d(4px, 0, 0);
+            }
+
+            30%,
+            50%,
+            70% {
+                transform: translate3d(-6px, 0, 0);
+            }
+
+            40%,
+            60% {
+                transform: translate3d(6px, 0, 0);
+            }
         }
 
         .glitch-overlay {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: rgba(255, 0, 128, 0.15);
             pointer-events: none;
             display: none;
@@ -142,8 +164,15 @@
         }
 
         @keyframes pulse {
-            0%, 100% { transform: translateX(-50%) scale(1); }
-            50% { transform: translateX(-50%) scale(1.06); }
+
+            0%,
+            100% {
+                transform: translateX(-50%) scale(1);
+            }
+
+            50% {
+                transform: translateX(-50%) scale(1.06);
+            }
         }
 
         /* Mobile Controls */
@@ -199,6 +228,7 @@
             align-self: flex-end;
             margin-bottom: 25px;
             box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
+
             active {
                 transform: scale(0.95);
             }
@@ -207,7 +237,10 @@
         /* Modals & Screens */
         .modal-overlay {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: rgba(2, 6, 23, 0.85);
             backdrop-filter: blur(10px);
             display: flex;
@@ -231,7 +264,7 @@
             padding: 24px;
             max-width: 480px;
             width: 90%;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
             text-align: center;
             transform: translateY(20px);
             transition: transform 0.4s ease;
@@ -343,7 +376,7 @@
             font-size: 1.8rem;
             font-weight: bold;
             color: #64ffda;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
         }
 
         .dial-btn {
@@ -364,7 +397,7 @@
             object-fit: cover;
             border-radius: 12px;
             margin-bottom: 14px;
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         /* Finale Overlay */
@@ -385,6 +418,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <div id="game-container">
@@ -422,7 +456,8 @@
                 <h1>JULIA QUEST</h1>
                 <p style="color: #cbd5e1; margin-bottom: 12px;">[CURINGA: INTRODUÇÃO - PARTE 1]</p>
                 <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 24px;">
-                    "Julia, existe um lugar repleto de memórias que você ainda não explorou. Encontre os segredos escondidos e abra a área secreta!"
+                    "Julia, existe um lugar repleto de memórias que você ainda não explorou. Encontre os segredos
+                    escondidos e abra a área secreta!"
                 </p>
                 <button class="btn-primary" onclick="startGame()">[ COMEÇAR AVENTURA ]</button>
             </div>
@@ -441,7 +476,8 @@
         <div id="memory-modal" class="modal-overlay">
             <div class="modal-card">
                 <h2 style="color: #64ffda; margin-bottom: 10px;">✨ MEMÓRIA ENCONTRADA</h2>
-                <img id="memory-img" src="" alt="Memory Image" class="memory-img" onerror="this.src='https://placehold.co/400x200/0f172a/64ffda?text=Foto+da+Mem%C3%B3ria'">
+                <img id="memory-img" src="" alt="Memory Image" class="memory-img"
+                    onerror="this.src='https://placehold.co/400x200/0f172a/64ffda?text=Foto+da+Mem%C3%B3ria'">
                 <p id="memory-text" style="color: #e2e8f0; margin-bottom: 16px;">[CURINGA: TEXTO DA MEMÓRIA]</p>
                 <button class="btn-primary" onclick="closeModal('memory-modal')">Guardar Memória</button>
             </div>
@@ -451,8 +487,9 @@
         <div id="puzzle-modal" class="modal-overlay">
             <div class="modal-card">
                 <h2 style="color: #f59e0b; margin-bottom: 8px;">🔒 FECHADURA SECRETA</h2>
-                <p style="color: #94a3b8; font-size: 0.85rem;">Gire os discos até encontrar o código correto das memórias!</p>
-                
+                <p style="color: #94a3b8; font-size: 0.85rem;">Gire os discos até encontrar o código correto das
+                    memórias!</p>
+
                 <div class="puzzle-dials">
                     <div class="dial-container">
                         <button class="dial-btn" onclick="changeDial(0, 1)">▲</button>
@@ -472,7 +509,8 @@
                 </div>
 
                 <button class="btn-primary" onclick="checkPuzzleCode()">Tentar Abrir</button>
-                <button class="btn-primary" style="background: rgba(255,255,255,0.1); color: #fff;" onclick="closeModal('puzzle-modal')">Sair</button>
+                <button class="btn-primary" style="background: rgba(255,255,255,0.1); color: #fff;"
+                    onclick="closeModal('puzzle-modal')">Sair</button>
             </div>
         </div>
 
@@ -481,9 +519,11 @@
             <div class="modal-card">
                 <h1 style="color: #a855f7; font-size: 2rem; margin-bottom: 8px;">🎉 VOCÊ CONSEGUIU!</h1>
                 <p style="color: #64ffda; font-weight: bold; margin-bottom: 10px;">[CURINGA: FRASE FINAL]</p>
-                <img id="finale-photo" src="" alt="Foto Final" onerror="this.src='https://placehold.co/400x250/3b0764/a855f7?text=Foto+Especial+Julia'">
+                <img id="finale-photo" src="" alt="Foto Final"
+                    onerror="this.src='https://placehold.co/400x250/3b0764/a855f7?text=Foto+Especial+Julia'">
                 <p style="color: #e2e8f0; font-size: 0.95rem; margin-bottom: 20px;">
-                    [CURINGA: MENSAGEM FINAL - "Você chegou até o fim desta jornada! O verdadeiro tesouro foram todas as lembranças do caminho."]
+                    [CURINGA: MENSAGEM FINAL - "Você chegou até o fim desta jornada! O verdadeiro tesouro foram todas as
+                    lembranças do caminho."]
                 </p>
                 <button class="btn-primary" onclick="restartGame()">Jogar Novamente 🔄</button>
             </div>
@@ -495,7 +535,7 @@
         // /=============================================================================
         //  * CUSTOMIZABLE / WILDCARD CONFIGURATION (EDIT EASY HERE)
         //  *============================================================================*/
-        
+
         // Placeholders Images
         const FOTO_01 = "imgs/COLOQUE-AQUI-1.jpeg";
         const FOTO_02 = "imgs/COLOQUE-AQUI-2.jpeg";
@@ -511,7 +551,7 @@
         const LOCAL_SECRET_NAME = "[CURINGA: SANTUÁRIO SECRETO]";
 
         // Secret Door Passcode (Puzzle Solution)
-        const PUZZLE_TARGET = [3, 7, 2];
+        const PUZZLE_TARGET = [9, 4, 7];
 
         // /=============================================================================
         //  * ENGINE STATE & VARIABLES
@@ -568,9 +608,10 @@
         ];
 
         // Collectible Memories List
+        // Posição ajustada para ficar no interior da Faculdade
         const memories = [
             { id: 1, x: 1900, y: 350, img: FOTO_01, text: "[CURINGA: MEMÓRIA 01 - Aquele dia incrível na praia com brisa do mar!]", collected: false },
-            { id: 2, x: 350, y: 1850, img: FOTO_02, text: "[CURINGA: MEMÓRIA 02 - Dias de estudo, aprendizado e conquistas na faculdade!]", collected: false },
+            { id: 2, x: 350, y: 2150, img: FOTO_02, text: "[CURINGA: MEMÓRIA 02 - Dias de estudo, aprendizado e conquistas na faculdade!]", collected: false }, // <-- Posição interna
             { id: 3, x: 2100, y: 1500, img: FOTO_03, text: "[CURINGA: MEMÓRIA 03 - Passeio misterioso e divertido em meio à natureza!]", collected: false }
         ];
 
@@ -624,14 +665,19 @@
             obstacles.push({ x: 300, y: 200, w: 180, h: 120, type: 'house', label: 'CASA' });
 
             // College Campus Buildings
-            obstacles.push({ x: 200, y: 1750, w: 300, h: 180, type: 'building', label: 'FACULDADE' });
+            // Paredes externas da Faculdade (deixando uma abertura para a porta)
+            obstacles.push({ x: 200, y: 1750, w: 100, h: 180, type: 'wall' }); // Lado esquerdo
+            obstacles.push({ x: 380, y: 1750, w: 120, h: 180, type: 'wall' }); // Lado direito
+
+            // Ponto de Interação da Porta da Faculdade
+            const collegeEntrance = { x: 300, y: 1840, w: 80, h: 40 };
 
             // Random Decorative Trees & Rocks around map
             const treeCoords = [
-                {x:500,y:500},{x:560,y:500},{x:620,y:500},{x:800,y:300},{x:850,y:360},
-                {x:1500,y:400},{x:1600,y:450},{x:1700,y:300},{x:2100,y:600},{x:2200,y:650},
-                {x:1800,y:1200},{x:1900,y:1100},{x:2200,y:1400},{x:1800,y:1600},
-                {x:600,y:1500},{x:700,y:1600},{x:500,y:1800},{x:800,y:1900}
+                { x: 500, y: 500 }, { x: 560, y: 500 }, { x: 620, y: 500 }, { x: 800, y: 300 }, { x: 850, y: 360 },
+                { x: 1500, y: 400 }, { x: 1600, y: 450 }, { x: 1700, y: 300 }, { x: 2100, y: 600 }, { x: 2200, y: 650 },
+                { x: 1800, y: 1200 }, { x: 1900, y: 1100 }, { x: 2200, y: 1400 }, { x: 1800, y: 1600 },
+                { x: 600, y: 1500 }, { x: 700, y: 1600 }, { x: 500, y: 1800 }, { x: 800, y: 1900 }
             ];
             treeCoords.forEach(t => obstacles.push({ x: t.x, y: t.y, w: 50, h: 50, type: 'tree' }));
 
@@ -641,12 +687,12 @@
             // Secret Area Walls & Maze Entrance
             obstacles.push({ x: 900, y: 1550, w: 200, h: 40, type: 'wall' }); // Left Wall
             obstacles.push({ x: 1300, y: 1550, w: 300, h: 40, type: 'wall' }); // Right Wall
-            
+
             // Maze Inner Walls (Secret Area)
             obstacles.push({ x: 900, y: 1550, w: 40, h: 600, type: 'wall' });
             obstacles.push({ x: 1560, y: 1550, w: 40, h: 600, type: 'wall' });
             obstacles.push({ x: 900, y: 2110, w: 700, h: 40, type: 'wall' });
-            
+
             // Inner Maze Corridor Blocks
             obstacles.push({ x: 1020, y: 1680, w: 420, h: 30, type: 'wall' });
             obstacles.push({ x: 1020, y: 1820, w: 300, h: 30, type: 'wall' });
@@ -798,6 +844,11 @@
                 }
             }
 
+            // Verificar Porta da Faculdade (Entrada em x: 340, y: 1750)
+            if (Math.hypot(player.x - 340, player.y - 1750) < 50) {
+                activeInteractTarget = { type: 'college_door' };
+            }
+
             // Update Ambient Particles
             updateParticles();
         }
@@ -868,7 +919,7 @@
                 const mem = activeInteractTarget.data;
                 mem.collected = true;
                 spawnParticleExplosion(mem.x, mem.y, '#64ffda', 30);
-                
+
                 document.getElementById('memory-text').innerText = mem.text;
                 document.getElementById('memory-img').src = mem.img;
                 openModal('memory-modal');
@@ -896,6 +947,16 @@
                     unlockSecretAreaSequence();
                 } else {
                     openDialogue("🔒 PORTÃO TRANCADO", "O portão da Área Secreta está trancado! Você precisa da chave do puzzle.", [{ text: "Procurar Chave", next: null }]);
+                }
+            } else if (activeInteractTarget.type === 'college_door') {
+                // Teleporta a jogadora para o interior do prédio
+                if (player.y < 2000) {
+                    player.x = 350;
+                    player.y = 2100; // Entrar na Faculdade
+                    spawnParticleExplosion(player.x, player.y, '#a855f7', 25);
+                } else {
+                    player.x = 340;
+                    player.y = 1780; // Sair da Faculdade
                 }
             }
         }
@@ -1052,7 +1113,7 @@
                 ctx.beginPath();
                 ctx.arc(n.x, n.y, 16, 0, Math.PI * 2);
                 ctx.fill();
-                
+
                 // Label
                 ctx.fillStyle = '#ffffff';
                 ctx.font = '12px sans-serif';
@@ -1184,7 +1245,7 @@
             if (puzzleDials[0] === PUZZLE_TARGET[0] &&
                 puzzleDials[1] === PUZZLE_TARGET[1] &&
                 puzzleDials[2] === PUZZLE_TARGET[2]) {
-                
+
                 player.hasKey = true;
                 quests[4].done = true;
                 updateQuestUI();
@@ -1205,7 +1266,7 @@
             // Dramatic Unlocking Visual Effects
             const container = document.getElementById('game-container');
             const glitch = document.getElementById('glitch-fx');
-            
+
             container.classList.add('camera-shake');
             glitch.style.display = 'block';
 
@@ -1223,7 +1284,7 @@
             gameFinished = true;
             document.getElementById('finale-photo').src = FOTO_FINAL;
             spawnParticleExplosion(player.x, player.y, '#a855f7', 100);
-            
+
             setTimeout(() => {
                 openModal('finale-modal');
             }, 500);
@@ -1287,4 +1348,5 @@
         };
     </script>
 </body>
+
 </html>
