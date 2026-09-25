@@ -6,416 +6,462 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>JULIA QUEST</title>
     <style>
-        * {
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-user-select: none;
-            margin: 0;
-            padding: 0;
-            touch-action: manipulation;
-        }
+        /* ==========================================================================
+   DESIGN TOKENS / VARIABLES
+   ========================================================================== */
+:root {
+    /* Palette */
+    --bg-main: #0b0c10;
+    --bg-canvas: #050508;
+    --bg-surface: rgba(15, 23, 42, 0.75);
+    --bg-surface-solid: rgba(15, 23, 42, 0.95);
+    --bg-modal-overlay: rgba(2, 6, 23, 0.85);
 
-        body,
-        html {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: #0b0c10;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #ffffff;
-        }
+    /* Accents */
+    --accent-teal: #64ffda;
+    --accent-teal-glow: rgba(100, 255, 218, 0.4);
+    --accent-amber: #f59e0b;
+    --accent-amber-glow: rgba(245, 158, 11, 0.6);
+    --accent-purple: #a855f7;
+    --color-success: #4ade80;
 
-        /* Screen Canvas container */
-        #game-container {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            background: #050508;
-            overflow: hidden;
-        }
+    /* Text */
+    --text-primary: #ffffff;
+    --text-secondary: #cbd5e1;
+    --text-muted: #e2e8f0;
 
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
+    /* Typography & Spacing */
+    --font-family-base: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --radius-full: 9999px;
 
-        /* Glitch & FX Overlays */
-        .camera-shake {
-            animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both;
-        }
+    /* Transitions */
+    --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-        @keyframes shake {
+/* ==========================================================================
+   RESET & CORE STYLES
+   ========================================================================== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
 
-            10%,
-            90% {
-                transform: translate3d(-2px, 0, 0);
-            }
+html,
+body {
+    width: 100%;
+    height: 100%;
+    height: 100dvh;
+    overflow: hidden;
+    background-color: var(--bg-main);
+    font-family: var(--font-family-base);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
 
-            20%,
-            80% {
-                transform: translate3d(4px, 0, 0);
-            }
+/* ==========================================================================
+   CANVAS & VIEWPORT CONTAINER
+   ========================================================================== */
+#game-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-canvas);
+    overflow: hidden;
+}
 
-            30%,
-            50%,
-            70% {
-                transform: translate3d(-6px, 0, 0);
-            }
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
 
-            40%,
-            60% {
-                transform: translate3d(6px, 0, 0);
-            }
-        }
+/* ==========================================================================
+   SPECIAL EFFECTS & OVERLAYS (GPU Optimized)
+   ========================================================================== */
+.camera-shake {
+    will-change: transform;
+    animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
 
-        .glitch-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 0, 128, 0.15);
-            pointer-events: none;
-            display: none;
-            z-index: 50;
-            mix-blend-mode: color-dodge;
-        }
+@keyframes shake {
+    10%, 90% { transform: translate3d(-2px, 0, 0); }
+    20%, 80% { transform: translate3d(4px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+    40%, 60% { transform: translate3d(6px, 0, 0); }
+}
 
-        /* UI Overlays */
-        .hud-panel {
-            position: absolute;
-            background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            padding: 12px 16px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            z-index: 10;
-        }
+.glitch-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 0, 128, 0.15);
+    pointer-events: none;
+    display: none;
+    z-index: 50;
+    mix-blend-mode: color-dodge;
+}
 
-        #quest-tracker {
-            top: 16px;
-            left: 16px;
-            max-width: 280px;
-        }
+/* ==========================================================================
+   HUD & UI PANELS
+   ========================================================================== */
+.hud-panel {
+    position: absolute;
+    background: var(--bg-surface);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    z-index: 10;
+}
 
-        #quest-tracker h3 {
-            font-size: 0.9rem;
-            color: #64ffda;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+#quest-tracker {
+    top: 16px;
+    left: 16px;
+    max-width: 280px;
+}
 
-        .quest-item {
-            font-size: 0.8rem;
-            color: #cbd5e1;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-        }
+#quest-tracker h3 {
+    font-size: 0.9rem;
+    color: var(--accent-teal);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
 
-        .quest-item.completed {
-            color: #4ade80;
-            text-decoration: line-through;
-            opacity: 0.7;
-        }
+.quest-item {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all var(--transition-normal);
+}
 
-        #minimap-container {
-            top: 16px;
-            right: 16px;
-            padding: 6px;
-            border-radius: 50%;
-            border: 2px solid rgba(100, 255, 218, 0.4);
-            overflow: hidden;
-            width: 110px;
-            height: 110px;
-        }
+.quest-item.completed {
+    color: var(--color-success);
+    text-decoration: line-through;
+    opacity: 0.7;
+}
 
-        #minimap {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: #020617;
-        }
+#minimap-container {
+    top: 16px;
+    right: 16px;
+    padding: 6px;
+    border-radius: 50%;
+    border: 2px solid var(--accent-teal-glow);
+    overflow: hidden;
+    width: 110px;
+    height: 110px;
+}
 
-        /* Floating Interact Prompt */
-        #interact-prompt {
-            position: absolute;
-            bottom: 120px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(245, 158, 11, 0.9);
-            color: #000;
-            font-weight: bold;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
-            display: none;
-            z-index: 15;
-            animation: pulse 1.2s infinite;
-        }
+#minimap {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #020617;
+}
 
-        @keyframes pulse {
+/* Floating Action Prompt */
+#interact-prompt {
+    position: absolute;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(245, 158, 11, 0.9);
+    color: #000000;
+    font-weight: 700;
+    padding: 8px 20px;
+    border-radius: var(--radius-lg);
+    font-size: 0.9rem;
+    box-shadow: 0 0 15px var(--accent-amber-glow);
+    display: none;
+    z-index: 15;
+    will-change: transform;
+    animation: pulse 1.2s infinite ease-in-out;
+}
 
-            0%,
-            100% {
-                transform: translateX(-50%) scale(1);
-            }
+@keyframes pulse {
+    0%, 100% { transform: translateX(-50%) scale(1); }
+    50% { transform: translateX(-50%) scale(1.06); }
+}
 
-            50% {
-                transform: translateX(-50%) scale(1.06);
-            }
-        }
+/* ==========================================================================
+   TOUCH & MOBILE CONTROLS
+   ========================================================================== */
+#mobile-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    width: 100%;
+    height: 150px;
+    pointer-events: none;
+    z-index: 20;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+}
 
-        /* Mobile Controls */
-        #mobile-controls {
-            position: absolute;
-            bottom: 20px;
-            left: 0;
-            width: 100%;
-            height: 150px;
-            pointer-events: none;
-            z-index: 20;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 20px;
-        }
+#joystick-zone {
+    width: 130px;
+    height: 130px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    position: relative;
+    pointer-events: auto;
+    touch-action: none;
+}
 
-        #joystick-zone {
-            width: 130px;
-            height: 130px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            position: relative;
-            pointer-events: auto;
-            touch-action: none;
-        }
+#joystick-knob {
+    width: 50px;
+    height: 50px;
+    background: rgba(100, 255, 218, 0.8);
+    border-radius: 50%;
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    box-shadow: 0 0 10px var(--accent-teal-glow);
+    pointer-events: none;
+}
 
-        #joystick-knob {
-            width: 50px;
-            height: 50px;
-            background: rgba(100, 255, 218, 0.8);
-            border-radius: 50%;
-            position: absolute;
-            top: 40px;
-            left: 40px;
-            box-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
-            pointer-events: none;
-        }
+#mobile-action-btn {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--accent-amber), #d97706);
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
+    align-self: flex-end;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
+    transition: transform var(--transition-fast);
+}
 
-        #mobile-action-btn {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.4);
-            color: #fff;
-            font-weight: bold;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: auto;
-            align-self: flex-end;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
+/* CORREÇÃO DO BUG SINTÁTICO: Adicionado : antes de active */
+#mobile-action-btn:active {
+    transform: scale(0.92);
+}
 
-            active {
-                transform: scale(0.95);
-            }
-        }
+/* ==========================================================================
+   MODALS, OVERLAYS & INTERFACES
+   ========================================================================== */
+.modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: var(--bg-modal-overlay);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+}
 
-        /* Modals & Screens */
-        .modal-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(2, 6, 23, 0.85);
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.4s ease;
-        }
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
 
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
+.modal-card {
+    background: var(--bg-surface-solid);
+    border: 1px solid var(--accent-teal-glow);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    max-width: 480px;
+    width: 90%;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    text-align: center;
+    transform: translateY(20px);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
 
-        .modal-card {
-            background: rgba(15, 23, 42, 0.95);
-            border: 1px solid rgba(100, 255, 218, 0.3);
-            border-radius: 20px;
-            padding: 24px;
-            max-width: 480px;
-            width: 90%;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-            text-align: center;
-            transform: translateY(20px);
-            transition: transform 0.4s ease;
-        }
+.modal-overlay.active .modal-card {
+    transform: translateY(0);
+}
 
-        .modal-overlay.active .modal-card {
-            transform: translateY(0);
-        }
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent-teal), #0284c7);
+    color: #020617;
+    font-weight: 700;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 30px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 18px;
+    box-shadow: 0 0 20px var(--accent-teal-glow);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
 
-        .btn-primary {
-            background: linear-gradient(135deg, #64ffda, #0284c7);
-            color: #020617;
-            font-weight: bold;
-            padding: 12px 28px;
-            border: none;
-            border-radius: 30px;
-            font-size: 1rem;
-            cursor: pointer;
-            margin-top: 18px;
-            box-shadow: 0 0 20px rgba(100, 255, 218, 0.4);
-            transition: all 0.2s;
-        }
+.btn-primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(100, 255, 218, 0.7);
+}
 
-        .btn-primary:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 30px rgba(100, 255, 218, 0.7);
-        }
+.btn-primary:active {
+    transform: scale(0.98);
+}
 
-        /* Specific Screen Styles */
-        #intro-screen {
-            flex-direction: column;
-            background: radial-gradient(circle at center, #1e1b4b 0%, #020617 100%);
-        }
+/* ==========================================================================
+   GAME SPECIFIC SCREENS & MINIGAMES
+   ========================================================================== */
+#intro-screen {
+    flex-direction: column;
+    background: radial-gradient(circle at center, #1e1b4b 0%, #020617 100%);
+}
 
-        #intro-screen h1 {
-            font-size: 2.8rem;
-            letter-spacing: 4px;
-            background: linear-gradient(135deg, #a855f7, #64ffda);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 16px;
-            text-shadow: 0 0 30px rgba(168, 85, 247, 0.4);
-        }
+#intro-screen h1 {
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-teal));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 16px;
+    text-shadow: 0 0 30px rgba(168, 85, 247, 0.4);
+}
 
-        .dialogue-box {
-            text-align: left;
-        }
+.dialogue-box {
+    text-align: left;
+}
 
-        .dialogue-speaker {
-            color: #64ffda;
-            font-weight: bold;
-            font-size: 1.1rem;
-            margin-bottom: 8px;
-        }
+.dialogue-speaker {
+    color: var(--accent-teal);
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+}
 
-        .dialogue-text {
-            color: #e2e8f0;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            margin-bottom: 20px;
-        }
+.dialogue-text {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
 
-        .dialogue-options {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+.dialogue-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
-        .dialogue-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #f8fafc;
-            padding: 10px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            text-align: left;
-            transition: all 0.2s;
-        }
+.dialogue-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #f8fafc;
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    text-align: left;
+    transition: background var(--transition-fast), border-color var(--transition-fast);
+}
 
-        .dialogue-btn:hover {
-            background: rgba(100, 255, 218, 0.15);
-            border-color: #64ffda;
-        }
+.dialogue-btn:hover {
+    background: rgba(100, 255, 218, 0.15);
+    border-color: var(--accent-teal);
+}
 
-        /* Puzzle Dial Minigame */
-        .puzzle-dials {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin: 24px 0;
-        }
+/* Puzzle Minigame */
+.puzzle-dials {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 24px 0;
+}
 
-        .dial-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
+.dial-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
 
-        .dial-val {
-            width: 60px;
-            height: 60px;
-            background: #0f172a;
-            border: 2px solid #64ffda;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #64ffda;
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
-        }
+.dial-val {
+    width: 60px;
+    height: 60px;
+    background: #0f172a;
+    border: 2px solid var(--accent-teal);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--accent-teal);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
+}
 
-        .dial-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: white;
-            width: 40px;
-            height: 30px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+.dial-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: var(--text-primary);
+    width: 40px;
+    height: 30px;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
 
-        /* Memory Modal Photo styling */
-        .memory-img {
-            width: 100%;
-            max-height: 220px;
-            object-fit: cover;
-            border-radius: 12px;
-            margin-bottom: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
+.dial-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
 
-        /* Finale Overlay */
-        #finale-photo {
-            max-width: 100%;
-            max-height: 260px;
-            border-radius: 16px;
-            box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
-            margin: 16px 0;
-            border: 2px solid #a855f7;
-        }
+/* Media Displays */
+.memory-img {
+    width: 100%;
+    max-height: 220px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    margin-bottom: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
 
-        /* Responsive tweaks */
-        @media (min-width: 768px) {
-            #mobile-controls {
-                display: none !important;
-            }
-        }
+#finale-photo {
+    max-width: 100%;
+    max-height: 260px;
+    border-radius: 16px;
+    box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
+    margin: 16px 0;
+    border: 2px solid var(--accent-purple);
+}
+
+/* ==========================================================================
+   RESPONSIVE LAYOUT BREAKPOINTS
+   ========================================================================== */
+@media (min-width: 768px) {
+    #mobile-controls {
+        display: none !important;
+    }
+}
     </style>
 </head>
 
@@ -428,7 +474,7 @@
 
         <!-- HUD Overlay -->
         <div id="quest-tracker" class="hud-panel">
-            <h3>📌 [CURINGA: MISSÕES]</h3>
+            <h3>📌 NOSSA HISTÓRIA</h3>
             <div id="quest-list">
                 <!-- Injected dynamically -->
             </div>
@@ -454,12 +500,12 @@
         <div id="intro-screen" class="modal-overlay active">
             <div class="modal-card">
                 <h1>JULIA QUEST</h1>
-                <p style="color: #cbd5e1; margin-bottom: 12px;">[CURINGA: INTRODUÇÃO - PARTE 1]</p>
+                <p style="color: #cbd5e1; margin-bottom: 12px;">JULIA, ESSA AVENTURA É SOBRE VOCÊ.</p>
                 <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 24px;">
                     "Julia, existe um lugar repleto de memórias que você ainda não explorou. Encontre os segredos
                     escondidos e abra a área secreta!"
                 </p>
-                <button class="btn-primary" onclick="startGame()">[ COMEÇAR AVENTURA ]</button>
+                <button class="btn-primary" onclick="startGame()">[ ENTRAR NA NOSSA HISTÓRIA ]</button>
             </div>
         </div>
 
@@ -478,7 +524,7 @@
                 <h2 style="color: #64ffda; margin-bottom: 10px;">✨ MEMÓRIA ENCONTRADA</h2>
                 <img id="memory-img" src="" alt="Memory Image" class="memory-img"
                     onerror="this.src='https://placehold.co/400x200/0f172a/64ffda?text=Foto+da+Mem%C3%B3ria'">
-                <p id="memory-text" style="color: #e2e8f0; margin-bottom: 16px;">[CURINGA: TEXTO DA MEMÓRIA]</p>
+                <p id="memory-text" style="color: #e2e8f0; margin-bottom: 16px;">Uma lembrança nossa. Daquelas que parecem pequenas no momento, mas depois a gente percebe o quanto significam.</p>
                 <button class="btn-primary" onclick="closeModal('memory-modal')">Guardar Memória</button>
             </div>
         </div>
@@ -518,12 +564,20 @@
         <div id="finale-modal" class="modal-overlay">
             <div class="modal-card">
                 <h1 style="color: #a855f7; font-size: 2rem; margin-bottom: 8px;">🎉 VOCÊ CONSEGUIU!</h1>
-                <p style="color: #64ffda; font-weight: bold; margin-bottom: 10px;">[CURINGA: FRASE FINAL]</p>
+                <p style="color: #64ffda; font-weight: bold; margin-bottom: 10px;">O VERDADEIRO TESOURO SEMPRE FOI VOCÊ.</p>
                 <img id="finale-photo" src="" alt="Foto Final"
                     onerror="this.src='https://placehold.co/400x250/3b0764/a855f7?text=Foto+Especial+Julia'">
                 <p style="color: #e2e8f0; font-size: 0.95rem; margin-bottom: 20px;">
-                    [CURINGA: MENSAGEM FINAL - "Você chegou até o fim desta jornada! O verdadeiro tesouro foram todas as
-                    lembranças do caminho."]
+                    Você chegou até o fim. Mas, se eu pudesse escolher uma única coisa para você levar dessa aventura, seria isso:
+                    <strong>EU TE AMO.</strong><br><br>
+                    Eu te amo pelas coisas grandes, mas principalmente pelas pequenas. Pelos momentos que talvez ninguém mais entendesse.
+                    Pelas risadas, pelos abraços, pelas lembranças, pelos dias bons e até pelos dias difíceis.
+                    Eu te amo porque você conseguiu ocupar um espaço enorme dentro de mim sem precisar pedir.
+                    <br><br><strong>QUE SORTE A MINHA TER VOCÊ.</strong><br><br>
+                    Que sorte a minha ter encontrado você. Que sorte a minha poder olhar para essas fotos e saber que elas são pedaços da nossa história.
+                    <br><br>
+                    Se eu pudesse repetir tudo, eu repetiria. Porque entre tantos caminhos possíveis, eu escolheria chegar até você de novo.
+                    <br><br><strong>EU TE AMO, JULIA. EU TE AMO. EU TE AMO. EU TE AMO. ❤️</strong>
                 </p>
                 <button class="btn-primary" onclick="restartGame()">Jogar Novamente 🔄</button>
             </div>
@@ -537,18 +591,18 @@
         //  *============================================================================*/
 
         // Placeholders Images
-        const FOTO_01 = "imgs/COLOQUE-AQUI-1.jpeg";
-        const FOTO_02 = "imgs/COLOQUE-AQUI-2.jpeg";
-        const FOTO_03 = "imgs/COLOQUE-AQUI-3.jpeg";
-        const FOTO_FINAL = "imgs/COLOQUE-AQUI-FINAL.jpeg";
+        const FOTO_01 = "imgs/arquibancada.jpeg";
+        const FOTO_02 = "imgs/gol.jpeg";
+        const FOTO_03 = "imgs/juliaEflor2.jpeg";
+        const FOTO_FINAL = "imgs/bestImgs.jpeg";
 
         // Customizable Area Labels
-        const LOCAL_01_NAME = "[CURINGA: CASA DA JULIA]";
-        const LOCAL_02_NAME = "[CURINGA: PRAIA PARADISÍACA]";
-        const LOCAL_03_NAME = "[CURINGA: PRAÇA / QUADRA]";
-        const LOCAL_04_NAME = "[CURINGA: FACULDADE]";
-        const LOCAL_05_NAME = "[CURINGA: FLORESTA MISTÉRO]";
-        const LOCAL_SECRET_NAME = "[CURINGA: SANTUÁRIO SECRETO]";
+        const LOCAL_01_NAME = "NOSSA HISTÓRIA";
+        const LOCAL_02_NAME = "LEMBRANÇAS";
+        const LOCAL_03_NAME = "MOMENTOS";
+        const LOCAL_04_NAME = "CONQUISTAS";
+        const LOCAL_05_NAME = "CARINHO";
+        const LOCAL_SECRET_NAME = "O QUE EU SINTO POR VOCÊ";
 
         // Secret Door Passcode (Puzzle Solution)
         const PUZZLE_TARGET = [9, 4, 7];
@@ -599,39 +653,39 @@
 
         // Quests Tracker State
         const quests = [
-            { id: 'q1', text: 'Conversar com o Guia na Praça', done: false },
-            { id: 'q2', text: 'Coletar a 1ª Memória (Praia)', done: false },
-            { id: 'q3', text: 'Coletar a 2ª Memória (Faculdade)', done: false },
-            { id: 'q4', text: 'Coletar a 3ª Memória (Floresta)', done: false },
-            { id: 'q5', text: 'Resolver a Tranca e pegar a chave', done: false },
-            { id: 'q6', text: 'Desbloquear e Atravessar a Área Secreta', done: false }
+            { id: 'q1', text: 'Encontrar uma mensagem minha', done: false },
+            { id: 'q2', text: 'Encontrar uma lembrança nossa', done: false },
+            { id: 'q3', text: 'Encontrar outra parte da nossa história', done: false },
+            { id: 'q4', text: 'Encontrar mais um pedaço do meu coração', done: false },
+            { id: 'q5', text: 'Descobrir o caminho até o final', done: false },
+            { id: 'q6', text: 'Descobrir o que eu sinto por você', done: false }
         ];
 
         // Collectible Memories List
         // Posição ajustada para ficar no interior da Faculdade
         const memories = [
-            { id: 1, x: 1900, y: 350, img: FOTO_01, text: "[CURINGA: MEMÓRIA 01 - Aquele dia incrível na praia com brisa do mar!]", collected: false },
-            { id: 2, x: 350, y: 2150, img: FOTO_02, text: "[CURINGA: MEMÓRIA 02 - Dias de estudo, aprendizado e conquistas na faculdade!]", collected: false }, // <-- Posição interna
-            { id: 3, x: 2100, y: 1500, img: FOTO_03, text: "[CURINGA: MEMÓRIA 03 - Passeio misterioso e divertido em meio à natureza!]", collected: false }
+            { id: 1, x: 1900, y: 350, img: FOTO_01, text: "Que sorte a minha poder olhar para o lado e encontrar você. Entre tantos lugares, tantas pessoas e tantos caminhos possíveis, existe você. E existe nós. Eu nunca quero tratar isso como algo comum.", collected: false },
+            { id: 2, x: 350, y: 2150, img: FOTO_02, text: "Eu dediquei esse gol a você. No meio da pressão, da torcida e da vontade de vencer, foi para você que eu pensei. E mesmo quando o resultado não foi o que eu queria, ter você comigo fez aquele momento valer a pena.", collected: false }, // <-- Posição interna
+            { id: 3, x: 2100, y: 1500, img: FOTO_03, text: "Essa flor foi pequena perto do que eu gostaria de conseguir te entregar. Mas naquele gesto existia uma vontade enorme de te fazer sorrir. Eu amo lembrar das pequenas coisas que você gosta e transformar isso em uma lembrança nossa.", collected: false }
         ];
 
         // NPCs Entities
         const npcs = [
             {
                 id: 'npc_guide',
-                name: '[CURINGA: GUIA SAM]',
+                name: 'UMA MENSAGEM MINHA',
                 x: 450,
                 y: 320,
                 color: '#ec4899',
                 dialogue: {
-                    text: "[CURINGA: 'Olá Julia! Para abrir o grande Portão do Santuário Secreto, você precisa coletar 3 Cristais de Memória e descobrir a senha da tranca!']",
+                    text: "Julia, algumas histórias merecem ser percorridas devagar. Procure as memórias, porque cada uma guarda uma parte do que eu sinto. E quando chegar ao final, talvez você entenda que o verdadeiro segredo nunca esteve escondido no mapa. Sempre foi você.",
                     options: [
                         { text: "Pode deixar, vou explorar o mapa!", next: null },
                         { text: "Onde fica a tranca?", next: 'hint' }
                     ]
                 },
                 dialogueHint: {
-                    text: "[CURINGA: 'A tranca da chave fica perto das ruínas ao leste. Procure pelas memórias brilhantes espalhadas nos 4 cantos!']",
+                    text: "Não tenha pressa. Procure cada lembrança. Eu quero que você veja, uma por uma, as pequenas coisas que fazem eu ter tanta certeza de que valeu a pena encontrar você.",
                     options: [{ text: "Entendido!", next: null }]
                 }
             }
