@@ -300,6 +300,10 @@ canvas {
     text-align: center;
     transform: translateY(20px);
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* Propriedades para controle de scroll */
+    max-height: 85vh;    /* Limita a altura a 85% da altura da tela */
+    overflow-y: auto;    /* Ativa o scroll vertical apenas quando necessário */
 }
 
 .modal-overlay.active .modal-card {
@@ -565,7 +569,7 @@ canvas {
             <div class="modal-card">
                 <h1 style="color: #a855f7; font-size: 2rem; margin-bottom: 8px;">🎉 VOCÊ CONSEGUIU!</h1>
                 <p style="color: #64ffda; font-weight: bold; margin-bottom: 10px;">O VERDADEIRO TESOURO SEMPRE FOI VOCÊ.</p>
-                <img id="finale-photo" src="" alt="Foto Final"
+                <img id="finale-photo" src="imgs/bestImgs.jpeg" alt="Foto Final"
                     onerror="this.src='https://placehold.co/400x250/3b0764/a855f7?text=Foto+Especial+Julia'">
                 <p style="color: #e2e8f0; font-size: 0.95rem; margin-bottom: 20px;">
                     Você chegou até o fim. Mas, se eu pudesse escolher uma única coisa para você levar dessa aventura, seria isso:
@@ -664,9 +668,9 @@ canvas {
         // Collectible Memories List
         // Posição ajustada para ficar no interior da Faculdade
         const memories = [
-            { id: 1, x: 1900, y: 350, img: FOTO_01, text: "Que sorte a minha poder olhar para o lado e encontrar você. Entre tantos lugares, tantas pessoas e tantos caminhos possíveis, existe você. E existe nós. Eu nunca quero tratar isso como algo comum.", collected: false },
-            { id: 2, x: 350, y: 2150, img: FOTO_02, text: "Eu dediquei esse gol a você. No meio da pressão, da torcida e da vontade de vencer, foi para você que eu pensei. E mesmo quando o resultado não foi o que eu queria, ter você comigo fez aquele momento valer a pena.", collected: false }, // <-- Posição interna
-            { id: 3, x: 2100, y: 1500, img: FOTO_03, text: "Essa flor foi pequena perto do que eu gostaria de conseguir te entregar. Mas naquele gesto existia uma vontade enorme de te fazer sorrir. Eu amo lembrar das pequenas coisas que você gosta e transformar isso em uma lembrança nossa.", collected: false }
+            { id: 1, x: 1900, y: 350, img: FOTO_01, text: "Que sorte a minha poder olhar para o lado e encontrar você. Entre tantos lugares, tantas pessoas e tantos caminhos possíveis, existe você. E existe nós. Eu nunca quero tratar isso como algo comum. Primeiro Digito: 9", collected: false },
+            { id: 2, x: 350, y: 2150, img: FOTO_02, text: "Eu dediquei esse gol a você. No meio da pressão, da torcida e da vontade de vencer, foi para você que eu pensei. E mesmo quando o resultado não foi o que eu queria, ter você comigo fez aquele momento valer a pena. Segundo Digito: 4", collected: false }, // <-- Posição interna
+            { id: 3, x: 2100, y: 1500, img: FOTO_03, text: "Essa flor foi pequena perto do que eu gostaria de conseguir te entregar. Mas naquele gesto existia uma vontade enorme de te fazer sorrir. Eu amo lembrar das pequenas coisas que você gosta e transformar isso em uma lembrança nossa. Terceiro Digito: 7", collected: false }
         ];
 
         // NPCs Entities
