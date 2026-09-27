@@ -570,6 +570,11 @@
             background: #000;
             text-align: center;
             padding: 20px;
+
+            touch-action: pan-y;
+            /* Alinha os itens no topo para evitar que o card seja cortado em telas pequenas */
+            justify-content: flex-start;
+            overflow-y: auto;
         }
 
         .glitch-text {
@@ -589,9 +594,12 @@
             width: 90%;
             box-shadow: 0 0 30px rgba(212, 175, 55, 0.15);
             margin-bottom: 25px;
+            margin-top: auto; /* Centraliza verticalmente junto com o margin-bottom do botao */
 
-            max-height: 400px; /* Ajuste este valor conforme o tamanho desejado */
-            overflow-y: auto;   /* Adiciona a rolagem vertical quando necessário */
+            max-height: 60vh;
+            overflow-y: auto;
+            touch-action: pan-y;
+            -webkit-overflow-scrolling: touch;
         }
 
         /* Personalização da barra para navegadores Webkit (Chrome, Edge, Safari) */
