@@ -589,6 +589,28 @@
             width: 90%;
             box-shadow: 0 0 30px rgba(212, 175, 55, 0.15);
             margin-bottom: 25px;
+
+            max-height: 400px; /* Ajuste este valor conforme o tamanho desejado */
+            overflow-y: auto;   /* Adiciona a rolagem vertical quando necessário */
+        }
+
+        /* Personalização da barra para navegadores Webkit (Chrome, Edge, Safari) */
+        .final-card::-webkit-scrollbar {
+            width: 6px; /* Largura da barra */
+        }
+
+        .final-card::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2); /* Fundo do caminho da barra */
+            border-radius: 4px;
+        }
+
+        .final-card::-webkit-scrollbar-thumb {
+            background: var(--gold-accent, #d4af37); /* Cor do indicador de rolagem */
+            border-radius: 4px;
+        }
+
+        .final-card::-webkit-scrollbar-thumb:hover {
+            background: #f1c40f; /* Cor ao passar o mouse */
         }
 
         .outro-title {
