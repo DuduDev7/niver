@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ENTRE NÓS — Um Jogo para Duas Pessoas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono&display=swap" rel="stylesheet">
+
+  <style>
+    /* =====================================================
+       ESTILOS GERAIS & VARIÁVEIS
+       ===================================================== */
+    :root {
+      --bg-dark: #070408;
+      --bg-card: rgba(22, 14, 28, 0.75);
+      --border-light: rgba(255, 255, 255, 0.12);
+      
+      --accent-red: #e63946;
+      --accent-pink: #ff4d6d;
+      --accent-purple: #a2d2ff;
+      --accent-gold: #ffb703;
+      --accent-glow: rgba(255, 77, 109, 0.4);
+
+      --text-main: #f8f9fa;
+      --text-muted: #b0a8b9;
+      --text-dim: #6c6377;
+
+      --font-title: 'Cinzel', serif;
+      --font-sans: 'Plus Jakarta Sans', sans-serif;
+      --font-mono: 'Space Mono', monospace;
+
+      --cat-sentimental: #ff4d6d;
+      --cat-engracadas: #ffb703;
+      --cat-picante: #c77dff;
+      --cat-curiosidades: #4cc9f0;
+      --cat-historia: #f72585;
+
+      --current-cat-color: var(--accent-pink);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+    }
+
+    /* BACKGROUND PARTICLES & GLOW */
+    #bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .ambient-glow {
+      position: fixed;
+      width: 70vw;
+      height: 70vw;
+      max-width: 650px;
+      max-height: 650px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--accent-glow) 0%, rgba(0,0,0,0) 70%);
+      opacity: 0.25;
+      filter: blur(90px);
+      z-index: 1;
+      pointer-events: none;
+      transition: background 1s ease;
+      animation: floatGlow 14s infinite alternate ease-in-out;
+    }
+    .glow-1 { top: -15%; left: -15%; }
+    .glow-2 { bottom: -15%; right: -15%; animation-delay: -7s; }
+
+    @keyframes floatGlow {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(10%, 12%) scale(1.15); }
+    }
+
+    /* CONTAINER PRINCIPAL & TELAS */
+    #app-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+    }
+
+    .screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem 1.2rem;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px) scale(0.98);
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                  visibility 0.6s;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .screen.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+    }
+
+    .screen-content {
+      max-width: 700px;
+      width: 100%;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+
+    /* TIPOGRAFIA & BADGES */
+    .tag-header {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 3px;
+      color: var(--current-cat-color);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: color 0.5s ease;
+    }
+
+    .tag-header::before, .tag-header::after {
+      content: '';
+      width: 18px;
+      height: 1px;
+      background: currentColor;
+      opacity: 0.5;
+    }
+
+    h1 {
+      font-family: var(--font-title);
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 800;
+      letter-spacing: 2px;
+      margin-bottom: 0.8rem;
+      background: linear-gradient(135deg, #ffffff 0%, #e2e2e2 50%, var(--accent-pink) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 40px rgba(255, 77, 109, 0.3);
+    }
+
+    h2 {
+      font-family: var(--font-title);
+      font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: #fff;
+    }
+
+    .subtitle {
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      color: var(--text-muted);
+      font-weight: 300;
+      margin-bottom: 1.8rem;
+      line-height: 1.6;
+    }
+
+    .poetic-text p {
+      font-size: clamp(0.95rem, 2.2vw, 1.1rem);
+      color: var(--text-muted);
+      line-height: 1.8;
+      font-weight: 300;
+      margin-bottom: 0.6rem;
+    }
+
+    .poetic-text p.highlight {
+      color: var(--text-main);
+      font-weight: 500;
+      margin-top: 1rem;
+    }
+
+    /* BOTÕES */
+    .btn-container {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+      width: 100%;
+    }
+
+    .btn-primary {
+      position: relative;
+      padding: 1.1rem 2.8rem;
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      color: #ffffff;
+      background: linear-gradient(135deg, rgba(255, 77, 109, 0.2), rgba(162, 210, 255, 0.1));
+      border: 1px solid var(--current-cat-color);
+      border-radius: 50px;
+      cursor: pointer;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 0 25px rgba(255, 77, 109, 0.25), inset 0 0 15px rgba(255, 77, 109, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-primary:hover, .btn-primary:active {
+      background: var(--current-cat-color);
+      box-shadow: 0 0 35px var(--current-cat-color);
+      transform: translateY(-2px) scale(1.03);
+      color: #000;
+      font-weight: 700;
+    }
+
+    .btn-secondary {
+      padding: 0.8rem 1.8rem;
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-light);
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+    }
+
+    .btn-secondary:hover {
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-menu {
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+      padding: 0.6rem 1.2rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-light);
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 20;
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-menu:hover {
+      color: #fff;
+      border-color: var(--accent-pink);
+      background: rgba(255, 77, 109, 0.15);
+    }
+
+    /* INPUTS DE JOGADORES (TELA REGRAS / CONFIG) */
+    .players-inputs {
+      display: flex;
+      gap: 1rem;
+      width: 100%;
+      max-width: 450px;
+      margin: 1.5rem 0;
+    }
+
+    .input-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      text-align: left;
+    }
+
+    .input-group label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 0.9rem 1.2rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      color: #fff;
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .input-group input:focus {
+      border-color: var(--accent-pink);
+      box-shadow: 0 0 15px rgba(255, 77, 109, 0.2);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    /* REGRAS LISTA */
+    .rules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      width: 100%;
+      margin: 1.5rem 0;
+      text-align: left;
+    }
+
+    .rule-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 1.2rem;
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+    }
+
+    .rule-num {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--accent-pink);
+      margin-bottom: 0.4rem;
+    }
+
+    .rule-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 0.3rem;
+      color: #fff;
+    }
+
+    .rule-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      font-weight: 300;
+    }
+
+    /* CATEGORIAS GRID */
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem;
+      width: 100%;
+      margin: 1.5rem 0;
+    }
+
+    .category-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 20px;
+      padding: 1.6rem 1.2rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .category-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--cat-color);
+      opacity: 0.7;
+      transition: height 0.3s ease;
+    }
+
+    .category-card:hover {
+      transform: translateY(-6px) scale(1.02);
+      border-color: var(--cat-color);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 20px var(--cat-glow);
+    }
+
+    .category-card:hover::before {
+      height: 6px;
+    }
+
+    .cat-icon {
+      font-size: 2rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .cat-title {
+      font-family: var(--font-title);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+
+    .cat-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      font-weight: 300;
+      margin-bottom: 1rem;
+    }
+
+    .cat-count {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--cat-color);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* =====================================================
+       MESA DO JOGO & CARTA FÍSICA 3D
+       ===================================================== */
+    .game-header {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      max-width: 380px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--current-cat-color), var(--accent-purple));
+      box-shadow: 0 0 12px var(--current-cat-color);
+      transition: width 0.5s ease;
+    }
+
+    .game-stats {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: flex;
+      gap: 15px;
+      letter-spacing: 1px;
+    }
+
+    /* PALCO DA CARTA 3D */
+    .card-stage {
+      perspective: 1200px;
+      width: 100%;
+      max-width: 420px;
+      height: 480px;
+      margin: 0.5rem 0 1.5rem 0;
+      position: relative;
+    }
+
+    .card-3d {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      transform-style: preserve-3d;
+      transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      cursor: pointer;
+    }
+
+    .card-3d.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-3d.exit-left {
+      animation: cardExitLeft 0.6s forwards ease-in;
+    }
+
+    .card-3d.enter-right {
+      animation: cardEnterRight 0.6s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes cardExitLeft {
+      0% { transform: translateX(0) rotate(-2deg); opacity: 1; }
+      100% { transform: translateX(-120%) rotate(-20deg); opacity: 0; }
+    }
+
+    @keyframes cardEnterRight {
+      0% { transform: translateX(120%) rotate(20deg); opacity: 0; }
+      100% { transform: translateX(0) rotate(0deg); opacity: 1; }
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 28px;
+      padding: 2.2rem 1.8rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-light);
+      background: var(--bg-card);
+      backdrop-filter: blur(15px);
+      overflow: hidden;
+    }
+
+    /* FRENTE DA CARTA */
+    .card-front {
+      border-color: var(--current-cat-color);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 30px var(--accent-glow);
+    }
+
+    .card-front::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 60%);
+      opacity: 0.15;
+      pointer-events: none;
+    }
+
+    .card-category-badge {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--current-cat-color);
+      padding: 0.4rem 1rem;
+      border: 1px solid var(--current-cat-color);
+      border-radius: 20px;
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .card-question-text {
+      font-family: var(--font-sans);
+      font-size: clamp(1.15rem, 3.2vw, 1.45rem);
+      font-weight: 600;
+      line-height: 1.6;
+      color: #fff;
+      margin: auto 0;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    .turn-indicator {
+      width: 100%;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .turn-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+
+    .turn-player-name {
+      font-family: var(--font-title);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--current-cat-color);
+      text-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    /* VERSO DA CARTA */
+    .card-back {
+      transform: rotateY(180deg);
+      background: radial-gradient(circle, #1a0f24 0%, #08040a 100%);
+      border-color: var(--border-light);
+      justify-content: center;
+      gap: 1.5rem;
+    }
+
+    .card-back-pattern {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 2px dashed var(--current-cat-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: var(--font-title);
+      font-size: 1.8rem;
+      color: var(--current-cat-color);
+      box-shadow: 0 0 20px var(--accent-glow);
+      animation: spinPattern 20s linear infinite;
+    }
+
+    @keyframes spinPattern {
+      100% { transform: rotate(360deg); }
+    }
+
+    /* BOTÕES DA MESA */
+    .game-controls {
+      display: flex;
+      gap: 1rem;
+      width: 100%;
+      max-width: 420px;
+      justify-content: center;
+    }
+
+    .btn-action {
+      flex: 2;
+      padding: 1rem 1.5rem;
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #000;
+      background: var(--current-cat-color);
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 0 20px var(--current-cat-color);
+      transition: all 0.3s ease;
+    }
+
+    .btn-action:hover, .btn-action:active {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 0 30px var(--current-cat-color);
+    }
+
+    .btn-skip {
+      flex: 1;
+      padding: 1rem 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-light);
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-skip:hover {
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* POPUP / TOAST FEEDBACK PARA PERGUNTA PULADA */
+    .toast-msg {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(50px);
+      padding: 0.8rem 1.6rem;
+      background: rgba(18, 12, 24, 0.95);
+      border: 1px solid var(--accent-pink);
+      border-radius: 30px;
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 15px var(--accent-glow);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 100;
+    }
+
+    .toast-msg.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* MODAL DE CONFIRMAÇÃO DO MENU */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(3, 2, 5, 0.85);
+      backdrop-filter: blur(12px);
+      z-index: 200;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 24px;
+      padding: 2rem;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    }
+
+    .modal-title {
+      font-family: var(--font-title);
+      font-size: 1.4rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .modal-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+
+    /* RESPONSIVIDADE MOBILE */
+    @media (max-width: 600px) {
+      .screen { padding: 4rem 1rem 2rem 1rem; }
+      .card-stage { height: 420px; }
+      .card-face { padding: 1.8rem 1.4rem; }
+      .btn-menu { top: 1rem; left: 1rem; }
+      .rules-grid, .categories-grid { grid-template-columns: 1fr; }
+      .players-inputs { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CANVAS PARTICULAS -->
+  <canvas id="bg-canvas"></canvas>
+  <div class="ambient-glow glow-1" id="glow1"></div>
+  <div class="ambient-glow glow-2" id="glow2"></div>
+
+  <!-- TOAST FEEDBACK PARA PULAR -->
+  <div id="toast-msg" class="toast-msg">Pergunta arquivada. 👀</div>
+
+  <!-- MODAL VOLTAR MENU -->
+  <div id="modal-menu" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-title">Voltar para o Menu?</div>
+      <div class="modal-desc">Seu progresso nesta rodada será perdido. Tem certeza de que deseja sair?</div>
+      <div class="btn-container" style="margin-top: 0;">
+        <button class="btn-primary" style="padding: 0.8rem 1.8rem; font-size: 0.85rem;" onclick="confirmExitMenu()">SIM, SAIR</button>
+        <button class="btn-secondary" onclick="closeExitModal()">CONTINUAR JOGANDO</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTAINER DE TELAS -->
+  <div id="app-container">
+
+    <!-- =====================================================
+         TELA 01 — INICIAL
+         ===================================================== -->
+    <section class="screen active" id="screen-start">
+      <div class="screen-content">
+        <div class="tag-header">JOGO DE PERGUNTAS PARA DOIS</div>
+        <h1>ENTRE NÓS</h1>
+        <div class="subtitle">Um jogo pensado para conectar pessoas, criar memórias e despertar conversas sinceras.</div>
+
+        <div class="poetic-text">
+          <p>“Algumas perguntas são fáceis.”</p>
+          <p>“Algumas fazem rir.”</p>
+          <p>“Algumas fazem pensar.”</p>
+          <p>“E algumas talvez vocês nunca tenham feito um ao outro.”</p>
+          <p class="highlight">Não existem respostas certas. Só existem respostas sinceras.</p>
+        </div>
+
+        <div class="btn-container">
+          <button class="btn-primary" onclick="goToScreen('screen-rules')">VAMOS JOGAR</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         TELA 02 — COMO JOGAR & NOMES
+         ===================================================== -->
+    <section class="screen" id="screen-rules">
+      <button class="btn-menu" onclick="goToScreen('screen-start')">← INÍCIO</button>
+      <div class="screen-content">
+        <div class="tag-header">GUIA DO JOGO</div>
+        <h2>COMO JOGAR</h2>
+
+        <!-- INPUTS DE NOMES -->
+        <div class="players-inputs">
+          <div class="input-group">
+            <label for="p1-name">Pessoa 1</label>
+            <input type="text" id="p1-name" value="Pessoa 1" placeholder="Seu nome">
+          </div>
+          <div class="input-group">
+            <label for="p2-name">Pessoa 2</label>
+            <input type="text" id="p2-name" value="Pessoa 2" placeholder="Nome do parceiro(a)">
+          </div>
+        </div>
+
+        <div class="rules-grid">
+          <div class="rule-card">
+            <div class="rule-num">01</div>
+            <div class="rule-title">Uma carta por vez</div>
+            <div class="rule-desc">A pergunta surge na tela com total atenção.</div>
+          </div>
+          <div class="rule-card">
+            <div class="rule-num">02</div>
+            <div class="rule-title">Alternem o turno</div>
+            <div class="rule-desc">Uma pessoa responde e depois passa o aparelho.</div>
+          </div>
+          <div class="rule-card">
+            <div class="rule-num">03</div>
+            <div class="rule-title">Sem pressão</div>
+            <div class="rule-desc">Não há respostas certas ou erradas.</div>
+          </div>
+          <div class="rule-card">
+            <div class="rule-num">04</div>
+            <div class="rule-title">Pode pular</div>
+            <div class="rule-desc">Se algo for desconfortável, basta pular sem julgamentos.</div>
+          </div>
+        </div>
+
+        <div style="font-size: 0.85rem; color: var(--accent-pink); font-family: var(--font-mono); margin-top: 0.5rem;">
+          IMPORTANTE: O jogo não é uma competição. É uma desculpa para vocês conversarem.
+        </div>
+
+        <div class="btn-container">
+          <button class="btn-primary" onclick="savePlayersAndNext()">ESCOLHER CLIMA</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         TELA 03 — ESCOLHA DE CATEGORIA
+         ===================================================== -->
+    <section class="screen" id="screen-categories">
+      <button class="btn-menu" onclick="goToScreen('screen-rules')">← NOMES</button>
+      <div class="screen-content">
+        <div class="tag-header">SELEÇÃO DE DECK</div>
+        <h2>ESCOLHA O CLIMA</h2>
+        <div class="subtitle" style="margin-bottom: 1rem;">Qual energia vocês querem para essa rodada?</div>
+
+        <div class="categories-grid" id="categories-grid">
+          <!-- GERADO DINAMICAMENTE -->
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         TELA 04 — MESA DO JOGO (CARTA)
+         ===================================================== -->
+    <section class="screen" id="screen-game">
+      <button class="btn-menu" onclick="openExitModal()">← MENU</button>
+      <div class="screen-content">
+        
+        <div class="game-header">
+          <div class="tag-header" id="game-cat-title">PROFUNDO & SENTIMENTAL</div>
+          <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="progress-fill"></div>
+          </div>
+          <div class="game-stats">
+            <span id="game-progress-text">PERGUNTA 1 / 10</span>
+          </div>
+        </div>
+
+        <!-- CARTA 3D -->
+        <div class="card-stage">
+          <div class="card-3d" id="card-element" onclick="handleCardClick()">
+            <!-- FRENTE -->
+            <div class="card-face card-front">
+              <div class="card-category-badge" id="card-badge">❤️ SENTIMENTAL</div>
+              <div class="card-question-text" id="card-question">Carregando pergunta...</div>
+              <div class="turn-indicator">
+                <div class="turn-label">AGORA É A VEZ DE:</div>
+                <div class="turn-player-name" id="turn-player">JULIA ❤️</div>
+              </div>
+            </div>
+
+            <!-- VERSO -->
+            <div class="card-face card-back">
+              <div class="card-back-pattern">❖</div>
+              <div style="font-family: var(--font-title); font-size: 1.2rem; color: #fff;">ENTRE NÓS</div>
+              <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);">Toque para revelar a pergunta</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONTROLES -->
+        <div class="game-controls">
+          <button class="btn-skip" onclick="skipQuestion()">PULAR</button>
+          <button class="btn-action" id="btn-action" onclick="answerQuestion()">RESPONDI ❤️</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =====================================================
+         TELA 05 — FIM DO BARALHO / ESTATÍSTICAS
+         ===================================================== -->
+    <section class="screen" id="screen-end">
+      <div class="screen-content">
+        <div class="tag-header">RODADA CONCLUÍDA</div>
+        <h2>FIM DO BARALHO ❤️</h2>
+        <div class="subtitle">Vocês chegaram ao final das cartas dessa categoria.</div>
+
+        <div style="width: 100%; max-width: 400px; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 20px; padding: 1.5rem; margin: 1rem 0; text-align: left; backdrop-filter: blur(10px);">
+          <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); margin-bottom: 0.8rem; letter-spacing: 1px;">RESUMO DA PARTIDA</div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.6rem; font-size: 0.95rem;">
+            <span style="color: var(--text-muted);">Perguntas respondidas:</span>
+            <strong style="color: #fff;" id="end-answered">0</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.6rem; font-size: 0.95rem;">
+            <span style="color: var(--text-muted);">Perguntas puladas:</span>
+            <strong style="color: var(--accent-pink);" id="end-skipped">0</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.95rem;">
+            <span style="color: var(--text-muted);">Categoria:</span>
+            <strong style="color: var(--current-cat-color);" id="end-category-name">Sentimental</strong>
+          </div>
+        </div>
+
+        <div class="poetic-text" style="max-width: 500px; margin: 1rem 0;">
+          <p>“Talvez vocês tenham começado esse jogo achando que era só um monte de perguntas.”</p>
+          <p>“Mas algumas respostas provavelmente viraram conversas.”</p>
+          <p class="highlight">E talvez essa seja a melhor parte.</p>
+        </div>
+
+        <div class="btn-container">
+          <button class="btn-primary" onclick="goToScreen('screen-categories')">JOGAR OUTRA CATEGORIA</button>
+          <button class="btn-secondary" onclick="restartSameCategory()">REJOGAR ESTA CATEGORIA</button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- =====================================================
+       SISTEMA JAVASCRIPT
+       ===================================================== -->
+  <script>
+    /* =====================================================
+       CONFIGURAÇÕES FÁCEIS DE ALTERAR (PERGUNTAS & BANCO)
+       ===================================================== */
+    const configJogo = {
+      p1Default: "Pessoa 1",
+      p2Default: "Pessoa 2",
+      
+      mensagensPular: [
+        "Essa foi arquivada. 👀",
+        "Tudo bem, essa fica nos arquivos secretos.",
+        "Pulamos. Sem julgamentos. 🤫",
+        "Segredo mantido com sucesso.",
+        "Próxima carta a caminho! ✨"
+      ]
+    };
+
+    // BANCO DE PERGUNTAS POR CATEGORIA (LIVRE PARA ADICIONAR MAIS)
+    const perguntas = {
+      sentimental: [
+        "Quando você percebeu que estava começando a ter sentimentos por mim?",
+        "Qual foi o momento em que você percebeu que eu era diferente das outras pessoas?",
+        "Quando você percebeu que podia confiar em mim de verdade?",
+        "Qual momento nosso você gostaria de reviver exatamente como aconteceu?",
+        "Tem alguma coisa que eu faço que faz você se sentir especialmente amada(o)?",
+        "Qual foi um momento em que você percebeu que realmente se importava comigo?",
+        "O que você acha que mudou em você depois que me conheceu?",
+        "Qual lembrança nossa você acha que nunca vai esquecer?",
+        "Existe alguma coisa que você nunca me contou porque nunca encontrou o momento certo?",
+        "Se pudesse guardar apenas uma memória nossa para sempre, qual seria?"
+      ],
+
+      engracadas: [
+        "Qual é a coisa mais estranha ou engraçada que você acha que eu faço?",
+        "Se eu fosse preso(a), qual seria o motivo mais provável?",
+        "Qual seria o nosso pior reality show se fôssemos gravados 24h?",
+        "Qual mania minha você acha secretamente engraçada?",
+        "Se tivéssemos que sobreviver juntos a um apocalipse zumbi, quem morreria primeiro?",
+        "Qual foi o momento mais vergonhoso que você passou do meu lado?",
+        "Se eu fosse um personagem de desenho animado, qual eu seria?",
+        "Qual seria a coisa mais idiota pela qual nós dois provavelmente brigaríamos?",
+        "Quem de nós dois seria pior morando sozinho sem ajuda?",
+        "Qual foi a situação em que você mais pensou: 'não é possível que essa pessoa fez isso'?"
+      ],
+
+      picante: [
+        "Qual foi o momento exato em que você mais sentiu atração por mim?",
+        "O que você acha visualmente mais irresistível em mim?",
+        "Qual tipo de beijo nosso você mais gosta e mais sente falta no dia a dia?",
+        "Qual situação entre nós teve a química mais intensa até hoje?",
+        "O que eu faço ou digo que imediatamente muda seu humor para um tom mais romântico?",
+        "Qual roupa ou estilo meu você mais gosta de ver em mim?",
+        "Qual foi um momento em que você ficou com muita vontade de me beijar e teve que disfarçar?",
+        "Você prefere uma noite romântica e planejada ou uma noite completamente imprevisível?",
+        "Qual é uma coisa que eu faço e provavelmente nem percebo que mexe com você?",
+        "Qual seria o cenário de um encontro perfeito para nós dois se ninguém pudesse atrapalhar?"
+      ],
+
+      curiosidades: [
+        "Qual detalhe ou coisa pequena consegue melhorar seu dia instantaneamente?",
+        "Qual sonho pessoal seu você ainda não contou para quase ninguém?",
+        "Qual opinião forte sua mudou completamente nos últimos anos?",
+        "Qual habilidade ou coisa nova você gostaria de aprender se tivesse tempo livre?",
+        "Qual seria uma viagem maluca que você faria amanhã se pudesse?",
+        "Qual é um fato curioso sobre você que poucas pessoas no mundo sabem?",
+        "Qual hábito seu do dia a dia você gostaria de mudar?",
+        "Qual foi uma decisão aparentemente pequena na sua vida que mudou muita coisa no final?",
+        "Qual lugar no mundo você gostaria muito que nós conhecêssemos juntos?",
+        "O que você acha que as pessoas em geral costumam entender errado sobre você?"
+      ],
+
+      historia: [
+        "Qual foi sua exata primeira impressão de mim quando me viu pela primeira vez?",
+        "Você lembra do exato instante em que percebeu que gostava da minha companhia?",
+        "Qual foi o nosso primeiro momento que pareceu realmente especial para você?",
+        "Qual foi a situação mais aleatória que vivemos e que virou uma memória marcante?",
+        "Qual foi o momento em que você percebeu que nossa relação estava ficando séria?",
+        "Qual foi o nosso encontro ou passeio favorito até hoje?",
+        "Qual lembrança simples nossa sempre faz você sorrir sozinho(a)?",
+        "Qual foi uma coisa pequena que eu fiz por você no passado e que você nunca esqueceu?",
+        "Se você pudesse reescrever ou voltar para um dia específico da nossa história, qual seria?",
+        "O que você mais espera que ainda vire uma memória marcante nossa no futuro?"
+      ]
+    };
+
+    // DADOS DAS CATEGORIAS (VISUAL E META)
+    const infoCategorias = {
+      sentimental: {
+        title: "Profundo & Sentimental",
+        icon: "❤️",
+        color: "var(--cat-sentimental)",
+        desc: "Para quando vocês querem conversar de verdade sobre sentimentos e conexão."
+      },
+      engracadas: {
+        title: "Engraçadas & Leves",
+        icon: "😂",
+        color: "var(--cat-engracadas)",
+        desc: "Perguntas absurdas e histórias para rir juntos e passar vergonha."
+      },
+      picante: {
+        title: "Picante & Química",
+        icon: "🔥",
+        color: "var(--cat-picante)",
+        desc: "Provocações sutis, atração, preferências e intimidade para esquentar o clima."
+      },
+      curiosidades: {
+        title: "Curiosidades",
+        icon: "🧠",
+        color: "var(--cat-curiosidades)",
+        desc: "Para descobrir detalhes e segredos que vocês talvez nunca perguntaram."
+      },
+      historia: {
+        title: "Nossa História",
+        icon: "🫶",
+        color: "var(--cat-historia)",
+        desc: "Para relembrar momentos marcantes, primeiras impressões e memórias."
+      }
+    };
+
+    /* =====================================================
+       ESTADO DO JOGO
+       ===================================================== */
+    let p1Name = configJogo.p1Default;
+    let p2Name = configJogo.p2Default;
+    
+    let currentCategoryKey = '';
+    let deck = [];
+    let currentQuestionIndex = 0;
+    let currentPlayerTurn = 1; // 1 or 2
+    let answeredCount = 0;
+    let skippedCount = 0;
+    let isFlipped = false;
+
+    /* =====================================================
+       ÁUDIO SINTETIZADO (WEB AUDIO API - SEM ARQUIVOS EXTERNOS)
+       ===================================================== */
+    function playAudioTone(freq, type = 'sine', duration = 0.15) {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch (e) {
+        // Ignorar se o navegador bloquear autoplay
+      }
+    }
+
+    /* =====================================================
+       INICIALIZAÇÃO & NAVEGAÇÃO
+       ===================================================== */
+    function goToScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      const target = document.getElementById(screenId);
+      if (target) {
+        target.classList.add('active');
+      }
+    }
+
+    function renderCategories() {
+      const grid = document.getElementById('categories-grid');
+      grid.innerHTML = '';
+
+      Object.keys(infoCategorias).forEach(key => {
+        const cat = infoCategorias[key];
+        const total = perguntas[key] ? perguntas[key].length : 0;
+
+        const card = document.createElement('div');
+        card.className = 'category-card';
+        card.style.setProperty('--cat-color', cat.color);
+        card.style.setProperty('--cat-glow', cat.color + '44');
+
+        card.innerHTML = `
+          <div>
+            <div class="cat-icon">${cat.icon}</div>
+            <div class="cat-title">${cat.title}</div>
+            <div class="cat-desc">${cat.desc}</div>
+          </div>
+          <div class="cat-count">${total} CARTAS NO BARALHO</div>
+        `;
+
+        card.onclick = () => selectCategory(key);
+        grid.appendChild(card);
+      });
+    }
+
+    function savePlayersAndNext() {
+      const p1Input = document.getElementById('p1-name').value.trim();
+      const p2Input = document.getElementById('p2-name').value.trim();
+
+      p1Name = p1Input || configJogo.p1Default;
+      p2Name = p2Input || configJogo.p2Default;
+
+      goToScreen('screen-categories');
+    }
+
+    /* =====================================================
+       LÓGICA DO JOGO DA MESA DE CARTAS
+       ===================================================== */
+    function selectCategory(catKey) {
+      currentCategoryKey = catKey;
+      const catInfo = infoCategorias[catKey];
+
+      // Atualizar cor global do tema da partida
+      document.documentElement.style.setProperty('--current-cat-color', catInfo.color);
+      document.getElementById('glow1').style.background = `radial-gradient(circle, ${catInfo.color}88 0%, transparent 70%)`;
+
+      // Preparar e embaralhar baralho
+      const originalQuestions = perguntas[catKey] || [];
+      deck = [...originalQuestions];
+      shuffleArray(deck);
+
+      currentQuestionIndex = 0;
+      currentPlayerTurn = 1;
+      answeredCount = 0;
+      skippedCount = 0;
+      isFlipped = false;
+
+      // Atualizar elementos visuais
+      document.getElementById('game-cat-title').innerText = catInfo.title.toUpperCase();
+      document.getElementById('card-badge').innerText = `${catInfo.icon} ${catInfo.title}`;
+
+      renderCurrentCard();
+      goToScreen('screen-game');
+      playAudioTone(440, 'triangle');
+    }
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function renderCurrentCard() {
+      const total = deck.length;
+      const cardEl = document.getElementById('card-element');
+      
+      if (currentQuestionIndex >= total) {
+        finishGame();
+        return;
+      }
+
+      // Resetar virada de carta
+      cardEl.classList.remove('flipped');
+      isFlipped = false;
+
+      // Atualizar barra de progresso
+      const progressPercent = ((currentQuestionIndex) / total) * 100;
+      document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+      document.getElementById('game-progress-text').innerText = `PERGUNTA ${currentQuestionIndex + 1} / ${total}`;
+
+      // Texto da pergunta
+      document.getElementById('card-question').innerText = `“${deck[currentQuestionIndex]}”`;
+
+      // Jogador do turno
+      const activeName = currentPlayerTurn === 1 ? p1Name : p2Name;
+      document.getElementById('turn-player').innerText = `${activeName} ${currentPlayerTurn === 1 ? '❤️' : '✨'}`;
+    }
+
+    function handleCardClick() {
+      const cardEl = document.getElementById('card-element');
+      cardEl.classList.toggle('flipped');
+      isFlipped = !isFlipped;
+      playAudioTone(300, 'sine', 0.1);
+    }
+
+    function answerQuestion() {
+      answeredCount++;
+      nextCardTransition();
+    }
+
+    function skipQuestion() {
+      skippedCount++;
+      
+      // Toast de feedback
+      const msgs = configJogo.mensagensPular;
+      const randomMsg = msgs[Math.floor(Math.random() * msgs.length)];
+      showToast(randomMsg);
+
+      nextCardTransition();
+    }
+
+    function nextCardTransition() {
+      const cardEl = document.getElementById('card-element');
+      
+      // Efeito de saída para a esquerda
+      cardEl.classList.add('exit-left');
+      playAudioTone(520, 'sine', 0.15);
+
+      setTimeout(() => {
+        currentQuestionIndex++;
+        currentPlayerTurn = currentPlayerTurn === 1 ? 2 : 1;
+
+        cardEl.classList.remove('exit-left');
+        
+        if (currentQuestionIndex < deck.length) {
+          renderCurrentCard();
+          // Efeito de entrada pela direita
+          cardEl.classList.add('enter-right');
+          setTimeout(() => {
+            cardEl.classList.remove('enter-right');
+          }, 600);
+        } else {
+          finishGame();
+        }
+      }, 500);
+    }
+
+    function showToast(text) {
+      const toast = document.getElementById('toast-msg');
+      toast.innerText = text;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500);
+    }
+
+    /* =====================================================
+       FIM DA PARTIDA & MODAL
+       ===================================================== */
+    function finishGame() {
+      const catInfo = infoCategorias[currentCategoryKey];
+      document.getElementById('end-answered').innerText = answeredCount;
+      document.getElementById('end-skipped').innerText = skippedCount;
+      document.getElementById('end-category-name').innerText = catInfo ? catInfo.title : 'Selecionada';
+
+      goToScreen('screen-end');
+      playAudioTone(587.33, 'triangle', 0.3); // Nota alegre de fim
+    }
+
+    function restartSameCategory() {
+      if (currentCategoryKey) {
+        selectCategory(currentCategoryKey);
+      }
+    }
+
+    function openExitModal() {
+      document.getElementById('modal-menu').classList.add('active');
+    }
+
+    function closeExitModal() {
+      document.getElementById('modal-menu').classList.remove('active');
+    }
+
+    function confirmExitMenu() {
+      closeExitModal();
+      goToScreen('screen-categories');
+    }
+
+    /* =====================================================
+       BACKGROUND PARTICLES CANVAS
+       ===================================================== */
+    function initBgParticles() {
+      const canvas = document.getElementById('bg-canvas');
+      const ctx = canvas.getContext('2d');
+      let width, height, particles = [];
+
+      function resize() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      class Particle {
+        constructor() { this.reset(); }
+        reset() {
+          this.x = Math.random() * width;
+          this.y = Math.random() * height;
+          this.size = Math.random() * 2 + 0.5;
+          this.vx = (Math.random() - 0.5) * 0.2;
+          this.vy = (Math.random() - 0.5) * 0.2;
+          this.alpha = Math.random() * 0.4 + 0.1;
+        }
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+          if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) this.reset();
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fillStyle = '#ffffff';
+          ctx.globalAlpha = this.alpha;
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        }
+      }
+
+      for (let i = 0; i < 50; i++) particles.push(new Particle());
+
+      function loop() {
+        ctx.clearRect(0, 0, width, height);
+        particles.forEach(p => { p.update(); p.draw(); });
+        requestAnimationFrame(loop);
+      }
+      loop();
+    }
+
+    // INICIALIZAÇÃO
+    window.addEventListener('DOMContentLoaded', () => {
+      renderCategories();
+      initBgParticles();
+    });
+  </script>
+</body>
+</html>

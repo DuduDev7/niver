@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>MEUS PENSAMENTOS — Para Julia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono&display=swap" rel="stylesheet">
+  
+  <style>
+    /* =====================================================
+       ESTILOS GERAIS & VARIÁVEIS
+       ===================================================== */
+    :root {
+      --bg-dark: #030305;
+      --bg-card: rgba(18, 12, 24, 0.65);
+      --bg-card-border: rgba(255, 43, 91, 0.2);
+      
+      --accent-pink: #ff2b5b;
+      --accent-pink-glow: rgba(255, 43, 91, 0.6);
+      --accent-purple: #9d4edd;
+      --accent-cyan: #00f0ff;
+      --accent-gold: #ffb703;
+      
+      --text-main: #f0f0f5;
+      --text-muted: #a0a0b8;
+      --text-dim: #62627a;
+      
+      --font-title: 'Cinzel', serif;
+      --font-sans: 'Plus Jakarta Sans', sans-serif;
+      --font-mono: 'Space Mono', monospace;
+      
+      --transition-speed: 0.8s;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 16px;
+    }
+
+    /* =====================================================
+       FUNDO DE PARTÍCULAS E GLOWS
+       ===================================================== */
+    #bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .ambient-glow {
+      position: fixed;
+      width: 60vw;
+      height: 60vw;
+      max-width: 600px;
+      max-height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--accent-pink-glow) 0%, rgba(0,0,0,0) 70%);
+      opacity: 0.15;
+      filter: blur(80px);
+      z-index: 1;
+      pointer-events: none;
+      animation: floatGlow 12s infinite alternate ease-in-out;
+    }
+
+    .glow-1 { top: -10%; left: -10%; }
+    .glow-2 { bottom: -10%; right: -10%; animation-delay: -6s; background: radial-gradient(circle, rgba(157, 78, 221, 0.5) 0%, rgba(0,0,0,0) 70%); }
+
+    @keyframes floatGlow {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(8%, 10%) scale(1.2); }
+    }
+
+    /* =====================================================
+       GERENCIAMENTO DE TELAS E CONTAINER
+       ===================================================== */
+    #app-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+    }
+
+    .screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem 1.5rem;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px) scale(0.98);
+      transition: opacity var(--transition-speed) cubic-bezier(0.16, 1, 0.3, 1),
+                  transform var(--transition-speed) cubic-bezier(0.16, 1, 0.3, 1),
+                  visibility var(--transition-speed);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .screen.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+    }
+
+    /* =====================================================
+       ESTILOS DE TIPOGRAFIA E COMPONENTES
+       ===================================================== */
+    .screen-content {
+      max-width: 900px;
+      width: 100%;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+
+    .tag-header {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 3px;
+      color: var(--accent-pink);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tag-header::before, .tag-header::after {
+      content: '';
+      width: 20px;
+      height: 1px;
+      background: var(--accent-pink);
+      opacity: 0.6;
+    }
+
+    h1, h2 {
+      font-family: var(--font-title);
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, #ffffff 0%, #d8d8e5 50%, var(--accent-pink) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 30px rgba(255, 43, 91, 0.2);
+    }
+
+    h1 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; }
+    h2 { font-size: clamp(1.6rem, 4vw, 2.5rem); line-height: 1.2; }
+
+    p.poetic-text {
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      line-height: 1.8;
+      color: var(--text-muted);
+      font-weight: 300;
+      max-width: 680px;
+      margin-bottom: 2rem;
+    }
+
+    p.poetic-text span.highlight {
+      color: var(--text-main);
+      font-weight: 500;
+      border-bottom: 1px dashed var(--accent-pink);
+    }
+
+    /* BOTÕES */
+    .btn-container {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+      width: 100%;
+    }
+
+    .btn-primary {
+      position: relative;
+      padding: 1.1rem 2.5rem;
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      color: #ffffff;
+      background: rgba(255, 43, 91, 0.12);
+      border: 1px solid var(--accent-pink);
+      border-radius: 50px;
+      cursor: pointer;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 0 20px rgba(255, 43, 91, 0.2), inset 0 0 15px rgba(255, 43, 91, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-primary:hover, .btn-primary:active {
+      background: var(--accent-pink);
+      box-shadow: 0 0 35px rgba(255, 43, 91, 0.6);
+      transform: translateY(-2px) scale(1.02);
+      color: #ffffff;
+    }
+
+    .btn-back {
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+      padding: 0.6rem 1.2rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 10;
+      backdrop-filter: blur(5px);
+    }
+
+    .btn-back:hover {
+      color: var(--text-main);
+      border-color: var(--accent-pink);
+      background: rgba(255, 43, 91, 0.1);
+    }
+
+    /* =====================================================
+       ESTRUTURA DOS GRÁFICOS (PIZZA / DONUT)
+       ===================================================== */
+    .chart-wrapper {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 3rem;
+      width: 100%;
+      margin: 1.5rem 0;
+    }
+
+    .chart-canvas-container {
+      position: relative;
+      width: 320px;
+      height: 320px;
+      flex-shrink: 0;
+    }
+
+    .chart-canvas-container canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .chart-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      text-align: left;
+      max-width: 320px;
+      width: 100%;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      transform: translateX(20px);
+      transition: all 0.4s ease;
+    }
+
+    .legend-item.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .legend-item:hover {
+      border-color: var(--accent-pink);
+      background: rgba(255, 43, 91, 0.08);
+      transform: translateX(5px);
+    }
+
+    .legend-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      box-shadow: 0 0 10px currentColor;
+    }
+
+    .legend-name {
+      font-size: 0.9rem;
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    .legend-value {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* TOOLTIP DO GRÁFICO */
+    .chart-tooltip {
+      position: absolute;
+      padding: 0.6rem 1rem;
+      background: rgba(10, 6, 18, 0.9);
+      border: 1px solid var(--accent-pink);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.8rem;
+      pointer-events: none;
+      opacity: 0;
+      transform: translate(-50%, -120%) scale(0.9);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5), 0 0 15px var(--accent-pink-glow);
+      z-index: 100;
+      font-family: var(--font-mono);
+      white-space: nowrap;
+    }
+
+    .chart-tooltip.active {
+      opacity: 1;
+      transform: translate(-50%, -120%) scale(1);
+    }
+
+    /* =====================================================
+       CARDS DE EXPLICAÇÃO (TELA 04)
+       ===================================================== */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.2rem;
+      width: 100%;
+      margin: 1.5rem 0 2rem 0;
+    }
+
+    .expl-card {
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: left;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .expl-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: linear-gradient(to bottom, var(--accent-pink), var(--accent-purple));
+    }
+
+    .expl-card:hover {
+      transform: translateY(-50px) scale(1.02);
+      transform: translateY(-4px);
+      border-color: var(--accent-pink);
+      box-shadow: 0 15px 35px rgba(255, 43, 91, 0.2);
+    }
+
+    .expl-card-title {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--accent-pink);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 0.6rem;
+    }
+
+    .expl-card-text {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-weight: 300;
+    }
+
+    /* =====================================================
+       TELA MISTERIOSA & ANIMAÇÃO DE DESBLOQUEIO (TELA 06)
+       ===================================================== */
+    #screen-06 {
+      background: radial-gradient(circle at center, #0d0714 0%, #030305 100%);
+    }
+
+    .unlock-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #030305;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+
+    .unlock-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .unlock-terminal {
+      font-family: var(--font-mono);
+      color: var(--accent-pink);
+      font-size: 1rem;
+      letter-spacing: 2px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .progress-bar-container {
+      width: 250px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .progress-bar-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink));
+      box-shadow: 0 0 10px var(--accent-pink);
+      transition: width 0.1s linear;
+    }
+
+    /* =====================================================
+       RESPONSIVIDADE (MOBILE ADAPTATION)
+       ===================================================== */
+    @media (max-width: 768px) {
+      .screen {
+        padding: 4rem 1.2rem 2rem 1.2rem;
+      }
+
+      .chart-wrapper {
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .chart-canvas-container {
+        width: 260px;
+        height: 260px;
+      }
+
+      .chart-legend {
+        max-width: 100%;
+      }
+
+      .btn-back {
+        top: 1rem;
+        left: 1rem;
+      }
+
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+
+      p.poetic-text {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CANVAS DE PARTÍCULAS EM SEGUNDO PLANO -->
+  <canvas id="bg-canvas"></canvas>
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
+  <!-- TOOLTIP GLOBAL PARA OS GRÁFICOS -->
+  <div id="global-tooltip" class="chart-tooltip"></div>
+
+  <!-- OVERLAY DE DESBLOQUEIO (MISTERIO) -->
+  <div id="unlock-overlay" class="unlock-overlay">
+    <div class="unlock-terminal">
+      <span id="unlock-status">ACCESSING PRIVATE MIND...</span>
+      <div class="progress-bar-container">
+        <div id="unlock-progress" class="progress-bar-fill"></div>
+      </div>
+      <span id="unlock-percent" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">0%</span>
+    </div>
+  </div>
+
+  <!-- CONTAINER DAS TELAS -->
+  <div id="app-container">
+
+    <!-- =====================================================
+         TELA 01 — INTRODUÇÃO
+         ===================================================== -->
+    <section class="screen active" id="screen-01">
+      <div class="screen-content">
+        <div class="tag-header">MIND MAP // FOR JULIA</div>
+        <h1 id="t1-title">MEUS PENSAMENTOS</h1>
+        <p class="poetic-text" id="t1-intro"></p>
+        <p class="poetic-text" style="font-size: 0.95rem; color: var(--text-dim); margin-top: -1rem;" id="t1-subtext"></p>
+        <div class="btn-container">
+          <button class="btn-primary" onclick="goToScreen(2)">ENTRAR NOS MEUS PENSAMENTOS</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         TELA 02 — COMO ERA ANTES DE VOCÊ
+         ===================================================== -->
+    <section class="screen" id="screen-02">
+      <button class="btn-back" onclick="goToScreen(1)">← VOLTAR</button>
+      <div class="screen-content">
+        <div class="tag-header">CAPÍTULO I // O PASSADO</div>
+        <h2 id="t2-title">COMO ERA ANTES DE VOCÊ</h2>
+        <p class="poetic-text" id="t2-text"></p>
+        <div class="btn-container">
+          <button class="btn-primary" onclick="goToScreen(3)">VER O GRÁFICO</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         TELA 03 — GRÁFICO "ANTES DE VOCÊ"
+         ===================================================== -->
+    <section class="screen" id="screen-03">
+      <button class="btn-back" onclick="goToScreen(2)">← VOLTAR</button>
+      <div class="screen-content">
+        <div class="tag-header">DADOS HISTÓRICOS</div>
+        <h2>ANTES DE VOCÊ</h2>
+        <p class="poetic-text" style="margin-bottom: 0.5rem;" id="t3-subtitle"></p>
+        
+        <div class="chart-wrapper">
+          <div class="chart-canvas-container">
+            <canvas id="canvas-antes"></canvas>
+          </div>
+          <div class="chart-legend" id="legend-antes"></div>
+        </div>
+
+        <p class="poetic-text" style="font-size: 0.9rem; color: var(--text-dim);" id="t3-reflex"></p>
+        
+        <div class="btn-container">
+          <button class="btn-primary" onclick="goToScreen(4)">E COMO FICOU DEPOIS?</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         TELA 04 — COMO É COM VOCÊ
+         ===================================================== -->
+    <section class="screen" id="screen-04">
+      <button class="btn-back" onclick="goToScreen(3)">← VOLTAR</button>
+      <div class="screen-content">
+        <div class="tag-header">CAPÍTULO II // A MUDANÇA</div>
+        <h2 id="t4-title">COMO É COM VOCÊ</h2>
+        <p class="poetic-text" id="t4-maintext"></p>
+        
+        <!-- CARDS GERADOS AUTOMATICAMENTE PELO JS -->
+        <div class="cards-grid" id="cards-container"></div>
+
+        <div class="btn-container">
+          <button class="btn-primary" onclick="goToScreen(5)">VER O NOVO GRÁFICO</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         TELA 05 — GRÁFICO "COM VOCÊ"
+         ===================================================== -->
+    <section class="screen" id="screen-05">
+      <button class="btn-back" onclick="goToScreen(4)">← VOLTAR</button>
+      <div class="screen-content">
+        <div class="tag-header">NOVA CONFIGURAÇÃO</div>
+        <h2>COM VOCÊ</h2>
+        <p class="poetic-text" style="margin-bottom: 0.5rem;" id="t5-phrase"></p>
+
+        <div class="chart-wrapper">
+          <div class="chart-canvas-container">
+            <canvas id="canvas-com-voce"></canvas>
+          </div>
+          <div class="chart-legend" id="legend-com-voce"></div>
+        </div>
+
+        <p class="poetic-text" style="font-size: 0.9rem; color: var(--text-dim);" id="t5-desc"></p>
+
+        <div class="btn-container">
+          <button class="btn-primary" onclick="goToScreen(6)">MAS ISSO AINDA NÃO É TUDO...</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         TELA 06 — VER DE VERDADE (MISTÉRIO)
+         ===================================================== -->
+    <section class="screen" id="screen-06">
+      <button class="btn-back" onclick="goToScreen(5)">← VOLTAR</button>
+      <div class="screen-content">
+        <div class="tag-header" style="color: var(--accent-cyan); border-color: var(--accent-cyan);">AREA RESTRITA</div>
+        <h2 style="background: linear-gradient(135deg, #fff, var(--accent-cyan)); -webkit-background-clip: text;">VOCÊ QUER MESMO VER?</h2>
+        <p class="poetic-text" id="t6-text1"></p>
+        <p class="poetic-text" style="color: var(--accent-pink); font-weight: 500;" id="t6-text2"></p>
+        
+        <div class="btn-container">
+          <button class="btn-primary" style="border-color: var(--accent-cyan); box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);" onclick="triggerUnlock()">VER DE VERDADE OS MEUS PENSAMENTOS</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         TELA 07 — GRÁFICO FINAL
+         ===================================================== -->
+    <section class="screen" id="screen-07">
+      <button class="btn-back" onclick="goToScreen(6)">← VOLTAR</button>
+      <div class="screen-content">
+        <div class="tag-header" style="color: var(--accent-gold);">NÚCLEO DO PENSAMENTO</div>
+        <h2 style="background: linear-gradient(135deg, #fff, var(--accent-gold)); -webkit-background-clip: text;">MEUS PENSAMENTOS DE VERDADE</h2>
+        <p class="poetic-text" style="margin-bottom: 0.5rem;" id="t7-intro"></p>
+
+        <div class="chart-wrapper">
+          <div class="chart-canvas-container">
+            <canvas id="canvas-pensamentos"></canvas>
+          </div>
+          <div class="chart-legend" id="legend-pensamentos"></div>
+        </div>
+
+        <p class="poetic-text" style="font-size: 0.95rem; color: var(--text-main); margin-top: 1rem;" id="t7-final-text"></p>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- =====================================================
+       LÓGICA JAVASCRIPT
+       ===================================================== -->
+  <script>
+    // =====================================================
+    // CURINGAS — TEXTOS QUE VOCÊ PODE ALTERAR
+    // =====================================================
+    const textosCuringa = {
+      // TELA 01
+      t1_intro: "Talvez seja impossível explicar tudo o que passa na minha cabeça quando o assunto é você...",
+      t1_subtext: "Como explicar uma mente que muda de direção a cada cinco segundos? Talvez eu não consiga em palavras... então resolvi tentar transformar um pouco disso em números. Não porque sentimentos possam realmente ser medidos, mas porque talvez seja mais fácil te mostrar assim.",
+
+      // TELA 02
+      t2_text: "Antes de você chegar, minha mente funcionava num ritmo completamente diferente. Existia uma rotina estruturada, preocupações comuns e um silêncio confortável, mas previsível. Tudo parecia meio acinzentado e sob controle.",
+
+      // TELA 03
+      t3_subtitle: "Uma distribuição equilibrada, porém comum.",
+      t3_reflex: "Como você pode ver, a mente funcionava perfeitamente... mas faltava aquela faísca que muda tudo.",
+
+      // TELA 04
+      t4_title: "COMO É COM VOCÊ",
+      t4_maintext: "A partir do momento em que você entrou na minha vida, a arquitetura dos meus pensamentos foi completamente reescrita. O espaço que antes era ocupado por ruídos aleatórios agora tem um motivo muito claro.",
+
+      // TELA 05
+      t5_phrase: "O reajuste inevitável da minha mente.",
+      t5_desc: "Tudo acabou gravitando para o mesmo centro de atenção.",
+
+      // TELA 06
+      t6_text1: "Os dois gráficos anteriores foram apenas uma tentativa organizada de explicar o inexplicável...",
+      t6_text2: "O que vem a seguir é o que realmente se passa no fundo do meu peito quando escuto o seu nome.",
+
+      // TELA 07
+      t7_intro: "Sem filtros, sem teorias. Apenas a verdade pura.",
+      t7_final_text: "No fim das contas, Julia, quase todos os caminhos na minha cabeça terminam exatamente em você. ❤️"
+    };
+
+    // =====================================================
+    // CURINGAS — GRÁFICOS (ALTERE VALORES E NOMES AQUI)
+    // =====================================================
+    const graficoAntes = [
+      { nome: "Trabalho & Estudos", valor: 40 },
+      { nome: "Música & Hobbies", valor: 30 },
+      { nome: "Preocupações Aleatórias", valor: 20 },
+      { nome: "Sono & Descanso", valor: 10 }
+    ];
+
+    const graficoComVoce = [
+      { nome: "Pensando na Julia", valor: 55 },
+      { nome: "Lembrando de conversas", valor: 20 },
+      { nome: "Trabalho (Tentando focar)", valor: 15 },
+      { nome: "Outros assuntos", valor: 10 }
+    ];
+
+    const graficoPensamentos = [
+      { nome: "Você / Nós", valor: 70 },
+      { nome: "Vontade de te ver", valor: 20 },
+      { nome: "Saudade", valor: 10 }
+      // Pode adicionar mais se quiser:
+      // , { nome: "Novo Curinga", valor: 15 }
+    ];
+
+    // =====================================================
+    // CURINGAS — EXPLICAÇÕES DA TELA 04
+    // =====================================================
+    const explicacoesComVoce = [
+      {
+        nome: "Pensando na Julia",
+        texto: "Uma constante no meu dia. Não importa o quão ocupado eu esteja, sempre há um pensamento paralelo focado em você."
+      },
+      {
+        nome: "Lembrando de conversas",
+        texto: "Repassando na cabeça piadas internas, áudios e momentos que me fazem sorrir sozinho no meio do dia."
+      },
+      {
+        nome: "Trabalho (Tentando focar)",
+        texto: "A parte do cérebro que tenta manter a produtividade, embora frequentemente interrompida por distrações boas."
+      },
+      {
+        nome: "Outros assuntos",
+        texto: "Tudo o mais na vida que sobrou, agora ocupando uma fatia bem menor do que costumava ocupar."
+      }
+    ];
+
+    // PALETA DE CORES PARA OS GRÁFICOS (Geradas dinamicamente)
+    const colorPalette = [
+      '#ff2b5b', '#9d4edd', '#00f0ff', '#ffb703', 
+      '#70e000', '#ff0676', '#4cc9f0', '#f72585'
+    ];
+
+    // =====================================================
+    // SISTEMA DE NAVEGAÇÃO DE TELAS
+    // =====================================================
+    let currentScreen = 1;
+
+    function injectTextContent() {
+      document.getElementById('t1-intro').innerText = textosCuringa.t1_intro;
+      document.getElementById('t1-subtext').innerText = textosCuringa.t1_subtext;
+      document.getElementById('t2-text').innerText = textosCuringa.t2_text;
+      document.getElementById('t3-subtitle').innerText = textosCuringa.t3_subtitle;
+      document.getElementById('t3-reflex').innerText = textosCuringa.t3_reflex;
+      document.getElementById('t4-title').innerText = textosCuringa.t4_title;
+      document.getElementById('t4-maintext').innerText = textosCuringa.t4_maintext;
+      document.getElementById('t5-phrase').innerText = textosCuringa.t5_phrase;
+      document.getElementById('t5-desc').innerText = textosCuringa.t5_desc;
+      document.getElementById('t6-text1').innerText = textosCuringa.t6_text1;
+      document.getElementById('t6-text2').innerText = textosCuringa.t6_text2;
+      document.getElementById('t7-intro').innerText = textosCuringa.t7_intro;
+      document.getElementById('t7-final-text').innerText = textosCuringa.t7_final_text;
+
+      // Injetar Cards da Tela 04
+      const cardsContainer = document.getElementById('cards-container');
+      cardsContainer.innerHTML = '';
+      explicacoesComVoce.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'expl-card';
+        card.innerHTML = `
+          <div class="expl-card-title">${item.nome}</div>
+          <div class="expl-card-text">${item.texto}</div>
+        `;
+        cardsContainer.appendChild(card);
+      });
+    }
+
+    function goToScreen(screenNumber) {
+      const currentEl = document.getElementById(`screen-0${currentScreen}`);
+      const nextEl = document.getElementById(`screen-0${screenNumber}`);
+
+      if (currentEl) currentEl.classList.remove('active');
+      
+      setTimeout(() => {
+        if (nextEl) {
+          nextEl.classList.add('active');
+          currentScreen = screenNumber;
+          
+          // Trigger de renderização/animação dos gráficos de acordo com a tela
+          if (screenNumber === 3) {
+            renderPieChart('canvas-antes', 'legend-antes', graficoAntes);
+          } else if (screenNumber === 5) {
+            renderPieChart('canvas-com-voce', 'legend-com-voce', graficoComVoce);
+          } else if (screenNumber === 7) {
+            renderPieChart('canvas-pensamentos', 'legend-pensamentos', graficoPensamentos);
+          }
+        }
+      }, 300);
+    }
+
+    // =====================================================
+    // ANIMAÇÃO DE DESBLOQUEIO (TELA 06 -> TELA 07)
+    // =====================================================
+    function triggerUnlock() {
+      const overlay = document.getElementById('unlock-overlay');
+      const progressBar = document.getElementById('unlock-progress');
+      const percentText = document.getElementById('unlock-percent');
+      
+      overlay.classList.add('active');
+      let progress = 0;
+
+      const interval = setInterval(() => {
+        progress += Math.floor(Math.random() * 15) + 5;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(interval);
+          
+          setTimeout(() => {
+            overlay.classList.remove('active');
+            goToScreen(7);
+            // Reset bar
+            setTimeout(() => { progressBar.style.width = '0%'; percentText.innerText = '0%'; }, 500);
+          }, 600);
+        }
+        progressBar.style.width = progress + '%';
+        percentText.innerText = progress + '%';
+      }, 120);
+    }
+
+    // =====================================================
+    // MOTEUR DE GRÁFICOS (SVG / CANVAS AUTOMÁTICO)
+    // =====================================================
+    const chartInstances = {};
+
+    function renderPieChart(canvasId, legendId, rawData) {
+      const canvas = document.getElementById(canvasId);
+      const legendContainer = document.getElementById(legendId);
+      if (!canvas || !legendContainer) return;
+
+      const ctx = canvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+      
+      // Ajustar tamanho real do canvas para telas High-DPI
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+
+      const width = rect.width;
+      const height = rect.height;
+      const centerX = width / 2;
+      const centerY = height / 2;
+      const radius = Math.min(width, height) / 2 - 20;
+
+      // Normalização automática de valores (Soma = 100%)
+      const totalSum = rawData.reduce((acc, curr) => acc + curr.valor, 0);
+      const processedData = rawData.map((item, index) => ({
+        nome: item.nome,
+        valorOriginal: item.valor,
+        porcentagem: ((item.valor / totalSum) * 100).toFixed(1),
+        angulo: (item.valor / totalSum) * Math.PI * 2,
+        cor: colorPalette[index % colorPalette.length]
+      }));
+
+      // Limpar legenda
+      legendContainer.innerHTML = '';
+      processedData.forEach((item, i) => {
+        const legItem = document.createElement('div');
+        legItem.className = 'legend-item';
+        legItem.id = `leg-${canvasId}-${i}`;
+        legItem.innerHTML = `
+          <div class="legend-left">
+            <div class="legend-color" style="background: ${item.cor}; color: ${item.cor};"></div>
+            <div class="legend-name">${item.nome}</div>
+          </div>
+          <div class="legend-value">${item.porcentagem}%</div>
+        `;
+        legendContainer.appendChild(legItem);
+
+        // Animação de entrada da legenda
+        setTimeout(() => {
+          legItem.classList.add('visible');
+        }, i * 150 + 300);
+      });
+
+      // Animação de desenho do gráfico
+      let animationProgress = 0;
+      let hoveredIndex = -1;
+
+      function drawChart(progress, hoverIdx = -1) {
+        ctx.clearRect(0, 0, width, height);
+
+        let currentAngle = -Math.PI / 2;
+
+        processedData.forEach((slice, index) => {
+          const sliceAngle = slice.angulo * progress;
+          const isHovered = index === hoverIdx;
+          const currentRadius = isHovered ? radius + 8 : radius;
+
+          ctx.beginPath();
+          ctx.moveTo(centerX, centerY);
+          ctx.arc(centerX, centerY, currentRadius, currentAngle, currentAngle + sliceAngle);
+          ctx.closePath();
+
+          // Preenchimento com gradiente sutil
+          ctx.fillStyle = slice.cor;
+          ctx.shadowBlur = isHovered ? 20 : 8;
+          ctx.shadowColor = slice.cor;
+          ctx.fill();
+
+          // Bordas finas entre as fatias
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = '#030305';
+          ctx.stroke();
+
+          currentAngle += sliceAngle;
+        });
+
+        // Círculo central (Donut Effect)
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius * 0.55, 0, Math.PI * 2);
+        ctx.fillStyle = '#030305';
+        ctx.shadowBlur = 0;
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+
+      // Loop de Animação Suave (RequestAnimationFrame)
+      const startTime = performance.now();
+      const duration = 1200; // ms
+
+      function animateChart(now) {
+        const elapsed = now - startTime;
+        animationProgress = Math.min(elapsed / duration, 1);
+        
+        // Easing (Cubic Out)
+        const easeProgress = 1 - Math.pow(1 - animationProgress, 3);
+
+        drawChart(easeProgress, hoveredIndex);
+
+        if (animationProgress < 1) {
+          requestAnimationFrame(animateChart);
+        }
+      }
+
+      requestAnimationFrame(animateChart);
+
+      // Gerenciamento de Interatividade (Hover / Touch)
+      const tooltip = document.getElementById('global-tooltip');
+
+      function handlePointerMove(e) {
+        const rect = canvas.getBoundingClientRect();
+        const x = (e.clientX || e.touches[0].clientX) - rect.left;
+        const y = (e.clientY || e.touches[0].clientY) - rect.top;
+
+        const dx = x - centerX;
+        const dy = y - centerY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        let newHoverIndex = -1;
+
+        if (dist >= radius * 0.55 && dist <= radius + 15) {
+          let angle = Math.atan2(dy, dx) + Math.PI / 2;
+          if (angle < 0) angle += Math.PI * 2;
+
+          let accumulatedAngle = 0;
+          for (let i = 0; i < processedData.length; i++) {
+            accumulatedAngle += processedData[i].angulo;
+            if (angle <= accumulatedAngle) {
+              newHoverIndex = i;
+              break;
+            }
+          }
+        }
+
+        if (newHoverIndex !== hoveredIndex) {
+          hoveredIndex = newHoverIndex;
+          drawChart(1, hoveredIndex);
+
+          // Destaque na legenda
+          processedData.forEach((_, i) => {
+            const legEl = document.getElementById(`leg-${canvasId}-${i}`);
+            if (legEl) {
+              if (i === hoveredIndex) {
+                legEl.style.borderColor = processedData[i].cor;
+                legEl.style.background = 'rgba(255, 255, 255, 0.1)';
+              } else {
+                legEl.style.borderColor = 'rgba(255, 255, 255, 0.06)';
+                legEl.style.background = 'var(--bg-card)';
+              }
+            }
+          });
+        }
+
+        if (hoveredIndex !== -1) {
+          const slice = processedData[hoveredIndex];
+          tooltip.innerHTML = `<strong>${slice.nome}</strong>: ${slice.porcentagem}%`;
+          tooltip.style.left = `${(e.clientX || e.touches[0].clientX)}px`;
+          tooltip.style.top = `${(e.clientY || e.touches[0].clientY)}px`;
+          tooltip.classList.add('active');
+        } else {
+          tooltip.classList.remove('active');
+        }
+      }
+
+      function handlePointerLeave() {
+        hoveredIndex = -1;
+        drawChart(1, -1);
+        tooltip.classList.remove('active');
+        processedData.forEach((_, i) => {
+          const legEl = document.getElementById(`leg-${canvasId}-${i}`);
+          if (legEl) {
+            legEl.style.borderColor = 'rgba(255, 255, 255, 0.06)';
+            legEl.style.background = 'var(--bg-card)';
+          }
+        });
+      }
+
+      canvas.onmousemove = handlePointerMove;
+      canvas.onmouseleave = handlePointerLeave;
+      canvas.ontouchstart = handlePointerMove;
+      canvas.ontouchend = handlePointerLeave;
+    }
+
+    // =====================================================
+    // CANVAS DE PARTÍCULAS EM SEGUNDO PLANO
+    // =====================================================
+    function initBgParticles() {
+      const bgCanvas = document.getElementById('bg-canvas');
+      const ctx = bgCanvas.getContext('2d');
+
+      let width, height;
+      let particles = [];
+
+      function resize() {
+        width = bgCanvas.width = window.innerWidth;
+        height = bgCanvas.height = window.innerHeight;
+      }
+
+      window.addEventListener('resize', resize);
+      resize();
+
+      class Particle {
+        constructor() {
+          this.reset();
+        }
+
+        reset() {
+          this.x = Math.random() * width;
+          this.y = Math.random() * height;
+          this.size = Math.random() * 2 + 0.5;
+          this.vx = (Math.random() - 0.5) * 0.3;
+          this.vy = (Math.random() - 0.5) * 0.3;
+          this.alpha = Math.random() * 0.5 + 0.1;
+          this.color = Math.random() > 0.5 ? '#ff2b5b' : '#9d4edd';
+        }
+
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+
+          if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) {
+            this.reset();
+          }
+        }
+
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fillStyle = this.color;
+          ctx.globalAlpha = this.alpha;
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        }
+      }
+
+      for (let i = 0; i < 60; i++) {
+        particles.push(new Particle());
+      }
+
+      function loop() {
+        ctx.clearRect(0, 0, width, height);
+        particles.forEach(p => {
+          p.update();
+          p.draw();
+        });
+        requestAnimationFrame(loop);
+      }
+
+      loop();
+    }
+
+    // INICIALIZAÇÃO GERAL
+    window.addEventListener('DOMContentLoaded', () => {
+      injectTextContent();
+      initBgParticles();
+    });
+  </script>
+</body>
+</html>
