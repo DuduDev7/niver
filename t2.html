@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nosso Pôr do Sol Especial ✨</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #030206;
+      font-family: 'Inter', sans-serif;
+      color: #fff;
+    }
+
+    .font-cursive {
+      font-family: 'Great Vibes', cursive;
+    }
+
+    .font-code {
+      font-family: 'Fira Code', monospace;
+    }
+
+    /* Glassmorphism Card Styling */
+    .glass-card {
+      background: rgba(15, 10, 26, 0.82);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 182, 193, 0.25);
+      box-shadow: 0 0 40px rgba(236, 72, 153, 0.2), inset 0 0 15px rgba(255, 182, 193, 0.1);
+    }
+
+    /* Animated Button Effects */
+    .btn-romantic {
+      background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #d946ef 100%);
+      background-size: 200% 200%;
+      animation: gradientShift 4s ease infinite;
+      box-shadow: 0 0 25px rgba(236, 72, 153, 0.5);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-romantic:hover {
+      box-shadow: 0 0 40px rgba(236, 72, 153, 0.85);
+      transform: translateY(-3px) scale(1.03);
+    }
+
+    .btn-romantic:active {
+      transform: translateY(1px) scale(0.98);
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.5; transform: scale(0.98); }
+      50% { opacity: 0.95; transform: scale(1.02); }
+    }
+
+    .pulse-text {
+      animation: pulseGlow 2.5s infinite ease-in-out;
+    }
+
+    /* Screen Fade transitions */
+    .fade-overlay {
+      transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  </style>
+</head>
+<body class="relative w-full h-full bg-[#030206] text-white overflow-hidden flex flex-col justify-between items-center">
+
+  <!-- Fullscreen Interactive Canvas -->
+  <div class="fixed inset-0 w-full h-full z-0">
+    <canvas id="particleCanvas" class="w-full h-full block cursor-pointer"></canvas>
+  </div>
+
+  <!-- UI Overlay: Top Hint and Bottom Action Button -->
+  <div id="uiOverlay" class="relative z-10 w-full h-full flex flex-col justify-between items-center p-6 pointer-events-none fade-overlay">
+    
+    <!-- Top Interactive Hint -->
+    <div class="mt-4 text-center">
+      <p class="pulse-text text-xs sm:text-sm uppercase tracking-widest text-pink-200/80 font-code drop-shadow-[0_0_10px_rgba(236,72,153,0.5)]">
+        ✨ Toque na tela ou passe o mouse para fazer brilhar ✨
+      </p>
+    </div>
+
+    <!-- Bottom Action Button -->
+    <div class="mb-6 pointer-events-auto">
+      <button id="btnNext" onclick="openMessageScreen()" class="btn-romantic px-8 py-4 rounded-full text-base sm:text-lg font-semibold tracking-wider text-white flex items-center gap-3 cursor-pointer">
+        <span>VER MENSAGEM ♥</span>
+        <svg class="w-5 h-5 text-white animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Message Screen Overlay (Glassmorphism Modal) -->
+  <div id="messageOverlay" class="fixed inset-0 z-20 flex items-center justify-center p-4 bg-black/60 opacity-0 pointer-events-none fade-overlay">
+    <div class="glass-card max-w-2xl w-full rounded-3xl p-6 sm:p-10 text-center transform scale-95 transition-all duration-700 id-card">
+      
+      <div class="text-4xl sm:text-5xl mb-3 animate-pulse">🌅💖</div>
+      
+      <h1 class="text-3xl sm:text-5xl font-bold font-cursive text-transparent bg-clip-text bg-gradient-to-r from-pink-300 via-rose-200 to-amber-200 mb-6 drop-shadow-[0_0_20px_rgba(236,72,153,0.4)]">
+        Para o Meu Grande Amor
+      </h1>
+
+      <div class="space-y-4 text-sm sm:text-base text-pink-100/90 leading-relaxed font-light mb-8">
+        <p>
+          Assim como cada pontinho de luz se reuniu para formar essa linda praia ao pôr do sol, cada detalhe em você constrói a paisagem mais perfeita da minha vida.
+        </p>
+        <p class="font-normal text-pink-200">
+          Você é a minha paz à beira-mar, o meu sol em dias nublados e o meu lugar favorito no mundo inteiro.
+        </p>
+        <p class="text-lg sm:text-xl font-bold text-pink-300 font-cursive tracking-wide pt-2">
+          Te amo para sempre! ✨
+        </p>
+      </div>
+
+      <!-- Restart Animation Button -->
+      <button onclick="closeMessageScreen()" class="px-6 py-2.5 rounded-full border border-pink-400/30 bg-pink-500/10 hover:bg-pink-500/20 text-pink-200 text-sm font-medium transition-all duration-300 hover:scale-105 cursor-pointer">
+        ↺ Rever a Paisagem
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+
+    let targetParticles = [];
+    let particles = [];
+    let burstParticles = [];
+
+    let isDispersed = false;
+
+    const mouse = {
+      x: -2000,
+      y: -2000,
+      radius: 100
+    };
+
+    function resizeCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx.scale(dpr, dpr);
+      generateLandscapeTargets();
+    }
+
+    // Color Palettes for landscape elements
+    const COLOR_PALETTES = {
+      sun: ['#FFE57F', '#FFD54F', '#FFB300', '#FF8F00', '#FF6D00', '#FF3D00'],
+      sunRays: ['#FFF59D', '#FFE082', '#FFCC80', '#FFAB91'],
+      sand: ['#FFE082', '#FFCA28', '#FFB300', '#E6C280', '#D4A373', '#FAEDCD'],
+      sea: ['#00E5FF', '#00B0FF', '#0091EA', '#00B4D8', '#48CAE4', '#90E0EF', '#00F5D4'],
+      coupleBody: ['#FF80AB', '#FF4081', '#F50057', '#EC4899', '#D946EF', '#E879F9', '#FFFFFF'],
+      coupleGlow: ['#F472B6', '#FB7185', '#FDA4AF', '#F43F5E'],
+      sky: ['#E040FB', '#EA80FC', '#FF80AB', '#FF4081', '#B388FF']
+    };
+
+    function getRandomColor(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function generateLandscapeTargets() {
+      targetParticles = [];
+
+      const minDim = Math.min(width, height);
+      const scale = Math.max(0.65, minDim / 750);
+
+      // --- 1. SUN IN TOP-RIGHT CORNER ---
+      const sunX = width - Math.max(100, width * 0.18);
+      const sunY = Math.max(100, height * 0.22);
+      const sunRadius = 60 * scale;
+
+      // Dense Sun Core
+      for (let i = 0; i < 220; i++) {
+        const r = Math.sqrt(Math.random()) * sunRadius;
+        const theta = Math.random() * Math.PI * 2;
+        targetParticles.push({
+          x: sunX + r * Math.cos(theta),
+          y: sunY + r * Math.sin(theta),
+          color: getRandomColor(COLOR_PALETTES.sun),
+          size: Math.random() * 2.8 + 1.2
+        });
+      }
+
+      // Sun Rays
+      const numRays = 18;
+      for (let i = 0; i < numRays; i++) {
+        const angle = (i / numRays) * Math.PI * 2;
+        const rayLength = (45 + Math.random() * 40) * scale;
+        for (let j = 0; j < 14; j++) {
+          const dist = sunRadius + (j / 14) * rayLength;
+          targetParticles.push({
+            x: sunX + Math.cos(angle) * dist + (Math.random() - 0.5) * 6,
+            y: sunY + Math.sin(angle) * dist + (Math.random() - 0.5) * 6,
+            color: getRandomColor(COLOR_PALETTES.sunRays),
+            size: Math.random() * 2 + 1
+          });
+        }
+      }
+
+      // --- 2. SAND BEACH IN FOREGROUND ---
+      const sandTopY = height - (140 * scale);
+      
+      // Curved sand shore
+      for (let x = 0; x <= width; x += 3.5) {
+        const curveY = sandTopY + Math.sin(x * 0.003) * (20 * scale);
+        for (let y = curveY; y <= height; y += 7 * scale) {
+          targetParticles.push({
+            x: x + (Math.random() - 0.5) * 4,
+            y: y + (Math.random() - 0.5) * 4,
+            color: getRandomColor(COLOR_PALETTES.sand),
+            size: Math.random() * 2.2 + 1.0
+          });
+        }
+      }
+
+      // --- 3. OCEAN / SEA IN BACKGROUND ---
+      const horizonY = height * 0.48;
+      
+      // Horizon line
+      for (let x = 0; x <= width; x += 4) {
+        targetParticles.push({
+          x: x,
+          y: horizonY + (Math.random() - 0.5) * 2,
+          color: getRandomColor(COLOR_PALETTES.sea),
+          size: Math.random() * 2 + 1
+        });
+      }
+
+      // Sea surface waves from horizon down to sand
+      for (let y = horizonY + 6; y < sandTopY + 30; y += 8 * scale) {
+        const progress = (y - horizonY) / (sandTopY - horizonY);
+        const step = Math.max(3, 16 - progress * 10);
+        for (let x = 0; x <= width; x += step) {
+          const wave = Math.sin(x * 0.012 + y * 0.05) * (4 * scale);
+          targetParticles.push({
+            x: x + (Math.random() - 0.5) * 6,
+            y: y + wave,
+            color: getRandomColor(COLOR_PALETTES.sea),
+            size: Math.random() * 2.2 + 0.8
+          });
+        }
+      }
+
+      // --- 4. HIGH-DETAIL CLEAR SILHOUETTE OF THE COUPLE ---
+      const centerX = width * 0.48;
+      const baseY = height - (60 * scale);
+
+      // Detailed fill function for recognized human shapes
+      function addFilledEllipse(cx, cy, rx, ry, density = 1) {
+        const count = Math.floor(rx * ry * 0.35 * density);
+        for (let i = 0; i < count; i++) {
+          const u = Math.random();
+          const v = Math.random();
+          const r = Math.sqrt(u);
+          const theta = v * Math.PI * 2;
+          targetParticles.push({
+            x: cx + r * rx * Math.cos(theta),
+            y: cy + r * ry * Math.sin(theta),
+            color: getRandomColor(COLOR_PALETTES.coupleBody),
+            size: Math.random() * 2.3 + 1.2
+          });
+        }
+      }
+
+      function addOutlineLine(x1, y1, x2, y2, density = 1.5) {
+        const dist = Math.hypot(x2 - x1, y2 - y1);
+        const count = Math.floor(dist * density);
+        for (let i = 0; i < count; i++) {
+          const t = i / count;
+          targetParticles.push({
+            x: x1 + (x2 - x1) * t + (Math.random() - 0.5) * 2.5,
+            y: y1 + (y2 - y1) * t + (Math.random() - 0.5) * 2.5,
+            color: getRandomColor(COLOR_PALETTES.coupleGlow),
+            size: Math.random() * 2.5 + 1.3
+          });
+        }
+      }
+
+      // MAN (RIGHT SIDE - TALLER, BROAD SHOULDERS)
+      const manX = centerX + (32 * scale);
+      const manHeadY = baseY - (220 * scale);
+      
+      // Man Head
+      addFilledEllipse(manX, manHeadY, 14 * scale, 18 * scale, 1.8);
+      // Man Neck & Shoulders
+      addOutlineLine(manX - (18 * scale), manHeadY + (30 * scale), manX + (24 * scale), manHeadY + (32 * scale), 2);
+      // Man Torso
+      addFilledEllipse(manX + (2 * scale), manHeadY + (75 * scale), 22 * scale, 45 * scale, 1.8);
+      // Man Legs
+      addFilledEllipse(manX - (8 * scale), manHeadY + (160 * scale), 10 * scale, 40 * scale, 1.5);
+      addFilledEllipse(manX + (12 * scale), manHeadY + (160 * scale), 10 * scale, 40 * scale, 1.5);
+
+      // WOMAN (LEFT SIDE - SLIGHTLY SHORTER, LEANING IN)
+      const womanX = centerX - (25 * scale);
+      const womanHeadY = baseY - (195 * scale);
+
+      // Woman Head
+      addFilledEllipse(womanX, womanHeadY, 12 * scale, 16 * scale, 1.8);
+      // Long Flowing Hair
+      for (let h = 0; h < 70; h++) {
+        const hairX = womanX - (10 * scale) + (Math.random() - 0.5) * (18 * scale);
+        const hairY = womanHeadY - (5 * scale) + Math.random() * (45 * scale);
+        targetParticles.push({
+          x: hairX,
+          y: hairY,
+          color: getRandomColor(COLOR_PALETTES.coupleBody),
+          size: Math.random() * 2.2 + 1.2
+        });
+      }
+      // Woman Torso / Dress
+      addFilledEllipse(womanX, womanHeadY + (65 * scale), 18 * scale, 38 * scale, 1.8);
+      // Woman Legs / Dress Base
+      addFilledEllipse(womanX - (2 * scale), womanHeadY + (145 * scale), 16 * scale, 42 * scale, 1.5);
+
+      // HUG / ARMS WRAPPED AROUND EACH OTHER
+      // Man's arm around woman's waist
+      addOutlineLine(manX - (10 * scale), manHeadY + (50 * scale), womanX + (10 * scale), womanHeadY + (55 * scale), 2.5);
+      // Woman's arm on man's shoulder
+      addOutlineLine(womanX + (8 * scale), womanHeadY + (45 * scale), manX - (5 * scale), manHeadY + (32 * scale), 2.5);
+
+      // HOLDING HANDS AT CENTER
+      addOutlineLine(womanX + (12 * scale), womanHeadY + (85 * scale), manX - (12 * scale), manHeadY + (88 * scale), 3);
+      addFilledEllipse(centerX, womanHeadY + (86 * scale), 8 * scale, 8 * scale, 2);
+
+      // --- 5. BACKGROUND SKY SPARKLES ---
+      for (let i = 0; i < 180; i++) {
+        targetParticles.push({
+          x: Math.random() * width,
+          y: Math.random() * (horizonY - 10),
+          color: getRandomColor(COLOR_PALETTES.sky),
+          size: Math.random() * 1.8 + 0.6
+        });
+      }
+    }
+
+    function initParticles() {
+      particles = [];
+      for (let i = 0; i < targetParticles.length; i++) {
+        const t = targetParticles[i];
+        
+        // Start randomly spread out over entire viewport
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          targetX: t.x,
+          targetY: t.y,
+          color: t.color,
+          size: t.size,
+          baseSize: t.size,
+          speed: 0.025 + Math.random() * 0.035,
+          vx: 0,
+          vy: 0
+        });
+      }
+    }
+
+    function createClickBurst(x, y) {
+      const allColors = [
+        ...COLOR_PALETTES.sun,
+        ...COLOR_PALETTES.sea,
+        ...COLOR_PALETTES.coupleBody
+      ];
+
+      for (let i = 0; i < 45; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 7 + 2;
+        burstParticles.push({
+          x: x,
+          y: y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          color: getRandomColor(allColors),
+          size: Math.random() * 4 + 2,
+          life: 1.0,
+          decay: Math.random() * 0.025 + 0.015
+        });
+      }
+    }
+
+    function animate() {
+      // Smooth motion trails
+      ctx.fillStyle = 'rgba(3, 2, 6, 0.22)';
+      ctx.fillRect(0, 0, width, height);
+
+      // Render Landscape Target Particles
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+
+        if (isDispersed) {
+          // Disperse particles outward smoothly
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vx *= 0.98;
+          p.vy *= 0.98;
+        } else {
+          // Move toward target position
+          const dx = p.targetX - p.x;
+          const dy = p.targetY - p.y;
+
+          p.x += dx * p.speed;
+          p.y += dy * p.speed;
+
+          // Interactive Mouse/Touch avoidance & glow expansion
+          const mdx = p.x - mouse.x;
+          const mdy = p.y - mouse.y;
+          const dist = Math.hypot(mdx, mdy);
+
+          if (dist < mouse.radius) {
+            const force = (mouse.radius - dist) / mouse.radius;
+            const angle = Math.atan2(mdy, mdx);
+            p.x += Math.cos(angle) * force * 12;
+            p.y += Math.sin(angle) * force * 12;
+            p.size = p.baseSize * (1 + force * 2);
+          } else {
+            p.size += (p.baseSize - p.size) * 0.1;
+          }
+        }
+
+        // Draw particle dot
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, Math.max(0.1, p.size), 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = p.color;
+        ctx.fill();
+      }
+
+      // Render Interactive Click Burst Particles
+      for (let i = burstParticles.length - 1; i >= 0; i--) {
+        const bp = burstParticles[i];
+        bp.x += bp.vx;
+        bp.y += bp.vy;
+        bp.vy += 0.06; // Gravity effect
+        bp.life -= bp.decay;
+
+        if (bp.life <= 0) {
+          burstParticles.splice(i, 1);
+          continue;
+        }
+
+        ctx.save();
+        ctx.globalAlpha = bp.life;
+        ctx.beginPath();
+        ctx.arc(bp.x, bp.y, Math.max(0.1, bp.size * bp.life), 0, Math.PI * 2);
+        ctx.fillStyle = bp.color;
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = bp.color;
+        ctx.fill();
+        ctx.restore();
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', () => {
+      resizeCanvas();
+      initParticles();
+    });
+
+    // Pointer Interaction Event Listeners
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches.length > 0) {
+        mouse.x = e.touches[0].clientX;
+        mouse.y = e.touches[0].clientY;
+      }
+    }, { passive: true });
+
+    window.addEventListener('mouseleave', () => {
+      mouse.x = -2000;
+      mouse.y = -2000;
+    });
+
+    window.addEventListener('click', (e) => {
+      if (e.target.tagName !== 'BUTTON') {
+        createClickBurst(e.clientX, e.clientY);
+      }
+    });
+
+    window.addEventListener('touchstart', (e) => {
+      if (e.target.tagName !== 'BUTTON' && e.touches.length > 0) {
+        createClickBurst(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+
+    // Overlay Screen Transitions
+    function openMessageScreen() {
+      isDispersed = true;
+
+      // Assign outward velocity for dispersal effect
+      particles.forEach(p => {
+        const angle = Math.random() * Math.PI * 2;
+        const force = Math.random() * 12 + 4;
+        p.vx = Math.cos(angle) * force;
+        p.vy = Math.sin(angle) * force;
+      });
+
+      const uiOverlay = document.getElementById('uiOverlay');
+      const messageOverlay = document.getElementById('messageOverlay');
+
+      uiOverlay.style.opacity = '0';
+      uiOverlay.style.pointerEvents = 'none';
+
+      setTimeout(() => {
+        messageOverlay.classList.remove('pointer-events-none');
+        messageOverlay.style.opacity = '1';
+        messageOverlay.querySelector('.glass-card').classList.remove('scale-95');
+        messageOverlay.querySelector('.glass-card').classList.add('scale-100');
+      }, 400);
+    }
+
+    function closeMessageScreen() {
+      isDispersed = false;
+
+      const uiOverlay = document.getElementById('uiOverlay');
+      const messageOverlay = document.getElementById('messageOverlay');
+
+      messageOverlay.style.opacity = '0';
+      messageOverlay.classList.add('pointer-events-none');
+      messageOverlay.querySelector('.glass-card').classList.remove('scale-100');
+      messageOverlay.querySelector('.glass-card').classList.add('scale-95');
+
+      setTimeout(() => {
+        uiOverlay.style.opacity = '1';
+        uiOverlay.style.pointerEvents = 'auto';
+        generateLandscapeTargets();
+        initParticles();
+      }, 600);
+    }
+
+    // Startup Initializer
+    window.onload = () => {
+      resizeCanvas();
+      initParticles();
+      animate();
+    };
+  </script>
+</body>
+</html>
