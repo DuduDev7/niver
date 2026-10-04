@@ -1,0 +1,953 @@
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mais Motivos ❤️</title>
+    <style>
+      /* =========================================================
+ MAIS MOTIVOS — ESTILO COMPLETO
+ ========================================================= */
+
+      :root {
+        --bg-1: #070811;
+        --bg-2: #111628;
+        --bg-3: #1b2035;
+        --pink: #ff6fba;
+        --pink-soft: #ffc4e3;
+        --purple: #9d6cff;
+        --text: #fff;
+        --muted: rgba(255, 255, 255, 0.72);
+        --glass: rgba(255, 255, 255, 0.055);
+        --glass-strong: rgba(255, 255, 255, 0.09);
+        --line: rgba(255, 255, 255, 0.13);
+        --shadow: 0 20px 70px rgba(0, 0, 0, 0.38);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        min-height: 100%;
+        scroll-behavior: smooth;
+        background: var(--bg-1);
+      }
+
+      body.mais-motivos-page {
+        margin: 0;
+        min-height: 100dvh;
+        width: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        color: var(--text);
+        font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont,
+          sans-serif;
+        background: radial-gradient(
+            circle at 50% -10%,
+            rgba(255, 105, 185, 0.2),
+            transparent 34rem
+          ),
+          radial-gradient(
+            circle at 10% 45%,
+            rgba(157, 108, 255, 0.1),
+            transparent 28rem
+          ),
+          linear-gradient(
+            180deg,
+            var(--bg-1) 0%,
+            var(--bg-2) 48%,
+            var(--bg-3) 100%
+          );
+      }
+
+      /* Barra de rolagem */
+      body.mais-motivos-page::-webkit-scrollbar {
+        width: 10px;
+      }
+      body.mais-motivos-page::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.025);
+      }
+      body.mais-motivos-page::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, var(--pink), var(--purple));
+        border-radius: 999px;
+        border: 2px solid var(--bg-1);
+      }
+      body.mais-motivos-page {
+        scrollbar-color: var(--pink) rgba(255, 255, 255, 0.025);
+        scrollbar-width: thin;
+      }
+
+      /* Fundo animado */
+      .bg {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        overflow: hidden;
+        opacity: 0.9;
+      }
+
+      .bg::before,
+      .bg::after {
+        content: '';
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(70px);
+        animation: floatGlow 12s ease-in-out infinite alternate;
+      }
+
+      .bg::before {
+        width: 420px;
+        height: 420px;
+        left: -170px;
+        top: 8%;
+        background: rgba(255, 78, 174, 0.12);
+      }
+
+      .bg::after {
+        width: 500px;
+        height: 500px;
+        right: -220px;
+        top: 42%;
+        background: rgba(135, 86, 255, 0.11);
+        animation-delay: -5s;
+      }
+
+      @keyframes floatGlow {
+        from {
+          transform: translate3d(0, 0, 0) scale(1);
+        }
+        to {
+          transform: translate3d(30px, 35px, 0) scale(1.12);
+        }
+      }
+
+      /* Conteúdo principal */
+      .mais-container {
+        position: relative;
+        z-index: 1;
+        width: min(1180px, 100%);
+        min-height: 100dvh;
+        margin: 0 auto;
+        padding: clamp(38px, 6vw, 80px) clamp(18px, 4vw, 42px) 90px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 42px;
+      }
+
+      /* Introdução */
+      .intro {
+        width: min(800px, 100%);
+        text-align: center;
+        padding: clamp(28px, 5vw, 48px);
+        border: 1px solid var(--line);
+        border-radius: 32px;
+        background: linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.075),
+          rgba(255, 255, 255, 0.025)
+        );
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        animation: fadeUp 0.8s ease both;
+      }
+
+      .intro h1 {
+        margin: 0 0 28px;
+        font-size: clamp(2rem, 4vw, 3.25rem);
+        line-height: 1.1;
+        letter-spacing: -1.5px;
+        color: var(--pink-soft);
+        text-shadow: 0 0 12px rgba(255, 111, 186, 0.45),
+          0 0 38px rgba(255, 111, 186, 0.18);
+      }
+
+      .intro p {
+        margin: 12px 0;
+        color: var(--muted);
+        font-size: clamp(1rem, 1.7vw, 1.18rem);
+        line-height: 1.85;
+      }
+
+      .intro strong {
+        color: #fff;
+      }
+
+      .destaque {
+        margin-top: 26px !important;
+        color: var(--pink-soft) !important;
+        font-size: clamp(1.15rem, 2vw, 1.45rem) !important;
+        font-weight: 700;
+        line-height: 1.7 !important;
+        text-shadow: 0 0 18px rgba(255, 105, 185, 0.55);
+      }
+
+      /* Menu de capítulos */
+      .menu-capitulos {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .menu-capitulos h2 {
+        width: 100%;
+        margin: 18px 0 4px;
+        padding: 22px 20px;
+        text-align: center;
+        color: #ffe0ef;
+        font-size: clamp(1.15rem, 2vw, 1.45rem);
+        font-weight: 700;
+        line-height: 1.4;
+        border-radius: 22px;
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        background: rgba(255, 255, 255, 0.035);
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.16);
+      }
+
+      .bloco-botoes {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .capitulo {
+        position: relative;
+        min-height: 66px;
+        padding: 15px 18px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 18px;
+        outline: none;
+        cursor: pointer;
+        overflow: hidden;
+        color: #fff;
+        font: inherit;
+        font-size: 0.98rem;
+        font-weight: 700;
+        line-height: 1.35;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 105, 185, 0.94),
+          rgba(157, 108, 255, 0.94)
+        );
+        box-shadow: 0 9px 24px rgba(0, 0, 0, 0.25),
+          inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        transition: transform 0.25s ease, box-shadow 0.25s ease,
+          filter 0.25s ease, border-color 0.25s ease;
+      }
+
+      .capitulo::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          115deg,
+          transparent 25%,
+          rgba(255, 255, 255, 0.22) 50%,
+          transparent 75%
+        );
+        transform: translateX(-130%);
+        transition: transform 0.55s ease;
+      }
+
+      .capitulo:hover {
+        transform: translateY(-5px) scale(1.015);
+        filter: saturate(1.08);
+        border-color: rgba(255, 255, 255, 0.32);
+        box-shadow: 0 15px 32px rgba(0, 0, 0, 0.35),
+          0 0 25px rgba(255, 105, 185, 0.16);
+      }
+
+      .capitulo:hover::before {
+        transform: translateX(130%);
+      }
+
+      .capitulo:active {
+        transform: translateY(-1px) scale(0.99);
+      }
+
+      .capitulo:focus-visible {
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.18),
+          0 0 0 6px rgba(255, 105, 185, 0.35);
+      }
+
+      /* Player */
+      .player {
+        width: min(820px, 100%);
+        display: none;
+        position: relative;
+        padding: clamp(28px, 5vw, 48px);
+        margin-top: 5px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 32px;
+        text-align: center;
+        background: linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.09),
+          rgba(255, 255, 255, 0.035)
+        );
+        box-shadow: 0 25px 80px rgba(0, 0, 0, 0.42),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        animation: playerIn 0.45s ease both;
+      }
+
+      .player::before {
+        content: '';
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        top: -90px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 50%;
+        background: rgba(255, 105, 185, 0.13);
+        filter: blur(45px);
+        pointer-events: none;
+      }
+
+      .player.ativo {
+        display: block;
+      }
+
+      .contador {
+        position: relative;
+        display: inline-block;
+        padding: 7px 14px;
+        border: 1px solid rgba(255, 184, 218, 0.18);
+        border-radius: 999px;
+        color: #ffb8da;
+        background: rgba(255, 105, 185, 0.07);
+        font-size: 0.88rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+
+      .player h2 {
+        position: relative;
+        margin: 24px 0 18px;
+        color: var(--pink-soft);
+        font-size: clamp(1.45rem, 3vw, 2.15rem);
+        line-height: 1.25;
+        text-shadow: 0 0 18px rgba(255, 105, 185, 0.24);
+      }
+
+      .player p {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 190px;
+        margin: 0;
+        color: rgba(255, 255, 255, 0.91);
+        font-size: clamp(1.12rem, 2vw, 1.45rem);
+        line-height: 1.85;
+        text-wrap: balance;
+      }
+
+      .botoes {
+        position: relative;
+        display: flex;
+        gap: 14px;
+        margin-top: 28px;
+      }
+
+      .botoes button {
+        flex: 1;
+        min-height: 54px;
+        border: 1px solid rgba(255, 255, 255, 0.13);
+        border-radius: 999px;
+        padding: 14px 20px;
+        cursor: pointer;
+        color: #fff;
+        font: inherit;
+        font-size: 1rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #ff67b4, #9d6cff);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+        transition: transform 0.22s ease, box-shadow 0.22s ease,
+          filter 0.22s ease;
+      }
+
+      .botoes button:hover {
+        transform: translateY(-3px);
+        filter: brightness(1.08);
+        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.32);
+      }
+
+      .botoes button:active {
+        transform: translateY(0);
+      }
+
+      /* Animações */
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(22px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes playerIn {
+        from {
+          opacity: 0;
+          transform: translateY(16px) scale(0.985);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      /* =========================================================
+ RESPONSIVO
+ ========================================================= */
+
+      @media (max-width: 1050px) {
+        .bloco-botoes {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 760px) {
+        .mais-container {
+          width: 100%;
+          min-height: 100dvh;
+          padding: 28px 16px 60px;
+          gap: 28px;
+        }
+
+        .intro {
+          border-radius: 25px;
+          padding: 28px 20px;
+        }
+
+        .intro h1 {
+          margin-bottom: 22px;
+        }
+
+        .intro p {
+          line-height: 1.7;
+        }
+
+        .menu-capitulos {
+          gap: 14px;
+        }
+
+        .menu-capitulos h2 {
+          padding: 18px 14px;
+          border-radius: 18px;
+        }
+
+        .bloco-botoes {
+          grid-template-columns: 1fr;
+          gap: 11px;
+        }
+
+        .capitulo {
+          min-height: 58px;
+          padding: 14px 16px;
+          border-radius: 16px;
+        }
+
+        .player {
+          padding: 27px 18px;
+          border-radius: 25px;
+        }
+
+        .player p {
+          min-height: 145px;
+          line-height: 1.7;
+        }
+
+        .botoes {
+          flex-direction: column;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="mais-motivos-page">
+    <div class="bg"></div>
+
+    <main class="mais-container">
+      <section class="intro">
+        <h1><span id="coracao-secreto">❤️</span> Achou que tinha terminado?</h1>
+
+        <p>
+          Você realmente acreditou que existiam apenas
+          <strong>1000 motivos</strong>?
+        </p>
+
+        <p>Eu só parei ali...</p>
+
+        <p>porque até o amor precisa de uma pausa para respirar.</p>
+
+        <br />
+
+        <p>Mas enquanto eu escrevia, percebi uma coisa...</p>
+
+        <p>
+          Ainda existiam centenas de coisas que eu nunca tinha colocado em
+          palavras.
+        </p>
+
+        <p>Então decidi continuar...</p>
+
+        <p class="destaque">
+          Porque, se eu pudesse, passaria a vida inteira escrevendo sobre você.
+        </p>
+      </section>
+
+      <!-- ========================= -->
+      <!-- 103 - 500 -->
+      <!-- ========================= -->
+
+      <section class="menu-capitulos">
+        <h2>Primeira Parte (103 a 500) ❤️</h2>
+
+        <div class="bloco-botoes">
+          <button class="capitulo" data-capitulo="103">
+            Motivos 103 até 150
+          </button>
+          <button class="capitulo" data-capitulo="151">
+            Motivos 151 até 200
+          </button>
+          <button class="capitulo" data-capitulo="201">
+            Motivos 201 até 250
+          </button>
+          <button class="capitulo" data-capitulo="251">
+            Motivos 251 até 300
+          </button>
+          <button class="capitulo" data-capitulo="301">
+            Motivos 301 até 350
+          </button>
+          <button class="capitulo" data-capitulo="351">
+            Motivos 351 até 400
+          </button>
+          <button class="capitulo" data-capitulo="401">
+            Motivos 401 até 450
+          </button>
+          <button class="capitulo" data-capitulo="451">
+            Motivos 451 até 500
+          </button>
+        </div>
+
+        <h2>Ainda não era o fim... ❤️</h2>
+
+        <div class="bloco-botoes">
+          <button class="capitulo" data-capitulo="501">
+            Motivos 501 até 550
+          </button>
+          <button class="capitulo" data-capitulo="551">
+            Motivos 551 até 600
+          </button>
+          <button class="capitulo" data-capitulo="601">
+            Motivos 601 até 650
+          </button>
+          <button class="capitulo" data-capitulo="651">
+            Motivos 651 até 700
+          </button>
+          <button class="capitulo" data-capitulo="701">
+            Motivos 701 até 750
+          </button>
+          <button class="capitulo" data-capitulo="751">
+            Motivos 751 até 800
+          </button>
+          <button class="capitulo" data-capitulo="801">
+            Motivos 801 até 850
+          </button>
+          <button class="capitulo" data-capitulo="851">
+            Motivos 851 até 900
+          </button>
+          <button class="capitulo" data-capitulo="901">
+            Motivos 901 até 950
+          </button>
+          <button class="capitulo" data-capitulo="951">
+            Motivos 951 até 1000
+          </button>
+        </div>
+
+        <!-- ========================= -->
+        <!-- NOVA PARTE -->
+        <!-- ========================= -->
+
+        <h2>Você realmente pensou que mil motivos seriam suficientes? ❤️</h2>
+
+        <div class="bloco-botoes">
+          <button class="capitulo" data-capitulo="1001">
+            Motivos 1001 até 1050
+          </button>
+
+          <button class="capitulo" data-capitulo="1051">
+            Motivos 1051 até 1100
+          </button>
+
+          <button class="capitulo" data-capitulo="1101">
+            Motivos 1101 até 1150
+          </button>
+
+          <button class="capitulo" data-capitulo="1151">
+            Motivos 1151 até 1200
+          </button>
+
+          <button class="capitulo" data-capitulo="1201">
+            Motivos 1201 até 1250
+          </button>
+
+          <button class="capitulo" data-capitulo="1251">
+            Motivos 1251 até 1300
+          </button>
+
+          <button class="capitulo" data-capitulo="1301">
+            Motivos 1301 até 1350
+          </button>
+
+          <button class="capitulo" data-capitulo="1351">
+            Motivos 1351 até 1400
+          </button>
+
+          <button class="capitulo" data-capitulo="1401">
+            Motivos 1401 até 1450
+          </button>
+
+          <button class="capitulo" data-capitulo="1451">
+            Motivos 1451 até 1500
+          </button>
+
+          <button class="capitulo" data-capitulo="1501">
+            Motivos 1501 até 1550
+          </button>
+
+          <button class="capitulo" data-capitulo="1551">
+            Motivos 1551 até 1600
+          </button>
+
+          <button class="capitulo" data-capitulo="1601">
+            Motivos 1601 até 1650
+          </button>
+
+          <button class="capitulo" data-capitulo="1651">
+            Motivos 1651 até 1700
+          </button>
+
+          <button class="capitulo" data-capitulo="1701">
+            Motivos 1701 até 1750
+          </button>
+
+          <button class="capitulo" data-capitulo="1751">
+            Motivos 1751 até 1800
+          </button>
+
+          <button class="capitulo" data-capitulo="1801">
+            Motivos 1801 até 1850
+          </button>
+
+          <button class="capitulo" data-capitulo="1851">
+            Motivos 1851 até 1900
+          </button>
+
+          <button class="capitulo" data-capitulo="1901">
+            Motivos 1901 até 1950
+          </button>
+
+          <button class="capitulo" data-capitulo="1951">
+            Motivos 1951 até 2000
+          </button>
+        </div>
+
+        <h2>Mas ainda faltava dizer tanta coisa... ❤️</h2>
+
+        <div class="bloco-botoes">
+          <button class="capitulo" data-capitulo="2001">
+            Motivos 2001 até 2050
+          </button>
+
+          <button class="capitulo" data-capitulo="2051">
+            Motivos 2051 até 2100
+          </button>
+
+          <button class="capitulo" data-capitulo="2101">
+            Motivos 2101 até 2150
+          </button>
+
+          <button class="capitulo" data-capitulo="2151">
+            Motivos 2151 até 2200
+          </button>
+
+          <button class="capitulo" data-capitulo="2201">
+            Motivos 2201 até 2250
+          </button>
+
+          <button class="capitulo" data-capitulo="2251">
+            Motivos 2251 até 2300
+          </button>
+
+          <button class="capitulo" data-capitulo="2301">
+            Motivos 2301 até 2350
+          </button>
+
+          <button class="capitulo" data-capitulo="2351">
+            Motivos 2351 até 2400
+          </button>
+
+          <button class="capitulo" data-capitulo="2401">
+            Motivos 2401 até 2450
+          </button>
+
+          <button class="capitulo" data-capitulo="2451">
+            Motivos 2451 até 2500
+          </button>
+
+          <button class="capitulo" data-capitulo="2501">
+            Motivos 2501 até 2550
+          </button>
+
+          <button class="capitulo" data-capitulo="2551">
+            Motivos 2551 até 2600
+          </button>
+
+          <button class="capitulo" data-capitulo="2601">
+            Motivos 2601 até 2650
+          </button>
+
+          <button class="capitulo" data-capitulo="2651">
+            Motivos 2651 até 2700
+          </button>
+
+          <button class="capitulo" data-capitulo="2701">
+            Motivos 2701 até 2750
+          </button>
+
+          <button class="capitulo" data-capitulo="2751">
+            Motivos 2751 até 2800
+          </button>
+
+          <button class="capitulo" data-capitulo="2801">
+            Motivos 2801 até 2850
+          </button>
+
+          <button class="capitulo" data-capitulo="2851">
+            Motivos 2851 até 2900
+          </button>
+
+          <button class="capitulo" data-capitulo="2901">
+            Motivos 2901 até 2950
+          </button>
+
+          <button class="capitulo" data-capitulo="2951">
+            Motivos 2951 até 3000
+          </button>
+        </div>
+
+        <h2>E se eu te dissesse que ainda não acabou? ❤️</h2>
+
+        <div class="bloco-botoes">
+          <button class="capitulo" data-capitulo="3001">
+            Motivos 3001 até 3050
+          </button>
+
+          <button class="capitulo" data-capitulo="3051">
+            Motivos 3051 até 3100
+          </button>
+
+          <button class="capitulo" data-capitulo="3101">
+            Motivos 3101 até 3150
+          </button>
+
+          <button class="capitulo" data-capitulo="3151">
+            Motivos 3151 até 3200
+          </button>
+
+          <button class="capitulo" data-capitulo="3201">
+            Motivos 3201 até 3250
+          </button>
+
+          <button class="capitulo" data-capitulo="3251">
+            Motivos 3251 até 3300
+          </button>
+
+          <button class="capitulo" data-capitulo="3301">
+            Motivos 3301 até 3350
+          </button>
+
+          <button class="capitulo" data-capitulo="3351">
+            Motivos 3351 até 3400
+          </button>
+
+          <button class="capitulo" data-capitulo="3401">
+            Motivos 3401 até 3450
+          </button>
+
+          <button class="capitulo" data-capitulo="3451">
+            Motivos 3451 até 3500
+          </button>
+
+          <button class="capitulo" data-capitulo="3501">
+            Motivos 3501 até 3550
+          </button>
+
+          <button class="capitulo" data-capitulo="3551">
+            Motivos 3551 até 3600
+          </button>
+
+          <button class="capitulo" data-capitulo="3601">
+            Motivos 3601 até 3650
+          </button>
+
+          <button class="capitulo" data-capitulo="3651">
+            Motivos 3651 até 3700
+          </button>
+
+          <button class="capitulo" data-capitulo="3701">
+            Motivos 3701 até 3750
+          </button>
+
+          <button class="capitulo" data-capitulo="3751">
+            Motivos 3751 até 3800
+          </button>
+
+          <button class="capitulo" data-capitulo="3801">
+            Motivos 3801 até 3850
+          </button>
+
+          <button class="capitulo" data-capitulo="3851">
+            Motivos 3851 até 3900
+          </button>
+
+          <button class="capitulo" data-capitulo="3901">
+            Motivos 3901 até 3950
+          </button>
+
+          <button class="capitulo" data-capitulo="3951">
+            Motivos 3951 até 4000
+          </button>
+        </div>
+
+        <h2>Os últimos motivos... ou será que ainda existem mais? ❤️</h2>
+
+        <div class="bloco-botoes">
+          <button class="capitulo" data-capitulo="4001">
+            Motivos 4001 até 4050
+          </button>
+
+          <button class="capitulo" data-capitulo="4051">
+            Motivos 4051 até 4100
+          </button>
+
+          <button class="capitulo" data-capitulo="4101">
+            Motivos 4101 até 4150
+          </button>
+
+          <button class="capitulo" data-capitulo="4151">
+            Motivos 4151 até 4200
+          </button>
+
+          <button class="capitulo" data-capitulo="4201">
+            Motivos 4201 até 4250
+          </button>
+
+          <button class="capitulo" data-capitulo="4251">
+            Motivos 4251 até 4300
+          </button>
+
+          <button class="capitulo" data-capitulo="4301">
+            Motivos 4301 até 4350
+          </button>
+
+          <button class="capitulo" data-capitulo="4351">
+            Motivos 4351 até 4400
+          </button>
+
+          <button class="capitulo" data-capitulo="4401">
+            Motivos 4401 até 4450
+          </button>
+
+          <button class="capitulo" data-capitulo="4451">
+            Motivos 4451 até 4500
+          </button>
+
+          <button class="capitulo" data-capitulo="4501">
+            Motivos 4501 até 4550
+          </button>
+
+          <button class="capitulo" data-capitulo="4551">
+            Motivos 4551 até 4600
+          </button>
+
+          <button class="capitulo" data-capitulo="4601">
+            Motivos 4601 até 4650
+          </button>
+
+          <button class="capitulo" data-capitulo="4651">
+            Motivos 4651 até 4700
+          </button>
+
+          <button class="capitulo" data-capitulo="4701">
+            Motivos 4701 até 4750
+          </button>
+
+          <button class="capitulo" data-capitulo="4751">
+            Motivos 4751 até 4800
+          </button>
+
+          <button class="capitulo" data-capitulo="4801">
+            Motivos 4801 até 4850
+          </button>
+
+          <button class="capitulo" data-capitulo="4851">
+            Motivos 4851 até 4900
+          </button>
+
+          <button class="capitulo" data-capitulo="4901">
+            Motivos 4901 até 4950
+          </button>
+
+          <button class="capitulo" data-capitulo="4951">
+            Motivos 4951 até 5000
+          </button>
+        </div>
+      </section>
+
+      <section class="player" id="player">
+        <span class="contador"> Capítulo </span>
+
+        <h2 id="titulo">Escolha um capítulo acima</h2>
+
+        <p id="motivo">❤️</p>
+
+        <div class="botoes">
+          <button id="anterior">⬅ Anterior</button>
+
+          <button id="proximo">Próximo ➜</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="js/motivos.js"></script>
+    <script src="js/desbloqueio.js"></script>
+  </body>
+</html>
