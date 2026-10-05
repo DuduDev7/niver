@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>2027 — Julia</title>
+  <style>
+    :root {
+      --bg-dark: #030508;
+      --bg-night: #090e17;
+      --bg-warm: #180e1a;
+      --gold: #f3ce70;
+      --gold-light: #fef0c7;
+      --sunset-orange: #ff7e5f;
+      --sunset-pink: #feb47b;
+      --rose: #e85d75;
+      --text-main: #f0f4f8;
+      --text-muted: #94a3b8;
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      position: relative;
+    }
+
+    /* Background Canvas for Stars and Effects */
+    #bg-canvas, #fireworks-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    #fireworks-canvas {
+      z-index: 50;
+    }
+
+    .app-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .screen {
+      position: absolute;
+      width: 100%;
+      max-width: 680px;
+      padding: 30px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px) scale(0.98);
+      transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), 
+                  transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+                  visibility 0.9s;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      max-height: 90vh;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+
+    .screen::-webkit-scrollbar {
+      display: none;
+    }
+
+    .screen.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+    }
+
+    h1.year-title {
+      font-size: 4rem;
+      font-weight: 200;
+      letter-spacing: 12px;
+      background: linear-gradient(135deg, #ffffff 0%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+      text-shadow: 0 0 30px rgba(243, 206, 112, 0.2);
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      font-weight: 300;
+      color: var(--gold-light);
+      margin-bottom: 18px;
+      line-height: 1.4;
+    }
+
+    p {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: var(--text-main);
+      margin-bottom: 16px;
+      font-weight: 300;
+      letter-spacing: 0.3px;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .btn {
+      margin-top: 24px;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, rgba(243, 206, 112, 0.15), rgba(232, 93, 117, 0.15));
+      border: 1px solid rgba(243, 206, 112, 0.4);
+      color: var(--gold-light);
+      font-size: 0.95rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border-radius: 50px;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 15px rgba(243, 206, 112, 0.1);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn:hover, .btn:active {
+      background: linear-gradient(135deg, rgba(243, 206, 112, 0.35), rgba(232, 93, 117, 0.35));
+      border-color: var(--gold);
+      box-shadow: 0 0 25px rgba(243, 206, 112, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border-color: rgba(255, 255, 255, 0.2);
+      color: var(--text-muted);
+    }
+
+    .btn-secondary:hover {
+      border-color: rgba(255, 255, 255, 0.5);
+      color: var(--text-main);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    }
+
+    .timer-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 24px 0;
+      width: 100%;
+    }
+
+    .timer-box {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(243, 206, 112, 0.2);
+      border-radius: 12px;
+      padding: 12px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .timer-val {
+      font-size: 1.8rem;
+      font-weight: 300;
+      color: var(--gold);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .timer-lbl {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    .calendar-strip {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin: 20px 0;
+      gap: 8px;
+    }
+
+    .month-card {
+      flex: 1;
+      padding: 14px 6px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      transition: all 0.5s ease;
+      opacity: 0.5;
+      transform: scale(0.95);
+    }
+
+    .month-card.highlight {
+      opacity: 1;
+      transform: scale(1.05);
+      background: linear-gradient(180deg, rgba(243, 206, 112, 0.15) 0%, rgba(0,0,0,0.3) 100%);
+      border-color: var(--gold);
+      box-shadow: 0 0 15px rgba(243, 206, 112, 0.2);
+    }
+
+    .month-name {
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+      font-weight: 500;
+    }
+
+    .christmas-tree {
+      width: 80px;
+      height: 100px;
+      margin: 15px auto;
+      position: relative;
+    }
+
+    .gift-box {
+      width: 90px;
+      height: 90px;
+      background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+      border-radius: 12px;
+      margin: 20px auto;
+      position: relative;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(185, 28, 28, 0.4);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gift-box:hover {
+      transform: scale(1.05) rotate(2deg);
+      box-shadow: 0 15px 30px rgba(185, 28, 28, 0.6);
+    }
+
+    .gift-ribbon-v {
+      position: absolute;
+      width: 16px;
+      height: 100%;
+      background: var(--gold);
+      top: 0;
+      left: calc(50% - 8px);
+    }
+
+    .gift-ribbon-h {
+      position: absolute;
+      height: 16px;
+      width: 100%;
+      background: var(--gold);
+      top: calc(50% - 8px);
+      left: 0;
+    }
+
+    .gift-content {
+      display: none;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--gold);
+      padding: 18px;
+      border-radius: 16px;
+      margin-top: 15px;
+      animation: fadeIn 0.6s ease forwards;
+    }
+
+    .beach-scene {
+      width: 100%;
+      height: 180px;
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(to bottom, #020617 0%, #0f172a 60%, #1e1b4b 100%);
+      margin: 15px 0;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .moon {
+      width: 44px;
+      height: 44px;
+      background: #fef0c7;
+      border-radius: 50%;
+      position: absolute;
+      top: 20px;
+      right: 40px;
+      box-shadow: 0 0 20px #fef0c7, 0 0 40px rgba(254, 240, 199, 0.4);
+      cursor: pointer;
+      transition: all 0.5s ease;
+    }
+
+    .moon.glowing {
+      box-shadow: 0 0 35px #fef0c7, 0 0 70px rgba(243, 206, 112, 0.8);
+      transform: scale(1.15);
+    }
+
+    .sea {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 50px;
+      background: rgba(30, 58, 138, 0.4);
+    }
+
+    .wave {
+      position: absolute;
+      bottom: 0;
+      width: 200%;
+      height: 100%;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 80' preserveAspectRatio='none'%3E%3Cpath d='M0,30 C150,60 350,0 500,30 C650,60 900,10 1200,40 L1200,80 L0,80 Z' fill='rgba(147,197,253,0.15)'%3E%3C/path%3E%3C/svg%3E") repeat-x;
+      animation: waveAnim 8s linear infinite;
+    }
+
+    @keyframes waveAnim {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .paths-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      width: 100%;
+      margin: 20px 0;
+    }
+
+    .path-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--glass-border);
+      padding: 18px 12px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      text-align: center;
+    }
+
+    .path-card:hover {
+      border-color: var(--gold);
+      background: rgba(243, 206, 112, 0.05);
+      transform: translateY(-4px);
+    }
+
+    .path-card h3 {
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+      color: var(--gold-light);
+    }
+
+    .path-card p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    .reveal-box {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px dashed var(--glass-border);
+      border-radius: 16px;
+      padding: 16px;
+      margin: 15px 0;
+      width: 100%;
+      cursor: pointer;
+      transition: border-color 0.3s;
+    }
+
+    .reveal-box:hover {
+      border-color: var(--gold);
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(3, 5, 8, 0.85);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.5s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .letter-card {
+      background: linear-gradient(135deg, #121824 0%, #0a0d14 100%);
+      border: 1px solid var(--gold);
+      border-radius: 20px;
+      padding: 30px 24px;
+      max-width: 500px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+      transform: translateY(20px);
+      transition: transform 0.5s ease;
+    }
+
+    .modal-overlay.active .letter-card {
+      transform: translateY(0);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-phrase {
+      opacity: 0;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    @media (max-width: 600px) {
+      .screen {
+        padding: 24px 16px;
+      }
+      h1.year-title {
+        font-size: 3rem;
+        letter-spacing: 8px;
+      }
+      h2 {
+        font-size: 1.3rem;
+      }
+      .paths-container {
+        grid-template-columns: 1fr;
+      }
+      .timer-val {
+        font-size: 1.4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Canvas elements for stars and fireworks -->
+  <canvas id="bg-canvas"></canvas>
+  <canvas id="fireworks-canvas"></canvas>
+
+  <div class="app-container">
+
+    <!-- TELA 01 — INÍCIO -->
+    <div class="screen active" id="screen-1">
+      <h1 class="year-title">2027</h1>
+      <h2>"Parece longe... Mas não está."</h2>
+      <p class="subtitle">Daqui a pouco, 2026 acaba.<br>E eu comecei a pensar em uma coisa.</p>
+      
+      <div class="timer-container" id="countdown-timer">
+        <div class="timer-box"><span class="timer-val" id="t-days">00</span><span class="timer-lbl">Dias</span></div>
+        <div class="timer-box"><span class="timer-val" id="t-hours">00</span><span class="timer-lbl">Horas</span></div>
+        <div class="timer-box"><span class="timer-val" id="t-mins">00</span><span class="timer-lbl">Min</span></div>
+        <div class="timer-box"><span class="timer-val" id="t-secs">00</span><span class="timer-lbl">Seg</span></div>
+      </div>
+
+      <button class="btn" onclick="nextScreen(2)">Continuar ✨</button>
+    </div>
+
+    <!-- TELA 02 — CALENDÁRIO -->
+    <div class="screen" id="screen-2">
+      <h2>Os Meses Passam Rápido</h2>
+      <p>Se você parar para pensar... faltam só alguns meses para um ano inteiro virar lembrança.</p>
+
+      <div class="calendar-strip">
+        <div class="month-card" id="m-out"><div class="month-name">OUT</div></div>
+        <div class="month-card" id="m-nov"><div class="month-name">NOV</div></div>
+        <div class="month-card" id="m-dez"><div class="month-name">DEZ</div></div>
+        <div class="month-card" id="m-jan"><div class="month-name">JAN</div></div>
+      </div>
+
+      <p class="subtitle">E existem algumas coisas que eu queria decidir antes que ele acabe.</p>
+      <button class="btn" onclick="nextScreen(3)">Quero Saber</button>
+    </div>
+
+    <!-- TELA 03 — PERGUNTA ESCONDIDA -->
+    <div class="screen" id="screen-3">
+      <div id="phrases-s3">
+        <p class="fade-phrase" style="animation-delay: 0.2s;">Não é sobre presentes.</p>
+        <p class="fade-phrase" style="animation-delay: 1.2s;">Não é sobre réveillon.</p>
+        <p class="fade-phrase" style="animation-delay: 2.2s;">Não é sobre uma viagem.</p>
+        <br>
+        <p class="fade-phrase" style="animation-delay: 3.5s; color: var(--gold-light); font-size: 1.2rem;">
+          É sobre com quem eu quero estar quando 2026 acabar.
+        </p>
+        <p class="fade-phrase" style="animation-delay: 4.8s; color: var(--gold); font-size: 1.2rem;">
+          E com quem eu quero começar 2027.
+        </p>
+      </div>
+      <button class="btn" onclick="nextScreen(4)" style="margin-top: 30px;">Continuar</button>
+    </div>
+
+    <!-- TELA 04 — NATAL -->
+    <div class="screen" id="screen-4">
+      <h2>Uma Noite Especial</h2>
+      <p>Existe uma noite chegando. Uma noite que sempre parece mágica e cheia de luz.</p>
+      <h3 style="color: var(--gold); letter-spacing: 4px; font-weight: 300;">NATAL</h3>
+      <p class="subtitle">E eu queria saber como seria passar essa noite com você.</p>
+
+      <div class="gift-box" id="gift" onclick="openGift()">
+        <div class="gift-ribbon-v"></div>
+        <div class="gift-ribbon-h"></div>
+        <span style="z-index: 2; font-size: 1.5rem;">🎁</span>
+      </div>
+
+      <div class="gift-content" id="gift-text">
+        <!-- CURINGA — TEXTO DO NATAL -->
+        <p id="natal-placeholder" style="margin: 0; font-size: 0.95rem; color: var(--gold-light);"></p>
+      </div>
+
+      <p class="subtitle" style="margin-top: 20px;">Mas existe uma segunda noite que eu queria dividir com você...</p>
+      <button class="btn" onclick="nextScreen(5)">Ver A Virada 🌊</button>
+    </div>
+
+    <!-- TELA 05 — A PRAIA -->
+    <div class="screen" id="screen-5">
+      <h2>A Virada de Ano</h2>
+      <p>Agora imagina outra coisa... Uma praia calma, o barulho das ondas, poucas pessoas e o céu estrelado.</p>
+
+      <div class="beach-scene">
+        <div class="moon" id="moon" onclick="triggerMoonEffect()" title="Toque na lua"></div>
+        <div class="sea"><div class="wave"></div></div>
+      </div>
+
+      <p class="subtitle" id="beach-desc">Toque na lua para sintonizar as últimas horas de 2026...</p>
+      
+      <div id="beach-countdown" style="display: none; margin: 10px 0;">
+        <span id="countdown-num" style="font-size: 2.5rem; color: var(--gold); font-weight: 300;">10</span>
+      </div>
+
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+        <button class="btn btn-secondary" id="btn-speedup" style="display: none;" onclick="speedUpCountdown()">Acelerar o tempo ⚡</button>
+        <button class="btn" id="btn-beach-next" style="display: none;" onclick="nextScreen(6)">Continuar</button>
+      </div>
+    </div>
+
+    <!-- TELA 06 — O QUE EU REALMENTE QUERO -->
+    <div class="screen" id="screen-6">
+      <h2>O Que Eu Realmente Quero</h2>
+      <p>Mas sabe o que seria mais importante do que a praia ou qualquer lugar bonito?</p>
+      <p style="color: var(--gold-light); font-size: 1.2rem; margin: 15px 0;">Você estar lá.</p>
+      <p class="subtitle">Porque no final das contas... eu não estou tentando planejar uma virada perfeita. Estou tentando imaginar uma virada que faça sentido para mim.</p>
+      <p style="color: var(--gold);">E, sinceramente... eu queria que você estivesse nela.</p>
+      <button class="btn" onclick="nextScreen(7)">Continuar</button>
+    </div>
+
+    <!-- TELA 07 — E SE VOCÊ NÃO FICAR COMIGO -->
+    <div class="screen" id="screen-7">
+      <h2>E se você não ficar comigo?</h2>
+      <p>Eu não quero transformar isso em uma obrigação. Você não precisa responder o que eu quero ouvir, nem escolher algo só para me fazer feliz.</p>
+      <p class="subtitle">Mas eu estaria mentindo se dissesse que não gostaria que você escolhesse ficar. Porque eu quero você.</p>
+
+      <div class="reveal-box" onclick="revealThought()">
+        <span style="color: var(--gold-light); font-size: 0.9rem;">Toque para revelar o pensamento...</span>
+        <div id="thought-text" style="display: none; margin-top: 10px; text-align: left;">
+          <p style="font-size: 0.9rem; margin-bottom: 6px;">• Eu provavelmente estaria olhando para o mar...</p>
+          <p style="font-size: 0.9rem; margin-bottom: 6px;">• Contando os últimos segundos e vendo os fogos...</p>
+          <p style="font-size: 0.9rem; margin-bottom: 0;">• E pensando em como seria incrível se você estivesse ali.</p>
+        </div>
+      </div>
+
+      <button class="btn" onclick="nextScreen(8)">Continuar</button>
+    </div>
+
+    <!-- TELA 08 — DUAS POSSIBILIDADES -->
+    <div class="screen" id="screen-8">
+      <h2>Duas Possibilidades</h2>
+      <p class="subtitle">Dois caminhos para o fim de 2026...</p>
+
+      <div class="paths-container">
+        <div class="path-card">
+          <h3>2027 Sem Você</h3>
+          <p>Um novo ano começaria normalmente. Mas com certeza faltaria alguém especial.</p>
+        </div>
+        <div class="path-card" style="border-color: rgba(243, 206, 112, 0.4);">
+          <h3>2027 Com Você ❤️</h3>
+          <p>Uma praia, uma virada inesquecível, um novo começo e você do meu lado.</p>
+        </div>
+      </div>
+
+      <p style="margin-top: 10px;">Qual dessas possibilidades você gostaria de viver?</p>
+      <button class="btn" onclick="nextScreen(9)">Eu quero ver a pergunta</button>
+    </div>
+
+    <!-- TELA 09 — A PERGUNTA -->
+    <div class="screen" id="screen-9">
+      <p class="subtitle">Então eu só quero te perguntar uma coisa...</p>
+      
+      <h2 style="font-size: 1.5rem; color: var(--gold); margin: 20px 0; line-height: 1.5;">
+        JULIA,<br>
+        VOCÊ GOSTARIA DE TERMINAR UM ANO TÃO IMPORTANTE PARA MIM JUNTO COMIGO...<br>
+        E COMEÇAR OUTRO ANO COMIGO?
+      </h2>
+
+      <p style="letter-spacing: 4px; color: var(--text-muted); font-size: 0.9rem;">2026 → 2027</p>
+
+      <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 20px;">
+        <button class="btn" onclick="answerYes()">❤️ SIM, EU QUERO</button>
+        <button class="btn btn-secondary" onclick="answerThink()">🤍 PRECISO PENSAR</button>
+      </div>
+    </div>
+
+    <!-- TELA SUB — PRECISO PENSAR -->
+    <div class="screen" id="screen-think">
+      <h2>Tudo Bem ❤️</h2>
+      <p>Algumas respostas importantes merecem um pouco de tempo.</p>
+      <p class="subtitle">Eu só queria que você soubesse o quanto você é especial para mim e o quanto eu gostaria de compartilhar esse momento com você.</p>
+      <button class="btn" onclick="nextScreen(9)">Voltar para a pergunta</button>
+    </div>
+
+    <!-- TELA 10 — CELEBRAÇÃO / TELA FINAL -->
+    <div class="screen" id="screen-final">
+      <h1 class="year-title" id="final-year-title">2027</h1>
+      <h2 style="color: var(--rose);">Nosso próximo capítulo começa aqui. ❤️</h2>
+      
+      <p id="final-text-body">Se depender de mim... eu quero começar esse ano com você. Quero lembrar da praia, da virada, dos últimos segundos de 2026 e de quem estava comigo: VOCÊ.</p>
+
+      <div id="memory-badge" style="display:none; background: rgba(243,206,112,0.1); border: 1px solid var(--gold); border-radius: 12px; padding: 12px; margin: 15px 0; animation: fadeIn 0.8s ease;">
+        <p style="font-size: 0.85rem; color: var(--gold-light); margin: 0; letter-spacing: 1px;">✨ MEMÓRIA CRIADA</p>
+        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">DATA: 01/01/2027 | STATUS: UM NOVO CAPÍTULO</p>
+      </div>
+
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 15px;">
+        <button class="btn" onclick="saveMemory()">Guardar esse momento 💾</button>
+        <button class="btn btn-secondary" onclick="openLetterModal()">Abrir Carta ✉️</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MODAL DA CARTA FINAL -->
+  <div class="modal-overlay" id="letter-modal">
+    <div class="letter-card">
+      <h2 style="color: var(--gold); text-align: center;">Carta para Julia</h2>
+      <div id="carta-placeholder" style="white-space: pre-line; text-align: left; font-size: 0.95rem; color: var(--text-main); margin: 20px 0; line-height: 1.8;"></div>
+      <button class="btn" style="width: 100%;" onclick="closeLetterModal()">Fechar Carta</button>
+    </div>
+  </div>
+
+  <script>
+
+    // ======================================================
+    // CURINGAS — PERSONALIZE A EXPERIÊNCIA AQUI
+    // ======================================================
+    const textos = {
+      introducao: "Esta é uma pequena cápsula do tempo para guardarmos a nossa história e planejarmos os próximos passos juntos.",
+      
+      natal: "Passar o Natal com você seria transformar uma noite comum em uma lembrança inesquecível, cheia de carinho, paz e luz.",
+      
+      praia: "Sentir a brisa do mar ao seu lado enquanto os últimos segundos do ano se esgotam seria o melhor presente possível.",
+      
+      semVoce: "Um ano sem você do meu lado seria apenas a passagem normal do tempo... mas com certeza faltaria a melhor parte.",
+      
+      comVoce: "Começar 2027 ao seu lado é tudo o que eu mais quero: sorrisos, novos sonhos e uma caminhada juntos.",
+      
+      cartaFinal: `Querida Julia,\n\nSe você chegou até aqui, saiba que cada pedacinho desta experiência foi criado com muito carinho pensando em você.\n\nNão importa o quão rápido o tempo passe ou o quão longe 2027 pareça, a ideia de ter você ao meu lado faz cada segundo valer a pena.\n\nObrigado por ser essa pessoa incrível. Vamos construir um ano novo inesquecível juntos!`
+    };
+
+    // Target Date setup
+    const dataVirada = new Date("2027-01-01T00:00:00");
+
+    // Populate wildcard texts into placeholders
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("natal-placeholder").innerText = textos.natal;
+      document.getElementById("carta-placeholder").innerText = textos.cartaFinal;
+      initStarsCanvas();
+      startCountdownTimer();
+    });
+
+    const bgCanvas = document.getElementById("bg-canvas");
+    const bgCtx = bgCanvas.getContext("2d");
+    let stars = [];
+    let mouse = { x: null, y: null };
+
+    function resizeCanvas() {
+      bgCanvas.width = window.innerWidth;
+      bgCanvas.height = window.innerHeight;
+      initStars();
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    window.addEventListener("mousemove", (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
+    window.addEventListener("touchmove", (e) => { 
+      if(e.touches.length > 0) {
+        mouse.x = e.touches[0].clientX; 
+        mouse.y = e.touches[0].clientY; 
+      }
+    });
+
+    function initStars() {
+      stars = [];
+      const numStars = Math.floor((bgCanvas.width * bgCanvas.height) / 3000);
+      for (let i = 0; i < numStars; i++) {
+        stars.push({
+          x: Math.random() * bgCanvas.width,
+          y: Math.random() * bgCanvas.height,
+          radius: Math.random() * 1.5,
+          alpha: Math.random(),
+          speed: Math.random() * 0.02 + 0.005
+        });
+      }
+    }
+
+    function animateStars() {
+      bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+      
+      stars.forEach(star => {
+        star.alpha += star.speed;
+        if (star.alpha > 1 || star.alpha < 0) star.speed = -star.speed;
+
+        let offsetX = 0;
+        let offsetY = 0;
+        if (mouse.x && mouse.y) {
+          offsetX = (mouse.x - bgCanvas.width / 2) * 0.01;
+          offsetY = (mouse.y - bgCanvas.height / 2) * 0.01;
+        }
+
+        bgCtx.beginPath();
+        bgCtx.arc(star.x + offsetX, star.y + offsetY, star.radius, 0, Math.PI * 2);
+        bgCtx.fillStyle = `rgba(254, 240, 199, ${Math.abs(star.alpha)})`;
+        bgCtx.fill();
+      });
+
+      requestAnimationFrame(animateStars);
+    }
+
+    function initStarsCanvas() {
+      resizeCanvas();
+      animateStars();
+    }
+
+    let currentScreen = 1;
+
+    function nextScreen(screenNum) {
+      const activeScreen = document.querySelector(".screen.active");
+      if (activeScreen) {
+        activeScreen.classList.remove("active");
+      }
+
+      setTimeout(() => {
+        let targetId = "screen-" + screenNum;
+        if (screenNum === 'think') targetId = "screen-think";
+        if (screenNum === 'final') targetId = "screen-final";
+
+        const nextEl = document.getElementById(targetId);
+        if (nextEl) {
+          nextEl.classList.add("active");
+          currentScreen = screenNum;
+          triggerScreenSpecificLogic(screenNum);
+        }
+      }, 400);
+    }
+
+    function triggerScreenSpecificLogic(sNum) {
+      if (sNum === 2) {
+        // Animate calendar cards
+        const cards = ['m-out', 'm-nov', 'm-dez', 'm-jan'];
+        cards.forEach((id, idx) => {
+          setTimeout(() => {
+            document.getElementById(id).classList.add('highlight');
+          }, idx * 600);
+        });
+      }
+    }
+
+    function startCountdownTimer() {
+      function updateTimer() {
+        const now = new Date();
+        const diff = dataVirada - now;
+
+        if (diff <= 0) {
+          document.getElementById("t-days").innerText = "00";
+          document.getElementById("t-hours").innerText = "00";
+          document.getElementById("t-mins").innerText = "00";
+          document.getElementById("t-secs").innerText = "00";
+          return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const mins = Math.floor((diff / 1000 / 60) % 60);
+        const secs = Math.floor((diff / 1000) % 60);
+
+        document.getElementById("t-days").innerText = String(days).padStart(2, '0');
+        document.getElementById("t-hours").innerText = String(hours).padStart(2, '0');
+        document.getElementById("t-mins").innerText = String(mins).padStart(2, '0');
+        document.getElementById("t-secs").innerText = String(secs).padStart(2, '0');
+      }
+
+      updateTimer();
+      setInterval(updateTimer, 1000);
+    }
+
+    function openGift() {
+      const gift = document.getElementById("gift");
+      const content = document.getElementById("gift-text");
+      gift.style.transform = "scale(0.9) rotate(0deg)";
+      setTimeout(() => {
+        gift.style.display = "none";
+        content.style.display = "block";
+      }, 300);
+    }
+
+    let moonClicked = false;
+    let beachInterval = null;
+    let countdownVal = 10;
+
+    function triggerMoonEffect() {
+      if (moonClicked) return;
+      moonClicked = true;
+      document.getElementById("moon").classList.add("glowing");
+      document.getElementById("beach-desc").innerText = "A contagem para a virada começou...";
+      document.getElementById("beach-countdown").style.display = "block";
+      document.getElementById("btn-speedup").style.display = "inline-flex";
+
+      startBeachCountdown();
+    }
+
+    function startBeachCountdown() {
+      beachInterval = setInterval(() => {
+        countdownVal--;
+        document.getElementById("countdown-num").innerText = countdownVal;
+        if (countdownVal <= 0) {
+          clearInterval(beachInterval);
+          finishBeachCountdown();
+        }
+      }, 1000);
+    }
+
+    function speedUpCountdown() {
+      if (beachInterval) clearInterval(beachInterval);
+      countdownVal = 0;
+      document.getElementById("countdown-num").innerText = "0";
+      finishBeachCountdown();
+    }
+
+    function finishBeachCountdown() {
+      document.getElementById("countdown-num").innerText = "2027!";
+      document.getElementById("btn-speedup").style.display = "none";
+      document.getElementById("btn-beach-next").style.display = "inline-flex";
+      launchFireworks();
+    }
+
+    function revealThought() {
+      const text = document.getElementById("thought-text");
+      text.style.display = "block";
+    }
+
+    function answerThink() {
+      nextScreen('think');
+    }
+
+    function answerYes() {
+      launchFireworks();
+      nextScreen('final');
+    }
+
+    function saveMemory() {
+      document.getElementById("memory-badge").style.display = "block";
+    }
+
+    function openLetterModal() {
+      document.getElementById("letter-modal").classList.add("active");
+    }
+
+    function closeLetterModal() {
+      document.getElementById("letter-modal").classList.remove("active");
+    }
+
+    // Canvas Fireworks system
+    const fwCanvas = document.getElementById("fireworks-canvas");
+    const fwCtx = fwCanvas.getContext("2d");
+    let particles = [];
+
+    function resizeFwCanvas() {
+      fwCanvas.width = window.innerWidth;
+      fwCanvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resizeFwCanvas);
+    resizeFwCanvas();
+
+    function launchFireworks() {
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+          createExplosion(
+            Math.random() * fwCanvas.width * 0.8 + fwCanvas.width * 0.1,
+            Math.random() * fwCanvas.height * 0.5 + fwCanvas.height * 0.1
+          );
+        }, i * 300);
+      }
+      animateFireworks();
+    }
+
+    function createExplosion(x, y) {
+      const colors = ["#f3ce70", "#feb47b", "#e85d75", "#ffffff"];
+      for (let i = 0; i < 60; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 5 + 2;
+        particles.push({
+          x: x,
+          y: y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          alpha: 1,
+          color: colors[Math.floor(Math.random() * colors.length)]
+        });
+      }
+    }
+
+    function animateFireworks() {
+      fwCtx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
+      
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.05; // gravity
+        p.alpha -= 0.015;
+
+        fwCtx.beginPath();
+        fwCtx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+        fwCtx.fillStyle = p.color;
+        fwCtx.globalAlpha = Math.max(0, p.alpha);
+        fwCtx.fill();
+
+        if (p.alpha <= 0) particles.splice(i, 1);
+      }
+
+      if (particles.length > 0) {
+        requestAnimationFrame(animateFireworks);
+      }
+    }
+  </script>
+</body>
+</html>
