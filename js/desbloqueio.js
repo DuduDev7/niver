@@ -43,9 +43,9 @@ document.addEventListener('DOMContentLoaded', () => {
         titulo: 'Mini desafio 💘',
         dica: 'Clique em um dos botões trancados para aceitar o desafio.',
         perguntas: [
-          { p: 'TROCAR: pergunta 1 sobre vocês?', r: ['resposta1'] },
-          { p: 'TROCAR: pergunta 2 sobre vocês?', r: ['resposta2'] },
-          { p: 'TROCAR: pergunta 3 sobre vocês?', r: ['resposta3', 'outra resposta aceita'] }
+          { p: 'Uma coisa que você odeie que eu use', r: ['bone'] },
+          { p: 'Uma coisa que eu preciso para viver', r: ['você','Julia'] },
+          { p: 'Lugar que você me deixa no vácuo', r: ['tiktok'] }
         ],
         sucesso: 'Você me conhece mesmo. Os motivos 3001 a 4000 são seus. ❤️'
       },
