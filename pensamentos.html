@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>MEUS PENSAMENTOS — Para Julia</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono&display=swap"
+    rel="stylesheet">
+
   <style>
     /* =====================================================
        ESTILOS GERAIS & VARIÁVEIS
@@ -16,21 +19,21 @@
       --bg-dark: #030305;
       --bg-card: rgba(18, 12, 24, 0.65);
       --bg-card-border: rgba(255, 43, 91, 0.2);
-      
+
       --accent-pink: #ff2b5b;
       --accent-pink-glow: rgba(255, 43, 91, 0.6);
       --accent-purple: #9d4edd;
       --accent-cyan: #00f0ff;
       --accent-gold: #ffb703;
-      
+
       --text-main: #f0f0f5;
       --text-muted: #a0a0b8;
       --text-dim: #62627a;
-      
+
       --font-title: 'Cinzel', serif;
       --font-sans: 'Plus Jakarta Sans', sans-serif;
       --font-mono: 'Space Mono', monospace;
-      
+
       --transition-speed: 0.8s;
     }
 
@@ -42,7 +45,8 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    html, body {
+    html,
+    body {
       width: 100%;
       height: 100%;
       overflow: hidden;
@@ -72,7 +76,7 @@
       max-width: 600px;
       max-height: 600px;
       border-radius: 50%;
-      background: radial-gradient(circle, var(--accent-pink-glow) 0%, rgba(0,0,0,0) 70%);
+      background: radial-gradient(circle, var(--accent-pink-glow) 0%, rgba(0, 0, 0, 0) 70%);
       opacity: 0.15;
       filter: blur(80px);
       z-index: 1;
@@ -80,12 +84,26 @@
       animation: floatGlow 12s infinite alternate ease-in-out;
     }
 
-    .glow-1 { top: -10%; left: -10%; }
-    .glow-2 { bottom: -10%; right: -10%; animation-delay: -6s; background: radial-gradient(circle, rgba(157, 78, 221, 0.5) 0%, rgba(0,0,0,0) 70%); }
+    .glow-1 {
+      top: -10%;
+      left: -10%;
+    }
+
+    .glow-2 {
+      bottom: -10%;
+      right: -10%;
+      animation-delay: -6s;
+      background: radial-gradient(circle, rgba(157, 78, 221, 0.5) 0%, rgba(0, 0, 0, 0) 70%);
+    }
 
     @keyframes floatGlow {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(8%, 10%) scale(1.2); }
+      0% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      100% {
+        transform: translate(8%, 10%) scale(1.2);
+      }
     }
 
     /* =====================================================
@@ -100,23 +118,59 @@
 
     .screen {
       position: absolute;
-      top: 0;
-      left: 0;
+      inset: 0;
+
       width: 100%;
-      height: 100%;
+      height: 100dvh;
+
+      box-sizing: border-box;
+
       display: flex;
       flex-direction: column;
-      justify-content: center;
+
+      /* NÃO centralizar diretamente o conteúdo */
+      justify-content: flex-start;
       align-items: center;
-      padding: 2rem 1.5rem;
+
+      /*
+     * Espaço superior suficiente para o botão VOLTAR
+     * e para o título nunca ficar escondido.
+     */
+      padding: clamp(5rem, 9vh, 7rem) 1.5rem 4rem;
+
       opacity: 0;
       visibility: hidden;
+
       transform: translateY(20px) scale(0.98);
-      transition: opacity var(--transition-speed) cubic-bezier(0.16, 1, 0.3, 1),
-                  transform var(--transition-speed) cubic-bezier(0.16, 1, 0.3, 1),
-                  visibility var(--transition-speed);
+
+      transition:
+        opacity var(--transition-speed) cubic-bezier(0.16, 1, 0.3, 1),
+        transform var(--transition-speed) cubic-bezier(0.16, 1, 0.3, 1),
+        visibility var(--transition-speed);
+
+      /*
+     * A própria tela é a área de rolagem.
+     */
       overflow-y: auto;
+      overflow-x: hidden;
+
+      /*
+     * Garante que o navegador reserve espaço
+     * corretamente durante o scroll.
+     */
+      box-sizing: border-box;
+
+      /*
+     * Scroll suave no celular.
+     */
       -webkit-overflow-scrolling: touch;
+
+      /*
+     * Evita que o conteúdo fique colado nas extremidades
+     * quando o usuário chega ao início/fim.
+     */
+      scroll-padding-top: 2rem;
+      scroll-padding-bottom: 3rem;
     }
 
     .screen.active {
@@ -131,12 +185,28 @@
     .screen-content {
       max-width: 900px;
       width: 100%;
+
+      /*
+     * Centraliza telas pequenas.
+     * Quando o conteúdo fica grande, o margin:auto
+     * deixa de impedir o acesso ao topo.
+     */
       margin: auto;
+
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
+
       position: relative;
+
+      /*
+     * Garante que exista espaço real no final
+     * para o último botão/texto.
+     */
+      padding-bottom: 1rem;
+
+      box-sizing: border-box;
     }
 
     .tag-header {
@@ -151,7 +221,8 @@
       gap: 8px;
     }
 
-    .tag-header::before, .tag-header::after {
+    .tag-header::before,
+    .tag-header::after {
       content: '';
       width: 20px;
       height: 1px;
@@ -159,7 +230,8 @@
       opacity: 0.6;
     }
 
-    h1, h2 {
+    h1,
+    h2 {
       font-family: var(--font-title);
       font-weight: 700;
       letter-spacing: 1px;
@@ -170,8 +242,15 @@
       text-shadow: 0 0 30px rgba(255, 43, 91, 0.2);
     }
 
-    h1 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; }
-    h2 { font-size: clamp(1.6rem, 4vw, 2.5rem); line-height: 1.2; }
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      line-height: 1.1;
+    }
+
+    h2 {
+      font-size: clamp(1.6rem, 4vw, 2.5rem);
+      line-height: 1.2;
+    }
 
     p.poetic-text {
       font-size: clamp(1rem, 2.5vw, 1.25rem);
@@ -217,7 +296,8 @@
       backdrop-filter: blur(10px);
     }
 
-    .btn-primary:hover, .btn-primary:active {
+    .btn-primary:hover,
+    .btn-primary:active {
       background: var(--accent-pink);
       box-shadow: 0 0 35px rgba(255, 43, 91, 0.6);
       transform: translateY(-2px) scale(1.02);
@@ -345,7 +425,7 @@
       opacity: 0;
       transform: translate(-50%, -120%) scale(0.9);
       transition: opacity 0.2s ease, transform 0.2s ease;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5), 0 0 15px var(--accent-pink-glow);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 15px var(--accent-pink-glow);
       z-index: 100;
       font-family: var(--font-mono);
       white-space: nowrap;
@@ -507,6 +587,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <!-- CANVAS DE PARTÍCULAS EM SEGUNDO PLANO -->
@@ -536,175 +617,447 @@
          ===================================================== -->
     <section class="screen active" id="screen-01">
       <div class="screen-content">
+
         <div class="tag-header">MIND MAP // FOR JULIA</div>
+
         <h1 id="t1-title">MEUS PENSAMENTOS</h1>
+
         <p class="poetic-text" id="t1-intro"></p>
-        <p class="poetic-text" style="font-size: 0.95rem; color: var(--text-dim); margin-top: -1rem;" id="t1-subtext"></p>
+
+        <p class="poetic-text" style="font-size: 0.95rem; color: var(--text-dim); margin-top: -1rem;" id="t1-subtext">
+        </p>
+
         <div class="btn-container">
-          <button class="btn-primary" onclick="goToScreen(2)">ENTRAR NOS MEUS PENSAMENTOS</button>
+          <button class="btn-primary" onclick="goToScreen(2)">
+            ENTRAR NOS MEUS PENSAMENTOS
+          </button>
         </div>
+
       </div>
     </section>
 
+
     <!-- =====================================================
-         TELA 02 — COMO ERA ANTES DE VOCÊ
+         TELA 02 — ANTES DE VOCÊ
          ===================================================== -->
     <section class="screen" id="screen-02">
-      <button class="btn-back" onclick="goToScreen(1)">← VOLTAR</button>
+
+      <button class="btn-back" onclick="goToScreen(1)">
+        ← VOLTAR
+      </button>
+
       <div class="screen-content">
-        <div class="tag-header">CAPÍTULO I // O PASSADO</div>
+
+        <div class="tag-header">CAPÍTULO I // ANTES DE NÓS</div>
+
         <h2 id="t2-title">COMO ERA ANTES DE VOCÊ</h2>
+
         <p class="poetic-text" id="t2-text"></p>
+
         <div class="btn-container">
-          <button class="btn-primary" onclick="goToScreen(3)">VER O GRÁFICO</button>
+          <button class="btn-primary" onclick="goToScreen(3)">
+            VER O GRÁFICO
+          </button>
         </div>
+
       </div>
     </section>
 
+
     <!-- =====================================================
-         TELA 03 — GRÁFICO "ANTES DE VOCÊ"
+         TELA 03 — GRÁFICO ANTES
          ===================================================== -->
     <section class="screen" id="screen-03">
-      <button class="btn-back" onclick="goToScreen(2)">← VOLTAR</button>
+
+      <button class="btn-back" onclick="goToScreen(2)">
+        ← VOLTAR
+      </button>
+
       <div class="screen-content">
-        <div class="tag-header">DADOS HISTÓRICOS</div>
+
+        <div class="tag-header">REGISTRO // ANTES DE VOCÊ</div>
+
         <h2>ANTES DE VOCÊ</h2>
-        <p class="poetic-text" style="margin-bottom: 0.5rem;" id="t3-subtitle"></p>
-        
+
+        <p class="poetic-text" style="margin-bottom: 0.5rem;" id="t3-subtitle">
+        </p>
+
         <div class="chart-wrapper">
+
           <div class="chart-canvas-container">
             <canvas id="canvas-antes"></canvas>
           </div>
+
           <div class="chart-legend" id="legend-antes"></div>
+
         </div>
 
-        <p class="poetic-text" style="font-size: 0.9rem; color: var(--text-dim);" id="t3-reflex"></p>
-        
+        <p class="poetic-text" style="font-size: 0.9rem; color: var(--text-dim);" id="t3-reflex">
+        </p>
+
         <div class="btn-container">
-          <button class="btn-primary" onclick="goToScreen(4)">E COMO FICOU DEPOIS?</button>
+          <button class="btn-primary" onclick="goToScreen(4)">
+            E ENTÃO VOCÊ APARECEU...
+          </button>
         </div>
+
       </div>
     </section>
 
+
     <!-- =====================================================
-         TELA 04 — COMO É COM VOCÊ
+         TELA 04 — COM VOCÊ
          ===================================================== -->
     <section class="screen" id="screen-04">
-      <button class="btn-back" onclick="goToScreen(3)">← VOLTAR</button>
+
+      <button class="btn-back" onclick="goToScreen(3)">
+        ← VOLTAR
+      </button>
+
       <div class="screen-content">
-        <div class="tag-header">CAPÍTULO II // A MUDANÇA</div>
+
+        <div class="tag-header">CAPÍTULO II // DEPOIS DE VOCÊ</div>
+
         <h2 id="t4-title">COMO É COM VOCÊ</h2>
+
         <p class="poetic-text" id="t4-maintext"></p>
-        
-        <!-- CARDS GERADOS AUTOMATICAMENTE PELO JS -->
+
         <div class="cards-grid" id="cards-container"></div>
 
         <div class="btn-container">
-          <button class="btn-primary" onclick="goToScreen(5)">VER O NOVO GRÁFICO</button>
+          <button class="btn-primary" onclick="goToScreen(5)">
+            VER O NOVO GRÁFICO
+          </button>
         </div>
+
       </div>
     </section>
 
+
     <!-- =====================================================
-         TELA 05 — GRÁFICO "COM VOCÊ"
+         TELA 05 — GRÁFICO COM VOCÊ
          ===================================================== -->
     <section class="screen" id="screen-05">
-      <button class="btn-back" onclick="goToScreen(4)">← VOLTAR</button>
+
+      <button class="btn-back" onclick="goToScreen(4)">
+        ← VOLTAR
+      </button>
+
       <div class="screen-content">
-        <div class="tag-header">NOVA CONFIGURAÇÃO</div>
+
+        <div class="tag-header">REGISTRO // DEPOIS DE VOCÊ</div>
+
         <h2>COM VOCÊ</h2>
-        <p class="poetic-text" style="margin-bottom: 0.5rem;" id="t5-phrase"></p>
+
+        <p class="poetic-text" style="margin-bottom: 0.5rem;" id="t5-phrase">
+        </p>
 
         <div class="chart-wrapper">
+
           <div class="chart-canvas-container">
             <canvas id="canvas-com-voce"></canvas>
           </div>
+
           <div class="chart-legend" id="legend-com-voce"></div>
+
         </div>
 
-        <p class="poetic-text" style="font-size: 0.9rem; color: var(--text-dim);" id="t5-desc"></p>
+        <p class="poetic-text" style="font-size: 0.9rem; color: var(--text-dim);" id="t5-desc">
+        </p>
 
         <div class="btn-container">
-          <button class="btn-primary" onclick="goToScreen(6)">MAS ISSO AINDA NÃO É TUDO...</button>
+          <button class="btn-primary" onclick="goToScreen(6)">
+            MAS ISSO AINDA NÃO É TUDO...
+          </button>
         </div>
+
       </div>
     </section>
 
+
     <!-- =====================================================
-         TELA 06 — VER DE VERDADE (MISTÉRIO)
+         TELA 06 — MISTÉRIO
          ===================================================== -->
     <section class="screen" id="screen-06">
-      <button class="btn-back" onclick="goToScreen(5)">← VOLTAR</button>
+
+      <button class="btn-back" onclick="goToScreen(5)">
+        ← VOLTAR
+      </button>
+
       <div class="screen-content">
-        <div class="tag-header" style="color: var(--accent-cyan); border-color: var(--accent-cyan);">AREA RESTRITA</div>
-        <h2 style="background: linear-gradient(135deg, #fff, var(--accent-cyan)); -webkit-background-clip: text;">VOCÊ QUER MESMO VER?</h2>
-        <p class="poetic-text" id="t6-text1"></p>
-        <p class="poetic-text" style="color: var(--accent-pink); font-weight: 500;" id="t6-text2"></p>
-        
-        <div class="btn-container">
-          <button class="btn-primary" style="border-color: var(--accent-cyan); box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);" onclick="triggerUnlock()">VER DE VERDADE OS MEUS PENSAMENTOS</button>
+
+        <div class="tag-header" style="color: var(--accent-cyan); border-color: var(--accent-cyan);">
+          ÁREA RESTRITA
         </div>
+
+        <h2 style="
+                    background: linear-gradient(135deg, #fff, var(--accent-cyan));
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                ">
+          VOCÊ QUER MESMO VER?
+        </h2>
+
+        <p class="poetic-text" id="t6-text1"></p>
+
+        <p class="poetic-text" style="color: var(--accent-pink); font-weight: 500;" id="t6-text2">
+        </p>
+
+        <div class="btn-container">
+
+          <button class="btn-primary" style="
+                        border-color: var(--accent-cyan);
+                        box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+                    " onclick="triggerUnlock()">
+            VER DE VERDADE OS MEUS PENSAMENTOS
+          </button>
+
+        </div>
+
       </div>
     </section>
 
+
     <!-- =====================================================
-         TELA 07 — GRÁFICO FINAL
+         TELA 07 — PENSAMENTOS DE VERDADE
          ===================================================== -->
     <section class="screen" id="screen-07">
-      <button class="btn-back" onclick="goToScreen(6)">← VOLTAR</button>
+
+      <button class="btn-back" onclick="goToScreen(6)">
+        ← VOLTAR
+      </button>
+
       <div class="screen-content">
-        <div class="tag-header" style="color: var(--accent-gold);">NÚCLEO DO PENSAMENTO</div>
-        <h2 style="background: linear-gradient(135deg, #fff, var(--accent-gold)); -webkit-background-clip: text;">MEUS PENSAMENTOS DE VERDADE</h2>
-        <p class="poetic-text" style="margin-bottom: 0.5rem;" id="t7-intro"></p>
+
+        <div class="tag-header" style="color: var(--accent-gold);">
+          NÚCLEO // VERDADE
+        </div>
+
+        <h2 style="
+                    background: linear-gradient(135deg, #fff, var(--accent-gold));
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                ">
+          MEUS PENSAMENTOS DE VERDADE
+        </h2>
+
+        <p class="poetic-text" style="margin-bottom: 0.5rem;" id="t7-intro">
+        </p>
 
         <div class="chart-wrapper">
+
           <div class="chart-canvas-container">
             <canvas id="canvas-pensamentos"></canvas>
           </div>
+
           <div class="chart-legend" id="legend-pensamentos"></div>
+
         </div>
 
-        <p class="poetic-text" style="font-size: 0.95rem; color: var(--text-main); margin-top: 1rem;" id="t7-final-text"></p>
+        <p class="poetic-text" style="
+                    font-size: 0.95rem;
+                    color: var(--text-main);
+                    margin-top: 1rem;
+                " id="t7-final-text">
+        </p>
+
       </div>
     </section>
 
   </div>
 
-  <!-- =====================================================
-       LÓGICA JAVASCRIPT
-       ===================================================== -->
+
   <script>
-    // =====================================================
-    // CURINGAS — TEXTOS QUE VOCÊ PODE ALTERAR
-    // =====================================================
+
+    /* =========================================================
+       TEXTOS DA EXPERIÊNCIA
+       ========================================================= */
+
     const textosCuringa = {
-      // TELA 01
-      t1_intro: "Talvez seja impossível explicar tudo o que passa na minha cabeça quando o assunto é você...",
-      t1_subtext: "Como explicar uma mente que muda de direção a cada cinco segundos? Talvez eu não consiga em palavras... então resolvi tentar transformar um pouco disso em números. Não porque sentimentos possam realmente ser medidos, mas porque talvez seja mais fácil te mostrar assim.",
 
-      // TELA 02
-      t2_text: "Antes de você chegar, minha mente funcionava num ritmo completamente diferente. Existia uma rotina estruturada, preocupações comuns e um silêncio confortável, mas previsível. Tudo parecia meio acinzentado e sob controle.",
+      /* =====================================================
+         TELA 01
+         ===================================================== */
 
-      // TELA 03
-      t3_subtitle: "Uma distribuição equilibrada, porém comum.",
-      t3_reflex: "Como você pode ver, a mente funcionava perfeitamente... mas faltava aquela faísca que muda tudo.",
+      t1_intro:
+        "Julia, eu tentei encontrar uma forma diferente de te mostrar uma coisa que talvez eu nunca consiga explicar completamente: o espaço que você ocupa dentro da minha cabeça e, principalmente, dentro de mim.",
 
-      // TELA 04
-      t4_title: "COMO É COM VOCÊ",
-      t4_maintext: "A partir do momento em que você entrou na minha vida, a arquitetura dos meus pensamentos foi completamente reescrita. O espaço que antes era ocupado por ruídos aleatórios agora tem um motivo muito claro.",
+      t1_subtext:
+        "Então eu transformei meus pensamentos em uma espécie de mapa. Não porque sentimentos possam ser colocados em números, mas porque talvez seja mais fácil começar mostrando como tudo era antes... e depois mostrar o que aconteceu quando você apareceu na minha vida.",
 
-      // TELA 05
-      t5_phrase: "O reajuste inevitável da minha mente.",
-      t5_desc: "Tudo acabou gravitando para o mesmo centro de atenção.",
 
-      // TELA 06
-      t6_text1: "Os dois gráficos anteriores foram apenas uma tentativa organizada de explicar o inexplicável...",
-      t6_text2: "O que vem a seguir é o que realmente se passa no fundo do meu peito quando escuto o seu nome.",
+      /* =====================================================
+         TELA 02
+         ===================================================== */
 
-      // TELA 07
-      t7_intro: "Sem filtros, sem teorias. Apenas a verdade pura.",
-      t7_final_text: "No fim das contas, Julia, quase todos os caminhos na minha cabeça terminam exatamente em você. ❤️"
+      t2_text:
+        "Antes de você, meus pensamentos eram muito mais simples. Eu tinha minhas preocupações, meus planos, minhas coisas, meus dias bons e meus dias ruins. A vida acontecia normalmente e eu seguia em frente sem imaginar que, em algum momento, alguém poderia chegar e mudar tanto a maneira como eu enxergo os meus próprios dias.",
+
+
+      /* =====================================================
+         TELA 03
+         ===================================================== */
+
+      t3_subtitle:
+        "Antes de você, tudo parecia encontrar o seu lugar. Mas havia uma coisa que eu ainda não sabia que estava faltando.",
+
+      t3_reflex:
+        "Não era tristeza. Não era vazio. Era simplesmente uma vida que ainda não tinha conhecido você. E talvez seja por isso que, olhando agora, tudo pareça tão diferente.",
+
+
+      /* =====================================================
+         TELA 04
+         ===================================================== */
+
+      t4_title:
+        "COMO É COM VOCÊ",
+
+      t4_maintext:
+        "Depois que você apareceu, meus pensamentos começaram a encontrar novos caminhos. Coisas que antes passavam despercebidas começaram a ganhar significado. Uma música pode me fazer lembrar de você. Um lugar pode trazer uma memória. Uma coisa simples pode me fazer sorrir porque, de alguma maneira, lembra nós dois.",
+
+
+      /* =====================================================
+         TELA 05
+         ===================================================== */
+
+      t5_phrase:
+        "Depois de você, meus pensamentos nunca mais foram exatamente os mesmos.",
+
+      t5_desc:
+        "Porque você não simplesmente entrou na minha vida. Você começou a fazer parte dela. E, aos poucos, começou a aparecer nos pequenos lugares que eu nem sabia que estavam reservados para alguém.",
+
+
+      /* =====================================================
+         TELA 06
+         ===================================================== */
+
+      t6_text1:
+        "Até aqui eu tentei transformar sentimentos em gráficos, números e palavras. Tentei organizar aquilo que acontece dentro da minha cabeça quando penso em você.",
+
+      t6_text2:
+        "Mas existe uma parte que nenhum gráfico consegue representar. Uma parte que eu quero que você veja sem filtros, sem porcentagens e sem tentar transformar sentimento em número.",
+
+
+      /* =====================================================
+         TELA 07
+         ===================================================== */
+
+      t7_intro:
+        "Aqui não existe mais tentativa de explicar. Não existe estatística. Não existe cálculo. Só existe aquilo que eu sinto.",
+
+      t7_final_text:
+        "Julia, a verdade é que você aparece em muito mais pensamentos meus do que qualquer gráfico conseguiria mostrar. Você aparece quando alguma coisa boa acontece e eu penso em contar para você. Aparece quando escuto uma música e lembro de algum momento nosso. Aparece quando vejo alguma coisa que você gosta. Aparece nas lembranças que eu guardo e também nos planos que ainda nem aconteceram. E talvez seja isso que mais me assusta e, ao mesmo tempo, mais me faz feliz: perceber que você deixou de ser apenas alguém que faz parte dos meus dias e passou a fazer parte da maneira como eu penso sobre eles. Que sorte a minha ter encontrado você. Que sorte a minha ter construído tantas lembranças ao seu lado. E que sorte maior ainda poder imaginar que ainda existem tantas outras esperando por nós. Eu não sei exatamente o que o futuro vai trazer, mas sei uma coisa: quando penso nele, é impossível não imaginar você em algum lugar dele. Eu te amo, Julia. E talvez nenhum gráfico, nenhuma palavra e nenhuma página consiga mostrar o tamanho disso. ❤️"
     };
+
+
+    /* =========================================================
+       CARDS — COMO VOCÊ MUDOU MEUS PENSAMENTOS
+       ========================================================= */
+
+    const cardsPensamentos = [
+
+      {
+        titulo: "VOCÊ APARECE NAS PEQUENAS COISAS",
+        texto:
+          "Às vezes não é uma grande lembrança. É uma música, uma frase, um lugar, uma comida, uma brincadeira. Pequenas coisas começaram a carregar o seu nome sem que eu percebesse."
+      },
+
+      {
+        titulo: "VOCÊ APARECE QUANDO EU SORRIO SOZINHO",
+        texto:
+          "Tem momentos em que alguma lembrança nossa simplesmente aparece na minha cabeça e eu sorrio. E talvez você nem saiba que foi responsável por aquele sorriso."
+      },
+
+      {
+        titulo: "VOCÊ APARECE NOS MEUS PLANOS",
+        texto:
+          "Quando penso em coisas que ainda quero viver, existem lugares, momentos e histórias que eu gostaria de dividir com você. Porque algumas coisas ficam muito melhores quando são vividas ao lado de alguém que a gente ama."
+      },
+
+      {
+        titulo: "VOCÊ APARECE NAS MINHAS SAUDADES",
+        texto:
+          "Mesmo quando estamos longe, existe uma parte de mim que sente falta da sua presença, da sua voz, do seu abraço e até das coisas mais simples que acontecem quando estamos juntos."
+      },
+
+      {
+        titulo: "VOCÊ APARECE NO MEU FUTURO",
+        texto:
+          "E talvez essa seja a parte mais bonita. Quando imagino os próximos capítulos da minha vida, você aparece neles. Não como uma obrigação, mas como alguém que eu genuinamente quero continuar tendo por perto."
+      }
+
+    ];
+
+
+    /* =========================================================
+       APLICAÇÃO DOS TEXTOS
+       ========================================================= */
+
+    function carregarTextos() {
+
+      Object.keys(textosCuringa).forEach(id => {
+
+        const elemento = document.getElementById(id);
+
+        if (elemento) {
+          elemento.textContent = textosCuringa[id];
+        }
+
+      });
+
+    }
+
+
+    /* =========================================================
+       GERAÇÃO DOS CARDS
+       ========================================================= */
+
+    function gerarCards() {
+
+      const container = document.getElementById("cards-container");
+
+      if (!container) return;
+
+      container.innerHTML = "";
+
+      cardsPensamentos.forEach((card, index) => {
+
+        const elemento = document.createElement("div");
+
+        elemento.className = "thought-card";
+
+        elemento.innerHTML = `
+            <span class="thought-number">
+                0${index + 1}
+            </span>
+
+            <h3>
+                ${card.titulo}
+            </h3>
+
+            <p>
+                ${card.texto}
+            </p>
+        `;
+
+        container.appendChild(elemento);
+
+      });
+
+    }
+
+
+    /* =========================================================
+       INICIALIZAÇÃO
+       ========================================================= */
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+      carregarTextos();
+
+      gerarCards();
+
+    });
 
     // =====================================================
     // CURINGAS — GRÁFICOS (ALTERE VALORES E NOMES AQUI)
@@ -714,7 +1067,7 @@
       { nome: "Escola", valor: 15 },
       { nome: "Preocupações Aleatórias", valor: 5 },
       { nome: "Sono", valor: 10 },
-      { nome: "Futevôlei e futebol", valor: 30}
+      { nome: "Futevôlei e futebol", valor: 30 }
     ];
 
     const graficoComVoce = [
@@ -744,7 +1097,7 @@
         texto: "Repassando na cabeça piadas internas, áudios e momentos que me fazem sorrir sozinho no meio do dia."
       },
       {
-        nome: "Trabalho (Tentando focar)",
+        nome: "Faculdade",
         texto: "A parte do cérebro que tenta manter a produtividade, embora frequentemente interrompida por distrações boas."
       },
       {
@@ -755,7 +1108,7 @@
 
     // PALETA DE CORES PARA OS GRÁFICOS (Geradas dinamicamente)
     const colorPalette = [
-      '#ff2b5b', '#9d4edd', '#00f0ff', '#ffb703', 
+      '#ff2b5b', '#9d4edd', '#00f0ff', '#ffb703',
       '#70e000', '#ff0676', '#4cc9f0', '#f72585'
     ];
 
@@ -798,12 +1151,12 @@
       const nextEl = document.getElementById(`screen-0${screenNumber}`);
 
       if (currentEl) currentEl.classList.remove('active');
-      
+
       setTimeout(() => {
         if (nextEl) {
           nextEl.classList.add('active');
           currentScreen = screenNumber;
-          
+
           // Trigger de renderização/animação dos gráficos de acordo com a tela
           if (screenNumber === 3) {
             renderPieChart('canvas-antes', 'legend-antes', graficoAntes);
@@ -823,7 +1176,7 @@
       const overlay = document.getElementById('unlock-overlay');
       const progressBar = document.getElementById('unlock-progress');
       const percentText = document.getElementById('unlock-percent');
-      
+
       overlay.classList.add('active');
       let progress = 0;
 
@@ -832,7 +1185,7 @@
         if (progress >= 100) {
           progress = 100;
           clearInterval(interval);
-          
+
           setTimeout(() => {
             overlay.classList.remove('active');
             goToScreen(7);
@@ -857,7 +1210,7 @@
 
       const ctx = canvas.getContext('2d');
       const dpr = window.devicePixelRatio || 1;
-      
+
       // Ajustar tamanho real do canvas para telas High-DPI
       const rect = canvas.getBoundingClientRect();
       canvas.width = rect.width * dpr;
@@ -952,7 +1305,7 @@
       function animateChart(now) {
         const elapsed = now - startTime;
         animationProgress = Math.min(elapsed / duration, 1);
-        
+
         // Easing (Cubic Out)
         const easeProgress = 1 - Math.pow(1 - animationProgress, 3);
 
@@ -1117,4 +1470,5 @@
     });
   </script>
 </body>
+
 </html>

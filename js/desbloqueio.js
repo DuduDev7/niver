@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         gatilho: '#coracao-secreto',
         titulo: 'Tem algo escondido aqui... 🤫',
         texto: 'Qual é a nossa senha?',
-        senhas: ['TROCAR-SENHA-1'],
+        senhas: ['VoceAcha'],
         sucesso: 'Então era verdade... ainda existiam muitos, muitos mais motivos. ❤️'
       },
 
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tipo: 'senha',
         titulo: 'Os últimos motivos... 🔐',
         texto: 'Qual é a palavra (ou a data) mais importante de nós dois?',
-        senhas: ['TROCAR-SENHA-FINAL'],
+        senhas: ['liberado'],
         dica: 'Clique em um dos botões trancados. A resposta só você sabe.',
         sucesso: 'Todos os 5000 motivos estão liberados. E mesmo assim, o amor continua. ❤️'
       }

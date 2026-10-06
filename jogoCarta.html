@@ -50,8 +50,7 @@
 
     html, body {
       width: 100%;
-      height: 100%;
-      overflow: hidden;
+      min-height: 100%;
       background-color: var(--bg-dark);
       color: var(--text-main);
       font-family: var(--font-sans);
@@ -95,11 +94,12 @@
     #app-container {
       position: relative;
       width: 100%;
-      height: 100%;
+      height: 100vh;
       z-index: 2;
+      overflow: hidden;
     }
 
-    .screen {
+.screen {
       position: absolute;
       top: 0;
       left: 0;
@@ -107,7 +107,6 @@
       height: 100%;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
       padding: 2rem 1.2rem;
       opacity: 0;
@@ -120,21 +119,23 @@
       -webkit-overflow-scrolling: touch;
     }
 
-    .screen.active {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0) scale(1);
-    }
-
     .screen-content {
       max-width: 700px;
       width: 100%;
-      margin: auto;
+      margin: auto; /* O 'margin: auto' centraliza verticalmente quando cabe e permite scroll correto quando transborda */
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
       position: relative;
+      padding-top: 2rem;    /* Evita colisão com o topo em telas menores */
+      padding-bottom: 2rem; /* Mantém respiro na base da rolagem */
+    }
+
+    .screen.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
     }
 
     /* TIPOGRAFIA & BADGES */
