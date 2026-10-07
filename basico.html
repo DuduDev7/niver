@@ -10,44 +10,46 @@
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600;700&family=Great+Vibes&family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <style>
-        * {
+        /* =========================================
+           RESET & SCROLL GLOBAL
+        ========================================= */
+        *, *::before, *::after {
             box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #030206;
-            color: #e2e8f0;
-            overflow-x: hidden;
             margin: 0;
             padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            background-color: #030206;
+            color: #e2e8f0;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; /* O scroll é gerenciado por cada tela */
             user-select: none;
             -webkit-user-select: none;
         }
 
-        /* Beautiful Romantic Cursive Fonts */
-        .font-cursive {
-            font-family: 'Great Vibes', cursive;
+        button {
+            touch-action: manipulation;
+            max-width: 100%;
         }
 
-        .font-handwriting {
-            font-family: 'Dancing Script', cursive;
-        }
+        /* =========================================
+           CLASSES DE FONTE E VISUAL
+        ========================================= */
+        .font-cursive { font-family: 'Great Vibes', cursive; }
+        .font-handwriting { font-family: 'Dancing Script', cursive; }
+        .font-code { font-family: 'Fira Code', monospace; }
 
-        .font-code {
-            font-family: 'Fira Code', monospace;
-        }
-
-        /* Glassmorphism Card Style */
         .glass-card {
-            background: rgba(18, 10, 26, 0.82);
+            background: rgba(18, 10, 26, 0.88);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(236, 72, 153, 0.35);
             box-shadow: 0 0 35px rgba(236, 72, 153, 0.3), inset 0 0 15px rgba(236, 72, 153, 0.15);
         }
 
-        /* Heart Pulse Glow Animation */
         @keyframes heartPulse {
             0%, 100% {
                 transform: scale(1);
@@ -63,33 +65,29 @@
             animation: heartPulse 1.8s infinite ease-in-out;
         }
 
-        /* Romantic Gradient Button */
         .btn-romantic {
             background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
             box-shadow: 0 0 25px rgba(236, 72, 153, 0.6);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
         }
 
         .btn-romantic:hover {
             box-shadow: 0 0 40px rgba(236, 72, 153, 0.9);
-            transform: translateY(-2px) scale(1.04);
+            transform: translateY(-2px) scale(1.02);
         }
 
         .btn-romantic:active {
             transform: translateY(1px) scale(0.98);
         }
 
-        /* Glowing Neon Text Effect for Love Phrases */
         .glowing-love-text {
             color: #fbcfe8;
-            text-shadow: 
-                0 0 5px rgba(244, 114, 182, 0.8),
-                0 0 12px rgba(236, 72, 153, 0.6),
-                0 0 20px rgba(219, 39, 119, 0.4);
-            line-height: 1.4;
+            text-shadow: 0 0 5px rgba(244, 114, 182, 0.65), 0 0 12px rgba(236, 72, 153, 0.45), 0 0 20px rgba(219, 39, 119, 0.3);
+            line-height: 1.8;
+            overflow-wrap: anywhere;
+            word-break: normal;
         }
 
-        /* Blinking Typing Cursor */
         .typing-cursor {
             display: inline-block;
             width: 3px;
@@ -106,7 +104,29 @@
             50% { opacity: 0; }
         }
 
-        /* Custom Scrollbar */
+        /* =========================================
+           GERENCIAMENTO DE SCROLL DAS TELAS
+        ========================================= */
+        .screen-container {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100dvh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            padding: max(5rem, env(safe-area-inset-top) + 1rem) 1rem max(2rem, env(safe-area-inset-bottom));
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .screen-content {
+            margin: auto 0;
+            width: 100%;
+        }
+
+        /* BARRA DE SCROLL CUSTOMIZADA */
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -114,63 +134,174 @@
             background: #030206;
         }
         ::-webkit-scrollbar-thumb {
-            background: rgba(236, 72, 153, 0.4);
-            border-radius: 3px;
+            background: rgba(236, 72, 153, 0.5);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(236, 72, 153, 0.8);
         }
     </style>
 </head>
-<!-- Screen 2: Grande declaração -->
-<div id="writingContainer"
-    class="fixed inset-0 z-10 p-5 sm:p-8 pt-20 pb-32 overflow-y-auto pointer-events-none hidden opacity-0 transition-opacity duration-1000">
+<body class="bg-[#030206] text-white">
 
-    <div id="loveTextWrapper"
-        class="max-w-4xl mx-auto w-full font-handwriting text-2xl sm:text-3xl md:text-4xl glowing-love-text leading-relaxed tracking-wide">
+    <!-- CANVAS DE FUNDO -->
+    <canvas id="mainCanvas" class="fixed inset-0 z-0 pointer-events-none" aria-hidden="true"></canvas>
 
-        <span id="typedContent"></span>
-        <span id="cursor" class="typing-cursor hidden"></span>
-
-    </div>
-</div>
-
-
-<!-- Screen 3: Declaração final -->
-<div id="finalCard"
-    class="fixed z-30 bottom-5 sm:bottom-8 inset-x-4 sm:inset-x-auto mx-auto max-w-3xl w-full hidden opacity-0 transition-all duration-1000 pointer-events-none">
-
-    <div class="glass-card rounded-3xl p-7 sm:p-10 text-center pointer-events-auto border border-pink-500/40 shadow-2xl">
-
-        <div class="text-4xl sm:text-5xl text-pink-400 mb-4 animate-bounce">
-            ❤️
+    <!-- HUD SUPERIOR FIXO -->
+    <div id="topHUD" class="fixed top-4 left-4 right-4 z-50 flex justify-between items-center gap-3 opacity-0 transition-opacity duration-1000 pointer-events-auto">
+        <div class="px-4 py-2 rounded-full glass-card text-xs sm:text-sm font-code text-pink-300">
+            ❤️ Corações: <span id="heartCounter" class="font-bold text-pink-400 inline-block transition-transform duration-150">0</span>
         </div>
 
-        <h2 id="finalTitle"
-            class="text-3xl sm:text-4xl md:text-5xl font-bold text-pink-100 mb-5 tracking-wide font-cursive drop-shadow-[0_0_15px_rgba(236,72,153,0.8)]">
-            Eu te amo, Julia.
-        </h2>
-
-        <p id="finalMessage"
-            class="text-base sm:text-lg text-pink-200/90 leading-relaxed mb-7 font-light">
-            E se algum dia você esquecer o tamanho do espaço que ocupa na minha vida,
-            volte aqui. Eu vou continuar tendo motivos para te lembrar.
-        </p>
-
-        <div class="flex flex-wrap justify-center gap-3">
-
-            <button id="btnExplode"
-                class="btn-romantic px-6 py-3 rounded-full text-sm sm:text-base font-medium text-white tracking-wide shadow-lg active:scale-95 transition-all">
-                💥 Explodir meus sentimentos
+        <div class="flex gap-2">
+            <button id="btnSpeedToggle" class="px-3 py-2 rounded-full glass-card text-xs font-code text-pink-300 hover:text-white transition-colors">
+                Velocidade: <span id="speedLabel">2x</span>
             </button>
 
-            <div
-                class="inline-flex items-center gap-2 px-4 py-3 rounded-full bg-pink-500/20 text-pink-300 text-xs sm:text-sm font-code border border-pink-500/30">
-                <span>✨ Toque na tela ou arraste o dedo ✨</span>
+            <button id="btnSoundToggle" class="p-2 rounded-full glass-card text-pink-300 hover:text-white transition-colors" aria-label="Ativar ou desativar som">
+                <span id="soundIcon">🔇</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- TELA 1: INTRODUÇÃO -->
+    <div id="introScreen" class="screen-container z-20 pointer-events-auto transition-all duration-700">
+        <div class="screen-content max-w-2xl">
+            <div class="glass-card rounded-3xl p-6 sm:p-10 text-center border border-pink-500/20 shadow-2xl flex flex-col items-center">
+                
+                <div class="text-6xl sm:text-8xl mb-6 animate-heart-pulse" aria-hidden="true">❤️</div>
+
+                <p class="text-pink-400 text-xs sm:text-sm tracking-[0.35em] uppercase mb-4">
+                    Um pedacinho de mim para você
+                </p>
+
+                <h1 class="text-4xl sm:text-6xl font-bold font-cursive text-pink-200 mb-6 leading-tight">
+                    Para você, Julia.
+                </h1>
+
+                <div class="w-24 h-1 rounded-full bg-gradient-to-r from-pink-500 to-rose-300 mb-7"></div>
+
+                <p class="text-pink-100/90 text-base sm:text-xl leading-relaxed mb-5">
+                    Eu poderia simplesmente chegar até você e dizer que te amo.
+                    Poderia te dar um abraço, segurar sua mão e tentar demonstrar
+                    tudo aquilo que sinto.
+                </p>
+
+                <p class="text-pink-200/75 text-sm sm:text-lg leading-relaxed mb-8">
+                    Mas hoje eu queria fazer diferente. Queria deixar algumas palavras
+                    aqui, para que você pudesse ler no seu tempo e perceber que, por trás
+                    de cada “eu te amo”, existe muito mais do que uma frase bonita.
+                    Existe uma parte de mim que escolheu você.
+                </p>
+
+                <div class="flex flex-col gap-2 mb-9 text-pink-300/80 text-sm sm:text-base">
+                    <span>♡ Leia sem pressa.</span>
+                    <span>♡ Sinta cada palavra.</span>
+                    <span>♡ E nunca duvide do quanto você é importante para mim.</span>
+                </div>
+
+                <button id="btnContinue" class="btn-romantic px-8 py-4 rounded-full text-white font-semibold text-base sm:text-lg tracking-wide">
+                    Quero ler o que você tem a me dizer ✨
+                </button>
+
+                <p class="text-pink-400/50 text-xs mt-6 tracking-wider">
+                    FEITO COM AMOR. PENSADO EM VOCÊ.
+                </p>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA 2: A DECLARAÇÃO -->
+    <div id="writingContainer" class="screen-container z-10 pointer-events-auto hidden opacity-0 transition-opacity duration-1000">
+        <div class="screen-content max-w-4xl">
+            
+            <div class="text-center mb-10 sm:mb-14">
+                <p class="text-pink-400 text-xs sm:text-sm tracking-[0.3em] uppercase mb-4">
+                    Para ler com o coração
+                </p>
+
+                <h2 class="text-3xl sm:text-5xl md:text-6xl font-bold font-cursive text-pink-200 leading-tight">
+                    Se eu pudesse te mostrar tudo...
+                </h2>
+
+                <div class="w-20 h-1 bg-pink-500/70 rounded-full mx-auto mt-6"></div>
+            </div>
+
+            <div id="loveTextWrapper" class="font-handwriting text-xl sm:text-2xl md:text-3xl glowing-love-text leading-[1.9] tracking-wide whitespace-pre-line break-words">
+                <span id="typedContent"></span>
+                <span id="cursor" class="typing-cursor hidden"></span>
+            </div>
+
+            <div class="text-center mt-12 sm:mt-16 mb-8">
+                <div class="text-3xl sm:text-4xl text-pink-400 animate-heart-pulse">♥</div>
+                <p class="text-pink-300/70 text-sm sm:text-base mt-4">
+                    Ainda tem uma última coisa que eu quero que você saiba...
+                </p>
             </div>
 
         </div>
-
     </div>
-</div>
 
+    <!-- TELA 3: DECLARAÇÃO FINAL -->
+    <div id="finalCard" class="screen-container z-30 pointer-events-auto hidden opacity-0 transition-all duration-1000">
+        <div class="screen-content max-w-3xl">
+            <div class="glass-card rounded-3xl p-6 sm:p-10 text-center border border-pink-500/40 shadow-2xl">
+                
+                <div class="text-5xl sm:text-6xl text-pink-400 mb-5 animate-heart-pulse" aria-hidden="true">❤️</div>
+
+                <p class="text-pink-400 text-xs sm:text-sm tracking-[0.3em] uppercase mb-4">
+                    E se você esquecer algum dia...
+                </p>
+
+                <h2 id="finalTitle" class="text-3xl sm:text-5xl md:text-6xl font-bold text-pink-100 mb-6 tracking-wide font-cursive leading-tight drop-shadow-[0_0_15px_rgba(236,72,153,0.8)]">
+                    Eu escolheria você de novo.
+                </h2>
+
+                <div class="w-20 h-1 bg-pink-500/70 rounded-full mx-auto mb-7"></div>
+
+                <p id="finalMessage" class="text-base sm:text-xl text-pink-100/90 leading-relaxed mb-8 font-light whitespace-pre-line">
+                    Entre tantas possibilidades, tantos caminhos e tantas pessoas,
+                    que sorte a minha ter encontrado você.
+
+                    Eu não sei tudo o que o futuro nos reserva,
+                    mas sei o que sinto agora:
+                    eu amo você, Julia. E escolheria você de novo.
+                </p>
+
+                <div class="rounded-2xl border border-pink-500/20 bg-pink-500/5 p-5 sm:p-6 mb-8">
+                    <p class="text-pink-300 text-sm sm:text-base leading-relaxed">
+                        Não quero que você precise ser perfeita.
+                        Não quero que todos os dias sejam fáceis.
+                        Só quero que, quando você pensar em mim,
+                        saiba que existe alguém que sente uma felicidade enorme
+                        por ter você na vida.
+                    </p>
+
+                    <p class="font-cursive text-2xl sm:text-3xl text-pink-200 mt-5">
+                        Eu te amo. Muito. De verdade.
+                    </p>
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-3">
+                    <button id="btnExplode" class="btn-romantic px-6 py-4 rounded-full text-sm sm:text-base font-semibold text-white tracking-wide shadow-lg active:scale-95 transition-all">
+                        💖 Soltar todo esse amor
+                    </button>
+
+                    <div class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-full bg-pink-500/10 text-pink-300 text-xs sm:text-sm font-code border border-pink-500/30">
+                        <span>✨ Toque ou arraste para espalhar corações</span>
+                    </div>
+                </div>
+
+                <p class="text-pink-400/50 text-xs sm:text-sm mt-7 tracking-wider">
+                    PARA JULIA, COM TODO O MEU AMOR. ❤️
+                </p>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT LÓGICO -->
     <script>
         // DOM Elements
         const canvas = document.getElementById('mainCanvas');
@@ -634,13 +765,13 @@
 
         // Click or Tap anywhere on canvas to launch heart explosions
         window.addEventListener('click', (e) => {
-            if (state === 'WRITING' || state === 'FINAL') {
+            if ((state === 'WRITING' || state === 'FINAL') && e.target.tagName !== 'BUTTON') {
                 triggerHeartBurst(e.clientX, e.clientY);
             }
         });
 
         window.addEventListener('touchstart', (e) => {
-            if ((state === 'WRITING' || state === 'FINAL') && e.touches.length > 0) {
+            if ((state === 'WRITING' || state === 'FINAL') && e.touches.length > 0 && e.target.tagName !== 'BUTTON') {
                 triggerHeartBurst(e.touches[0].clientX, e.touches[0].clientY);
             }
         }, { passive: true });

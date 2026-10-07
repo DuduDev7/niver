@@ -1,0 +1,310 @@
+<html lang="pt-BR" style="--preto:#06080f; --marinho:#0c1730; --ouro:#e8b25c; --ambar:#f3c98a; --branco:#fbf1e3; --rosa:#c46a6a; --dur:1.2s;"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Se o tempo parasse</title>
+  <style>
+  :root{--preto:#06080f;--marinho:#0c1730;--ouro:#e8b25c;--ambar:#f3c98a;--branco:#fbf1e3;--rosa:#c46a6a;--dur:1.2s}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:var(--preto);color:var(--branco);overflow:hidden}
+  body{font-family:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;-webkit-font-smoothing:antialiased}
+  button{font:inherit;color:inherit;cursor:pointer}
+  button:focus-visible,#frame:focus-visible{outline:2px solid var(--ouro);outline-offset:3px}
+  #bg{position:fixed;inset:0;background-size:cover;background-position:center;filter:blur(38px) brightness(.32) saturate(1.1);transform:scale(1.15);transition:opacity 2s;opacity:0}
+  .rev #bg{opacity:1}
+  #veil{position:fixed;inset:0;background:radial-gradient(ellipse at 30% 40%,rgba(12,23,48,.2),var(--preto) 85%);pointer-events:none}
+  #app{position:relative;height:100dvh;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+  .pre #app{grid-template-columns:1fr}
+  .pre #photoWrap{display:none}
+  #photoWrap{display:flex;align-items:center;justify-content:center;padding:4vh 3vw;min-height:0;transition:padding var(--dur)}
+  #frame{position:relative;max-width:100%;max-height:100%;display:flex;align-items:center;justify-content:center;border-radius:2px;box-shadow:0 30px 90px rgba(0,0,0,.65);cursor:pointer;opacity:0;transform:scale(.97);transition:opacity 2.2s ease,transform 3s ease,box-shadow var(--dur)}
+  .rev #frame{opacity:1;transform:none}
+  #foto{display:block;max-width:100%;max-height:92dvh;width:auto;height:auto;object-fit:contain}
+  #fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  #glow{position:absolute;inset:0;pointer-events:none;opacity:0;mix-blend-mode:screen}
+  #caption{position:absolute;left:0;right:0;bottom:0;padding:34px 18px 16px;text-align:center;font-style:italic;font-size:clamp(1rem,2.2vw,1.35rem);background:linear-gradient(transparent,rgba(6,8,15,.82));opacity:0;transition:opacity 1s;pointer-events:none}
+  #caption.on{opacity:1}
+  #missing{display:none;width:min(80vw,520px);aspect-ratio:4/5;max-height:70dvh;border:1px dashed rgba(232,178,92,.5);align-items:center;justify-content:center;text-align:center;padding:28px;line-height:1.6;color:var(--ambar);background:rgba(12,23,48,.6)}
+  .nofoto #missing{display:flex}
+  .nofoto #foto,.nofoto #bg{display:none}
+  #panel{position:relative;display:flex;flex-direction:column;justify-content:center;padding:6vh clamp(24px,4vw,64px);min-height:0;overflow-y:auto}
+  .pre #panel{align-items:center;text-align:center}
+  #content{max-width:34rem;width:100%;margin:auto 0}
+  .pre #content{margin:auto}
+  .step{animation:in var(--dur) ease both}
+  @keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  h1{font-weight:400;font-size:clamp(1.9rem,4.4vw,3.3rem);line-height:1.12;letter-spacing:.01em;margin-bottom:1.1rem}
+  h2{font-weight:400;font-size:clamp(1.5rem,3.2vw,2.3rem);line-height:1.25;margin-bottom:1.3rem}
+  p{font-size:clamp(1.12rem,2.2vw,1.35rem);line-height:1.7;margin-bottom:1.3rem;color:rgba(251,241,227,.92)}
+  p.small{font-size:1rem;opacity:.75}
+  .sans{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+  .btn{display:block;width:100%;text-align:left;margin:0 0 .75rem;padding:1.05rem 1.2rem;background:rgba(12,23,48,.55);border:1px solid rgba(243,201,138,.3);border-radius:3px;font-size:1.12rem;line-height:1.4;transition:background .4s,border-color .4s}
+  .btn:hover,.btn.sel{background:rgba(232,178,92,.14);border-color:var(--ouro)}
+  .btn.main{width:auto;text-align:center;margin-top:.6rem;padding:1rem 1.8rem;letter-spacing:.14em;font-size:.92rem;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;border-color:var(--ouro);background:rgba(232,178,92,.1)}
+  .pre .btn.main{margin-inline:auto}
+  .btn.main:hover{background:rgba(232,178,92,.24)}
+  .ans{margin-top:1.2rem;padding-top:1.2rem;border-top:1px solid rgba(243,201,138,.25);animation:in var(--dur) ease both}
+  .ans svg{display:block;width:100%;max-width:300px;height:auto;margin:0 0 1.1rem;border-radius:3px}
+  .final{font-size:clamp(1.25rem,2.6vw,1.7rem);color:var(--ambar);font-style:italic}
+  .msg{font-style:italic;min-height:9rem;white-space:pre-wrap}
+  #nav{display:flex;gap:1.4rem;margin-top:1.4rem;max-width:34rem;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-size:.85rem;letter-spacing:.08em}
+  #nav button{background:none;border:none;padding:.5rem 0;opacity:.6}
+  #nav button:hover{opacity:1}
+  #nav button[hidden]{display:none}
+  .pre #nav{justify-content:center}
+  @media (max-width:760px){
+   html,body{overflow:auto}
+   #app{display:flex;flex-direction:column;height:auto;min-height:100dvh}
+   #photoWrap{padding:14px 14px 0;flex:none}
+   #foto{max-height:56dvh}
+   #panel{padding:26px 22px 40px;overflow:visible;justify-content:flex-start}
+   #content{margin:0}
+   .pre #app{justify-content:center}
+   .pre #panel{padding-top:15dvh}
+  }
+  @media (max-width:760px) and (orientation:landscape){#foto{max-height:80dvh}}
+  .reduce *,.reduce *::before{animation-duration:.01s!important;transition-duration:.01s!important}
+  @media (prefers-reduced-motion:reduce){*,*::before{animation-duration:.01s!important;transition-duration:.01s!important}}
+  </style>
+  </head>
+  <body class="pre nofoto">
+  <div id="bg" style="background-image: url(&quot;imgs/bestImgPraia.jpeg&quot;);"></div><div id="veil"></div>
+  <div id="app">
+   <section id="photoWrap" aria-label="Fotografia">
+    <div id="frame" role="button" tabindex="0" aria-label="Toque na fotografia para fazer a luz aparecer">
+     <img id="foto" alt="Casal abraçado e se beijando à beira-mar durante o pôr do sol" src="imgs/bestImgPraia.jpeg">
+     <div id="missing" class="sans">Adicione a fotografia na pasta imgs com o nome bestImgPraia.jpeg para ela aparecer aqui.</div>
+     <div id="glow"></div><canvas id="fx" width="0" height="0"></canvas><div id="caption"></div>
+    </div>
+   </section>
+   <section id="panel">
+    <div id="content" aria-live="polite"><div class="step"><p>Eu acho que você vai achar engraçado isso que você vai ver, ou até não gostar, mas eu gosto de imaginar o que eu quero viver.</p><button class="btn main">VER</button></div></div>
+    <nav id="nav"><button id="back" hidden="">← VOLTAR</button><button id="restart" hidden="">RECOMEÇAR</button><button id="motion">REDUZIR ANIMAÇÕES</button></nav>
+   </section>
+  </div>
+  <script>
+  /* ===================== PERSONALIZACAO ===================== */
+  const PERSONALIZACAO = {
+    foto: "imgs/bestImgPraia.jpeg",
+    nome: "Julia",
+    titulo: "SE O TEMPO PARASSE",
+    preludio: {
+      texto: "Eu acho que você vai achar engraçado isso que você vai ver, ou até não gostar, mas eu gosto de imaginar o que eu quero viver.",
+      botao: "VER"
+    },
+    abertura: {
+      frase: "ALGUNS MOMENTOS MERECEM DURAR PARA SEMPRE.",
+      sub: "E se pudéssemos guardar um instante para nunca esquecer como ele nos fez sentir?",
+      botao: "FICAR MAIS UM INSTANTE"
+    },
+    tempo: {
+      pergunta: "SE O TEMPO PARASSE EXATAMENTE AQUI, O QUE VOCÊ QUERIA QUE ACONTECESSE?",
+      opcoes: [
+        { texto: "Ficar aqui por mais alguns minutos.", resposta: "Talvez fosse só isso: deixar o sol descer devagar, sem olhar o relógio. Alguns minutos a mais, com o barulho do mar ao fundo, podem parecer muito tempo quando o momento é bom." },
+        { texto: "Guardar esse momento para lembrar dele no futuro.", resposta: "Há instantes que a gente quer carregar com a gente. Guardar este aqui seria como dobrar um canto da página, para poder voltar a ele quando tiver vontade." },
+        { texto: "Imaginar todos os momentos que ainda podemos viver.", resposta: "Parar o tempo também pode ser um jeito de olhar para frente. Dá para imaginar outras tardes, outras luzes, outros lugares, ainda sem forma, esperando para existir." }
+      ]
+    },
+    significado: {
+      pergunta: "ALÉM DA FOTO, O QUE VOCÊ GUARDARIA DESSE MOMENTO?",
+      opcoes: [
+        { texto: "A sensação de estar perto.", resposta: "Estar perto muda o jeito como um lugar é lembrado. Às vezes o que fica não é a paisagem, e sim a sensação de não precisar estar em nenhum outro lugar." },
+        { texto: "A beleza daquele instante.", resposta: "A luz dourada, a água refletindo o céu, o fim de tarde. Alguns instantes são bonitos por si só, e uma fotografia ajuda a não deixar essa beleza escapar." },
+        { texto: "A lembrança que a imagem representa.", resposta: "Uma foto é pequena, mas pode guardar muita coisa. Cada pessoa enxerga nela algo diferente, e o que ela representa é só seu." },
+        { texto: "A possibilidade de viver outros momentos assim.", resposta: "Talvez a foto seja menos um ponto final e mais uma promessa em aberto: a de que ainda existem outros fins de tarde para viver." }
+      ]
+    },
+    foto_viva: {
+      instrucao: "Toque na fotografia. Só para ver o que acontece.",
+      frases: ["Alguns instantes têm luz própria.", "Fique um pouco mais.", "Nem tudo precisa de explicação para ser bonito.", "Dá para sentir o fim de tarde daqui."],
+      botao: "CONTINUAR"
+    },
+    mensagem: {
+      titulo: "UMA COISA QUE EU QUERIA TE DIZER",
+      texto: "Eu gosto dessa foto porque ela guarda uma imagem que significa muito para mim. Não é apenas sobre o lugar, a luz ou o pôr do sol. É sobre nós dois dividindo um instante que eu gostaria de poder revisitar muitas vezes. E, quando penso no que ainda podemos viver, gosto de imaginar quantas outras lembranças bonitas ainda teremos a oportunidade de construir.",
+      lerTudo: "LER TUDO",
+      botao: "CONTINUAR"
+    },
+    futuro: {
+      pergunta: "E SE ESSA FOSSE SÓ UMA DAS NOSSAS MUITAS LEMBRANÇAS BONITAS?",
+      opcoes: [
+        { texto: "Imaginar a próxima viagem.", cena: "estrada", resposta: "Imagine uma estrada ainda sem nome, uma mala meio aberta e um mapa que ninguém desenhou. Não existe destino marcado: só a vontade de ir, e o espaço vazio de uma história por escrever." },
+        { texto: "Pensar em outro pôr do sol.", cena: "sol", resposta: "Outro fim de tarde, outra luz, talvez outro lugar. O sol sempre se despede de um jeito diferente, e cada despedida dele pode ser um começo para uma lembrança nova." },
+        { texto: "Deixar o próximo momento ser uma surpresa.", cena: "porta", resposta: "Nem tudo precisa ser planejado. Uma porta entreaberta, uma luz do outro lado e a curiosidade de descobrir o que vem depois fazem parte do encanto." }
+      ],
+      final: "ESSA FOTO GUARDA UM INSTANTE. O RESTO DA HISTÓRIA AINDA ESTÁ SENDO ESCRITO."
+    },
+    cores: { preto: "#06080f", marinho: "#0c1730", ouro: "#e8b25c", ambar: "#f3c98a", branco: "#fbf1e3", rosa: "#c46a6a" },
+    particulas: 1,      /* 0 desliga, 1 normal, 2 mais intenso */
+    transicaoSeg: 1.2   /* duração das transições */
+  };
+  /* ========================================================== */
+  
+  const P = PERSONALIZACAO;
+  const $ = id => document.getElementById(id);
+  const root = document.documentElement;
+  Object.entries(P.cores).forEach(([k,v]) => root.style.setProperty('--'+k, v));
+  root.style.setProperty('--dur', P.transicaoSeg + 's');
+  
+  let reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function applyMotion(){ document.body.classList.toggle('reduce', reduce); $('motion').textContent = reduce ? 'ATIVAR ANIMAÇÕES' : 'REDUZIR ANIMAÇÕES'; }
+  $('motion').onclick = () => { reduce = !reduce; applyMotion(); };
+  applyMotion();
+  
+  /* Foto */
+  const foto = $('foto');
+  foto.onerror = () => document.body.classList.add('nofoto');
+  foto.onload = () => { document.body.classList.remove('nofoto'); sizeFx(); };
+  foto.src = P.foto;
+  $('bg').style.backgroundImage = 'url("' + P.foto + '")';
+  
+  /* Etapas */
+  const STEPS = ['preludio','abertura','tempo','significado','viva','mensagem','futuro'];
+  let idx = 0, hist = [], lock = false, typer = null;
+  
+  function el(tag, cls, txt){ const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  function mainBtn(txt, fn){ const b = el('button', 'btn main', txt); b.onclick = () => guard(fn); return b; }
+  function guard(fn){ if (lock) return; lock = true; setTimeout(() => lock = false, 450); fn(); }
+  
+  function go(i, push = true){
+    if (typer) { typer.stop(); typer = null; }
+    if (push) hist.push(idx);
+    idx = i;
+    render();
+  }
+  function render(){
+    const c = $('content'); c.innerHTML = '';
+    const box = el('div', 'step'); c.appendChild(box);
+    const name = STEPS[idx];
+    $('back').hidden = hist.length === 0 || idx === 0;
+    $('restart').hidden = idx === 0;
+    if (name === 'preludio'){
+      box.appendChild(el('p', '', P.preludio.texto));
+      box.appendChild(mainBtn(P.preludio.botao, () => {
+        document.body.classList.remove('pre'); document.body.classList.add('rev'); sizeFx(); go(1);
+      }));
+    } else if (name === 'abertura'){
+      box.appendChild(el('h1', '', P.abertura.frase));
+      box.appendChild(el('p', '', P.abertura.sub));
+      box.appendChild(mainBtn(P.abertura.botao, () => go(2)));
+    } else if (name === 'tempo'){
+      choiceStep(box, P.tempo, () => go(3));
+    } else if (name === 'significado'){
+      choiceStep(box, P.significado, () => go(4));
+    } else if (name === 'viva'){
+      box.appendChild(el('h2', '', P.foto_viva.instrucao));
+      box.appendChild(el('p', 'small', 'Você pode tocar quantas vezes quiser.'));
+      box.appendChild(mainBtn(P.foto_viva.botao, () => go(5)));
+      $('frame').focus({preventScroll:true});
+    } else if (name === 'mensagem'){
+      box.appendChild(el('h2', '', P.mensagem.titulo));
+      const m = el('p', 'msg'); box.appendChild(m);
+      const next = mainBtn(P.mensagem.botao, () => go(6));
+      const all = el('button', 'btn main', P.mensagem.lerTudo);
+      all.style.marginRight = '.7rem';
+      box.appendChild(all); box.appendChild(next);
+      typer = typeText(m, P.mensagem.texto, () => { all.hidden = true; });
+      all.onclick = () => { if (typer) typer.finish(); };
+    } else if (name === 'futuro'){
+      choiceStep(box, P.futuro, null, true);
+    }
+  }
+  function choiceStep(box, data, next, last){
+    box.appendChild(el('h2', '', data.pergunta));
+    const wrap = el('div'); box.appendChild(wrap);
+    const out = el('div'); box.appendChild(out);
+    const btns = data.opcoes.map((o, k) => {
+      const b = el('button', 'btn', o.texto);
+      b.onclick = () => {
+        btns.forEach(x => x.classList.remove('sel')); b.classList.add('sel');
+        out.innerHTML = '';
+        const a = el('div', 'ans');
+        if (o.cena) a.insertAdjacentHTML('beforeend', scene(o.cena));
+        a.appendChild(el('p', '', o.resposta));
+        if (last){
+          a.appendChild(el('p', 'final', data.final));
+          const r = el('button', 'btn main', 'VIVER DE NOVO'); r.onclick = () => guard(restart);
+          a.appendChild(r);
+        } else {
+          a.appendChild(mainBtn('CONTINUAR', next));
+        }
+        out.appendChild(a);
+        a.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'nearest'});
+      };
+      wrap.appendChild(b); return b;
+    });
+  }
+  function restart(){ hist = []; idx = 0; $('caption').classList.remove('on'); if (typer){ typer.stop(); typer = null; } render(); }
+  $('back').onclick = () => guard(() => { if (hist.length){ const p = hist.pop(); go(p, false); } });
+  $('restart').onclick = () => guard(restart);
+  
+  /* Texto surgindo */
+  function typeText(node, text, done){
+    let i = 0, t = null, ended = false;
+    const finish = () => { if (ended) return; ended = true; clearInterval(t); node.textContent = text; done && done(); };
+    if (reduce){ finish(); return {finish, stop: () => clearInterval(t)}; }
+    t = setInterval(() => { i++; node.textContent = text.slice(0, i); if (i >= text.length) finish(); }, 38);
+    return {finish, stop: () => { ended = true; clearInterval(t); }};
+  }
+  
+  /* Cenas abstratas em SVG */
+  function scene(k){
+    const defs = '<defs><linearGradient id="g'+k+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0c1730"/><stop offset="1" stop-color="#7a3d3a"/></linearGradient></defs><rect width="300" height="170" fill="url(#g'+k+')"/>';
+    let body = '';
+    if (k === 'estrada') body = '<circle cx="150" cy="74" r="22" fill="#e8b25c" opacity=".85"/><path d="M0 100 L300 100 L300 170 L0 170Z" fill="#06080f"/><path d="M130 170 L146 100 L154 100 L170 170Z" fill="#2a2433"/><path d="M150 168 L150 150 M150 140 L150 128 M150 120 L150 112" stroke="#f3c98a" stroke-width="2.5" opacity=".8"/>';
+    if (k === 'sol') body = '<circle cx="150" cy="105" r="34" fill="#e8b25c"/><rect y="105" width="300" height="65" fill="#06080f" opacity=".75"/><path d="M110 118h80M122 128h56M134 138h32" stroke="#f3c98a" stroke-width="3" stroke-linecap="round" opacity=".8"/>';
+    if (k === 'porta') body = '<rect x="112" y="34" width="76" height="120" rx="38" ry="38" fill="#06080f"/><path d="M150 40 L188 154 L150 154Z" fill="#f3c98a" opacity=".75"/><rect x="128" y="154" width="44" height="3" fill="#e8b25c" opacity=".6"/><circle cx="168" cy="102" r="3" fill="#c46a6a"/>';
+    return '<svg viewBox="0 0 300 170" role="img" aria-label="Ilustração abstrata">' + defs + body + '</svg>';
+  }
+  
+  /* Partículas e luz sobre a foto (camada separada) */
+  const cv = $('fx'), cx = cv.getContext('2d');
+  let W = 0, H = 0, parts = [], amb = [];
+  function sizeFx(){
+    const r = $('frame').getBoundingClientRect(); const d = window.devicePixelRatio || 1;
+    W = r.width; H = r.height; cv.width = W * d; cv.height = H * d; cx.setTransform(d,0,0,d,0,0);
+    amb = []; const n = Math.round(14 * P.particulas);
+    for (let i = 0; i < n; i++) amb.push({x: Math.random()*W, y: Math.random()*H, r: .6+Math.random()*1.4, v: .08+Math.random()*.18, a: Math.random()*6.28});
+  }
+  addEventListener('resize', sizeFx);
+  function burst(x, y){
+    const n = Math.round(34 * P.particulas);
+    for (let i = 0; i < n; i++){
+      const a = Math.random()*6.28, s = .4 + Math.random()*1.6;
+      parts.push({x, y, vx: Math.cos(a)*s, vy: Math.sin(a)*s - .4, r: 1+Math.random()*2.2, life: 1});
+    }
+  }
+  function loop(){
+    cx.clearRect(0, 0, W, H);
+    if (P.particulas > 0){
+      amb.forEach(p => { p.a += .01; p.y -= p.v; p.x += Math.sin(p.a)*.15; if (p.y < -4){ p.y = H+4; p.x = Math.random()*W; }
+        cx.fillStyle = 'rgba(243,201,138,.35)'; cx.beginPath(); cx.arc(p.x, p.y, p.r, 0, 6.28); cx.fill(); });
+      parts = parts.filter(p => p.life > 0);
+      parts.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += .008; p.life -= reduce ? .08 : .012;
+        cx.fillStyle = 'rgba(243,201,138,' + Math.max(p.life,0).toFixed(2) + ')'; cx.beginPath(); cx.arc(p.x, p.y, p.r, 0, 6.28); cx.fill(); });
+    }
+    requestAnimationFrame(loop);
+  }
+  sizeFx(); requestAnimationFrame(loop);
+  
+  let fi = 0, capTimer = null;
+  function touchPhoto(e){
+    if (!document.body.classList.contains('rev')) return;
+    const r = $('frame').getBoundingClientRect();
+    const x = e && e.clientX != null ? e.clientX - r.left : r.width/2;
+    const y = e && e.clientY != null ? e.clientY - r.top : r.height/2;
+    burst(x, y);
+    const g = $('glow');
+    g.style.background = 'radial-gradient(circle at ' + x + 'px ' + y + 'px, rgba(243,201,138,.38), transparent 60%)';
+    if (g.animate && !reduce) g.animate([{opacity:0},{opacity:1,offset:.3},{opacity:0}], {duration: 2200, easing: 'ease-out'});
+    else { g.style.opacity = 1; setTimeout(() => g.style.opacity = 0, 600); }
+    const cap = $('caption'); cap.textContent = P.foto_viva.frases[fi++ % P.foto_viva.frases.length]; cap.classList.add('on');
+    clearTimeout(capTimer); capTimer = setTimeout(() => cap.classList.remove('on'), 3600);
+  }
+  $('frame').addEventListener('click', touchPhoto);
+  $('frame').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); touchPhoto(); } });
+  
+  render();
+  </script>
+  
+  
+  </body></html>

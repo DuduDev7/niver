@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A NOSSA HISTÓRIA — Um livro de escolhas</title>
+<style>
+:root{--preto:#09040a;--vinho:#2b0d17;--vinho2:#4a1424;--ouro:#c9a24f;--ouro2:#e6c97f;--rosa:#d98595;--papel:#f3e7d1}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;background:var(--preto);color:var(--papel)}
+body{font-family:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;background:radial-gradient(ellipse at 50% 0%,var(--vinho2),var(--vinho) 45%,var(--preto) 100%) fixed;-webkit-font-smoothing:antialiased;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:2px solid var(--ouro2);outline-offset:3px}
+#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.ui{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+.screen{position:relative;z-index:1;display:none;min-height:100dvh}
+.screen.on{display:block}
+/* capa */
+#capa{text-align:center;padding:6vh 20px}
+#capa.on{display:flex;flex-direction:column;align-items:center;justify-content:center}
+.livro{width:min(88vw,430px);padding:clamp(34px,7vw,56px) clamp(22px,5vw,40px);background:linear-gradient(135deg,#3a1020,#1c0710);border:2px solid var(--ouro);border-radius:6px 14px 14px 6px;box-shadow:inset 14px 0 22px rgba(0,0,0,.5),0 0 0 6px rgba(201,162,79,.12),0 30px 80px rgba(0,0,0,.7);animation:flut 7s ease-in-out infinite}
+@keyframes flut{50%{transform:translateY(-6px)}}
+.livro .fio{height:1px;background:linear-gradient(90deg,transparent,var(--ouro),transparent);margin:18px 0}
+.livro h1{font-weight:400;font-size:clamp(2rem,8vw,3rem);letter-spacing:.06em;line-height:1.1;color:var(--ouro2)}
+.livro p{font-style:italic;line-height:1.6;font-size:1.1rem;color:var(--papel);opacity:.9}
+.livro .nome{margin-top:20px;font-size:1.05rem;color:var(--rosa);letter-spacing:.2em;font-style:normal}
+.cbtns{display:flex;flex-direction:column;gap:12px;width:min(88vw,430px);margin-top:26px}
+.b{padding:15px 20px;background:rgba(43,13,23,.7);border:1px solid rgba(201,162,79,.5);border-radius:4px;letter-spacing:.14em;font-size:.92rem;transition:.3s}
+.b:hover:not(:disabled){background:rgba(201,162,79,.2);border-color:var(--ouro2)}
+.b.p{background:rgba(201,162,79,.2);border-color:var(--ouro2)}
+.b:disabled{opacity:.4;cursor:default}
+/* jogo */
+#top{position:sticky;top:0;z-index:5;background:linear-gradient(var(--preto),rgba(9,4,10,.85));padding:10px 14px 8px;font-size:.78rem}
+#top .row{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;max-width:60rem;margin:0 auto}
+#cap{color:var(--ouro2);letter-spacing:.06em}
+.tools{display:flex;gap:4px;flex-wrap:wrap}
+.tools button{background:none;border:1px solid rgba(201,162,79,.35);border-radius:3px;padding:7px 10px;font-size:.72rem;letter-spacing:.08em;min-height:34px}
+.tools button:hover{background:rgba(201,162,79,.18)}
+#prog{height:2px;background:rgba(255,255,255,.1);max-width:60rem;margin:8px auto 0}
+#prog i{display:block;height:100%;width:0;background:var(--ouro);transition:width 1s}
+#pips{display:flex;gap:10px;opacity:.75;font-size:.7rem;align-items:center}
+.pip b{display:inline-block;width:6px;height:6px;border-radius:50%;margin-left:2px;background:rgba(255,255,255,.15)}
+.pip b.f{background:var(--rosa);box-shadow:0 0 5px var(--rosa)}
+#cena{max-width:40rem;margin:0 auto;padding:clamp(24px,6vh,64px) 22px 90px;animation:pg 1s ease both}
+@keyframes pg{from{opacity:0;transform:translateY(12px)}}
+#cena h2{font-weight:400;font-size:clamp(1.7rem,5.5vw,2.5rem);color:var(--ouro2);line-height:1.2;margin-bottom:1.4rem}
+#txt{font-size:clamp(1.2rem,3.4vw,1.4rem);line-height:1.8;white-space:pre-line;min-height:7rem;margin-bottom:2rem;text-shadow:0 1px 14px rgba(0,0,0,.5)}
+#ops{display:flex;flex-direction:column;gap:12px}
+.op{width:100%;text-align:left;padding:18px 20px;font-size:1.15rem;line-height:1.45;background:linear-gradient(90deg,rgba(74,20,36,.65),rgba(43,13,23,.4));border:1px solid rgba(201,162,79,.4);border-left:3px solid var(--ouro);border-radius:4px;transition:.3s;animation:pg .8s ease both}
+.op:hover:not(:disabled){border-color:var(--ouro2);background:rgba(201,162,79,.16);transform:translateX(4px)}
+.op:disabled{opacity:.45;cursor:default;font-style:italic;border-left-color:rgba(255,255,255,.2)}
+.skip{display:block;margin:0 auto 1.4rem;background:none;border:none;color:var(--ouro);text-decoration:underline;font-size:.82rem;padding:8px}
+.fimbox{border:1px solid var(--ouro);padding:22px;border-radius:6px;background:rgba(0,0,0,.28);margin-bottom:1.6rem}
+.fimbox .ui{font-size:.82rem;letter-spacing:.1em;color:var(--rosa);margin-bottom:6px}
+.trilha{font-size:1rem;line-height:1.6;margin:0 0 1.6rem;padding-left:1.2rem;opacity:.9}
+.trilha li{margin-bottom:.5rem}
+/* modal */
+#md{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.78);display:none;align-items:center;justify-content:center;padding:16px}
+#md.on{display:flex}
+#mb{background:var(--vinho);border:1px solid var(--ouro);border-radius:8px;max-width:34rem;width:100%;max-height:88dvh;overflow:auto;padding:24px}
+#mb h3{font-weight:400;color:var(--ouro2);font-size:1.5rem;margin-bottom:12px}
+#mb p,#mb li{line-height:1.6;font-size:1.05rem;margin-bottom:.6rem}
+#mb ul,#mb ol{padding-left:1.2rem;margin-bottom:1rem}
+#mb h4{font-size:.8rem;letter-spacing:.14em;color:var(--rosa);margin:14px 0 6px;font-weight:600}
+#mb .acts{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+#mb .acts .b{flex:1;min-width:120px}
+.noanim *{animation:none!important;transition-duration:.01s!important}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas>
+
+<section id="capa" class="screen on">
+ <div class="livro">
+  <h1>A NOSSA HISTÓRIA</h1>
+  <div class="fio"></div>
+  <p>Algumas histórias são escritas. Outras são construídas escolha por escolha.</p>
+  <div class="fio"></div>
+  <div class="nome ui" id="capnome"></div>
+ </div>
+ <div class="cbtns ui">
+  <button class="b p" id="abrir">ABRIR O LIVRO</button>
+  <button class="b" id="cont" hidden>CONTINUAR HISTÓRIA</button>
+  <button class="b" id="como">COMO JOGAR</button>
+ </div>
+</section>
+
+<section id="jogo" class="screen">
+ <header id="top" class="ui">
+  <div class="row">
+   <span id="cap"></span>
+   <span id="pips"></span>
+   <div class="tools">
+    <button id="bdiario">DIÁRIO</button>
+    <button id="btudo">TEXTO</button>
+    <button id="banim">ANIMAÇÕES</button>
+    <button id="breiniciar">REINICIAR</button>
+   </div>
+  </div>
+  <div id="prog"><i></i></div>
+ </header>
+ <main id="cena"></main>
+</section>
+
+<div id="md"><div id="mb" role="dialog" aria-modal="true"></div></div>
+
+<script>
+/* ===================== PERSONALIZACAO ===================== */
+/* Preencha os campos abaixo. Campos vazios usam frases neutras e ficcionais. */
+const PERSONALIZACAO = {
+  nomeProtagonista: "Julia",
+  nomeNamorado: "",        /* ex.: o nome dele */
+  comoSeConheceram: "",    /* escreva só o que for verdade */
+  lembrancaImportante: "", /* uma lembrança real e importante */
+  qualidadeQueAdmira: "",  /* uma qualidade que ele admira nela */
+  mensagemPessoal: "",     /* mensagem que aparece no final secreto */
+  futuroDesejado: ""       /* o que o casal deseja viver no futuro */
+};
+/* ========================================================== */
+
+const PZ = PERSONALIZACAO;
+const T = (v, f) => (typeof v === 'string' && v.trim()) ? v.trim() : f;
+const NOME = T(PZ.nomeProtagonista, 'Julia');
+
+const CAPS = {1:'Capítulo I · As duas portas', 2:'Capítulo II · A biblioteca noturna', 3:'Capítulo III · A última página'};
+const has = (s, p) => s.pistas.includes(p);
+
+/* ===================== CENAS ===================== */
+const CENAS = {
+ prologo:{cap:1,titulo:'O livro sobre a mesa',
+  t:`Há um livro sobre uma mesa, em uma sala onde só a luz de uma vela está acesa. Ele não tem título na capa. Quando ${NOME} se aproxima, a vela inclina a chama, como quem faz uma reverência.\n\nUma voz que parece vir das páginas sussurra: “Esta é uma história que ainda está sendo escrita. Você aceita descobrir o que vem a seguir?”`,
+  o:[{t:'Virar a página.',to:'inicio'}]},
+
+ inicio:{cap:1,titulo:'A página em branco',
+  t:s=>`Diante de ${NOME} existe um livro com várias páginas vazias. Na primeira, uma frase aparece lentamente: “Nem sempre é possível saber como uma história vai terminar. Mas ainda podemos escolher o próximo capítulo.”\n\nAo lado do livro, duas portas esperam: uma cheira a papel antigo, a outra a tinta ainda fresca.${s.v.livro?'\n\nA marca dourada que você encontrou na lombada brilha de leve.':''}`,
+  o:[{t:'Abrir a porta que leva ao passado.',to:'passado1',e:{mundo:'passado'}},
+     {t:'Abrir a porta que leva ao futuro.',to:'futuro1',e:{mundo:'futuro'}},
+     {t:'Examinar o livro antes de decidir.',to:'livro',hide:s=>s.v.livro}]},
+
+ livro:{cap:1,titulo:'Por dentro do livro',
+  t:`Você passa os dedos pelas páginas. Perto da lombada, quase invisível, há uma marca em relevo: uma pequena chave desenhada com tinta dourada. Ao tocá-la, o livro parece respirar.\n\nVocê não sabe o que ela abre. Mas guarda a lembrança dela.`,
+  e:{cur:1,pista:'marca'},
+  o:[{t:'Voltar às duas portas.',to:'inicio'}]},
+
+ passado1:{cap:1,titulo:'O corredor das molduras vazias',
+  t:`A porta se abre para um corredor de estantes. Nelas não há fotografias, só molduras vazias que esperam por lembranças: algumas empoeiradas, outras ainda brilhando.\n\nAo fundo, ouve-se o tique de um relógio que não anda. No chão, uma caixa dourada está entreaberta.`,
+  o:[{t:'Abrir a caixa dourada.',to:'caixa'},{t:'Seguir o som do relógio.',to:'relogio'}]},
+
+ futuro1:{cap:1,titulo:'O jardim sem trilhas',
+  t:`A porta se abre para um jardim de caminhos que ainda não foram traçados. Cada trilha termina em névoa. Uma luz distante pulsa devagar.\n\nPerto de uma fonte seca, uma figura de capa cinza afia uma pena: é o Escriba, e ele parece ter esperado por você.`,
+  o:[{t:'Seguir a luz.',to:'luz'},{t:'Aproximar-se do Escriba.',to:'escriba'}]},
+
+ caixa:{cap:1,titulo:'A caixa dourada',
+  t:`Dentro da caixa há uma pena de ouro envelhecido e um bilhete dobrado: “Quem escreve com cuidado nunca escreve sozinho.”\n\nA pena é leve, mas parece pesar no bolso, como as coisas que importam.`,
+  e:{cur:1,pista:'pena'},
+  o:[{t:'Seguir pelo corredor até o fim.',to:'ponte'}]},
+
+ relogio:{cap:1,titulo:'O relógio parado',
+  t:`O relógio marca uma hora que ninguém sabe. Os ponteiros tremem, como se esperassem alguém decidir.\n\n“Tempo não é problema”, diz uma voz de engrenagens. “Problema é não escolher.”`,
+  o:[{t:'Girar os ponteiros com as próprias mãos.',to:'ponte',e:{cor:1}},
+     {t:'Deixar o relógio como está e confiar no silêncio.',to:'ponte',e:{conf:1}}]},
+
+ luz:{cap:1,titulo:'O lampião',
+  t:`A luz é um lampião pendurado no ar. Quando você se aproxima, ele revela sombras de portas, janelas e estradas. Nenhuma tem nome.\n\n“Escolher”, diz o lampião, baixinho, “também é aceitar não saber.”`,
+  o:[{t:'Pegar o lampião e levar a luz consigo.',to:'ponte',e:{cor:1}},
+     {t:'Deixá-lo e seguir só com a intuição.',to:'ponte',e:{conf:1}}]},
+
+ escriba:{cap:1,titulo:'O Escriba',
+  t:`O Escriba levanta os olhos. “Quase ninguém me procura”, diz. “Preferem ler o final primeiro.”\n\nEle estende uma pena de ouro envelhecido. “Você prefere uma história garantida ou uma que ainda pode surpreender?”`,
+  o:[{t:'Aceitar a pena e escolher a surpresa.',to:'ponte',e:{cur:1,pista:'pena'}},
+     {t:'Agradecer, recusar a pena e seguir com calma.',to:'ponte',e:{conf:1}}]},
+
+ ponte:{cap:2,titulo:'A ponte de papel',
+  t:s=>`Sobre um abismo de letras soltas, uma ponte de papel dobrado liga o que ficou para trás ao que ainda não aconteceu.\n\n${s.mundo==='passado'?'Atrás de você, o corredor desbota como tinta na chuva.':'Atrás de você, o jardim se fecha em névoa.'} O vento vira páginas ao longe.`,
+  o:[{t:'Atravessar de uma vez, sem olhar para baixo.',to:'biblioteca',e:{cor:1}},
+     {t:'Parar no meio e olhar para o abismo.',to:'abismo'}]},
+
+ abismo:{cap:2,titulo:'O abismo de letras',
+  t:`Lá embaixo, as letras caem e se reorganizam em palavras: talvez, ainda, outra vez, depois. Nenhuma frase fica pronta.\n\nVocê entende que o abismo não é vazio. É matéria-prima.`,
+  e:{cur:1},
+  o:[{t:'Seguir até o fim da ponte.',to:'biblioteca'}]},
+
+ biblioteca:{cap:2,titulo:'A biblioteca noturna',
+  t:s=>`A ponte termina em uma biblioteca iluminada por velas flutuantes. Os livros trocam de lugar quando ninguém olha.\n\nHá três caminhos: uma estante de lombadas sem título, uma porta pequena marcada com uma chave, e um corredor coberto de espelhos.${s.pistas.length?'\n\nO que você carrega parece reagir ao ar do lugar.':''}`,
+  o:[{t:'Explorar a estante de lombadas sem título.',to:'estante',hide:s=>s.v.estante},
+     {t:'Entrar na porta pequena marcada com a chave.',to:'sala',hide:s=>s.v.sala,req:s=>has(s,'marca')&&has(s,'pena'),dica:'Uma porta pequena, trancada por uma marca que você ainda não entende.'},
+     {t:'Seguir pelo corredor de espelhos.',to:'labirinto'}]},
+
+ estante:{cap:2,titulo:'A estante sem títulos',
+  t:`Entre lombadas lisas, um volume fino se abre sozinho. É um índice. Lista capítulos sem dizer o que acontece neles.\n\nUm deles está riscado em dourado: “O capítulo que só aparece para quem já leu outros finais.”`,
+  e:{cur:1,pista:'indice'},
+  o:[{t:'Voltar ao salão da biblioteca.',to:'biblioteca'}]},
+
+ sala:{cap:2,titulo:'A sala do tinteiro',
+  t:`Na sala pequena há um tinteiro de vidro. A pena de ouro vibra, como se reconhecesse o lugar. Você a mergulha na tinta, que sobe brilhando pelas cerdas.\n\nNa parede surge uma frase que muda a cada leitura: “O livro não conhece o fim. Quem lê também escreve.” Um pouco da tinta fica guardada na ponta da pena.`,
+  e:{cor:1,pista:'tinta'},
+  o:[{t:'Voltar ao salão da biblioteca.',to:'biblioteca'}]},
+
+ labirinto:{cap:2,titulo:'O corredor de espelhos',
+  t:`Cada espelho mostra uma versão de ${NOME} em uma porta diferente. Não são lembranças: são apenas possibilidades, e nenhuma delas faz promessas.\n\nEm um dos espelhos, uma mão se estende do outro lado do vidro, oferecendo ajuda sem dizer nada.`,
+  o:[{t:'Segurar a mão.',to:'mao',e:{conf:1,prox:1}},
+     {t:'Atravessar o espelho sozinha.',to:'sozinha',e:{cor:1}},
+     {t:'Encarar o reflexo até entendê-lo.',to:'espelho',e:{cur:1}}]},
+
+ mao:{cap:2,titulo:'A mão do outro lado',
+  t:s=>`A mão é quente como papel ao sol. Quem a estende não mostra o rosto, mas o gesto é paciente.\n\n“Eu não vou decidir por você”, diz uma voz. “Só posso caminhar ao lado, se você quiser.”${PZ.comoSeConheceram&&PZ.comoSeConheceram.trim()?'':''}\n\nO vidro se dissolve como açúcar na água.`,
+  o:[{t:'Seguir adiante.',to:'mesa'}]},
+
+ sozinha:{cap:2,titulo:'O espelho quebrado',
+  t:`Você atravessa o espelho com os braços à frente. Ele se quebra em mil letras, e todas caem em fila, formando um caminho.\n\nNinguém o desenhou. Você o fez andando.`,
+  o:[{t:'Seguir adiante.',to:'mesa'}]},
+
+ espelho:{cap:2,titulo:'O reflexo que parou',
+  t:`Você encara o reflexo até ele parar de imitar seus gestos. Então ele sorri por conta própria e aponta para a página seguinte.\n\n“A resposta nunca esteve no vidro”, diz. “Estava em perguntar com calma.”`,
+  o:[{t:'Seguir adiante.',to:'mesa'}]},
+
+ mesa:{cap:3,titulo:'A mesa do Escriba',
+  t:s=>`No centro do livro há uma mesa com uma única página em branco. O Escriba está ali, ou algo parecido com ele. ${s.mundo==='passado'?'Tudo o que ficou para trás parece um prólogo.':'Tudo o que ainda não existe parece um esboço.'}\n\n“Cheguei ao fim do que eu sabia escrever”, diz. “A próxima linha é sua.”`,
+  o:[{t:'Reler as páginas já escritas.',to:'pergunta',e:{cur:1}},
+     {t:'Perguntar quem escreve esta história.',to:'pergunta',e:{conf:1}}]},
+
+ pergunta:{cap:3,titulo:'A última página',
+  t:s=>`“Quem escreve”, responde o Escriba, “é quem decide continuar. Nem sempre é a mesma pessoa, nem sempre é a mesma mão. O que você quer fazer com a página?”\n\nA pena treme sobre a mesa. Não há resposta errada, só caminhos diferentes.`,
+  o:[{t:'Escrever uma história para dois.',to:'f1'},
+     {t:'Escrever uma história só sua e ver aonde ela vai.',to:'f2',req:s=>s.cur>=2,dica:'Uma página que ainda não encontrou sentido.'},
+     {t:'Deixar a página em branco por enquanto.',to:'f3'},
+     {t:'Reunir a pena, o índice e a tinta.',to:'f4',req:(s,m)=>has(s,'pena')&&has(s,'indice')&&has(s,'tinta')&&m.finais.length>=1,dica:'Uma página que parece esperar por mais leituras.'}]},
+
+ f1:{cap:3,titulo:'Um novo capítulo',fim:1,
+  t:s=>`Você escreve “nós” no alto da página, e a tinta decide permanecer.\n\nNão há garantia nem promessa, só ${T(PZ.nomeNamorado,'duas pessoas')} e ${NOME} dispostas a continuar escrevendo com cuidado, e livres para mudar de ideia sempre que for preciso. ${s.mundo==='passado'?'Tudo o que ficou para trás vira prólogo.':'Tudo o que ainda não existe vira esboço.'}\n\n${PZ.qualidadeQueAdmira&&PZ.qualidadeQueAdmira.trim()?`Entre as linhas, uma delas fala de algo que alguém admira em você: ${PZ.qualidadeQueAdmira.trim()}.\n\n`:''}${PZ.futuroDesejado&&PZ.futuroDesejado.trim()?`No topo da nova folha, em letras pequenas: “${PZ.futuroDesejado.trim()}”.`:'O livro se fecha de leve, e uma folha em branco aparece, pronta. A primeira linha ainda está vazia, e isso é o melhor dela.'}`,
+  o:[]},
+
+ f2:{cap:3,titulo:'O caminho inesperado',fim:2,
+  t:s=>`Você escreve apenas o seu nome, e ele basta para abrir um capítulo inteiro.\n\nA história segue por estradas que ninguém previu: lugares novos, descobertas, versões de você que ainda não tinham aparecido. O livro não cobra nada. Apenas mostra que escolher o próprio caminho também é uma forma de beleza.\n\n${s.cur>=3?'A curiosidade que você teve até aqui continua acesa, como uma vela que ninguém precisa proteger.':'O que você descobriu sobre si ao longo da jornada é o que o livro mais queria que ficasse.'}`,
+  o:[]},
+
+ f3:{cap:3,titulo:'Uma página em aberto',fim:3,
+  t:`Você segura a pena, respira, e a devolve à mesa.\n\n“Ainda não sei”, diz. “E tudo bem”, responde o Escriba. “Algumas respostas pedem tempo, e o livro tem paciência.”\n\nA página continua branca, mas parece menos vazia do que antes. Do lado de fora do livro, o dia está esperando. Quando quiser voltar, a história estará aqui, no ponto em que você a deixou.`,
+  o:[]},
+
+ f4:{cap:3,titulo:'O segredo do livro',fim:4,
+  t:s=>`A pena, o índice e a tinta se juntam. A última página se divide em duas, e dentro dela há um prefácio que sempre esteve ali: “Este livro foi feito para ser relido. Cada leitura pode terminar de um jeito, e nenhum final é errado.”\n\nA chave dourada na lombada gira sozinha. Atrás da capa, existe um espaço que não pertence à história, só a quem a lê.\n\n${PZ.mensagemPessoal&&PZ.mensagemPessoal.trim()?`Ali está escrito: “${PZ.mensagemPessoal.trim()}”`:'Ali, você pode escrever o que quiser guardar.'}${PZ.lembrancaImportante&&PZ.lembrancaImportante.trim()?`\n\nNa margem, uma lembrança: ${PZ.lembrancaImportante.trim()}`:''}${PZ.comoSeConheceram&&PZ.comoSeConheceram.trim()?`\n\nE, bem pequeno: ${PZ.comoSeConheceram.trim()}`:''}`,
+  o:[]}
+};
+const FINAIS = {1:'Um novo capítulo',2:'O caminho inesperado',3:'Uma página em aberto',4:'O segredo do livro'};
+const TOTAL_PROG = 14;
+
+/* Validação de referências */
+(function(){ const erros=[];
+ Object.entries(CENAS).forEach(([id,c])=>c.o.forEach(o=>{ if(!CENAS[o.to]) erros.push(id+' → '+o.to); }));
+ if(erros.length){ console.error('Destinos quebrados:',erros); document.title='ERRO: '+erros.join(', '); }
+})();
+
+/* ===================== ESTADO E SALVAMENTO ===================== */
+const KS='nossa-historia-save-v1', KM='nossa-historia-meta-v1';
+const mem={};
+function ld(k){ try{ const r=localStorage.getItem(k); return r?JSON.parse(r):null; }catch(e){ return mem[k]||null; } }
+function sv(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){ mem[k]=v; } }
+function rm(k){ try{ localStorage.removeItem(k); }catch(e){} delete mem[k]; }
+const novo=()=>({cena:'prologo',cor:0,conf:0,cur:0,prox:0,pistas:[],v:{},hist:[],mundo:null});
+let S=novo(), M=ld(KM)||{finais:[]};
+if(!Array.isArray(M.finais)) M.finais=[];
+let anim=!matchMedia('(prefers-reduced-motion: reduce)').matches;
+const sp=ld('nossa-historia-anim'); if(sp!==null) anim=sp;
+
+const $=id=>document.getElementById(id);
+const el=(t,c,x)=>{const e=document.createElement(t); if(c)e.className=c; if(x!=null)e.textContent=x; return e;};
+
+/* ===================== MOTOR ===================== */
+let typer=null;
+function mostrarTela(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id)); window.scrollTo(0,0); }
+function aplicar(e){
+ if(!e) return;
+ ['cor','conf','cur','prox'].forEach(k=>{ if(e[k]) S[k]+=e[k]; });
+ if(e.pista && !S.pistas.includes(e.pista)) S.pistas.push(e.pista);
+ if(e.mundo) S.mundo=e.mundo;
+}
+const NOMES_PISTAS={marca:'A chave dourada na lombada',pena:'A pena de ouro envelhecido',indice:'O índice dos capítulos escondidos',tinta:'A tinta que não se apaga'};
+
+function ir(id,esc,efeitos){
+ const atual=CENAS[S.cena];
+ if(esc) S.hist.push({de:atual.titulo,esc});
+ aplicar(efeitos);
+ S.cena=id; S.v[id]=1;
+ const c=CENAS[id]; aplicar(c.e);
+ if(c.fim){ if(!M.finais.includes(c.fim)){ M.finais.push(c.fim); sv(KM,M); } }
+ sv(KS,S); render();
+}
+function render(){
+ const c=CENAS[S.cena]; if(typer){typer.stop();typer=null;}
+ mostrarTela('jogo');
+ $('cap').textContent=CAPS[c.cap];
+ const n=Object.keys(S.v).length;
+ $('prog').firstElementChild.style.width=(c.fim?100:Math.min(96,Math.round(n/TOTAL_PROG*100)))+'%';
+ const pip=(r,v)=>`<span class="pip">${r}${[1,2,3,4].map(i=>`<b class="${i<=v?'f':''}"></b>`).join('')}</span>`;
+ $('pips').innerHTML=pip('coragem',S.cor)+pip('confiança',S.conf)+pip('curiosidade',S.cur);
+ const m=$('cena'); m.style.animation='none'; void m.offsetWidth; m.style.animation='';
+ m.innerHTML='';
+ const texto=typeof c.t==='function'?c.t(S):c.t;
+ if(c.fim){
+  const b=el('div','fimbox'); b.appendChild(el('div','ui','FINAL '+c.fim+' DE 4')); b.appendChild(el('h2',null,c.titulo)); m.appendChild(b);
+ } else m.appendChild(el('h2',null,c.titulo));
+ const t=el('p'); t.id='txt'; m.appendChild(t);
+ const sk=el('button','skip ui','MOSTRAR TUDO'); sk.id='skip'; m.appendChild(sk);
+ const ops=el('div'); ops.id='ops'; m.appendChild(ops);
+ const fim=()=>{ sk.hidden=true; mostrarOps(c,ops); };
+ typer=digitar(t,texto,fim);
+ sk.onclick=()=>typer&&typer.finish();
+}
+function mostrarOps(c,ops){
+ ops.innerHTML='';
+ if(c.fim){
+  const m=$('cena');
+  m.insertBefore(el('h2',null,'O caminho percorrido'),ops).style.fontSize='1.3rem';
+  const ol=el('ol','trilha'); S.hist.forEach(h=>ol.appendChild(el('li',null,h.de+': '+h.esc)));
+  m.insertBefore(ol,ops);
+  m.insertBefore(Object.assign(el('p','ui','Finais descobertos: '+M.finais.length+' de 4'),{style:'font-size:.85rem;opacity:.75;margin-bottom:1.4rem'}),ops);
+  const a=el('button','op','Recomeçar e experimentar outros caminhos.'); a.onclick=()=>{ reiniciar(); };
+  const d=el('button','op','Abrir o diário da aventura.'); d.onclick=diario;
+  ops.append(a,d); return;
+ }
+ let k=0;
+ c.o.forEach(o=>{
+  if(o.hide&&o.hide(S)) return;
+  const ok=!o.req||o.req(S,M);
+  const b=el('button','op'); k++;
+  b.textContent=ok?o.t:(o.dica||'Uma página ainda fechada.');
+  b.dataset.n=k; b.style.animationDelay=(k*.12)+'s';
+  if(!ok) b.disabled=true;
+  else b.onclick=()=>escolher(o);
+  ops.appendChild(b);
+ });
+}
+let travado=false;
+function escolher(o){ if(travado) return; travado=true; setTimeout(()=>travado=false,500); ir(o.to,o.t,o.e); }
+function digitar(node,texto,fim){
+ let i=0,id=null,ok=false;
+ const finish=()=>{ if(ok) return; ok=true; clearInterval(id); node.textContent=texto; fim(); };
+ if(!anim){ finish(); return {finish,stop(){ok=true;clearInterval(id);}}; }
+ id=setInterval(()=>{ i+=2; node.textContent=texto.slice(0,i); if(i>=texto.length) finish(); },16);
+ return {finish,stop(){ok=true;clearInterval(id);}};
+}
+
+/* ===================== MODAIS ===================== */
+function modal(nodes){ const b=$('mb'); b.innerHTML=''; nodes.forEach(n=>b.appendChild(n)); $('md').classList.add('on'); const f=b.querySelector('button'); if(f) f.focus(); }
+function fechar(){ $('md').classList.remove('on'); }
+$('md').addEventListener('click',e=>{ if(e.target.id==='md') fechar(); });
+function btn(txt,fn,p){ const b=el('button','b ui'+(p?' p':''),txt); b.onclick=fn; return b; }
+function acts(...bs){ const d=el('div','acts'); bs.forEach(b=>d.appendChild(b)); return d; }
+function diario(){
+ const n=[el('h3',null,'Diário da aventura')];
+ n.push(el('h4','ui','PISTAS ENCONTRADAS'));
+ if(S.pistas.length){ const u=el('ul'); S.pistas.forEach(p=>u.appendChild(el('li',null,NOMES_PISTAS[p]))); n.push(u); } else n.push(el('p',null,'Nenhuma pista ainda.'));
+ n.push(el('h4','ui','ESCOLHAS FEITAS'));
+ if(S.hist.length){ const o=el('ol'); S.hist.forEach(h=>o.appendChild(el('li',null,h.esc))); n.push(o); } else n.push(el('p',null,'Você ainda não escolheu nada.'));
+ n.push(el('h4','ui','FINAIS DESCOBERTOS'));
+ n.push(el('p',null,M.finais.length?M.finais.sort().map(f=>FINAIS[f]).join(' · '):'Nenhum ainda.'));
+ n.push(acts(btn('FECHAR',fechar,true)));
+ modal(n);
+}
+function comoJogar(){
+ modal([el('h3',null,'Como jogar'),
+  el('p',null,'Leia cada cena e escolha uma ação. As escolhas mudam o que acontece depois, e algumas cenas só aparecem se você tiver encontrado certas pistas.'),
+  el('p',null,'Toque em “mostrar tudo” para ler o texto de uma vez. No teclado, use as teclas 1, 2, 3… para escolher. O jogo salva sozinho neste navegador.'),
+  el('p',null,'Não existem respostas erradas. Há quatro finais, e um deles só se revela a quem já leu o livro outras vezes.'),
+  acts(btn('ENTENDI',fechar,true))]);
+}
+function pedirReiniciar(){
+ modal([el('h3',null,'Recomeçar a história?'),
+  el('p',null,'Seu progresso atual será apagado. Os finais que você já descobriu continuam registrados.'),
+  acts(btn('CANCELAR',fechar),btn('APAGAR E RECOMEÇAR',()=>{fechar();reiniciar();},true))]);
+}
+function reiniciar(){ rm(KS); S=novo(); S.v.prologo=1; sv(KS,S); render(); }
+
+/* ===================== CONTROLES ===================== */
+$('abrir').onclick=()=>{ rm(KS); S=novo(); S.v.prologo=1; sv(KS,S); render(); };
+$('cont').onclick=()=>{ const sv_=ld(KS); if(sv_&&CENAS[sv_.cena]){ S=sv_; render(); } };
+$('como').onclick=comoJogar;
+$('bdiario').onclick=diario;
+$('breiniciar').onclick=pedirReiniciar;
+$('btudo').onclick=()=>typer&&typer.finish();
+function aplicarAnim(){ document.body.classList.toggle('noanim',!anim); $('banim').textContent=anim?'REDUZIR ANIMAÇÕES':'ATIVAR ANIMAÇÕES'; }
+$('banim').onclick=()=>{ anim=!anim; sv('nossa-historia-anim',anim); aplicarAnim(); };
+aplicarAnim();
+document.addEventListener('keydown',e=>{
+ if(e.key==='Escape') fechar();
+ if($('md').classList.contains('on')||!$('jogo').classList.contains('on')) return;
+ if(/^[1-9]$/.test(e.key)){ const b=document.querySelector('#ops .op[data-n="'+e.key+'"]'); if(b&&!b.disabled) b.click(); }
+});
+$('capnome').textContent=NOME.toUpperCase();
+const salvo=ld(KS); if(salvo&&CENAS[salvo.cena]&&salvo.cena!=='prologo') $('cont').hidden=false;
+
+/* ===================== PARTÍCULAS ===================== */
+const cv=$('fx'),cx=cv.getContext('2d'); let W,H,pts=[];
+function dim(){ W=cv.width=innerWidth; H=cv.height=innerHeight; pts=Array.from({length:Math.round(Math.min(46,W/22))},()=>({x:Math.random()*W,y:Math.random()*H,r:.5+Math.random()*1.5,v:.1+Math.random()*.3,a:Math.random()*6.28,c:Math.random()<.2?'217,133,149':'230,201,127'})); }
+addEventListener('resize',dim); dim();
+(function lp(){ cx.clearRect(0,0,W,H);
+ pts.forEach(p=>{ if(anim){ p.y-=p.v; p.a+=.01; p.x+=Math.sin(p.a)*.2; if(p.y<-5){p.y=H+5;p.x=Math.random()*W;} }
+  cx.fillStyle='rgba('+p.c+','+(.18+.2*Math.sin(p.a*2)).toFixed(2)+')'; cx.beginPath(); cx.arc(p.x,p.y,p.r,0,6.28); cx.fill(); });
+ requestAnimationFrame(lp); })();
+</script>
+</body>
+</html>

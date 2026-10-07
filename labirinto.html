@@ -1,0 +1,539 @@
+<html lang="pt-BR" style="--ouro:#ffd36e; --rosa:#ff6fb5; --roxo:#8b5cf6;"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <title>LABIRINTO</title>
+  <style>
+  :root{--ouro:#ffd36e;--rosa:#ff6fb5;--roxo:#8b5cf6}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{width:100%;height:100%;overflow:hidden;background:#04051a;color:#f4ecff;font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;touch-action:none;user-select:none;-webkit-user-select:none}
+  canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
+  #hud{position:fixed;top:0;left:0;right:0;display:none;align-items:center;gap:10px;padding:calc(8px + env(safe-area-inset-top)) 10px 6px;z-index:5;font-weight:700;font-size:clamp(12px,2.6vw,17px);text-shadow:0 0 8px #000}
+  #hud.on{display:flex}
+  #hud .i{white-space:nowrap}
+  #hud .sp{flex:1}
+  #hud .w{color:#ff7a7a}
+  .ib{width:40px;height:40px;border-radius:11px;border:1px solid rgba(255,255,255,.4);background:rgba(10,8,45,.6);color:#fff;font-size:18px;cursor:pointer}
+  .ib:hover{border-color:var(--ouro);box-shadow:0 0 12px var(--ouro)}
+  .ib[disabled]{opacity:.3;cursor:not-allowed}
+  .ib.act{border-color:var(--ouro);background:rgba(255,211,110,.25)}
+  .ov{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;z-index:10;overflow:auto;background:radial-gradient(ellipse at center,rgba(6,5,30,.35),rgba(2,2,14,.9))}
+  .ov.on{display:flex}
+  .t{font-family:"Palatino Linotype","Book Antiqua",Georgia,serif;font-weight:700;letter-spacing:.16em;line-height:1.05;background:linear-gradient(180deg,#fff6d8,var(--ouro) 55%,#e0689f);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 16px rgba(255,150,200,.45))}
+  h1.t{font-size:clamp(40px,11.5vw,112px)}
+  h2.t{font-size:clamp(28px,7vw,60px)}
+  .sub{margin:12px 0 22px;font-size:clamp(14px,2.6vw,20px);color:#d9cbff;max-width:560px;line-height:1.45}
+  .btn{font:inherit;font-weight:800;letter-spacing:.14em;color:#1b0f3a;background:linear-gradient(135deg,#ffe29a,var(--ouro) 50%,#ff9ccb);border:2px solid #fff3cf;border-radius:12px;padding:13px 30px;margin:6px;font-size:clamp(14px,3.3vw,19px);cursor:pointer;box-shadow:0 0 24px rgba(255,190,110,.45);transition:transform .15s,box-shadow .15s}
+  .btn:hover{transform:translateY(-3px) scale(1.04);box-shadow:0 0 40px rgba(255,190,110,.8)}
+  .btn:active{transform:scale(.97)}
+  .btn.sec{color:#f4ecff;background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.35);box-shadow:none}
+  .btn.s{padding:8px 15px;font-size:14px}
+  .btn[disabled]{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
+  :focus-visible{outline:3px solid var(--ouro);outline-offset:3px}
+  .box{max-width:560px;text-align:left;font-size:clamp(13px,2.3vw,16px);line-height:1.65;color:#d9cbff;margin:6px 0 14px}
+  .box b{color:var(--ouro)}
+  .stats{font-size:clamp(15px,3vw,21px);line-height:1.8;margin:12px 0 18px}
+  .stats b{color:var(--ouro)}
+  #msg{max-width:620px;margin:16px 0;font-size:clamp(16px,3vw,23px);line-height:1.6;min-height:3.2em;text-shadow:0 0 14px var(--rosa)}
+  #toast{position:fixed;top:62px;left:50%;transform:translate(-50%,-10px);background:rgba(20,10,60,.92);border:1px solid var(--ouro);border-radius:12px;padding:10px 18px;z-index:12;font-weight:700;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;text-align:center}
+  #toast.on{opacity:1;transform:translate(-50%,0)}
+  #dp{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);display:none;grid-template-columns:repeat(3,clamp(60px,17vw,84px));grid-template-rows:repeat(2,clamp(60px,17vw,84px));gap:8px;z-index:6}
+  #dp.on{display:grid}
+  .pb{touch-action:none;border-radius:16px;border:2px solid rgba(255,255,255,.5);background:rgba(139,92,246,.28);color:#fff;font-size:28px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+  .pb.d{background:rgba(255,211,110,.5)}
+  #fin{animation:fi 1.4s 2.3s both}
+  @keyframes fi{from{opacity:0}to{opacity:1}}
+  @media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-delay:0s!important}}
+  </style>
+  </head>
+  <body>
+  <canvas id="c" width="780" height="1688"></canvas>
+  <div id="hud">
+    <span class="i" id="hl"></span><span class="i" id="ht"></span><span class="i" id="hs"></span><span class="i" id="hc"></span><span class="i" id="hk"></span>
+    <span class="sp"></span>
+    <button class="ib" id="bm" aria-label="Mostrar ou ocultar o mapa completo" title="Mapa completo (custa pontos)">🗺</button>
+    <button class="ib" id="br" aria-label="Reiniciar a fase">↺</button>
+    <button class="ib" id="bp" aria-label="Pausar">⏸</button>
+    <button class="ib" id="bs" aria-label="Som">🔊</button>
+  </div>
+  <div id="toast" role="status"></div>
+  <div id="dp">
+    <span></span><button class="pb" id="d0" aria-label="Cima" style="grid-column:2">▲</button><span></span>
+    <button class="pb" id="d3" aria-label="Esquerda">◀</button><button class="pb" id="d2" aria-label="Baixo">▼</button><button class="pb" id="d1" aria-label="Direita">▶</button>
+  </div>
+  
+  <div class="ov on" id="menu">
+    <h1 class="t" id="mt">LABIRINTO</h1>
+    <p class="sub" id="ms">Encontre a saída. Cada caminho esconde uma surpresa.</p>
+    <div><button class="btn" id="go">COMEÇAR</button></div>
+    <div id="lv"><button class="btn sec s" title="Primeiro caminho">Fase 1</button><button class="btn sec s" disabled="" title="As bifurcações">Fase 2</button><button class="btn sec s" disabled="" title="O caminho escondido">Fase 3</button><button class="btn sec s" disabled="" title="Contra o tempo">Fase 4</button><button class="btn sec s" disabled="" title="A saída final">Fase 5</button></div>
+    <div><button class="btn sec s" id="mr">📜 Regras e conquistas</button><button class="btn sec s" id="ms2">🔊 Som: ligado</button></div>
+  </div>
+  <div class="ov" id="rules">
+    <h2 class="t">REGRAS</h2>
+    <div class="box">
+      <b>Computador:</b> setas ou WASD.<br>
+      <b>Celular:</b> controles na tela ou deslize o dedo na direção desejada.<br>
+      <b>Objetivo:</b> chegue ao portão dourado, pegue chaves para abrir portas, junte estrelas e ache áreas secretas.<br>
+      <b>Mapa 🗺:</b> revela o labirinto inteiro, mas custa 150 pontos na fase.<br><br>
+      <b>Conquistas</b><div id="ach"></div>
+    </div>
+    <button class="btn" id="rb">VOLTAR</button>
+  </div>
+  <div class="ov" id="pause">
+    <h2 class="t">PAUSA</h2>
+    <div style="margin-top:18px"><button class="btn" id="pr">CONTINUAR</button><button class="btn sec" id="pq">REINICIAR FASE</button><button class="btn sec" id="pm">MENU</button></div>
+  </div>
+  <div class="ov" id="end">
+    <h2 class="t" id="et"></h2>
+    <div class="stats" id="es"></div>
+    <div><button class="btn" id="en">PRÓXIMA FASE</button><button class="btn sec" id="er">REPETIR</button><button class="btn sec" id="em">MENU</button></div>
+  </div>
+  <div class="ov" id="final">
+    <div id="fin" style="display:flex;flex-direction:column;align-items:center">
+      <h1 class="t" style="font-size:clamp(34px,9vw,84px)">VOCÊ ENCONTROU A SAÍDA!</h1>
+      <div class="stats" id="fs"></div>
+      <p id="msg"></p>
+      <div><button class="btn sec" id="fv">REVER A MENSAGEM</button><button class="btn sec" id="fm">MENU</button><button class="btn" id="fa">JOGAR NOVAMENTE</button></div>
+    </div>
+  </div>
+  
+  <script>
+  "use strict";
+  /* ================= PERSONALIZAÇÃO — edite aqui ================= */
+  const PERSONALIZACAO = {
+    nome: "Julia",
+    titulo: "LABIRINTO",
+    subtitulo: "Encontre a saída. Cada caminho esconde uma surpresa.",
+    dificuldade: "normal", // "facil" (mais luz e mais tempo), "normal", "dificil"
+    cores: { ouro: "#ffd36e", rosa: "#ff6fb5", roxo: "#8b5cf6", fundo1: "#05061c", fundo2: "#1a0b3d" },
+    // tempo (em segundos) só é usado na fase com cronômetro; w/h = tamanho; fog = escuridão; keys = chaves/portas
+    fases: [
+      { nome: "Primeiro caminho", w: 8, h: 8, fog: 0, keys: 0, secret: 0, coins: 5, seed: 11, tempo: 0 },
+      { nome: "As bifurcações", w: 10, h: 10, fog: 1, keys: 1, secret: 0, coins: 7, seed: 23, tempo: 0 },
+      { nome: "O caminho escondido", w: 13, h: 13, fog: 1, keys: 0, secret: 1, coins: 9, seed: 37, tempo: 0 },
+      { nome: "Contra o tempo", w: 14, h: 14, fog: 1, keys: 0, secret: 0, coins: 10, seed: 41, tempo: 150 },
+      { nome: "A saída final", w: 16, h: 16, fog: 1, keys: 2, secret: 1, coins: 12, seed: 59, tempo: 0 }
+    ],
+    mensagensConclusao: ["Primeiro caminho encontrado!", "Você achou a porta certa!", "Nada se esconde de você!", "Mais rápida que o relógio!", "Último portão aberto!"],
+    mensagemFinal: "[ESCREVA AQUI UMA MENSAGEM PARA A JULIA]"
+  };
+  /* =============================================================== */
+  const P = PERSONALIZACAO, C = P.cores, NF = P.fases.length;
+  const $ = id => document.getElementById(id);
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const cv = $("c"), cx = cv.getContext("2d");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const touch = matchMedia("(pointer:coarse)").matches || "ontouchstart" in window;
+  const R = document.documentElement.style;
+  R.setProperty("--ouro", C.ouro); R.setProperty("--rosa", C.rosa); R.setProperty("--roxo", C.roxo);
+  document.title = P.titulo; $("mt").textContent = P.titulo; $("ms").textContent = P.subtitulo;
+  
+  /* ---------- armazenamento ---------- */
+  const mem = {};
+  const store = {
+    get(k) { try { const v = localStorage.getItem(k); return v !== null ? v : (mem[k] ?? null); } catch (e) { return mem[k] ?? null; } },
+    set(k, v) { mem[k] = v; try { localStorage.setItem(k, v); } catch (e) {} }
+  };
+  let save = { unlocked: 1, best: {}, ach: {} };
+  try { const s = JSON.parse(store.get("labirinto") || "null"); if (s && s.best) save = s; } catch (e) {}
+  const persist = () => store.set("labirinto", JSON.stringify(save));
+  
+  /* ---------- áudio ---------- */
+  let ac = null, sound = store.get("lab_sound") !== "0";
+  function initAudio() {
+    if (!ac) { try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} }
+    if (ac && ac.state === "suspended") ac.resume();
+  }
+  function tone(f, d, type, v, to) {
+    if (!sound || !ac) return;
+    const o = ac.createOscillator(), g = ac.createGain(), t = ac.currentTime;
+    o.type = type || "sine"; o.frequency.setValueAtTime(f, t);
+    if (to) o.frequency.exponentialRampToValueAtTime(to, t + d);
+    g.gain.setValueAtTime(v || .06, t); g.gain.exponentialRampToValueAtTime(.0001, t + d);
+    o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t + d);
+  }
+  const SND = {
+    step: () => tone(200 + Math.random() * 40, .05, "triangle", .03),
+    coin: () => { tone(988, .08, "triangle", .08); setTimeout(() => tone(1319, .14, "triangle", .08), 70); },
+    key: () => [523, 784, 1047].forEach((f, i) => setTimeout(() => tone(f, .14, "square", .05), i * 80)),
+    door: () => tone(160, .35, "sawtooth", .06, 520),
+    no: () => tone(150, .15, "square", .05, 100),
+    secret: () => [659, 831, 988, 1319].forEach((f, i) => setTimeout(() => tone(f, .2, "sine", .09), i * 90)),
+    win: () => [523, 659, 784, 1047, 1319].forEach((f, i) => setTimeout(() => tone(f, .25, "triangle", .1), i * 120)),
+    fail: () => tone(300, .6, "sawtooth", .07, 70)
+  };
+  function setSound(on) {
+    sound = on; store.set("lab_sound", on ? "1" : "0");
+    $("bs").textContent = on ? "🔊" : "🔇"; $("ms2").textContent = on ? "🔊 Som: ligado" : "🔇 Som: desligado";
+  }
+  
+  /* ---------- geração do labirinto ---------- */
+  // bits de parede: 1=cima 2=direita 4=baixo 8=esquerda
+  const DX = [0, 1, 0, -1], DY = [-1, 0, 1, 0], BIT = [1, 2, 4, 8], OPP = [2, 3, 0, 1];
+  function rng(s) {
+    return () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  }
+  function gen(w, h, r) { // busca em profundidade com retrocesso
+    const cells = new Uint8Array(w * h).fill(15), seen = new Uint8Array(w * h), st = [0]; seen[0] = 1;
+    while (st.length) {
+      const c = st[st.length - 1], x = c % w, y = (c / w) | 0, nb = [];
+      for (let d = 0; d < 4; d++) { const nx = x + DX[d], ny = y + DY[d]; if (nx >= 0 && ny >= 0 && nx < w && ny < h && !seen[ny * w + nx]) nb.push(d); }
+      if (!nb.length) { st.pop(); continue; }
+      const d = nb[(r() * nb.length) | 0], n = (y + DY[d]) * w + x + DX[d];
+      cells[c] &= ~BIT[d]; cells[n] &= ~BIT[OPP[d]]; seen[n] = 1; st.push(n);
+    }
+    return cells;
+  }
+  const ekey = (a, b) => a < b ? a + "-" + b : b + "-" + a;
+  function nbrs(cells, w, c) {
+    const o = [], x = c % w, y = (c / w) | 0;
+    for (let d = 0; d < 4; d++) if (!(cells[c] & BIT[d])) o.push([y * w + x + 0 + DY[d] * w + DX[d], d]);
+    return o;
+  }
+  function bfs(cells, w, from, blocked) {
+    const dist = new Int16Array(cells.length).fill(-1), par = new Int16Array(cells.length).fill(-1), q = [from]; dist[from] = 0;
+    for (let i = 0; i < q.length; i++) {
+      const c = q[i];
+      for (const [n] of nbrs(cells, w, c)) if (dist[n] < 0 && !(blocked && blocked.has(ekey(c, n)))) { dist[n] = dist[c] + 1; par[n] = c; q.push(n); }
+    }
+    return { dist, par };
+  }
+  function solvable(Lv) { // simula coleta de chaves e abertura de portas
+    const { cells, w, doors, items } = Lv, keyAt = {};
+    items.forEach(it => { if (it.t === "key") keyAt[it.c] = it.k; });
+    const dk = {}; doors.forEach(d => { dk[ekey(d.a, d.b)] = d.k; });
+    const seen = new Set(), q = [[0, keyAt[0] !== undefined ? 1 << keyAt[0] : 0]]; seen.add(q[0].join());
+    let exit = false, need = (1 << doors.length) - 1, got = 0, sec = Lv.secret < 0;
+    for (let i = 0; i < q.length; i++) {
+      const [c, m] = q[i]; got |= m; if (c === Lv.exit) exit = true; if (c === Lv.secret) sec = true;
+      for (const [n] of nbrs(cells, w, c)) {
+        const k = dk[ekey(c, n)]; if (k !== undefined && !(m & (1 << k))) continue;
+        const nm = keyAt[n] !== undefined ? m | (1 << keyAt[n]) : m, s = n + "," + nm;
+        if (!seen.has(s)) { seen.add(s); q.push([n, nm]); }
+      }
+    }
+    return exit && sec && (got & need) === need;
+  }
+  function buildLevel(i) {
+    const cfg = P.fases[i], w = cfg.w, h = cfg.h, mult = { facil: 1.3, normal: 1, dificil: .85 }[P.dificuldade] || 1;
+    for (let seed = cfg.seed, tries = 0; tries < 40; tries++, seed++) {
+      const r = rng(seed), cells = gen(w, h, r), A = bfs(cells, w, 0);
+      let exit = 0; for (let c = 0; c < cells.length; c++) if (A.dist[c] > A.dist[exit]) exit = c;
+      const path = []; for (let c = exit; c >= 0; c = A.par[c]) path.unshift(c);
+      const used = new Set([0, exit]), items = [], doors = [], deg = c => nbrs(cells, w, c).length;
+      const fr = cfg.keys === 1 ? [.55] : [.4, .78];
+      for (let k = 0; k < cfg.keys; k++) { const idx = Math.floor(path.length * fr[k]); doors.push({ a: path[idx - 1], b: path[idx], k, open: false }); }
+      let prev = null;
+      for (let k = 0; k < cfg.keys; k++) {
+        const bl = new Set(doors.filter(d => d.k >= k).map(d => ekey(d.a, d.b))), D = bfs(cells, w, 0, bl).dist;
+        let cand = []; for (let c = 0; c < cells.length; c++) if (D[c] > 0 && !used.has(c)) cand.push(c);
+        if (prev) { const f = cand.filter(c => prev[c] < 0); if (f.length) cand = f; }
+        const dead = cand.filter(c => deg(c) === 1), pool = dead.length ? dead : cand;
+        const kc = pool.reduce((a, b) => D[b] > D[a] ? b : a, pool[0]);
+        used.add(kc); items.push({ t: "key", c: kc, k, got: false }); prev = D;
+      }
+      let secret = -1;
+      if (cfg.secret) {
+        const onPath = new Set(path), pool = []; for (let c = 0; c < cells.length; c++) if (!used.has(c) && !onPath.has(c) && deg(c) === 1) pool.push(c);
+        if (pool.length) { secret = pool.reduce((a, b) => A.dist[b] > A.dist[a] ? b : a, pool[0]); used.add(secret); items.push({ t: "secret", c: secret, got: false }); }
+      }
+      for (let n = 0; n < cfg.coins; n++) { let c, g = 0; do { c = (r() * cells.length) | 0; } while (used.has(c) && ++g < 200); if (!used.has(c)) { used.add(c); items.push({ t: "coin", c, got: false }); } }
+      const pl = path.length - 1;
+      const Lv = { i, cfg, w, h, cells, exit, path, items, doors, secret, pl, fog: cfg.fog, radius: 3.1 + ({ facil: 1, normal: 0, dificil: -.6 }[P.dificuldade] || 0),
+        limit: cfg.tempo ? Math.max(Math.round(cfg.tempo * mult), Math.ceil(pl * .9) + 25) : 0,
+        parTime: Math.round(pl * .8 + 10 + cfg.keys * 15), parSteps: Math.round(pl * 1.5) + cfg.keys * 25 };
+      if (solvable(Lv)) return Lv;
+    }
+    throw new Error("Não foi possível gerar a fase " + (i + 1));
+  }
+  
+  /* ---------- estado ---------- */
+  let state = "menu", L = null, p = null, cur = 0, tt = 0, last = 0, DPR = 1, W = 800, H = 600, lay = { cell: 40, ox: 0, oy: 0 };
+  let held = [], queued = null, queuedAt = 0, showMap = false, explored = null, tw = null, clearT = 0, finalT = 0, DM = null;
+  const parts = [], STARS = Array.from({ length: 90 }, () => ({ x: Math.random(), y: Math.random(), z: Math.random() * 1.6 + .4, ph: Math.random() * 6 }));
+  
+  function fit(w, h, top, bot, k) {
+    const cell = Math.max(10, Math.floor(Math.min((W - 20) / w, (H - top - bot) / h) * (k || 1)));
+    return { cell, ox: (W - cell * w) / 2, oy: top + (H - top - bot - cell * h) / 2 };
+  }
+  function relayout() {
+    DPR = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight; cv.width = W * DPR; cv.height = H * DPR;
+    if (L && state !== "menu") lay = fit(L.w, L.h, 58, touch ? 200 : 14); else if (DM) lay = fit(DM.w, DM.h, 0, 0, .8);
+  }
+  addEventListener("resize", relayout); addEventListener("orientationchange", () => setTimeout(relayout, 200));
+  
+  /* ---------- partículas ---------- */
+  function spawn(x, y, n, col, type) {
+    n = reduce ? Math.ceil(n / 3) : n;
+    for (let i = 0; i < n; i++) { const a = Math.random() * 6.283, s = 30 + Math.random() * 130; parts.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, l: 0, m: .6 + Math.random() * .7, c: col, t: type || "dot", s: 2 + Math.random() * 3 }); }
+  }
+  function star(x, y, r, pts) {
+    cx.beginPath();
+    for (let i = 0; i < pts * 2; i++) { const rr = i % 2 ? r * .45 : r, a = -Math.PI / 2 + i * Math.PI / pts; cx.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); }
+    cx.closePath(); cx.fill();
+  }
+  function drawParts(dt) {
+    for (let i = parts.length - 1; i >= 0; i--) {
+      const q = parts[i]; q.l += dt; q.x += q.vx * dt; q.y += q.vy * dt; q.vy += (q.t === "rise" ? -20 : 60) * dt;
+      if (q.l >= q.m) { parts.splice(i, 1); continue; }
+      cx.globalAlpha = 1 - q.l / q.m; cx.fillStyle = q.c;
+      if (q.t === "star") star(q.x, q.y, q.s * 1.6, 4); else cx.fillRect(q.x - q.s / 2, q.y - q.s / 2, q.s, q.s);
+    }
+    cx.globalAlpha = 1;
+  }
+  
+  /* ---------- fluxo ---------- */
+  const OVS = ["menu", "rules", "pause", "end", "final"];
+  function show(id) { OVS.forEach(o => $(o).classList.toggle("on", o === id)); }
+  function updUI() { $("dp").classList.toggle("on", touch && state === "play"); }
+  function fmt(s) { s = Math.max(0, Math.ceil(s)); return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0"); }
+  function toast(t) { const el = $("toast"); el.textContent = t; el.classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove("on"), 2200); }
+  function startLevel(i) {
+    cur = i; L = buildLevel(i); explored = new Uint8Array(L.w * L.h); showMap = false; held = []; queued = null; parts.length = 0;
+    p = { c: 0, x: 0, y: 0, tx: 0, ty: 0, moving: false, face: 1, keys: 0, steps: 0, time: 0, coins: 0, secret: false, mapUsed: false, bob: 0 };
+    state = "play"; show(null); $("hud").classList.add("on"); relayout(); updUI(); sync();
+    $("bm").disabled = !L.fog; $("bm").classList.remove("act");
+    toast("Fase " + (i + 1) + " — " + P.fases[i].nome);
+  }
+  function sync() { $("hl").textContent = "Fase " + (cur + 1) + "/" + NF; }
+  function pause() { if (state !== "play") return; state = "pause"; show("pause"); updUI(); }
+  function resume() { if (state !== "pause") return; state = "play"; show(null); updUI(); last = performance.now(); }
+  function toMenu() { state = "menu"; show("menu"); $("hud").classList.remove("on"); updUI(); clearInterval(tw); buildLv(); lay = fit(DM.w, DM.h, 0, 0, .8); }
+  function tryMove(d) {
+    if (p.moving || state !== "play") return;
+    const c = p.c;
+    if (L.cells[c] & BIT[d]) return;
+    const n = c + DY[d] * L.w + DX[d], door = L.doors.find(o => !o.open && ekey(o.a, o.b) === ekey(c, n));
+    if (door) {
+      if (p.keys & (1 << door.k)) { door.open = true; SND.door(); const e = cellXY(n); spawn(e.x, e.y, 18, door.k ? "#7ef0ff" : C.ouro, "star"); toast("Porta aberta!"); }
+      else { SND.no(); toast("Esta porta precisa de uma chave 🔑"); return; }
+    }
+    p.tx = n % L.w; p.ty = (n / L.w) | 0; p.moving = true; p.face = d === 3 ? -1 : d === 1 ? 1 : p.face; p.steps++; p.target = n; SND.step();
+  }
+  function arrive() {
+    p.c = p.target; p.x = p.tx; p.y = p.ty; p.moving = false;
+    const it = L.items.find(o => !o.got && o.c === p.c), e = cellXY(p.c);
+    if (it) {
+      it.got = true;
+      if (it.t === "coin") { p.coins++; SND.coin(); spawn(e.x, e.y, 10, C.ouro, "star"); }
+      else if (it.t === "key") { p.keys |= 1 << it.k; SND.key(); spawn(e.x, e.y, 16, "#7ef0ff", "star"); toast("Você achou uma chave! 🔑"); }
+      else { p.secret = true; SND.secret(); spawn(e.x, e.y, 30, C.rosa, "star"); toast("✨ Área secreta descoberta!"); }
+    }
+    if (p.c === L.exit) { state = "clear"; clearT = 0; SND.win(); spawn(e.x, e.y, 40, C.ouro, "star"); spawn(e.x, e.y, 20, C.rosa, "rise"); updUI(); }
+  }
+  function fail(msg) { state = "end"; SND.fail(); show("end"); updUI(); $("et").textContent = msg; $("es").innerHTML = "Sem problemas, tente de novo.<br>Dica: use a luz para seguir os caminhos que ainda não explorou."; $("en").style.display = "none"; }
+  function finishLevel() {
+    const t = p.time, tb = Math.max(0, Math.round(L.parTime - t)) * 5, sb = Math.max(0, L.parSteps - p.steps) * 3;
+    const score = Math.max(0, p.coins * 100 + (p.secret ? 300 : 0) + tb + sb - (p.mapUsed ? 150 : 0));
+    const prev = save.best[cur], isBest = !prev || score > prev.s;
+    if (isBest) save.best[cur] = { s: score, t: Math.round(t), st: p.steps };
+    save.unlocked = Math.max(save.unlocked, Math.min(NF, cur + 2));
+    const got = [];
+    const unlock = (k, n) => { if (!save.ach[k]) { save.ach[k] = 1; got.push(n); } };
+    if (p.secret) unlock("explorer", "Exploradora");
+    if (p.steps <= L.parSteps) unlock("steps", "Passos calculados");
+    if (L.limit && t <= L.limit * .6) unlock("speed", "Velocidade máxima");
+    if (cur === NF - 1) unlock("master", "Mestre do labirinto");
+    persist();
+    if (cur === NF - 1) return showFinal(score);
+    state = "end"; show("end"); updUI(); $("en").style.display = "";
+    $("et").textContent = P.mensagensConclusao[cur];
+    const total = L.items.filter(o => o.t === "coin").length;
+    $("es").innerHTML = "Tempo: <b>" + fmt(t) + "</b> · Passos: <b>" + p.steps + "</b><br>Estrelas: <b>" + p.coins + "/" + total + "</b>" + (L.secret >= 0 ? " · Segredo: <b>" + (p.secret ? "sim" : "não") + "</b>" : "") +
+      "<br>Pontuação: <b>" + score + "</b> · Melhor: <b>" + save.best[cur].s + "</b>" + (got.length ? "<br>🏆 Conquista: <b>" + got.join(", ") + "</b>" : "");
+  }
+  function typeMsg() {
+    const el = $("msg"), txt = P.mensagemFinal; clearInterval(tw); let i = 0;
+    if (reduce) { el.textContent = txt; return; }
+    el.textContent = ""; setTimeout(() => { tw = setInterval(() => { el.textContent = txt.slice(0, ++i); if (i >= txt.length) clearInterval(tw); }, 35); }, 2400);
+  }
+  function showFinal(score) {
+    state = "final"; finalT = 0; show("final"); $("hud").classList.remove("on"); updUI();
+    $("fs").innerHTML = "Última fase: <b>" + score + "</b> pontos";
+    const f = $("fin"); f.style.animation = "none"; void f.offsetWidth; f.style.animation = "";
+    typeMsg();
+  }
+  function buildLv() {
+    const box = $("lv"); box.innerHTML = "";
+    P.fases.forEach((f, i) => {
+      const b = document.createElement("button"); b.className = "btn sec s"; b.textContent = "Fase " + (i + 1); b.disabled = i + 1 > save.unlocked;
+      b.title = f.nome; b.onclick = () => { initAudio(); startLevel(i); }; box.appendChild(b);
+    });
+  }
+  function buildAch() {
+    const names = { explorer: "Exploradora — encontre uma área secreta", steps: "Passos calculados — conclua uma fase com poucos movimentos", speed: "Velocidade máxima — vença a fase contra o tempo com folga", master: "Mestre do labirinto — termine todas as fases" };
+    $("ach").innerHTML = Object.keys(names).map(k => (save.ach[k] ? "🏆 " : "🔒 ") + names[k]).join("<br>");
+  }
+  
+  /* ---------- desenho ---------- */
+  const cellXY = c => ({ x: lay.ox + ((c % L.w) + .5) * lay.cell, y: lay.oy + (((c / L.w) | 0) + .5) * lay.cell });
+  function bg(t) {
+    const g = cx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, C.fundo1); g.addColorStop(1, C.fundo2); cx.fillStyle = g; cx.fillRect(0, 0, W, H);
+    cx.fillStyle = "#fff";
+    STARS.forEach(s => { cx.globalAlpha = .25 + .6 * Math.abs(Math.sin(t * s.z + s.ph)); cx.fillRect(s.x * W, s.y * H, s.z, s.z); });
+    cx.globalAlpha = 1;
+  }
+  function drawMaze(Lv, px, py, t, fog, full, ex) {
+    const { cell, ox, oy } = lay, w = Lv.w, h = Lv.h, wt = Math.max(3, cell * .16), pxc = px + .5, pyc = py + .5;
+    const vis = new Float32Array(w * h);
+    for (let c = 0; c < w * h; c++) {
+      if (!fog || full) { vis[c] = 1; continue; }
+      const d = Math.hypot((c % w) + .5 - pxc, ((c / w) | 0) + .5 - pyc), v = clamp(Lv.radius + .8 - d, 0, 1);
+      if (v > 0 && ex) ex[c] = 1; vis[c] = Math.max(v, ex && ex[c] ? .3 : 0);
+    }
+    for (let c = 0; c < w * h; c++) {
+      if (vis[c] <= .01) continue; const x = ox + (c % w) * cell, y = oy + ((c / w) | 0) * cell;
+      cx.globalAlpha = vis[c]; cx.fillStyle = ((c % w) + ((c / w) | 0)) % 2 ? "#1c1250" : "#21165a"; cx.fillRect(x, y, cell, cell);
+    }
+    cx.lineCap = "round";
+    for (let pass = 0; pass < 2; pass++) {
+      cx.lineWidth = pass ? wt * .35 : wt; cx.strokeStyle = pass ? "#b79cff" : "#3b2a86";
+      for (let c = 0; c < w * h; c++) {
+        if (vis[c] <= .01) continue; const x = ox + (c % w) * cell, y = oy + ((c / w) | 0) * cell, b = Lv.cells[c];
+        cx.globalAlpha = vis[c] * (pass ? .7 : 1); cx.beginPath();
+        if (b & 1) { cx.moveTo(x, y); cx.lineTo(x + cell, y); } if (b & 2) { cx.moveTo(x + cell, y); cx.lineTo(x + cell, y + cell); }
+        if (b & 4) { cx.moveTo(x, y + cell); cx.lineTo(x + cell, y + cell); } if (b & 8) { cx.moveTo(x, y); cx.lineTo(x, y + cell); }
+        cx.stroke();
+      }
+    }
+    cx.globalAlpha = 1;
+    return vis;
+  }
+  function drawItems(vis, t) {
+    const { cell } = lay;
+    L.items.forEach(it => {
+      if (it.got) return; const v = vis[it.c]; if (v < .45) return; const e = cellXY(it.c), bob = Math.sin(t * 3 + it.c) * cell * .04;
+      cx.globalAlpha = v;
+      if (it.t === "coin") { cx.shadowBlur = 10; cx.shadowColor = C.ouro; cx.fillStyle = C.ouro; star(e.x, e.y + bob, cell * .24, 5); }
+      else if (it.t === "secret") { cx.shadowBlur = 18; cx.shadowColor = C.rosa; cx.fillStyle = "#ffb3e6"; star(e.x, e.y + bob, cell * .33 + Math.sin(t * 5) * 1.5, 8); }
+      else { const col = it.k ? "#7ef0ff" : "#ffe29a"; cx.shadowBlur = 12; cx.shadowColor = col; cx.strokeStyle = col; cx.lineWidth = Math.max(2, cell * .07);
+        cx.beginPath(); cx.arc(e.x - cell * .12, e.y + bob, cell * .12, 0, 6.283); cx.moveTo(e.x, e.y + bob); cx.lineTo(e.x + cell * .26, e.y + bob); cx.moveTo(e.x + cell * .2, e.y + bob); cx.lineTo(e.x + cell * .2, e.y + bob + cell * .1); cx.stroke(); }
+      cx.shadowBlur = 0;
+    });
+    cx.globalAlpha = 1;
+    L.doors.forEach(d => {
+      if (d.open) return; const a = cellXY(d.a), b = cellXY(d.b), mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2, vert = a.x === b.x, v = Math.max(vis[d.a], vis[d.b]); if (v < .3) return;
+      cx.globalAlpha = v; cx.fillStyle = d.k ? "#3fb7d6" : "#d9a441"; cx.strokeStyle = "#fff"; cx.lineWidth = 2;
+      const lw = vert ? cell * .8 : cell * .2, lh = vert ? cell * .2 : cell * .8; cx.fillRect(mx - lw / 2, my - lh / 2, lw, lh); cx.strokeRect(mx - lw / 2, my - lh / 2, lw, lh);
+      cx.fillStyle = "#1b0f3a"; cx.beginPath(); cx.arc(mx, my, cell * .08, 0, 6.283); cx.fill(); cx.globalAlpha = 1;
+    });
+  }
+  function drawExit(vis, t) {
+    const e = cellXY(L.exit), { cell } = lay, pulse = 1 + Math.sin(t * 3) * .12;
+    const g = cx.createRadialGradient(e.x, e.y, 2, e.x, e.y, cell * 1.3 * pulse); g.addColorStop(0, "rgba(255,225,150,.75)"); g.addColorStop(1, "rgba(255,160,200,0)");
+    cx.globalAlpha = Math.max(.55, vis[L.exit]); cx.fillStyle = g; cx.fillRect(e.x - cell * 1.4, e.y - cell * 1.4, cell * 2.8, cell * 2.8);
+    cx.globalAlpha = Math.max(.7, vis[L.exit]); cx.strokeStyle = C.ouro; cx.lineWidth = Math.max(2, cell * .09);
+    cx.beginPath(); cx.moveTo(e.x - cell * .28, e.y + cell * .34); cx.lineTo(e.x - cell * .28, e.y - cell * .06); cx.arc(e.x, e.y - cell * .06, cell * .28, Math.PI, 0); cx.lineTo(e.x + cell * .28, e.y + cell * .34); cx.stroke();
+    cx.fillStyle = "rgba(255,240,190,.55)"; cx.fillRect(e.x - cell * .22, e.y - cell * .06, cell * .44, cell * .4); cx.globalAlpha = 1;
+  }
+  function drawGirl(x, y, cell, face, bob, moving, t, scale) {
+    const r = cell * .3 * (scale || 1), b = moving ? Math.abs(Math.sin(t * 16)) * cell * .06 : Math.sin(t * 3) * cell * .015;
+    cx.save(); cx.translate(x, y - b); cx.scale(face, 1);
+    cx.fillStyle = "rgba(0,0,0,.35)"; cx.beginPath(); cx.ellipse(0, r * 1.15 + b, r * .9, r * .28, 0, 0, 6.283); cx.fill();
+    cx.fillStyle = "#ff8fc7"; cx.beginPath(); cx.arc(-r * .15, -r * .1, r * 1.05, 0, 6.283); cx.fill(); cx.beginPath(); cx.arc(-r * .95, r * .15, r * .38, 0, 6.283); cx.fill();
+    cx.fillStyle = "#8b5cf6"; cx.beginPath(); cx.moveTo(-r * .55, r * .35); cx.lineTo(r * .55, r * .35); cx.lineTo(r * .75, r * 1.1); cx.lineTo(-r * .75, r * 1.1); cx.fill();
+    cx.fillStyle = "#ffe0cc"; cx.beginPath(); cx.arc(0, 0, r * .78, 0, 6.283); cx.fill();
+    cx.fillStyle = "#ff8fc7"; cx.beginPath(); cx.arc(0, -r * .1, r * .85, Math.PI * 1.05, Math.PI * 1.95); cx.fill();
+    cx.fillStyle = "#2a1550"; cx.beginPath(); cx.arc(r * .3, r * .02, r * .1, 0, 6.283); cx.fill();
+    cx.fillStyle = "#fff"; cx.beginPath(); cx.arc(r * .42, -r * .28, r * .22, 0, 6.283); cx.fill();
+    cx.restore();
+  }
+  function drawLight(px, py, Lv) {
+    const { cell, ox, oy } = lay, x = ox + (px + .5) * cell, y = oy + (py + .5) * cell, rad = Lv.radius * cell;
+    cx.globalCompositeOperation = "lighter"; const g = cx.createRadialGradient(x, y, 0, x, y, rad);
+    g.addColorStop(0, "rgba(255,170,220,.22)"); g.addColorStop(1, "rgba(255,170,220,0)"); cx.fillStyle = g; cx.fillRect(x - rad, y - rad, rad * 2, rad * 2);
+    cx.globalCompositeOperation = "source-over";
+  }
+  function render(dt) {
+    tt += dt; cx.setTransform(DPR, 0, 0, DPR, 0, 0); bg(tt);
+    if (state === "menu") {
+      const m = DM.path.length - 1, u = (tt * 3.2) % (2 * m), i = u < m ? u : 2 * m - u, a = Math.floor(i), f = i - a, c0 = DM.path[a], c1 = DM.path[Math.min(m, a + 1)];
+      const px = ((c0 % DM.w) * (1 - f) + (c1 % DM.w) * f), py = ((((c0 / DM.w) | 0)) * (1 - f) + (((c1 / DM.w) | 0)) * f);
+      const vis = drawMaze(DM, px, py, tt, true, false, null); drawLight(px, py, DM);
+      cx.globalAlpha = .9; drawGirl(lay.ox + (px + .5) * lay.cell, lay.oy + (py + .5) * lay.cell, lay.cell, c1 % DM.w < c0 % DM.w ? -1 : 1, 0, true, tt); cx.globalAlpha = 1; return;
+    }
+    if (state === "final") {
+      finalT += dt; const k = reduce ? 1 : clamp(finalT / 2.4, 0, 1), e = 1 - Math.pow(1 - k, 3), cxm = W / 2, cym = H * .45, gw = Math.min(W, 640) * .5, gh = H * .8;
+      const lg = cx.createRadialGradient(cxm, cym, 10, cxm, cym, H * .7); lg.addColorStop(0, "rgba(255,230,160," + (.85 * e) + ")"); lg.addColorStop(1, "rgba(255,120,200,0)"); cx.fillStyle = lg; cx.fillRect(0, 0, W, H);
+      cx.fillStyle = "#16103a"; cx.fillRect(cxm - gw - gw * e, cym - gh / 2, gw, gh); cx.fillRect(cxm + gw * e, cym - gh / 2, gw, gh);
+      cx.strokeStyle = C.ouro; cx.lineWidth = 3; cx.strokeRect(cxm - gw - gw * e, cym - gh / 2, gw, gh); cx.strokeRect(cxm + gw * e, cym - gh / 2, gw, gh);
+      if (Math.random() < .6) spawn(Math.random() * W, H + 5, 1, Math.random() < .5 ? C.rosa : C.ouro, "rise");
+      if (Math.random() < .05 && k >= 1) spawn(Math.random() * W, Math.random() * H * .6, 24, Math.random() < .5 ? C.rosa : "#7ef0ff", "star");
+      drawParts(dt); return;
+    }
+    if (state === "play") {
+      p.time += dt; if (L.limit && p.time >= L.limit) { p.time = L.limit; fail("TEMPO ESGOTADO"); }
+      if (!p.moving) {
+        let d = null; if (queued !== null && performance.now() - queuedAt < 350) d = queued; else if (held.length) d = held[held.length - 1];
+        queued = null; if (d !== null) tryMove(d);
+      }
+    }
+    if ((state === "play" || state === "clear") && p.moving) {
+      const sp = 9 * dt, dx = p.tx - p.x, dy = p.ty - p.y, dd = Math.hypot(dx, dy);
+      if (dd <= sp) arrive(); else { p.x += dx / dd * sp; p.y += dy / dd * sp; }
+    }
+    const full = showMap; const vis = drawMaze(L, p.x, p.y, tt, L.fog, full, explored);
+    drawExit(vis, tt); drawItems(vis, tt);
+    if (L.fog && !full) drawLight(p.x, p.y, L);
+    let sc = 1; if (state === "clear") { clearT += dt; sc = Math.max(.01, 1 - clearT / .9); if (clearT > .9) finishLevel(); }
+    drawGirl(lay.ox + (p.x + .5) * lay.cell, lay.oy + (p.y + .5) * lay.cell, lay.cell, p.face, 0, p.moving, tt, sc);
+    drawParts(dt);
+    $("ht").textContent = L.limit ? "⏳ " + fmt(L.limit - p.time) : "⏱ " + fmt(p.time);
+    $("ht").className = "i" + (L.limit && L.limit - p.time < 15 ? " w" : "");
+    $("hs").textContent = "👣 " + p.steps; $("hc").textContent = "⭐ " + p.coins + "/" + L.items.filter(o => o.t === "coin").length;
+    $("hk").textContent = L.doors.length ? "🔑 " + [...Array(L.doors.length).keys()].map(k => (p.keys & (1 << k)) ? "●" : "○").join("") : "";
+  }
+  function frame(ts) {
+    requestAnimationFrame(frame);
+    const dt = Math.min((ts - last) / 1000 || 0, .05); last = ts;
+    render(state === "pause" ? 0 : dt);
+  }
+  
+  /* ---------- controles ---------- */
+  const KEYS = { ArrowUp: 0, KeyW: 0, ArrowRight: 1, KeyD: 1, ArrowDown: 2, KeyS: 2, ArrowLeft: 3, KeyA: 3 };
+  const press = d => { if (!held.includes(d)) held.push(d); }, release = d => { held = held.filter(x => x !== d); };
+  addEventListener("keydown", e => {
+    initAudio(); const k = KEYS[e.code];
+    if (k !== undefined) { if (state === "play") e.preventDefault(); press(k); }
+    if ((e.code === "Escape" || e.code === "KeyP") && !e.repeat) { if (state === "play") pause(); else if (state === "pause") resume(); }
+  });
+  addEventListener("keyup", e => { const k = KEYS[e.code]; if (k !== undefined) release(k); });
+  for (let d = 0; d < 4; d++) {
+    const el = $("d" + d);
+    el.addEventListener("pointerdown", e => { e.preventDefault(); initAudio(); try { el.setPointerCapture(e.pointerId); } catch (x) {} press(d); el.classList.add("d"); });
+    ["pointerup", "pointercancel", "lostpointercapture"].forEach(t => el.addEventListener(t, () => { release(d); el.classList.remove("d"); }));
+    el.addEventListener("contextmenu", e => e.preventDefault());
+  }
+  let sw = null;
+  cv.addEventListener("pointerdown", e => { initAudio(); sw = { x: e.clientX, y: e.clientY, id: e.pointerId }; });
+  cv.addEventListener("pointermove", e => {
+    if (!sw || sw.id !== e.pointerId || state !== "play") return;
+    const dx = e.clientX - sw.x, dy = e.clientY - sw.y;
+    if (Math.hypot(dx, dy) > 28) { queued = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 1 : 3) : (dy > 0 ? 2 : 0); queuedAt = performance.now(); sw.x = e.clientX; sw.y = e.clientY; }
+  });
+  ["pointerup", "pointercancel"].forEach(t => cv.addEventListener(t, () => { sw = null; }));
+  const clearInput = () => { held = []; queued = null; sw = null; };
+  document.addEventListener("visibilitychange", () => { if (document.hidden) { clearInput(); pause(); } });
+  addEventListener("blur", () => { clearInput(); pause(); });
+  
+  $("go").onclick = () => { initAudio(); startLevel(0); };
+  $("mr").onclick = () => { buildAch(); show("rules"); }; $("rb").onclick = () => show("menu");
+  $("ms2").onclick = () => { initAudio(); setSound(!sound); }; $("bs").onclick = () => { initAudio(); setSound(!sound); };
+  $("bp").onclick = () => (state === "play" ? pause() : resume());
+  $("br").onclick = () => { if (state === "play" || state === "pause") startLevel(cur); };
+  $("bm").onclick = () => {
+    if (!L.fog || state !== "play") return; showMap = !showMap; $("bm").classList.toggle("act", showMap);
+    if (showMap && !p.mapUsed) { p.mapUsed = true; toast("Mapa revelado (−150 pontos nesta fase)"); }
+  };
+  $("pr").onclick = resume; $("pq").onclick = () => startLevel(cur); $("pm").onclick = toMenu; $("em").onclick = toMenu; $("fm").onclick = toMenu;
+  $("en").onclick = () => startLevel(cur + 1); $("er").onclick = () => startLevel(cur);
+  $("fv").onclick = () => { const f = $("fin"); f.style.animation = "none"; void f.offsetWidth; f.style.animation = "fi 1s both"; clearInterval(tw); $("msg").textContent = ""; let i = 0; const txt = P.mensagemFinal; tw = setInterval(() => { $("msg").textContent = reduce ? txt : txt.slice(0, ++i); if (i >= txt.length || reduce) clearInterval(tw); }, 35); };
+  $("fa").onclick = () => startLevel(0);
+  
+  /* ---------- início ---------- */
+  DM = (() => { const cells = gen(11, 7, rng(5)), A = bfs(cells, 11, 0); let ex = 0; for (let c = 0; c < cells.length; c++) if (A.dist[c] > A.dist[ex]) ex = c; const path = []; for (let c = ex; c >= 0; c = A.par[c]) path.unshift(c); return { w: 11, h: 7, cells, path, radius: 3.6 }; })();
+  setSound(sound); buildLv(); relayout(); lay = fit(DM.w, DM.h, 0, 0, .8); requestAnimationFrame(frame);
+  </script>
+  
+  
+  </body></html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Secret Home</title>
+  </head>
+
+  <body class="center">
+    <canvas id="hearts"></canvas>
+
+    <div class="container home-box">
+      <h1 id="homeTitulo">❤️ Central secreta da Julia ❤️</h1>
+
+      <p class="sub-home">
+        Essa central foi criada para colocar paginas novas, e você não acessar sem permissão do ADM
+      </p>
+
+      <h3 class="categoria">Paginas secretas</h3>
+      
+      <!-- Chama a função contarClique() junto com o go() -->
+      <button onclick="contarClique(); go('.html')">Complete... </button>
+      <button onclick="contarClique(); go('.html')">sorte a minha</button>
+      <button onclick="contarClique(); go('.html')">Jogo</button>
+      <button onclick="contarClique(); go('.html')">Tente </button>
+      <button onclick="contarClique(); go('.html')">Seu jogo</button>
+      <button onclick="contarClique(); go('.html')">Vejaaa</button>
+      <button onclick="contarClique(); go('.html')">você vai ver</button>
+      <button onclick="contarClique(); go('.html')">O que pode acontecer</button>
+      <button onclick="contarClique(); go('.html')">Quem sabe um dia né</button>
+      <button onclick="contarClique(); go('.html')">Nosso jogo</button>
+      <button onclick="contarClique(); go('.html')">o que você vai fazer ?</button>
+      <button onclick="contarClique(); go('.html')">Meus Pensamentos </button>
+      <button onclick="contarClique(); go('home.html')">voltar</button>
+
+      <!-- Área secreta oculta -->
+      <div id="areaSecreta" style="display: none; margin-top: 20px;">
+        <button id="btnCliqueAqui" onclick="mostrarMensagem()">Clique aqui</button>
+        <p id="mensagemFinal" style="display: none; margin-top: 15px; text-align: left;">
+          Não funcionou? Fica calma, as páginas estão todas aqui e prontas, só esperando o momento certo. Acredito que logo chegará, mas isso é para tu ver quantas tem. Siga o passo a passo:<br><br>
+          1- Tirar o print<br>
+          2- Encaminhar o print para o ADM<br>
+          3- Esperar o momento certo<br>
+          4- Encher o saco do adm (ele tá com saudades de quando você via as páginas)
+        </p>
+      </div>
+    </div>
+    
+    <script src="js/hearts.js"></script>
+    <script src="js/script.js"></script>
+
+    <!-- Script direto na página -->
+    <script>
+      let totalCliques = 0;
+
+      function contarClique() {
+        totalCliques++;
+        if (totalCliques >= 7) {
+          const areaSecreta = document.getElementById("areaSecreta");
+          if (areaSecreta) {
+            areaSecreta.style.display = "block";
+          }
+        }
+      }
+
+      function mostrarMensagem() {
+        const msg = document.getElementById("mensagemFinal");
+        if (msg) {
+          msg.style.display = "block";
+        }
+      }
+
+      function go(url) {
+        // Lógica da sua função go() aqui
+      }
+    </script>
+  </body>
+</html>
