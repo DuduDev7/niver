@@ -30,7 +30,35 @@
   .how b{color:var(--ouro)}
   .stats{font-size:clamp(15px,3vw,22px);line-height:1.8;margin:14px 0 18px;color:#f3e8ff}
   .stats b{color:var(--ouro)}
-  #msg{max-width:620px;margin:16px 0;font-size:clamp(16px,3vw,24px);line-height:1.55;min-height:3.2em;color:#fff;text-shadow:0 0 12px var(--rosa)}
+  
+  /* Adicionado scroll e suporte a quebras de linha e espaçamento duplo no texto final */
+  #msg{
+    max-width:620px;
+    max-height:45vh;
+    overflow-y:auto;
+    margin:16px 0;
+    padding:0 10px;
+    font-size:clamp(15px,2.6vw,21px);
+    line-height:1.6;
+    color:#fff;
+    text-shadow:0 0 12px var(--rosa);
+    white-space:pre-wrap;
+    text-align:left;
+    scrollbar-width:thin;
+    scrollbar-color:var(--rosa) rgba(10,6,40,.55);
+  }
+  #msg::-webkit-scrollbar {
+    width: 6px;
+  }
+  #msg::-webkit-scrollbar-track {
+    background: rgba(10,6,40,.55);
+    border-radius: 4px;
+  }
+  #msg::-webkit-scrollbar-thumb {
+    background: var(--rosa);
+    border-radius: 4px;
+  }
+
   #banner{position:fixed;left:0;right:0;top:22%;text-align:center;z-index:6;pointer-events:none;opacity:0;transition:opacity .6s}
   #banner.on{opacity:1}
   #banner b{display:block;font-family:Impact,"Arial Black",sans-serif;font-weight:400;font-size:clamp(28px,7vw,60px);letter-spacing:.06em;text-shadow:0 0 18px var(--rosa)}
@@ -111,7 +139,7 @@
       { nome: "O último salto", texto: "Falta pouco. Eu sei que você consegue." }
     ],
     mensagensVitoria: ["Fase concluída!", "Você está voando!", "Última fase vencida!"],
-    mensagemFinal: "[ESCREVA AQUI UMA MENSAGEM SUA PARA A JULIA]"
+    mensagemFinal: "Julia, ❤️ \n\nEngraçado pensar que, nesse jogo, eu preciso correr, desviar dos obstáculos, pular os buracos e continuar avançando até chegar ao final. Mas, se eu pudesse escolher o verdadeiro final dessa fase, não seria ganhar pontos, derrotar um inimigo ou chegar primeiro que alguém. Seria simplesmente chegar até você.\n\nE sabe o que eu acho mais bonito? Na vida, nem sempre eu consigo desviar de tudo. Às vezes, eu erro o pulo, caio em algum buraco que não esperava, fico perdido sem saber qual caminho seguir e tenho dias em que parece que tudo está mais difícil do que deveria. Mas, de alguma forma, quando penso em você, lembro que ainda existem coisas pelas quais vale a pena continuar tentando.\n\nVocê talvez nem perceba, mas já me ajudou a atravessar momentos que pareciam mais complicados do que realmente eram. Às vezes, não foi com uma solução mágica, nem com uma frase perfeita. Foi com seu jeito, com sua presença, com uma conversa, com um carinho ou simplesmente por ser você. E isso significa muito mais do que eu consigo explicar.\n\nSe a vida fosse esse jogo, eu não ia querer passar todas as fases sozinho só para provar que consigo. Eu ia querer comemorar as vitórias com você, contar quando tudo desse errado, rir das minhas quedas e ter alguém com quem dividir a alegria de finalmente conseguir passar por aquela parte difícil.\n\nE, mesmo que eu tivesse que correr por mil cenários diferentes, enfrentar mil obstáculos e recomeçar quantas vezes fossem necessárias, acho que existiria uma coisa que eu continuaria querendo fazer no final: correr de volta para você. Não porque eu não consiga caminhar sozinho, mas porque, entre tantas coisas que eu poderia escolher, estar perto de você é uma das que mais fazem sentido para mim.\n\nEu não sei quantas fases a vida ainda vai colocar na nossa frente. Não sei quantos desafios vamos enfrentar, quantas coisas ainda vamos aprender ou quantas vezes precisaremos parar para entender o caminho. Mas sei que, se você também quiser continuar nessa jornada comigo, eu gostaria muito de descobrir tudo isso ao seu lado.\n\nQuero comemorar suas conquistas como se fossem minhas, ver você realizando seus sonhos, torcer por você quando as coisas ficarem difíceis e estar presente também nos dias em que você não tiver vontade de correr, pular ou enfrentar nada. Porque você não precisa estar bem o tempo inteiro para merecer carinho. Às vezes, tudo o que a gente precisa é de alguém que fique por perto enquanto a fase difícil passa.\n\nE se você chegou até aqui nesse joguinho, quero que guarde uma coisinha: o objetivo nunca foi só chegar ao final. Era encontrar uma forma diferente de te dizer que eu gosto de você, que sou feliz por ter te conhecido e que existem muitos momentos que eu ainda gostaria de viver contigo.\n\nNo fim, Julia, pode até aparecer uma tela de vitória, uma pontuação enorme ou a mensagem de que todas as fases foram concluídas. Mas, se eu pudesse escolher a minha própria tela final, ela seria bem simples: eu encontrando você, te abraçando forte e sentindo que, depois de tanta correria, finalmente cheguei onde queria estar.\n\nPorque, de todas as recompensas que eu poderia encontrar pelo caminho, uma das que eu mais gostaria de ter é a oportunidade de continuar construindo momentos com você.\n\nEu te amo, Julia. ❤️"
   };
   /* =============================================================== */
   const P = PERSONALIZACAO, C = P.cores;

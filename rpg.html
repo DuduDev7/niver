@@ -1,404 +1,361 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>A NOSSA HISTÓRIA — Um livro de escolhas</title>
-<style>
-:root{--preto:#09040a;--vinho:#2b0d17;--vinho2:#4a1424;--ouro:#c9a24f;--ouro2:#e6c97f;--rosa:#d98595;--papel:#f3e7d1}
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{min-height:100%;background:var(--preto);color:var(--papel)}
-body{font-family:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;background:radial-gradient(ellipse at 50% 0%,var(--vinho2),var(--vinho) 45%,var(--preto) 100%) fixed;-webkit-font-smoothing:antialiased;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
-button{font:inherit;color:inherit;cursor:pointer}
-button:focus-visible{outline:2px solid var(--ouro2);outline-offset:3px}
-#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
-.ui{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
-.screen{position:relative;z-index:1;display:none;min-height:100dvh}
-.screen.on{display:block}
-/* capa */
-#capa{text-align:center;padding:6vh 20px}
-#capa.on{display:flex;flex-direction:column;align-items:center;justify-content:center}
-.livro{width:min(88vw,430px);padding:clamp(34px,7vw,56px) clamp(22px,5vw,40px);background:linear-gradient(135deg,#3a1020,#1c0710);border:2px solid var(--ouro);border-radius:6px 14px 14px 6px;box-shadow:inset 14px 0 22px rgba(0,0,0,.5),0 0 0 6px rgba(201,162,79,.12),0 30px 80px rgba(0,0,0,.7);animation:flut 7s ease-in-out infinite}
-@keyframes flut{50%{transform:translateY(-6px)}}
-.livro .fio{height:1px;background:linear-gradient(90deg,transparent,var(--ouro),transparent);margin:18px 0}
-.livro h1{font-weight:400;font-size:clamp(2rem,8vw,3rem);letter-spacing:.06em;line-height:1.1;color:var(--ouro2)}
-.livro p{font-style:italic;line-height:1.6;font-size:1.1rem;color:var(--papel);opacity:.9}
-.livro .nome{margin-top:20px;font-size:1.05rem;color:var(--rosa);letter-spacing:.2em;font-style:normal}
-.cbtns{display:flex;flex-direction:column;gap:12px;width:min(88vw,430px);margin-top:26px}
-.b{padding:15px 20px;background:rgba(43,13,23,.7);border:1px solid rgba(201,162,79,.5);border-radius:4px;letter-spacing:.14em;font-size:.92rem;transition:.3s}
-.b:hover:not(:disabled){background:rgba(201,162,79,.2);border-color:var(--ouro2)}
-.b.p{background:rgba(201,162,79,.2);border-color:var(--ouro2)}
-.b:disabled{opacity:.4;cursor:default}
-/* jogo */
-#top{position:sticky;top:0;z-index:5;background:linear-gradient(var(--preto),rgba(9,4,10,.85));padding:10px 14px 8px;font-size:.78rem}
-#top .row{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;max-width:60rem;margin:0 auto}
-#cap{color:var(--ouro2);letter-spacing:.06em}
-.tools{display:flex;gap:4px;flex-wrap:wrap}
-.tools button{background:none;border:1px solid rgba(201,162,79,.35);border-radius:3px;padding:7px 10px;font-size:.72rem;letter-spacing:.08em;min-height:34px}
-.tools button:hover{background:rgba(201,162,79,.18)}
-#prog{height:2px;background:rgba(255,255,255,.1);max-width:60rem;margin:8px auto 0}
-#prog i{display:block;height:100%;width:0;background:var(--ouro);transition:width 1s}
-#pips{display:flex;gap:10px;opacity:.75;font-size:.7rem;align-items:center}
-.pip b{display:inline-block;width:6px;height:6px;border-radius:50%;margin-left:2px;background:rgba(255,255,255,.15)}
-.pip b.f{background:var(--rosa);box-shadow:0 0 5px var(--rosa)}
-#cena{max-width:40rem;margin:0 auto;padding:clamp(24px,6vh,64px) 22px 90px;animation:pg 1s ease both}
-@keyframes pg{from{opacity:0;transform:translateY(12px)}}
-#cena h2{font-weight:400;font-size:clamp(1.7rem,5.5vw,2.5rem);color:var(--ouro2);line-height:1.2;margin-bottom:1.4rem}
-#txt{font-size:clamp(1.2rem,3.4vw,1.4rem);line-height:1.8;white-space:pre-line;min-height:7rem;margin-bottom:2rem;text-shadow:0 1px 14px rgba(0,0,0,.5)}
-#ops{display:flex;flex-direction:column;gap:12px}
-.op{width:100%;text-align:left;padding:18px 20px;font-size:1.15rem;line-height:1.45;background:linear-gradient(90deg,rgba(74,20,36,.65),rgba(43,13,23,.4));border:1px solid rgba(201,162,79,.4);border-left:3px solid var(--ouro);border-radius:4px;transition:.3s;animation:pg .8s ease both}
-.op:hover:not(:disabled){border-color:var(--ouro2);background:rgba(201,162,79,.16);transform:translateX(4px)}
-.op:disabled{opacity:.45;cursor:default;font-style:italic;border-left-color:rgba(255,255,255,.2)}
-.skip{display:block;margin:0 auto 1.4rem;background:none;border:none;color:var(--ouro);text-decoration:underline;font-size:.82rem;padding:8px}
-.fimbox{border:1px solid var(--ouro);padding:22px;border-radius:6px;background:rgba(0,0,0,.28);margin-bottom:1.6rem}
-.fimbox .ui{font-size:.82rem;letter-spacing:.1em;color:var(--rosa);margin-bottom:6px}
-.trilha{font-size:1rem;line-height:1.6;margin:0 0 1.6rem;padding-left:1.2rem;opacity:.9}
-.trilha li{margin-bottom:.5rem}
-/* modal */
-#md{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.78);display:none;align-items:center;justify-content:center;padding:16px}
-#md.on{display:flex}
-#mb{background:var(--vinho);border:1px solid var(--ouro);border-radius:8px;max-width:34rem;width:100%;max-height:88dvh;overflow:auto;padding:24px}
-#mb h3{font-weight:400;color:var(--ouro2);font-size:1.5rem;margin-bottom:12px}
-#mb p,#mb li{line-height:1.6;font-size:1.05rem;margin-bottom:.6rem}
-#mb ul,#mb ol{padding-left:1.2rem;margin-bottom:1rem}
-#mb h4{font-size:.8rem;letter-spacing:.14em;color:var(--rosa);margin:14px 0 6px;font-weight:600}
-#mb .acts{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
-#mb .acts .b{flex:1;min-width:120px}
-.noanim *{animation:none!important;transition-duration:.01s!important}
-@media (prefers-reduced-motion:reduce){*{animation:none!important}}
-</style>
-</head>
-<body>
-<canvas id="fx"></canvas>
-
-<section id="capa" class="screen on">
- <div class="livro">
-  <h1>A NOSSA HISTÓRIA</h1>
-  <div class="fio"></div>
-  <p>Algumas histórias são escritas. Outras são construídas escolha por escolha.</p>
-  <div class="fio"></div>
-  <div class="nome ui" id="capnome"></div>
- </div>
- <div class="cbtns ui">
-  <button class="b p" id="abrir">ABRIR O LIVRO</button>
-  <button class="b" id="cont" hidden>CONTINUAR HISTÓRIA</button>
-  <button class="b" id="como">COMO JOGAR</button>
- </div>
-</section>
-
-<section id="jogo" class="screen">
- <header id="top" class="ui">
-  <div class="row">
-   <span id="cap"></span>
-   <span id="pips"></span>
-   <div class="tools">
-    <button id="bdiario">DIÁRIO</button>
-    <button id="btudo">TEXTO</button>
-    <button id="banim">ANIMAÇÕES</button>
-    <button id="breiniciar">REINICIAR</button>
+<html lang="pt-BR"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>A NOSSA HISTÓRIA — Nós, se você quiser</title>
+  <style>
+  :root{--preto:#09040a;--vinho:#2b0d17;--vinho2:#4a1424;--ouro:#c9a24f;--ouro2:#e6c97f;--rosa:#d98595;--papel:#f3e7d1}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{min-height:100%;background:var(--preto);color:var(--papel)}
+  body{font-family:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;background:radial-gradient(ellipse at 50% 0%,var(--vinho2),var(--vinho) 45%,var(--preto) 100%) fixed;-webkit-font-smoothing:antialiased;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+  button{font:inherit;color:inherit;cursor:pointer}
+  button:focus-visible{outline:2px solid var(--ouro2);outline-offset:3px}
+  #fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+  .ui{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+  .screen{position:relative;z-index:1;display:none;min-height:100dvh}
+  .screen.on{display:block}
+  /* capa */
+  #capa{text-align:center;padding:6vh 20px}
+  #capa.on{display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .livro{width:min(88vw,430px);padding:clamp(34px,7vw,56px) clamp(22px,5vw,40px);background:linear-gradient(135deg,#3a1020,#1c0710);border:2px solid var(--ouro);border-radius:6px 14px 14px 6px;box-shadow:inset 14px 0 22px rgba(0,0,0,.5),0 0 0 6px rgba(201,162,79,.12),0 30px 80px rgba(0,0,0,.7);animation:flut 7s ease-in-out infinite}
+  @keyframes flut{50%{transform:translateY(-6px)}}
+  .livro .fio{height:1px;background:linear-gradient(90deg,transparent,var(--ouro),transparent);margin:18px 0}
+  .livro h1{font-weight:400;font-size:clamp(2rem,8vw,3rem);letter-spacing:.06em;line-height:1.1;color:var(--ouro2)}
+  .livro p{font-style:italic;line-height:1.6;font-size:1.1rem;color:var(--papel);opacity:.9}
+  .livro .nome{margin-top:20px;font-size:1.05rem;color:var(--rosa);letter-spacing:.2em;font-style:normal}
+  .cbtns{display:flex;flex-direction:column;gap:12px;width:min(88vw,430px);margin-top:26px}
+  .b{padding:15px 20px;background:rgba(43,13,23,.7);border:1px solid rgba(201,162,79,.5);border-radius:4px;letter-spacing:.14em;font-size:.92rem;transition:.3s}
+  .b:hover:not(:disabled){background:rgba(201,162,79,.2);border-color:var(--ouro2)}
+  .b.p{background:rgba(201,162,79,.2);border-color:var(--ouro2)}
+  .b:disabled{opacity:.4;cursor:default}
+  /* jogo */
+  #top{position:sticky;top:0;z-index:5;background:linear-gradient(var(--preto),rgba(9,4,10,.85));padding:10px 14px 8px;font-size:.78rem}
+  #top .row{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;max-width:60rem;margin:0 auto}
+  #cap{color:var(--ouro2);letter-spacing:.06em}
+  .tools{display:flex;gap:4px;flex-wrap:wrap}
+  .tools button{background:none;border:1px solid rgba(201,162,79,.35);border-radius:3px;padding:7px 10px;font-size:.72rem;letter-spacing:.08em;min-height:34px}
+  .tools button:hover{background:rgba(201,162,79,.18)}
+  #prog{height:2px;background:rgba(255,255,255,.1);max-width:60rem;margin:8px auto 0}
+  #prog i{display:block;height:100%;width:0;background:var(--ouro);transition:width 1s}
+  #pips{display:flex;gap:10px;opacity:.75;font-size:.7rem;align-items:center}
+  .pip b{display:inline-block;width:6px;height:6px;border-radius:50%;margin-left:2px;background:rgba(255,255,255,.15)}
+  .pip b.f{background:var(--rosa);box-shadow:0 0 5px var(--rosa)}
+  #cena{max-width:40rem;margin:0 auto;padding:clamp(24px,6vh,64px) 22px 90px;animation:pg 1s ease both}
+  @keyframes pg{from{opacity:0;transform:translateY(12px)}}
+  #cena h2{font-weight:400;font-size:clamp(1.7rem,5.5vw,2.5rem);color:var(--ouro2);line-height:1.2;margin-bottom:1.4rem}
+  #txt{font-size:clamp(1.2rem,3.4vw,1.4rem);line-height:1.8;white-space:pre-line;min-height:7rem;margin-bottom:2rem;text-shadow:0 1px 14px rgba(0,0,0,.5)}
+  #ops{display:flex;flex-direction:column;gap:12px}
+  .op{width:100%;text-align:left;padding:18px 20px;font-size:1.15rem;line-height:1.45;background:linear-gradient(90deg,rgba(74,20,36,.65),rgba(43,13,23,.4));border:1px solid rgba(201,162,79,.4);border-left:3px solid var(--ouro);border-radius:4px;transition:.3s;animation:pg .8s ease both}
+  .op:hover:not(:disabled){border-color:var(--ouro2);background:rgba(201,162,79,.16);transform:translateX(4px)}
+  .op:disabled{opacity:.45;cursor:default;font-style:italic;border-left-color:rgba(255,255,255,.2)}
+  .skip{display:block;margin:0 auto 1.4rem;background:none;border:none;color:var(--ouro);text-decoration:underline;font-size:.82rem;padding:8px}
+  .fimbox{border:1px solid var(--ouro);padding:22px;border-radius:6px;background:rgba(0,0,0,.28);margin-bottom:1.6rem}
+  .fimbox .ui{font-size:.82rem;letter-spacing:.1em;color:var(--rosa);margin-bottom:6px}
+  .trilha{font-size:1rem;line-height:1.6;margin:0 0 1.6rem;padding-left:1.2rem;opacity:.9}
+  .trilha li{margin-bottom:.5rem}
+  /* modal */
+  #md{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.78);display:none;align-items:center;justify-content:center;padding:16px}
+  #md.on{display:flex}
+  #mb{background:var(--vinho);border:1px solid var(--ouro);border-radius:8px;max-width:34rem;width:100%;max-height:88dvh;overflow:auto;padding:24px}
+  #mb h3{font-weight:400;color:var(--ouro2);font-size:1.5rem;margin-bottom:12px}
+  #mb p,#mb li{line-height:1.6;font-size:1.05rem;margin-bottom:.6rem}
+  #mb ul,#mb ol{padding-left:1.2rem;margin-bottom:1rem}
+  #mb h4{font-size:.8rem;letter-spacing:.14em;color:var(--rosa);margin:14px 0 6px;font-weight:600}
+  #mb .acts{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+  #mb .acts .b{flex:1;min-width:120px}
+  .noanim *{animation:none!important;transition-duration:.01s!important}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important}}
+  </style>
+  </head>
+  <body>
+  <canvas id="fx" width="390" height="844"></canvas>
+  
+  <section id="capa" class="screen">
+   <div class="livro">
+    <h1>A NOSSA HISTÓRIA</h1>
+    <div class="fio"></div>
+    <p>Sobre nós, sobre o que já vivemos e sobre tudo o que ainda pode acontecer — se você quiser.</p>
+    <div class="fio"></div>
+    <div class="nome ui" id="capnome">JULIA</div>
    </div>
-  </div>
-  <div id="prog"><i></i></div>
- </header>
- <main id="cena"></main>
-</section>
-
-<div id="md"><div id="mb" role="dialog" aria-modal="true"></div></div>
-
-<script>
-/* ===================== PERSONALIZACAO ===================== */
-/* Preencha os campos abaixo. Campos vazios usam frases neutras e ficcionais. */
-const PERSONALIZACAO = {
-  nomeProtagonista: "Julia",
-  nomeNamorado: "",        /* ex.: o nome dele */
-  comoSeConheceram: "",    /* escreva só o que for verdade */
-  lembrancaImportante: "", /* uma lembrança real e importante */
-  qualidadeQueAdmira: "",  /* uma qualidade que ele admira nela */
-  mensagemPessoal: "",     /* mensagem que aparece no final secreto */
-  futuroDesejado: ""       /* o que o casal deseja viver no futuro */
-};
-/* ========================================================== */
-
-const PZ = PERSONALIZACAO;
-const T = (v, f) => (typeof v === 'string' && v.trim()) ? v.trim() : f;
-const NOME = T(PZ.nomeProtagonista, 'Julia');
-
-const CAPS = {1:'Capítulo I · As duas portas', 2:'Capítulo II · A biblioteca noturna', 3:'Capítulo III · A última página'};
-const has = (s, p) => s.pistas.includes(p);
-
-/* ===================== CENAS ===================== */
-const CENAS = {
- prologo:{cap:1,titulo:'O livro sobre a mesa',
-  t:`Há um livro sobre uma mesa, em uma sala onde só a luz de uma vela está acesa. Ele não tem título na capa. Quando ${NOME} se aproxima, a vela inclina a chama, como quem faz uma reverência.\n\nUma voz que parece vir das páginas sussurra: “Esta é uma história que ainda está sendo escrita. Você aceita descobrir o que vem a seguir?”`,
-  o:[{t:'Virar a página.',to:'inicio'}]},
-
- inicio:{cap:1,titulo:'A página em branco',
-  t:s=>`Diante de ${NOME} existe um livro com várias páginas vazias. Na primeira, uma frase aparece lentamente: “Nem sempre é possível saber como uma história vai terminar. Mas ainda podemos escolher o próximo capítulo.”\n\nAo lado do livro, duas portas esperam: uma cheira a papel antigo, a outra a tinta ainda fresca.${s.v.livro?'\n\nA marca dourada que você encontrou na lombada brilha de leve.':''}`,
-  o:[{t:'Abrir a porta que leva ao passado.',to:'passado1',e:{mundo:'passado'}},
-     {t:'Abrir a porta que leva ao futuro.',to:'futuro1',e:{mundo:'futuro'}},
-     {t:'Examinar o livro antes de decidir.',to:'livro',hide:s=>s.v.livro}]},
-
- livro:{cap:1,titulo:'Por dentro do livro',
-  t:`Você passa os dedos pelas páginas. Perto da lombada, quase invisível, há uma marca em relevo: uma pequena chave desenhada com tinta dourada. Ao tocá-la, o livro parece respirar.\n\nVocê não sabe o que ela abre. Mas guarda a lembrança dela.`,
-  e:{cur:1,pista:'marca'},
-  o:[{t:'Voltar às duas portas.',to:'inicio'}]},
-
- passado1:{cap:1,titulo:'O corredor das molduras vazias',
-  t:`A porta se abre para um corredor de estantes. Nelas não há fotografias, só molduras vazias que esperam por lembranças: algumas empoeiradas, outras ainda brilhando.\n\nAo fundo, ouve-se o tique de um relógio que não anda. No chão, uma caixa dourada está entreaberta.`,
-  o:[{t:'Abrir a caixa dourada.',to:'caixa'},{t:'Seguir o som do relógio.',to:'relogio'}]},
-
- futuro1:{cap:1,titulo:'O jardim sem trilhas',
-  t:`A porta se abre para um jardim de caminhos que ainda não foram traçados. Cada trilha termina em névoa. Uma luz distante pulsa devagar.\n\nPerto de uma fonte seca, uma figura de capa cinza afia uma pena: é o Escriba, e ele parece ter esperado por você.`,
-  o:[{t:'Seguir a luz.',to:'luz'},{t:'Aproximar-se do Escriba.',to:'escriba'}]},
-
- caixa:{cap:1,titulo:'A caixa dourada',
-  t:`Dentro da caixa há uma pena de ouro envelhecido e um bilhete dobrado: “Quem escreve com cuidado nunca escreve sozinho.”\n\nA pena é leve, mas parece pesar no bolso, como as coisas que importam.`,
-  e:{cur:1,pista:'pena'},
-  o:[{t:'Seguir pelo corredor até o fim.',to:'ponte'}]},
-
- relogio:{cap:1,titulo:'O relógio parado',
-  t:`O relógio marca uma hora que ninguém sabe. Os ponteiros tremem, como se esperassem alguém decidir.\n\n“Tempo não é problema”, diz uma voz de engrenagens. “Problema é não escolher.”`,
-  o:[{t:'Girar os ponteiros com as próprias mãos.',to:'ponte',e:{cor:1}},
-     {t:'Deixar o relógio como está e confiar no silêncio.',to:'ponte',e:{conf:1}}]},
-
- luz:{cap:1,titulo:'O lampião',
-  t:`A luz é um lampião pendurado no ar. Quando você se aproxima, ele revela sombras de portas, janelas e estradas. Nenhuma tem nome.\n\n“Escolher”, diz o lampião, baixinho, “também é aceitar não saber.”`,
-  o:[{t:'Pegar o lampião e levar a luz consigo.',to:'ponte',e:{cor:1}},
-     {t:'Deixá-lo e seguir só com a intuição.',to:'ponte',e:{conf:1}}]},
-
- escriba:{cap:1,titulo:'O Escriba',
-  t:`O Escriba levanta os olhos. “Quase ninguém me procura”, diz. “Preferem ler o final primeiro.”\n\nEle estende uma pena de ouro envelhecido. “Você prefere uma história garantida ou uma que ainda pode surpreender?”`,
-  o:[{t:'Aceitar a pena e escolher a surpresa.',to:'ponte',e:{cur:1,pista:'pena'}},
-     {t:'Agradecer, recusar a pena e seguir com calma.',to:'ponte',e:{conf:1}}]},
-
- ponte:{cap:2,titulo:'A ponte de papel',
-  t:s=>`Sobre um abismo de letras soltas, uma ponte de papel dobrado liga o que ficou para trás ao que ainda não aconteceu.\n\n${s.mundo==='passado'?'Atrás de você, o corredor desbota como tinta na chuva.':'Atrás de você, o jardim se fecha em névoa.'} O vento vira páginas ao longe.`,
-  o:[{t:'Atravessar de uma vez, sem olhar para baixo.',to:'biblioteca',e:{cor:1}},
-     {t:'Parar no meio e olhar para o abismo.',to:'abismo'}]},
-
- abismo:{cap:2,titulo:'O abismo de letras',
-  t:`Lá embaixo, as letras caem e se reorganizam em palavras: talvez, ainda, outra vez, depois. Nenhuma frase fica pronta.\n\nVocê entende que o abismo não é vazio. É matéria-prima.`,
-  e:{cur:1},
-  o:[{t:'Seguir até o fim da ponte.',to:'biblioteca'}]},
-
- biblioteca:{cap:2,titulo:'A biblioteca noturna',
-  t:s=>`A ponte termina em uma biblioteca iluminada por velas flutuantes. Os livros trocam de lugar quando ninguém olha.\n\nHá três caminhos: uma estante de lombadas sem título, uma porta pequena marcada com uma chave, e um corredor coberto de espelhos.${s.pistas.length?'\n\nO que você carrega parece reagir ao ar do lugar.':''}`,
-  o:[{t:'Explorar a estante de lombadas sem título.',to:'estante',hide:s=>s.v.estante},
-     {t:'Entrar na porta pequena marcada com a chave.',to:'sala',hide:s=>s.v.sala,req:s=>has(s,'marca')&&has(s,'pena'),dica:'Uma porta pequena, trancada por uma marca que você ainda não entende.'},
-     {t:'Seguir pelo corredor de espelhos.',to:'labirinto'}]},
-
- estante:{cap:2,titulo:'A estante sem títulos',
-  t:`Entre lombadas lisas, um volume fino se abre sozinho. É um índice. Lista capítulos sem dizer o que acontece neles.\n\nUm deles está riscado em dourado: “O capítulo que só aparece para quem já leu outros finais.”`,
-  e:{cur:1,pista:'indice'},
-  o:[{t:'Voltar ao salão da biblioteca.',to:'biblioteca'}]},
-
- sala:{cap:2,titulo:'A sala do tinteiro',
-  t:`Na sala pequena há um tinteiro de vidro. A pena de ouro vibra, como se reconhecesse o lugar. Você a mergulha na tinta, que sobe brilhando pelas cerdas.\n\nNa parede surge uma frase que muda a cada leitura: “O livro não conhece o fim. Quem lê também escreve.” Um pouco da tinta fica guardada na ponta da pena.`,
-  e:{cor:1,pista:'tinta'},
-  o:[{t:'Voltar ao salão da biblioteca.',to:'biblioteca'}]},
-
- labirinto:{cap:2,titulo:'O corredor de espelhos',
-  t:`Cada espelho mostra uma versão de ${NOME} em uma porta diferente. Não são lembranças: são apenas possibilidades, e nenhuma delas faz promessas.\n\nEm um dos espelhos, uma mão se estende do outro lado do vidro, oferecendo ajuda sem dizer nada.`,
-  o:[{t:'Segurar a mão.',to:'mao',e:{conf:1,prox:1}},
-     {t:'Atravessar o espelho sozinha.',to:'sozinha',e:{cor:1}},
-     {t:'Encarar o reflexo até entendê-lo.',to:'espelho',e:{cur:1}}]},
-
- mao:{cap:2,titulo:'A mão do outro lado',
-  t:s=>`A mão é quente como papel ao sol. Quem a estende não mostra o rosto, mas o gesto é paciente.\n\n“Eu não vou decidir por você”, diz uma voz. “Só posso caminhar ao lado, se você quiser.”${PZ.comoSeConheceram&&PZ.comoSeConheceram.trim()?'':''}\n\nO vidro se dissolve como açúcar na água.`,
-  o:[{t:'Seguir adiante.',to:'mesa'}]},
-
- sozinha:{cap:2,titulo:'O espelho quebrado',
-  t:`Você atravessa o espelho com os braços à frente. Ele se quebra em mil letras, e todas caem em fila, formando um caminho.\n\nNinguém o desenhou. Você o fez andando.`,
-  o:[{t:'Seguir adiante.',to:'mesa'}]},
-
- espelho:{cap:2,titulo:'O reflexo que parou',
-  t:`Você encara o reflexo até ele parar de imitar seus gestos. Então ele sorri por conta própria e aponta para a página seguinte.\n\n“A resposta nunca esteve no vidro”, diz. “Estava em perguntar com calma.”`,
-  o:[{t:'Seguir adiante.',to:'mesa'}]},
-
- mesa:{cap:3,titulo:'A mesa do Escriba',
-  t:s=>`No centro do livro há uma mesa com uma única página em branco. O Escriba está ali, ou algo parecido com ele. ${s.mundo==='passado'?'Tudo o que ficou para trás parece um prólogo.':'Tudo o que ainda não existe parece um esboço.'}\n\n“Cheguei ao fim do que eu sabia escrever”, diz. “A próxima linha é sua.”`,
-  o:[{t:'Reler as páginas já escritas.',to:'pergunta',e:{cur:1}},
-     {t:'Perguntar quem escreve esta história.',to:'pergunta',e:{conf:1}}]},
-
- pergunta:{cap:3,titulo:'A última página',
-  t:s=>`“Quem escreve”, responde o Escriba, “é quem decide continuar. Nem sempre é a mesma pessoa, nem sempre é a mesma mão. O que você quer fazer com a página?”\n\nA pena treme sobre a mesa. Não há resposta errada, só caminhos diferentes.`,
-  o:[{t:'Escrever uma história para dois.',to:'f1'},
-     {t:'Escrever uma história só sua e ver aonde ela vai.',to:'f2',req:s=>s.cur>=2,dica:'Uma página que ainda não encontrou sentido.'},
-     {t:'Deixar a página em branco por enquanto.',to:'f3'},
-     {t:'Reunir a pena, o índice e a tinta.',to:'f4',req:(s,m)=>has(s,'pena')&&has(s,'indice')&&has(s,'tinta')&&m.finais.length>=1,dica:'Uma página que parece esperar por mais leituras.'}]},
-
- f1:{cap:3,titulo:'Um novo capítulo',fim:1,
-  t:s=>`Você escreve “nós” no alto da página, e a tinta decide permanecer.\n\nNão há garantia nem promessa, só ${T(PZ.nomeNamorado,'duas pessoas')} e ${NOME} dispostas a continuar escrevendo com cuidado, e livres para mudar de ideia sempre que for preciso. ${s.mundo==='passado'?'Tudo o que ficou para trás vira prólogo.':'Tudo o que ainda não existe vira esboço.'}\n\n${PZ.qualidadeQueAdmira&&PZ.qualidadeQueAdmira.trim()?`Entre as linhas, uma delas fala de algo que alguém admira em você: ${PZ.qualidadeQueAdmira.trim()}.\n\n`:''}${PZ.futuroDesejado&&PZ.futuroDesejado.trim()?`No topo da nova folha, em letras pequenas: “${PZ.futuroDesejado.trim()}”.`:'O livro se fecha de leve, e uma folha em branco aparece, pronta. A primeira linha ainda está vazia, e isso é o melhor dela.'}`,
-  o:[]},
-
- f2:{cap:3,titulo:'O caminho inesperado',fim:2,
-  t:s=>`Você escreve apenas o seu nome, e ele basta para abrir um capítulo inteiro.\n\nA história segue por estradas que ninguém previu: lugares novos, descobertas, versões de você que ainda não tinham aparecido. O livro não cobra nada. Apenas mostra que escolher o próprio caminho também é uma forma de beleza.\n\n${s.cur>=3?'A curiosidade que você teve até aqui continua acesa, como uma vela que ninguém precisa proteger.':'O que você descobriu sobre si ao longo da jornada é o que o livro mais queria que ficasse.'}`,
-  o:[]},
-
- f3:{cap:3,titulo:'Uma página em aberto',fim:3,
-  t:`Você segura a pena, respira, e a devolve à mesa.\n\n“Ainda não sei”, diz. “E tudo bem”, responde o Escriba. “Algumas respostas pedem tempo, e o livro tem paciência.”\n\nA página continua branca, mas parece menos vazia do que antes. Do lado de fora do livro, o dia está esperando. Quando quiser voltar, a história estará aqui, no ponto em que você a deixou.`,
-  o:[]},
-
- f4:{cap:3,titulo:'O segredo do livro',fim:4,
-  t:s=>`A pena, o índice e a tinta se juntam. A última página se divide em duas, e dentro dela há um prefácio que sempre esteve ali: “Este livro foi feito para ser relido. Cada leitura pode terminar de um jeito, e nenhum final é errado.”\n\nA chave dourada na lombada gira sozinha. Atrás da capa, existe um espaço que não pertence à história, só a quem a lê.\n\n${PZ.mensagemPessoal&&PZ.mensagemPessoal.trim()?`Ali está escrito: “${PZ.mensagemPessoal.trim()}”`:'Ali, você pode escrever o que quiser guardar.'}${PZ.lembrancaImportante&&PZ.lembrancaImportante.trim()?`\n\nNa margem, uma lembrança: ${PZ.lembrancaImportante.trim()}`:''}${PZ.comoSeConheceram&&PZ.comoSeConheceram.trim()?`\n\nE, bem pequeno: ${PZ.comoSeConheceram.trim()}`:''}`,
-  o:[]}
-};
-const FINAIS = {1:'Um novo capítulo',2:'O caminho inesperado',3:'Uma página em aberto',4:'O segredo do livro'};
-const TOTAL_PROG = 14;
-
-/* Validação de referências */
-(function(){ const erros=[];
- Object.entries(CENAS).forEach(([id,c])=>c.o.forEach(o=>{ if(!CENAS[o.to]) erros.push(id+' → '+o.to); }));
- if(erros.length){ console.error('Destinos quebrados:',erros); document.title='ERRO: '+erros.join(', '); }
-})();
-
-/* ===================== ESTADO E SALVAMENTO ===================== */
-const KS='nossa-historia-save-v1', KM='nossa-historia-meta-v1';
-const mem={};
-function ld(k){ try{ const r=localStorage.getItem(k); return r?JSON.parse(r):null; }catch(e){ return mem[k]||null; } }
-function sv(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){ mem[k]=v; } }
-function rm(k){ try{ localStorage.removeItem(k); }catch(e){} delete mem[k]; }
-const novo=()=>({cena:'prologo',cor:0,conf:0,cur:0,prox:0,pistas:[],v:{},hist:[],mundo:null});
-let S=novo(), M=ld(KM)||{finais:[]};
-if(!Array.isArray(M.finais)) M.finais=[];
-let anim=!matchMedia('(prefers-reduced-motion: reduce)').matches;
-const sp=ld('nossa-historia-anim'); if(sp!==null) anim=sp;
-
-const $=id=>document.getElementById(id);
-const el=(t,c,x)=>{const e=document.createElement(t); if(c)e.className=c; if(x!=null)e.textContent=x; return e;};
-
-/* ===================== MOTOR ===================== */
-let typer=null;
-function mostrarTela(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id)); window.scrollTo(0,0); }
-function aplicar(e){
- if(!e) return;
- ['cor','conf','cur','prox'].forEach(k=>{ if(e[k]) S[k]+=e[k]; });
- if(e.pista && !S.pistas.includes(e.pista)) S.pistas.push(e.pista);
- if(e.mundo) S.mundo=e.mundo;
-}
-const NOMES_PISTAS={marca:'A chave dourada na lombada',pena:'A pena de ouro envelhecido',indice:'O índice dos capítulos escondidos',tinta:'A tinta que não se apaga'};
-
-function ir(id,esc,efeitos){
- const atual=CENAS[S.cena];
- if(esc) S.hist.push({de:atual.titulo,esc});
- aplicar(efeitos);
- S.cena=id; S.v[id]=1;
- const c=CENAS[id]; aplicar(c.e);
- if(c.fim){ if(!M.finais.includes(c.fim)){ M.finais.push(c.fim); sv(KM,M); } }
- sv(KS,S); render();
-}
-function render(){
- const c=CENAS[S.cena]; if(typer){typer.stop();typer=null;}
- mostrarTela('jogo');
- $('cap').textContent=CAPS[c.cap];
- const n=Object.keys(S.v).length;
- $('prog').firstElementChild.style.width=(c.fim?100:Math.min(96,Math.round(n/TOTAL_PROG*100)))+'%';
- const pip=(r,v)=>`<span class="pip">${r}${[1,2,3,4].map(i=>`<b class="${i<=v?'f':''}"></b>`).join('')}</span>`;
- $('pips').innerHTML=pip('coragem',S.cor)+pip('confiança',S.conf)+pip('curiosidade',S.cur);
- const m=$('cena'); m.style.animation='none'; void m.offsetWidth; m.style.animation='';
- m.innerHTML='';
- const texto=typeof c.t==='function'?c.t(S):c.t;
- if(c.fim){
-  const b=el('div','fimbox'); b.appendChild(el('div','ui','FINAL '+c.fim+' DE 4')); b.appendChild(el('h2',null,c.titulo)); m.appendChild(b);
- } else m.appendChild(el('h2',null,c.titulo));
- const t=el('p'); t.id='txt'; m.appendChild(t);
- const sk=el('button','skip ui','MOSTRAR TUDO'); sk.id='skip'; m.appendChild(sk);
- const ops=el('div'); ops.id='ops'; m.appendChild(ops);
- const fim=()=>{ sk.hidden=true; mostrarOps(c,ops); };
- typer=digitar(t,texto,fim);
- sk.onclick=()=>typer&&typer.finish();
-}
-function mostrarOps(c,ops){
- ops.innerHTML='';
- if(c.fim){
-  const m=$('cena');
-  m.insertBefore(el('h2',null,'O caminho percorrido'),ops).style.fontSize='1.3rem';
-  const ol=el('ol','trilha'); S.hist.forEach(h=>ol.appendChild(el('li',null,h.de+': '+h.esc)));
-  m.insertBefore(ol,ops);
-  m.insertBefore(Object.assign(el('p','ui','Finais descobertos: '+M.finais.length+' de 4'),{style:'font-size:.85rem;opacity:.75;margin-bottom:1.4rem'}),ops);
-  const a=el('button','op','Recomeçar e experimentar outros caminhos.'); a.onclick=()=>{ reiniciar(); };
-  const d=el('button','op','Abrir o diário da aventura.'); d.onclick=diario;
-  ops.append(a,d); return;
- }
- let k=0;
- c.o.forEach(o=>{
-  if(o.hide&&o.hide(S)) return;
-  const ok=!o.req||o.req(S,M);
-  const b=el('button','op'); k++;
-  b.textContent=ok?o.t:(o.dica||'Uma página ainda fechada.');
-  b.dataset.n=k; b.style.animationDelay=(k*.12)+'s';
-  if(!ok) b.disabled=true;
-  else b.onclick=()=>escolher(o);
-  ops.appendChild(b);
- });
-}
-let travado=false;
-function escolher(o){ if(travado) return; travado=true; setTimeout(()=>travado=false,500); ir(o.to,o.t,o.e); }
-function digitar(node,texto,fim){
- let i=0,id=null,ok=false;
- const finish=()=>{ if(ok) return; ok=true; clearInterval(id); node.textContent=texto; fim(); };
- if(!anim){ finish(); return {finish,stop(){ok=true;clearInterval(id);}}; }
- id=setInterval(()=>{ i+=2; node.textContent=texto.slice(0,i); if(i>=texto.length) finish(); },16);
- return {finish,stop(){ok=true;clearInterval(id);}};
-}
-
-/* ===================== MODAIS ===================== */
-function modal(nodes){ const b=$('mb'); b.innerHTML=''; nodes.forEach(n=>b.appendChild(n)); $('md').classList.add('on'); const f=b.querySelector('button'); if(f) f.focus(); }
-function fechar(){ $('md').classList.remove('on'); }
-$('md').addEventListener('click',e=>{ if(e.target.id==='md') fechar(); });
-function btn(txt,fn,p){ const b=el('button','b ui'+(p?' p':''),txt); b.onclick=fn; return b; }
-function acts(...bs){ const d=el('div','acts'); bs.forEach(b=>d.appendChild(b)); return d; }
-function diario(){
- const n=[el('h3',null,'Diário da aventura')];
- n.push(el('h4','ui','PISTAS ENCONTRADAS'));
- if(S.pistas.length){ const u=el('ul'); S.pistas.forEach(p=>u.appendChild(el('li',null,NOMES_PISTAS[p]))); n.push(u); } else n.push(el('p',null,'Nenhuma pista ainda.'));
- n.push(el('h4','ui','ESCOLHAS FEITAS'));
- if(S.hist.length){ const o=el('ol'); S.hist.forEach(h=>o.appendChild(el('li',null,h.esc))); n.push(o); } else n.push(el('p',null,'Você ainda não escolheu nada.'));
- n.push(el('h4','ui','FINAIS DESCOBERTOS'));
- n.push(el('p',null,M.finais.length?M.finais.sort().map(f=>FINAIS[f]).join(' · '):'Nenhum ainda.'));
- n.push(acts(btn('FECHAR',fechar,true)));
- modal(n);
-}
-function comoJogar(){
- modal([el('h3',null,'Como jogar'),
-  el('p',null,'Leia cada cena e escolha uma ação. As escolhas mudam o que acontece depois, e algumas cenas só aparecem se você tiver encontrado certas pistas.'),
-  el('p',null,'Toque em “mostrar tudo” para ler o texto de uma vez. No teclado, use as teclas 1, 2, 3… para escolher. O jogo salva sozinho neste navegador.'),
-  el('p',null,'Não existem respostas erradas. Há quatro finais, e um deles só se revela a quem já leu o livro outras vezes.'),
-  acts(btn('ENTENDI',fechar,true))]);
-}
-function pedirReiniciar(){
- modal([el('h3',null,'Recomeçar a história?'),
-  el('p',null,'Seu progresso atual será apagado. Os finais que você já descobriu continuam registrados.'),
-  acts(btn('CANCELAR',fechar),btn('APAGAR E RECOMEÇAR',()=>{fechar();reiniciar();},true))]);
-}
-function reiniciar(){ rm(KS); S=novo(); S.v.prologo=1; sv(KS,S); render(); }
-
-/* ===================== CONTROLES ===================== */
-$('abrir').onclick=()=>{ rm(KS); S=novo(); S.v.prologo=1; sv(KS,S); render(); };
-$('cont').onclick=()=>{ const sv_=ld(KS); if(sv_&&CENAS[sv_.cena]){ S=sv_; render(); } };
-$('como').onclick=comoJogar;
-$('bdiario').onclick=diario;
-$('breiniciar').onclick=pedirReiniciar;
-$('btudo').onclick=()=>typer&&typer.finish();
-function aplicarAnim(){ document.body.classList.toggle('noanim',!anim); $('banim').textContent=anim?'REDUZIR ANIMAÇÕES':'ATIVAR ANIMAÇÕES'; }
-$('banim').onclick=()=>{ anim=!anim; sv('nossa-historia-anim',anim); aplicarAnim(); };
-aplicarAnim();
-document.addEventListener('keydown',e=>{
- if(e.key==='Escape') fechar();
- if($('md').classList.contains('on')||!$('jogo').classList.contains('on')) return;
- if(/^[1-9]$/.test(e.key)){ const b=document.querySelector('#ops .op[data-n="'+e.key+'"]'); if(b&&!b.disabled) b.click(); }
-});
-$('capnome').textContent=NOME.toUpperCase();
-const salvo=ld(KS); if(salvo&&CENAS[salvo.cena]&&salvo.cena!=='prologo') $('cont').hidden=false;
-
-/* ===================== PARTÍCULAS ===================== */
-const cv=$('fx'),cx=cv.getContext('2d'); let W,H,pts=[];
-function dim(){ W=cv.width=innerWidth; H=cv.height=innerHeight; pts=Array.from({length:Math.round(Math.min(46,W/22))},()=>({x:Math.random()*W,y:Math.random()*H,r:.5+Math.random()*1.5,v:.1+Math.random()*.3,a:Math.random()*6.28,c:Math.random()<.2?'217,133,149':'230,201,127'})); }
-addEventListener('resize',dim); dim();
-(function lp(){ cx.clearRect(0,0,W,H);
- pts.forEach(p=>{ if(anim){ p.y-=p.v; p.a+=.01; p.x+=Math.sin(p.a)*.2; if(p.y<-5){p.y=H+5;p.x=Math.random()*W;} }
-  cx.fillStyle='rgba('+p.c+','+(.18+.2*Math.sin(p.a*2)).toFixed(2)+')'; cx.beginPath(); cx.arc(p.x,p.y,p.r,0,6.28); cx.fill(); });
- requestAnimationFrame(lp); })();
-</script>
-</body>
-</html>
+   <div class="cbtns ui">
+    <button class="b p" id="abrir">ABRIR O LIVRO</button>
+    <button class="b" id="cont" hidden="">CONTINUAR HISTÓRIA</button>
+    <button class="b" id="como">COMO JOGAR</button>
+   </div>
+  </section>
+  
+  <section id="jogo" class="screen on">
+   <header id="top" class="ui">
+    <div class="row">
+     <span id="cap">Capítulo I · As duas portas</span>
+     <span id="pips"><span class="pip">coragem<b class=""></b><b class=""></b><b class=""></b><b class=""></b></span><span class="pip">confiança<b class=""></b><b class=""></b><b class=""></b><b class=""></b></span><span class="pip">curiosidade<b class=""></b><b class=""></b><b class=""></b><b class=""></b></span></span>
+     <div class="tools">
+      <button id="bdiario">DIÁRIO</button>
+      <button id="btudo">TEXTO</button>
+      <button id="banim">REDUZIR ANIMAÇÕES</button>
+      <button id="breiniciar">REINICIAR</button>
+     </div>
+    </div>
+    <div id="prog"><i style="width: 14%;"></i></div>
+   </header>
+   <main id="cena" style=""><h2>A pergunta que fica no coração</h2><p id="txt">Tem coisas que eu consigo imaginar com facilidade: a gente rindo de alguma besteira, se abraçando depois de um dia cansativo, comemorando uma conquista e fazendo planos que começam com “e se a gente…?”.
+  
+  Mas existe uma pergunta que só você pode responder no seu tempo: você ainda consegue imaginar nós dois tentando construir alguma coisa juntos?
+  
+  Não precisa escolher pensando no que eu quero ouvir. Escolhe pensando no que é verdadeiro pra você.</p><button class="skip ui" id="skip" hidden="">MOSTRAR TUDO</button><div id="ops"><button class="op" data-n="1" style="animation-delay: 0.12s;">Imaginar a gente escolhendo continuar, com calma.</button><button class="op" data-n="2" style="animation-delay: 0.24s;">Imaginar o que acontece se nossos caminhos se separarem.</button><button class="op" data-n="3" style="animation-delay: 0.36s;">Antes de tudo, lembrar das pequenas coisas.</button></div></main>
+  </section>
+  
+  <div id="md"><div id="mb" role="dialog" aria-modal="true"></div></div>
+  
+  <script>
+  /* ===================== PERSONALIZACAO ===================== */
+  /* Preencha os campos abaixo. Campos vazios usam frases neutras e ficcionais. */
+  const PERSONALIZACAO = {
+    nomeProtagonista: "Julia",
+    nomeNamorado: "",        /* ex.: o nome dele */
+    comoSeConheceram: "",    /* escreva só o que for verdade */
+    lembrancaImportante: "", /* uma lembrança real e importante */
+    qualidadeQueAdmira: "",  /* uma qualidade que ele admira nela */
+    mensagemPessoal: "",     /* mensagem que aparece no final secreto */
+    futuroDesejado: ""       /* o que o casal deseja viver no futuro */
+  };
+  /* ========================================================== */
+  
+  const PZ = PERSONALIZACAO;
+  const T = (v, f) => (typeof v === 'string' && v.trim()) ? v.trim() : f;
+  const NOME = T(PZ.nomeProtagonista, 'Julia');
+  
+  const CAPS = {1:'Capítulo I · As duas portas', 2:'Capítulo II · A biblioteca noturna', 3:'Capítulo III · A última página'};
+  const has = (s, p) => s.pistas.includes(p);
+  
+  /* ===================== CENAS ===================== */
+  const CENAS = {
+   prologo:{cap:1,titulo:'Antes de virar a página',
+    t:`Julia, imagina que a gente pudesse sentar um pouquinho, sem pressa, e olhar para tudo o que existe entre nós.\n\nNão para decidir a vida inteira numa noite, nem para te convencer de nada. Só para imaginar os caminhos que podem existir daqui pra frente: o que a gente ainda pode viver junto, o que talvez mude, e até o que vai doer se nossos caminhos forem diferentes.\n\nPorque, seja qual for a resposta, o que eu sinto merece ser dito com carinho e verdade.`,
+    o:[{t:'Tá bom… vamos olhar para a nossa história.',to:'inicio'}]},
+   inicio:{cap:1,titulo:'A pergunta que fica no coração',
+    t:s=>`Tem coisas que eu consigo imaginar com facilidade: a gente rindo de alguma besteira, se abraçando depois de um dia cansativo, comemorando uma conquista e fazendo planos que começam com “e se a gente…?”.\n\nMas existe uma pergunta que só você pode responder no seu tempo: você ainda consegue imaginar nós dois tentando construir alguma coisa juntos?\n\nNão precisa escolher pensando no que eu quero ouvir. Escolhe pensando no que é verdadeiro pra você.`,
+    o:[{t:'Imaginar a gente escolhendo continuar, com calma.',to:'passado1',e:{mundo:'juntos'}},{t:'Imaginar o que acontece se nossos caminhos se separarem.',to:'futuro1',e:{mundo:'separados'}},{t:'Antes de tudo, lembrar das pequenas coisas.',to:'livro',hide:s=>s.v.livro}]},
+   livro:{cap:1,titulo:'As pequenas coisas que ficam',
+    t:`Às vezes, o que mais marca um relacionamento nem é um acontecimento gigante. É uma mensagem que chega na hora certa, um olhar que já explica tudo, uma brincadeira que só os dois entendem, um abraço que faz o dia ficar menos pesado.\n\nSão essas pequenas coisas que vão virando uma linguagem própria de casal. Um monte de detalhes que, vistos de fora, talvez pareçam comuns — mas que, pra quem viveu, têm um significado enorme.`,
+    e:{cur:1,pista:'marca'},o:[{t:'Continuar imaginando os próximos capítulos.',to:'inicio'}]},
+   passado1:{cap:1,titulo:'Se a gente decidir ficar',
+    t:`Se você decidir ficar e a gente escolher tentar de verdade, eu não imagino uma relação perfeita. Imagino duas pessoas aprendendo uma com a outra, conversando quando algo incomodar e tendo coragem de pedir desculpa quando errar.\n\nImagino a gente criando mais lembranças, ficando mais à vontade um com o outro, conhecendo lados que ainda não conhecemos e entendendo que amar também é cuidar nos dias normais — não só nos dias bonitos.\n\nE, claro, continuando a implicar um com o outro por motivos completamente bobos.`,
+    o:[{t:'Imaginar a nossa rotina juntos.',to:'caixa'},{t:'Pensar nas coisas que ainda queremos conquistar.',to:'relogio'}]},
+   futuro1:{cap:1,titulo:'Se a gente não continuar',
+    t:`E se você sentir que não quer continuar, eu não vou fingir que isso não me machucaria. Machucaria, porque você importa pra mim e porque eu consigo imaginar muita coisa bonita ao seu lado.\n\nMas gostar de alguém também significa respeitar que essa pessoa tem sentimentos, dúvidas e escolhas próprias. Eu não quero que você fique por culpa, pena ou medo de me magoar. Eu quero que, se ficar, seja porque você também quer.\n\nSe nossos caminhos acabarem sendo diferentes, ainda assim vou tratar com carinho o que foi importante pra mim. Não vou transformar o que senti por você em algo feio só porque o futuro não aconteceu como eu imaginava.`,
+    o:[{t:'Pensar no que eu gostaria que você soubesse, qualquer que seja a resposta.',to:'luz'},{t:'Imaginar como seria seguir em frente com respeito.',to:'escriba'}]},
+   caixa:{cap:1,titulo:'A nossa vida fora dos momentos especiais',
+    t:`Se a gente continuar, eu quero as coisas simples também. Quero saber como foi seu dia, ouvir você contando uma história que começa no meio porque esqueceu de explicar o início, dividir comida, rir quando um de nós falar alguma besteira e ficar perto mesmo quando não tiver nada extraordinário acontecendo.\n\nQuero que a gente possa ser casal sem precisar transformar todo dia em uma cena de filme. Às vezes, felicidade vai ser só estar junto, cansado, confortável, e sentir que ali é um lugar bom pra ficar.`,
+    e:{cur:1,pista:'pena'},o:[{t:'Agora imaginar a gente continuando a treinar.',to:'ponte'}]},
+   relogio:{cap:1,titulo:'O tempo e as conquistas',
+    t:`Eu imagino a gente se apoiando nas coisas que cada um ama. Se continuarmos treinando, quero ver você evoluindo, comemorar suas vitórias como se fossem minhas e que você também tenha orgulho das minhas.\n\nE olha… eu consigo muito imaginar a gente ganhando mais três troféus. Três! A gente tirando foto, rindo, lembrando dos treinos difíceis e falando que valeu a pena não desistir. Não porque troféu prove alguma coisa sobre nós, mas porque seria muito especial dividir essas conquistas com você.\n\nMais do que ganhar, quero que a gente continue se apoiando sem transformar cada treino ou resultado numa cobrança.`,
+    o:[{t:'Imaginar mais treinos, apoio e vitórias.',to:'ponte',e:{cor:1}},{t:'Lembrar que a gente também merece descanso e leveza.',to:'ponte',e:{conf:1}}]},
+   luz:{cap:1,titulo:'Se o futuro for diferente',
+    t:`Se a gente não ficar junto, ainda vou precisar aprender a guardar as lembranças sem tentar viver preso nelas. Vou sentir falta de algumas coisas, talvez por bastante tempo, e tudo bem admitir isso.\n\nEu não quero te prometer que seria fácil, nem usar minha tristeza para mudar sua decisão. Só quero que você saiba que, pra mim, o que vivemos não seria apagado por um final diferente do que eu sonhei.\n\nVocê merece escolher com o coração livre. E eu também vou precisar encontrar meu jeito de seguir, com respeito por você e por mim.`,
+    o:[{t:'Continuar com honestidade, sem transformar amor em pressão.',to:'ponte',e:{conf:1}},{t:'Guardar com carinho o que foi bom.',to:'ponte',e:{cur:1}}]},
+   escriba:{cap:1,titulo:'Uma escolha que precisa ser livre',
+    t:`Tem uma diferença enorme entre alguém ficar porque quer e alguém ficar porque sente que não pode ir embora.\n\nEu quero a primeira coisa. Quero que, se existir um “nós”, seja porque os dois escolheram esse “nós” — com vontade, cuidado e liberdade. Não quero uma resposta dada só para me proteger da tristeza.\n\nSe você quiser tentar, eu quero estar presente e fazer minha parte. Se não quiser, vou ter que aceitar, mesmo que o coração demore um pouco mais para acompanhar a cabeça.`,
+    o:[{t:'Seguir para imaginar o que poderia ser construído a dois.',to:'ponte',e:{conf:1}},{t:'Seguir pensando no que cada um precisa.',to:'ponte',e:{cur:1}}]},
+   ponte:{cap:2,titulo:'Entre o que existe e o que ainda pode existir',
+    t:s=>`A gente não consegue prever cada detalhe do futuro. ${s.mundo==='juntos'?'Mas, se os dois escolherem continuar, dá para construir o próximo pedaço aos poucos, sem exigir que tudo esteja resolvido hoje.':'E, se nossos caminhos forem diferentes, dá para atravessar essa mudança sem negar o que sentimos nem desrespeitar a escolha de ninguém.'}\n\nO futuro não precisa ser decidido inteiro agora. Às vezes, a próxima parte começa com uma conversa honesta, uma pergunta feita com calma e a disposição de escutar a resposta de verdade.`,
+    o:[{t:'Imaginar os planos e as brincadeiras que só um casal entende.',to:'biblioteca',e:{cor:1}},{t:'Pensar em como cuidar um do outro nos dias difíceis.',to:'abismo'}]},
+   abismo:{cap:2,titulo:'Nos dias em que não for tão fácil',
+    t:`Se a gente continuar, eu não quero aparecer só quando estiver tudo bem. Quero aprender a te escutar quando você estiver cansada, respeitar quando precisar de espaço e lembrar que nem todo silêncio significa falta de amor.\n\nTambém quero conseguir te contar quando eu não estiver bem, sem transformar você na responsável por resolver tudo. A gente pode se apoiar sem deixar de ser duas pessoas inteiras.\n\nPra mim, isso também é intimidade: poder falar a verdade sem medo de que qualquer conversa difícil vire o fim do mundo.`,
+    e:{cur:1},o:[{t:'Continuar imaginando uma relação mais madura.',to:'biblioteca'}]},
+   biblioteca:{cap:2,titulo:'As memórias que ainda podemos criar',
+    t:s=>`Imagina um álbum que ainda tem um monte de espaço vazio. Algumas páginas seriam de momentos grandes; outras, de fotos tortas, dias comuns e piadas que ninguém mais entenderia.\n\nSe a gente continuar, eu queria preencher algumas dessas páginas com você. Não para tentar provar que vai dar certo para sempre, mas porque eu gostaria de viver essas coisas contigo, um dia de cada vez.${s.pistas.length?'\n\nE tem algumas ideias que já consigo imaginar com um sorriso.':''}`,
+    o:[{t:'Abrir a página dos treinos e das conquistas.',to:'estante',hide:s=>s.v.estante},{t:'Abrir a página dos nossos pequenos hábitos.',to:'sala',hide:s=>s.v.sala,req:s=>has(s,'marca')&&has(s,'pena'),dica:'Essa página aparece depois de lembrar das pequenas coisas e dos planos.'},{t:'Abrir a página das conversas sinceras.',to:'labirinto'}]},
+   estante:{cap:2,titulo:'Treinos, troféus e torcida',
+    t:`Eu imagino a gente continuando a treinar, um incentivando o outro, comemorando quando algo finalmente dá certo e dando risada dos dias em que nada parece encaixar.\n\nE fica registrado aqui: minha previsão romântica é que a gente ainda vai ganhar mais três troféus. Quero ver a gente comemorando, tirando foto e depois lembrando de tudo o que aconteceu até chegar lá. Se forem mais de três, melhor ainda — eu aceito esse problema.\n\nMais do que ganhar, quero que a gente continue se apoiando sem transformar cada treino ou resultado numa cobrança.`,
+    e:{cur:1,pista:'indice'},o:[{t:'Virar a página para os momentos cotidianos.',to:'biblioteca'}]},
+   sala:{cap:2,titulo:'Os hábitos que viram “coisa nossa”',
+    t:`Eu também imagino as pequenas manias que podem virar parte da nossa história. As brincadeiras repetidas, os apelidos, as conversas que começam por nada e acabam durando horas, as vezes em que um olha para o outro e já sabe o que o outro está pensando.\n\nE, claro, você jogando os copos fora de novo — e eu lembrando disso porque é exatamente o tipo de detalhe aleatório que pode virar uma piada interna nossa. Um dia a gente vai lembrar dessas besteiras e rir como se fosse a coisa mais importante do mundo.\n\nNo fundo, eu gosto da ideia de construir intimidade assim: não só com declarações bonitas, mas com um monte de pequenas cenas que só fazem sentido pra gente.`,
+    e:{cor:1,pista:'tinta'},o:[{t:'Voltar e imaginar mais páginas da nossa vida.',to:'biblioteca'}]},
+   labirinto:{cap:2,titulo:'A conversa que vale mais do que adivinhar',
+    t:`Eu poderia ficar tentando interpretar cada detalhe, imaginar respostas ou inventar finais sozinho. Mas nenhuma dessas coisas substitui conversar com você.\n\nSe você tiver dúvidas, eu quero conseguir escutar. Se eu tiver medo, quero aprender a falar sem te prender nele. Se houver algo que precise mudar, quero entender se os dois têm vontade de tentar mudar juntos.\n\nEu não quero amar uma versão imaginada de você ou de nós. Quero conhecer o que você realmente sente, mesmo quando a resposta não for a que eu esperava.`,
+    o:[{t:'Escolher escutar, sem interromper nem pressionar.',to:'mao',e:{conf:1,prox:1}},{t:'Reconhecer que cada um precisa de espaço e tempo.',to:'sozinha',e:{cor:1}},{t:'Falar com sinceridade sobre os próprios sentimentos.',to:'espelho',e:{cur:1}}]},
+   mao:{cap:2,titulo:'Caminhar lado a lado',
+    t:`Caminhar junto não significa que duas pessoas precisam pensar igual o tempo todo. Significa tentar entender o outro, combinar expectativas e lembrar que carinho também aparece nas atitudes pequenas.\n\nSe você quiser continuar comigo, eu quero que a gente aprenda a caminhar lado a lado — sem um puxar o outro à força, sem fingir que nunca vai existir problema, e sem esquecer que os dois precisam querer estar ali.`,
+    o:[{t:'Ir para a última conversa com o coração aberto.',to:'mesa'}]},
+   sozinha:{cap:2,titulo:'Respeitar o espaço de cada um',
+    t:`Mesmo quando existe amor, cada pessoa continua tendo seu próprio mundo, seus planos, seus amigos, seus momentos e suas necessidades.\n\nSe a gente continuar, eu quero respeitar isso em você e também cuidar de mim. E, se a gente não continuar, esse respeito vai continuar sendo importante. Gostar de alguém não dá direito de decidir por essa pessoa.\n\nEu quero uma escolha que seja sua de verdade.`,
+    o:[{t:'Ir para a última conversa com honestidade.',to:'mesa'}]},
+   espelho:{cap:2,titulo:'A verdade sem enfeites',
+    t:`A verdade é que eu consigo imaginar um futuro bonito com você. Consigo imaginar mais treinos, mais conquistas, mais abraços, mais fotos, mais conversas no fim do dia e mais momentos bobos que acabariam virando lembranças favoritas.\n\nMas imaginar não é o mesmo que exigir. Eu posso te contar o que desejo, e você pode me contar o que sente. Só assim a gente descobre se nossos desejos ainda conseguem caminhar na mesma direção.`,
+    o:[{t:'Ir para a última página.',to:'mesa'}]},
+   mesa:{cap:3,titulo:'O que eu queria te dizer',
+    t:s=>`Se eu pudesse deixar uma coisa escrita para você, seria isto: eu gosto de imaginar a vida com você não porque eu ache que tudo vai ser perfeito, mas porque você é alguém com quem eu gostaria de tentar.\n\n${s.mundo==='juntos'?'Se você decidir ficar, eu quero cuidar do que a gente tem com atitudes, conversa e presença — não só com palavras bonitas.':'Se você decidir não ficar, eu vou respeitar a sua escolha, mesmo que eu precise de tempo para lidar com ela. O que eu sinto é sincero, mas a sua liberdade também importa.'}\n\nAgora falta pensar na pergunta mais importante: qual caminho parece verdadeiro para você neste momento?`,
+    o:[{t:'Imaginar um novo capítulo para nós dois.',to:'f1',e:{cur:1}},{t:'Imaginar um caminho individual, sem culpa.',to:'f2',req:s=>s.cur>=2,dica:'Uma página que aparece depois de refletir sobre os dois caminhos.'},{t:'Não decidir tudo hoje; deixar a conversa em aberto.',to:'f3'},{t:'Reunir as lembranças e ler a mensagem secreta.',to:'f4',req:(s,m)=>has(s,'pena')&&has(s,'indice')&&has(s,'tinta')&&m.finais.length>=1,dica:'Essa página guarda as lembranças que você encontrou ao longo do caminho.'}]},
+   f1:{cap:3,titulo:'Se a gente escolher tentar',fim:1,
+    t:s=>`Se você decidir ficar e a gente escolher continuar, eu queria que esse fosse o começo de uma fase mais nossa: mais conversa, mais carinho, mais parceria e mais coragem para falar quando alguma coisa não estiver bem.\n\nQuero continuar treinando com você, torcendo por você e comemorando cada conquista. Quero que a gente ganhe mais três troféus — e que, quando olhar as fotos depois, lembre não só das medalhas, mas de tudo o que viveu até chegar nelas.\n\nQuero os dias especiais e os comuns. Quero os abraços depois do treino, as risadas por coisas sem sentido, você jogando os copos fora e eu transformando isso em piada interna, as mensagens de boa noite e os planos que vão surgindo sem a gente perceber.\n\nNão consigo prometer que nunca vamos errar. Posso dizer que, se nós dois escolhermos tentar, quero fazer a minha parte com sinceridade e cuidado. Um dia de cada vez, sem te pedir para carregar o futuro inteiro agora.\n\n${PZ.futuroDesejado&&PZ.futuroDesejado.trim()?`E tem uma coisa que eu ainda sonho viver com você: ${PZ.futuroDesejado.trim()}`:'Eu queria que a gente pudesse descobrir, juntos, quantas lembranças bonitas ainda cabem na nossa história.'}`,
+    o:[]},
+   f2:{cap:3,titulo:'Se cada um seguir seu caminho',fim:2,
+    t:`Se você decidir não continuar, eu vou sentir. Não vou fingir que é indiferente, porque não é. Eu criei esperanças, imaginei momentos e quis que existisse um futuro em que a gente pudesse viver tudo isso.\n\nMas você não me deve um relacionamento só porque eu te amo. Eu não quero que você fique por culpa, medo ou obrigação. Quero que você tenha liberdade para ser honesta, e vou precisar encontrar força para respeitar isso.\n\nTalvez eu sinta falta das nossas conversas, dos treinos, das brincadeiras e de todas as pequenas coisas que eu associei a você. Ainda assim, vou tentar guardar o que foi bom sem transformar isso numa cobrança.\n\nSe nossos caminhos forem diferentes, espero que a gente consiga tratar a história que existiu com respeito. E eu também vou aprender a seguir em frente, no meu tempo.`,
+    o:[]},
+   f3:{cap:3,titulo:'Se a resposta ainda não chegou',fim:3,
+    t:`Você não precisa resolver tudo neste instante. Às vezes, a gente precisa de tempo para entender o que sente, separar o carinho do medo e descobrir se quer continuar tentando.\n\nSe você ainda não sabe, pode dizer que ainda não sabe. Prefiro uma conversa honesta a uma promessa feita só para me tranquilizar. E, enquanto a gente entende o que é possível, eu quero respeitar seus limites e os meus também.\n\nEsta página não fecha a história. Ela só lembra que uma conversa sincera pode começar sem que todas as respostas estejam prontas.`,
+    o:[]},
+   f4:{cap:3,titulo:'O que eu queria que ficasse guardado',fim:4,
+    t:s=>`Seja qual for o caminho, eu queria que você soubesse que eu não escrevi tudo isso para te colocar contra a parede. Escrevi porque tenho sentimentos por você e porque imaginar possibilidades ao seu lado me faz perceber o quanto eu gostaria de viver mais coisas contigo.\n\nEu imagino a gente treinando, conquistando coisas, rindo de piadas que ninguém entende, comemorando mais três troféus e lembrando até de detalhes ridículos, como você jogando os copos fora. Imagino também os dias difíceis, quando amar significa escutar, ter paciência e conversar de verdade.\n\n${PZ.mensagemPessoal&&PZ.mensagemPessoal.trim()?`E tem uma mensagem que eu queria deixar especialmente para você: “${PZ.mensagemPessoal.trim()}”`:'O que eu mais queria era que você se sentisse livre para ser sincera comigo, sabendo que o que eu sinto é real.'}${PZ.lembrancaImportante&&PZ.lembrancaImportante.trim()?`\n\nUma lembrança que eu guardo com carinho: ${PZ.lembrancaImportante.trim()}`:''}${PZ.comoSeConheceram&&PZ.comoSeConheceram.trim()?`\n\nE pensar que tudo começou assim: ${PZ.comoSeConheceram.trim()}`:''}\n\nEu gosto de você, Julia. E, se existir um próximo capítulo para nós, eu quero que ele seja escolhido pelos dois.`,
+    o:[]}
+  };
+  const FINAIS = {1:'Um novo capítulo',2:'O caminho inesperado',3:'Uma página em aberto',4:'O segredo do livro'};
+  const TOTAL_PROG = 14;
+  
+  /* Validação de referências */
+  (function(){ const erros=[];
+   Object.entries(CENAS).forEach(([id,c])=>c.o.forEach(o=>{ if(!CENAS[o.to]) erros.push(id+' → '+o.to); }));
+   if(erros.length){ console.error('Destinos quebrados:',erros); document.title='ERRO: '+erros.join(', '); }
+  })();
+  
+  /* ===================== ESTADO E SALVAMENTO ===================== */
+  const KS='nossa-historia-save-v1', KM='nossa-historia-meta-v1';
+  const mem={};
+  function ld(k){ try{ const r=localStorage.getItem(k); return r?JSON.parse(r):null; }catch(e){ return mem[k]||null; } }
+  function sv(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){ mem[k]=v; } }
+  function rm(k){ try{ localStorage.removeItem(k); }catch(e){} delete mem[k]; }
+  const novo=()=>({cena:'prologo',cor:0,conf:0,cur:0,prox:0,pistas:[],v:{},hist:[],mundo:null});
+  let S=novo(), M=ld(KM)||{finais:[]};
+  if(!Array.isArray(M.finais)) M.finais=[];
+  let anim=!matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const sp=ld('nossa-historia-anim'); if(sp!==null) anim=sp;
+  
+  const $=id=>document.getElementById(id);
+  const el=(t,c,x)=>{const e=document.createElement(t); if(c)e.className=c; if(x!=null)e.textContent=x; return e;};
+  
+  /* ===================== MOTOR ===================== */
+  let typer=null;
+  function mostrarTela(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id)); window.scrollTo(0,0); }
+  function aplicar(e){
+   if(!e) return;
+   ['cor','conf','cur','prox'].forEach(k=>{ if(e[k]) S[k]+=e[k]; });
+   if(e.pista && !S.pistas.includes(e.pista)) S.pistas.push(e.pista);
+   if(e.mundo) S.mundo=e.mundo;
+  }
+  const NOMES_PISTAS={marca:'A chave dourada na lombada',pena:'A pena de ouro envelhecido',indice:'O índice dos capítulos escondidos',tinta:'A tinta que não se apaga'};
+  
+  function ir(id,esc,efeitos){
+   const atual=CENAS[S.cena];
+   if(esc) S.hist.push({de:atual.titulo,esc});
+   aplicar(efeitos);
+   S.cena=id; S.v[id]=1;
+   const c=CENAS[id]; aplicar(c.e);
+   if(c.fim){ if(!M.finais.includes(c.fim)){ M.finais.push(c.fim); sv(KM,M); } }
+   sv(KS,S); render();
+  }
+  function render(){
+   const c=CENAS[S.cena]; if(typer){typer.stop();typer=null;}
+   mostrarTela('jogo');
+   $('cap').textContent=CAPS[c.cap];
+   const n=Object.keys(S.v).length;
+   $('prog').firstElementChild.style.width=(c.fim?100:Math.min(96,Math.round(n/TOTAL_PROG*100)))+'%';
+   const pip=(r,v)=>`<span class="pip">${r}${[1,2,3,4].map(i=>`<b class="${i<=v?'f':''}"></b>`).join('')}</span>`;
+   $('pips').innerHTML=pip('coragem',S.cor)+pip('confiança',S.conf)+pip('curiosidade',S.cur);
+   const m=$('cena'); m.style.animation='none'; void m.offsetWidth; m.style.animation='';
+   m.innerHTML='';
+   const texto=typeof c.t==='function'?c.t(S):c.t;
+   if(c.fim){
+    const b=el('div','fimbox'); b.appendChild(el('div','ui','FINAL '+c.fim+' DE 4')); b.appendChild(el('h2',null,c.titulo)); m.appendChild(b);
+   } else m.appendChild(el('h2',null,c.titulo));
+   const t=el('p'); t.id='txt'; m.appendChild(t);
+   const sk=el('button','skip ui','MOSTRAR TUDO'); sk.id='skip'; m.appendChild(sk);
+   const ops=el('div'); ops.id='ops'; m.appendChild(ops);
+   const fim=()=>{ sk.hidden=true; mostrarOps(c,ops); };
+   typer=digitar(t,texto,fim);
+   sk.onclick=()=>typer&&typer.finish();
+  }
+  function mostrarOps(c,ops){
+   ops.innerHTML='';
+   if(c.fim){
+    const m=$('cena');
+    m.insertBefore(el('h2',null,'O caminho percorrido'),ops).style.fontSize='1.3rem';
+    const ol=el('ol','trilha'); S.hist.forEach(h=>ol.appendChild(el('li',null,h.de+': '+h.esc)));
+    m.insertBefore(ol,ops);
+    m.insertBefore(Object.assign(el('p','ui','Finais descobertos: '+M.finais.length+' de 4'),{style:'font-size:.85rem;opacity:.75;margin-bottom:1.4rem'}),ops);
+    const a=el('button','op','Recomeçar e experimentar outros caminhos.'); a.onclick=()=>{ reiniciar(); };
+    const d=el('button','op','Abrir o diário da aventura.'); d.onclick=diario;
+    ops.append(a,d); return;
+   }
+   let k=0;
+   c.o.forEach(o=>{
+    if(o.hide&&o.hide(S)) return;
+    const ok=!o.req||o.req(S,M);
+    const b=el('button','op'); k++;
+    b.textContent=ok?o.t:(o.dica||'Uma página ainda fechada.');
+    b.dataset.n=k; b.style.animationDelay=(k*.12)+'s';
+    if(!ok) b.disabled=true;
+    else b.onclick=()=>escolher(o);
+    ops.appendChild(b);
+   });
+  }
+  let travado=false;
+  function escolher(o){ if(travado) return; travado=true; setTimeout(()=>travado=false,500); ir(o.to,o.t,o.e); }
+  function digitar(node,texto,fim){
+   let i=0,id=null,ok=false;
+   const finish=()=>{ if(ok) return; ok=true; clearInterval(id); node.textContent=texto; fim(); };
+   if(!anim){ finish(); return {finish,stop(){ok=true;clearInterval(id);}}; }
+   id=setInterval(()=>{ i+=2; node.textContent=texto.slice(0,i); if(i>=texto.length) finish(); },16);
+   return {finish,stop(){ok=true;clearInterval(id);}};
+  }
+  
+  /* ===================== MODAIS ===================== */
+  function modal(nodes){ const b=$('mb'); b.innerHTML=''; nodes.forEach(n=>b.appendChild(n)); $('md').classList.add('on'); const f=b.querySelector('button'); if(f) f.focus(); }
+  function fechar(){ $('md').classList.remove('on'); }
+  $('md').addEventListener('click',e=>{ if(e.target.id==='md') fechar(); });
+  function btn(txt,fn,p){ const b=el('button','b ui'+(p?' p':''),txt); b.onclick=fn; return b; }
+  function acts(...bs){ const d=el('div','acts'); bs.forEach(b=>d.appendChild(b)); return d; }
+  function diario(){
+   const n=[el('h3',null,'Diário da aventura')];
+   n.push(el('h4','ui','PISTAS ENCONTRADAS'));
+   if(S.pistas.length){ const u=el('ul'); S.pistas.forEach(p=>u.appendChild(el('li',null,NOMES_PISTAS[p]))); n.push(u); } else n.push(el('p',null,'Nenhuma pista ainda.'));
+   n.push(el('h4','ui','ESCOLHAS FEITAS'));
+   if(S.hist.length){ const o=el('ol'); S.hist.forEach(h=>o.appendChild(el('li',null,h.esc))); n.push(o); } else n.push(el('p',null,'Você ainda não escolheu nada.'));
+   n.push(el('h4','ui','FINAIS DESCOBERTOS'));
+   n.push(el('p',null,M.finais.length?M.finais.sort().map(f=>FINAIS[f]).join(' · '):'Nenhum ainda.'));
+   n.push(acts(btn('FECHAR',fechar,true)));
+   modal(n);
+  }
+  function comoJogar(){
+   modal([el('h3',null,'Como jogar'),
+    el('p',null,'Leia cada momento e escolha o caminho que faz sentido para você. Algumas escolhas imaginam um futuro a dois; outras respeitam a possibilidade de cada um seguir seu caminho.'),
+    el('p',null,'Toque em “mostrar tudo” para ler o texto de uma vez. No teclado, use as teclas 1, 2, 3… para escolher. O jogo salva sozinho neste navegador.'),
+    el('p',null,'Não existe resposta certa ou errada. Isso não é uma cobrança nem uma promessa pronta: é só um jeito de imaginar, com carinho, os caminhos que a vida pode abrir.'),
+    acts(btn('ENTENDI',fechar,true))]);
+  }
+  function pedirReiniciar(){
+   modal([el('h3',null,'Recomeçar a história?'),
+    el('p',null,'Seu progresso atual será apagado. Os finais que você já descobriu continuam registrados.'),
+    acts(btn('CANCELAR',fechar),btn('APAGAR E RECOMEÇAR',()=>{fechar();reiniciar();},true))]);
+  }
+  function reiniciar(){ rm(KS); S=novo(); S.v.prologo=1; sv(KS,S); render(); }
+  
+  /* ===================== CONTROLES ===================== */
+  $('abrir').onclick=()=>{ rm(KS); S=novo(); S.v.prologo=1; sv(KS,S); render(); };
+  $('cont').onclick=()=>{ const sv_=ld(KS); if(sv_&&CENAS[sv_.cena]){ S=sv_; render(); } };
+  $('como').onclick=comoJogar;
+  $('bdiario').onclick=diario;
+  $('breiniciar').onclick=pedirReiniciar;
+  $('btudo').onclick=()=>typer&&typer.finish();
+  function aplicarAnim(){ document.body.classList.toggle('noanim',!anim); $('banim').textContent=anim?'REDUZIR ANIMAÇÕES':'ATIVAR ANIMAÇÕES'; }
+  $('banim').onclick=()=>{ anim=!anim; sv('nossa-historia-anim',anim); aplicarAnim(); };
+  aplicarAnim();
+  document.addEventListener('keydown',e=>{
+   if(e.key==='Escape') fechar();
+   if($('md').classList.contains('on')||!$('jogo').classList.contains('on')) return;
+   if(/^[1-9]$/.test(e.key)){ const b=document.querySelector('#ops .op[data-n="'+e.key+'"]'); if(b&&!b.disabled) b.click(); }
+  });
+  $('capnome').textContent=NOME.toUpperCase();
+  const salvo=ld(KS); if(salvo&&CENAS[salvo.cena]&&salvo.cena!=='prologo') $('cont').hidden=false;
+  
+  /* ===================== PARTÍCULAS ===================== */
+  const cv=$('fx'),cx=cv.getContext('2d'); let W,H,pts=[];
+  function dim(){ W=cv.width=innerWidth; H=cv.height=innerHeight; pts=Array.from({length:Math.round(Math.min(46,W/22))},()=>({x:Math.random()*W,y:Math.random()*H,r:.5+Math.random()*1.5,v:.1+Math.random()*.3,a:Math.random()*6.28,c:Math.random()<.2?'217,133,149':'230,201,127'})); }
+  addEventListener('resize',dim); dim();
+  (function lp(){ cx.clearRect(0,0,W,H);
+   pts.forEach(p=>{ if(anim){ p.y-=p.v; p.a+=.01; p.x+=Math.sin(p.a)*.2; if(p.y<-5){p.y=H+5;p.x=Math.random()*W;} }
+    cx.fillStyle='rgba('+p.c+','+(.18+.2*Math.sin(p.a*2)).toFixed(2)+')'; cx.beginPath(); cx.arc(p.x,p.y,p.r,0,6.28); cx.fill(); });
+   requestAnimationFrame(lp); })();
+  </script>
+  
+  </body></html>

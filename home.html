@@ -300,3 +300,378 @@
     <script src="js/script2.js"></script>
   </body>
 </html>
+
+<!-- <html lang="pt-BR"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#140c08">
+    <title>home</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Figtree:wght@400;500;600&amp;display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --bg0: #140c08; --bg1: #1e130d; --card: #2b1c13; --card2: #35231a;
+        --line: #4a3222; --mocha: #7a4e33; --caramel: #c98a4b; --amber: #e7a653;
+        --latte: #ecd3b4; --text: #f4e6d3; --muted: #b59a82;
+        --display: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+        --body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html { scroll-behavior: smooth; }
+      body {
+        min-height: 100vh; font-family: var(--body); color: var(--text); line-height: 1.5;
+        background:
+          radial-gradient(900px 520px at 85% -10%, rgba(201,138,75,.28), transparent 60%),
+          radial-gradient(700px 500px at -10% 30%, rgba(122,78,51,.35), transparent 60%),
+          linear-gradient(180deg, var(--bg1), var(--bg0) 60%);
+        background-attachment: fixed;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+      #hearts { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: .35; }
+      .wrap { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: calc(18px + env(safe-area-inset-top, 0px)) 18px 60px; }
+      button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; }
+      :focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+
+      /* topo */
+      .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 22px; }
+      .agora { font-family: var(--display); font-weight: 700; font-variant-numeric: tabular-nums; font-size: 1.05rem; color: var(--latte); }
+      .agora small { display: block; font-family: var(--body); font-weight: 500; font-size: .78rem; color: var(--muted); }
+      .sair { padding: 9px 16px; border-radius: 999px; border: 1px solid var(--line); color: var(--latte); transition: background .2s, border-color .2s; }
+      .sair:hover { background: var(--card); border-color: var(--caramel); }
+
+      /* hero */
+      h1#homeTitulo {
+        font-family: var(--display); font-weight: 800; letter-spacing: -.02em;
+        font-size: clamp(2.1rem, 7vw, 3.8rem); line-height: 1.05;
+        background: linear-gradient(100deg, var(--latte), var(--amber) 55%, var(--caramel));
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+        animation: entra .9s cubic-bezier(.2,.7,.2,1) both;
+      }
+      .sub-home { margin: 10px 0 24px; color: var(--muted); max-width: 52ch; animation: entra .9s .12s cubic-bezier(.2,.7,.2,1) both; }
+      .sub-home::before { content: ""; display: inline-block; width: 9px; height: 9px; margin-right: 8px; border-radius: 50%; background: #9bd37a; box-shadow: 0 0 0 0 rgba(155,211,122,.6); animation: ping 2s infinite; }
+      @keyframes ping { to { box-shadow: 0 0 0 10px rgba(155,211,122,0); } }
+      @keyframes entra { from { opacity: 0; transform: translateY(14px); } }
+
+      /* painel de tempo */
+      .tempo { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; animation: entra .9s .24s cubic-bezier(.2,.7,.2,1) both; }
+      .tile { background: linear-gradient(160deg, var(--card2), var(--card)); border: 1px solid var(--line); border-radius: 22px; padding: 20px 22px; min-width: 0; }
+      .tile .rotulo { color: var(--muted); font-size: .92rem; margin-bottom: 8px; }
+      .grande { font-family: var(--display); font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -.01em; line-height: 1.15; overflow-wrap: anywhere; }
+      #diasProjeto { display: block; font-size: clamp(1.5rem, 4.4vw, 2.4rem); color: var(--latte); }
+      .destaque-tempo { grid-column: 1 / -1; order: -1; background: linear-gradient(135deg, #8a5a38 0%, #5a3722 55%, #3a2315 100%); border-color: var(--caramel); box-shadow: 0 18px 50px -20px rgba(231,166,83,.55); padding: 26px; }
+      #tempoEspecial { font-size: clamp(1.7rem, 6vw, 3.2rem); color: #fff3df; }
+      .destaque-tempo .rotulo { color: #e8c9a6; font-size: 1rem; }
+      .status-box h3 { font-family: var(--display); font-size: 1.1rem; margin-bottom: 6px; }
+      .status-box span { color: var(--latte); }
+      .msg-surpresa { color: var(--amber); margin-bottom: 8px; }
+      .linha-tempo { grid-column: 1 / -1; }
+      #timelineLinha { min-height: 8px; margin-bottom: 8px; }
+      #timelinePorcentagem { font-family: var(--display); font-weight: 700; color: var(--amber); }
+      .linha-tempo small { color: var(--muted); }
+      #finalLiberado { display: none; margin-top: 12px; }
+      .btn-surpresa, #finalLiberado button { margin-top: 6px; padding: 11px 18px; border-radius: 14px; font-weight: 600; color: #2a170d; background: linear-gradient(135deg, var(--amber), var(--caramel)); }
+
+      /* destaque leia-me */
+      .leiame { margin: 22px 0 8px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 22px 24px; border-radius: 22px; border: 1px solid var(--caramel); background: linear-gradient(120deg, rgba(231,166,83,.16), rgba(122,78,51,.18)); }
+      .leiame h2 { font-family: var(--display); font-size: 1.35rem; }
+      .leiame p { color: var(--muted); max-width: 46ch; }
+      .leiame button { padding: 12px 22px; border-radius: 14px; font-weight: 600; background: var(--latte); color: #3a2315; transition: transform .2s; }
+      .leiame button:hover { transform: translateY(-2px); }
+
+      /* busca */
+      .barra { position: sticky; top: 0; z-index: 5; margin: 18px -18px 8px; padding: 12px 18px; background: linear-gradient(180deg, rgba(20,12,8,.92) 70%, rgba(20,12,8,0)); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+      .busca { display: flex; align-items: center; gap: 10px; padding: 0 16px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); transition: border-color .2s, box-shadow .2s; }
+      .busca:focus-within { border-color: var(--amber); box-shadow: 0 0 0 4px rgba(231,166,83,.15); }
+      .busca input { flex: 1; min-width: 0; padding: 15px 0; font: inherit; font-size: 1.02rem; color: var(--text); background: none; border: 0; outline: 0; }
+      .busca input::placeholder { color: var(--muted); }
+      .busca kbd { font: 500 .78rem var(--body); color: var(--muted); border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px; }
+      .chips { display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+      .chips::-webkit-scrollbar { display: none; }
+      .chip { flex: none; padding: 7px 14px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); font-size: .92rem; transition: all .2s; }
+      .chip:hover { color: var(--text); border-color: var(--mocha); }
+      .chip[aria-pressed="true"] { background: var(--amber); border-color: var(--amber); color: #2a170d; font-weight: 600; }
+      .chip.sorte { margin-left: auto; border-color: var(--caramel); color: var(--latte); }
+      .contagem { color: var(--muted); font-size: .88rem; margin: 6px 2px 0; min-height: 1.3em; }
+
+      /* secoes e cards */
+      section.sec { margin-top: 26px; }
+      section.sec h3 { font-family: var(--display); font-size: 1.35rem; margin-bottom: 12px; display: inline-block; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
+      .card { position: relative; border-radius: 16px; background: var(--card); border: 1px solid var(--line); overflow: hidden; transition: transform .2s, border-color .2s, background .2s; }
+      .card::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .25s; background: radial-gradient(180px circle at var(--mx, 50%) var(--my, 50%), rgba(231,166,83,.22), transparent 70%); }
+      .card:hover { transform: translateY(-3px); border-color: var(--caramel); background: var(--card2); }
+      .card:hover::before { opacity: 1; }
+      .abrir { position: relative; display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px 44px 14px 14px; text-align: left; }
+      .emo { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; font-size: 1.25rem; background: rgba(201,138,75,.16); }
+      .nome { font-weight: 600; font-size: .96rem; line-height: 1.25; }
+      .pin { position: absolute; top: 8px; right: 8px; width: 30px; height: 30px; border-radius: 8px; color: var(--muted); font-size: 1rem; z-index: 2; }
+      .pin:hover { color: var(--amber); background: rgba(255,255,255,.05); }
+      .pin[aria-pressed="true"] { color: var(--amber); }
+      #msgFoto { color: var(--muted); font-size: .9rem; margin-bottom: 8px; }
+      .vazio { display: none; text-align: center; padding: 48px 12px; color: var(--muted); }
+      .vazio strong { display: block; color: var(--latte); font-family: var(--display); font-size: 1.2rem; margin-bottom: 4px; }
+
+      @media (max-width: 560px) {
+        .tempo { grid-template-columns: 1fr; }
+        .busca kbd { display: none; }
+        .grid { grid-template-columns: 1fr 1fr; }
+        .abrir { padding-right: 38px; gap: 9px; }
+        .emo { width: 34px; height: 34px; font-size: 1.05rem; }
+        .chip.sorte { margin-left: 0; }
+      }
+      @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } html { scroll-behavior: auto; } }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="hearts"></canvas>
+
+    <div class="wrap">
+      <header class="top">
+        <div class="agora"><span id="hora">04:14:10</span><small id="dataHoje">quinta, 08/10/2026</small></div>
+        <button class="sair" onclick="logout()">🚪 Sair</button>
+      </header>
+
+      <h1 id="homeTitulo">❤️ Central da Julia ❤️</h1>
+      <p class="sub-home">Sistema carregado com sucesso. Todos os módulos estão funcionando normalmente.</p>
+
+      <!-- TEMPO: destaque principal 
+      <div class="tempo">
+        <div class="tile destaque-tempo">
+          <div class="rotulo">⏳ Tempo desde um acontecimento importante</div>
+          <div id="tempoEspecial" class="grande"></div>
+        </div>
+
+        <div class="tile">
+          <div class="rotulo">⏳ Projeto em desenvolvimento há</div>
+          <span id="diasProjeto" class="grande"></span>
+        </div>
+
+        <div class="tile status-box">
+          <h3 id="levaTempo">📡 Status Atual</h3>
+          <p class="rotulo">Última análise realizada:</p>
+          <span>Julia continua especial.</span>
+          <div id="areaSurpresa" style="display: none">
+            <p class="msg-surpresa">📡 Novo registro detectado...</p>
+            <button class="btn-surpresa" onclick="go('hora.html')">❤️ Abrir Registro</button>
+          </div>
+        </div>
+
+        <div class="tile linha-tempo timeline-secret">
+          <div id="timelineLinha"></div>
+          <small id="timelineTexto"></small>
+          <div id="timelinePorcentagem"></div>
+          <small>Algumas partes da história já aconteceram. Outras ainda estão sendo escritas.</small>
+          <div id="finalLiberado">
+            <p>❤️ Todos os registros foram recuperados.</p>
+            <button onclick="go('final.html')">🔓 Abrir Registro Final</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="leiame">
+        <div>
+          <h2>📖 Leia-me quando precisar de mim</h2>
+          <p>Uma coleção de cartas para os dias em que eu não estiver por perto.</p>
+        </div>
+        <button onclick="go('leiame/indexLeiame.html')">Abrir livro</button>
+      </div>
+
+      <!-- BUSCA 
+      <div class="barra">
+        <label class="busca">
+          <span aria-hidden="true">🔎</span>
+          <input id="busca" type="search" placeholder="Buscar entre todas as páginas..." autocomplete="off" aria-label="Buscar páginas">
+          <kbd>/</kbd>
+        </label>
+        <div class="chips" id="chips">
+          <button class="chip" data-f="todos" aria-pressed="true">Todas</button>
+          <button class="chip" data-f="sis" aria-pressed="false">🧠 Sistemas</button>
+          <button class="chip" data-f="pes" aria-pressed="false">🌸 Pessoal</button>
+          <button class="chip" data-f="res" aria-pressed="false">🦀 Restrita</button>
+          <button class="chip" data-f="pin" aria-pressed="false">⭐ Fixadas</button>
+          <button class="chip sorte" id="sorte">🎲 Me leve a uma surpresa</button>
+        </div>
+        <div class="contagem" id="contagem">58 páginas no total</div>
+      </div>
+
+      <section class="sec" id="secPin" hidden=""><h3>⭐ Fixadas</h3><div class="grid"></div></section>
+
+      <section class="sec" data-sec="sis">
+        <h3 class="categoria" id="levaCofre">🧠 Sistemas</h3>
+        <div class="grid"><div class="card"><button class="abrir"><span class="emo">🔍</span><span class="nome">Analise</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Analise">☆</button></div><div class="card"><button class="abrir"><span class="emo">📊</span><span class="nome">Estatistica</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Estatistica">☆</button></div><div class="card"><button class="abrir"><span class="emo">🗂️</span><span class="nome">Arquivo</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Arquivo">☆</button></div><div class="card"><button class="abrir"><span class="emo">🧠</span><span class="nome">IA</span></button><button class="pin" aria-pressed="false" aria-label="Fixar IA">☆</button></div><div class="card"><button class="abrir"><span class="emo">🌐</span><span class="nome">Wikipedia</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Wikipedia">☆</button></div><div class="card"><button class="abrir"><span class="emo">🧪</span><span class="nome">Processo</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Processo">☆</button></div><div class="card"><button class="abrir"><span class="emo">💭</span><span class="nome">Se você se esquecer</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Se você se esquecer">☆</button></div><div class="card"><button class="abrir"><span class="emo">💘</span><span class="nome">Por que você?</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Por que você?">☆</button></div><div class="card"><button class="abrir"><span class="emo">💯</span><span class="nome">Motivos</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Motivos">☆</button></div><div class="card"><button class="abrir"><span class="emo">➕</span><span class="nome">Mais 100 ?</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Mais 100 ?">☆</button></div><div class="card"><button class="abrir"><span class="emo">💡</span><span class="nome">Luz</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Luz">☆</button></div><div class="card"><button class="abrir"><span class="emo">➗</span><span class="nome">Matemática ?</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Matemática ?">☆</button></div><div class="card"><button class="abrir"><span class="emo">🧸</span><span class="nome">Minha Julia</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Minha Julia">☆</button></div><div class="card"><button class="abrir"><span class="emo">❤️</span><span class="nome">Coração</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Coração">☆</button></div><div class="card"><button class="abrir"><span class="emo">🪟</span><span class="nome">Julia e Missi</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Julia e Missi">☆</button></div><div class="card"><button class="abrir"><span class="emo">📅</span><span class="nome">2026</span></button><button class="pin" aria-pressed="false" aria-label="Fixar 2026">☆</button></div><div class="card"><button class="abrir"><span class="emo">📸</span><span class="nome">Melhor foto e Melhor Abraço</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Melhor foto e Melhor Abraço">☆</button></div><div class="card"><button class="abrir"><span class="emo">💻</span><span class="nome">Hacker</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Hacker">☆</button></div><div class="card"><button class="abrir"><span class="emo">🌳</span><span class="nome">Muito Importante</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Muito Importante">☆</button></div><div class="card"><button class="abrir"><span class="emo">🌷</span><span class="nome">Para Você</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Para Você">☆</button></div><div class="card"><button class="abrir"><span class="emo">🕰️</span><span class="nome">Coincidência ?</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Coincidência ?">☆</button></div><div class="card"><button class="abrir"><span class="emo">❓</span><span class="nome">Você me conhece ?</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Você me conhece ?">☆</button></div><div class="card"><button class="abrir"><span class="emo">🎵</span><span class="nome">Especial</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Especial">☆</button></div><div class="card"><button class="abrir"><span class="emo">🗺️</span><span class="nome">Eu e Você</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Eu e Você">☆</button></div><div class="card"><button class="abrir"><span class="emo">📝</span><span class="nome">Recados</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Recados">☆</button></div><div class="card"><button class="abrir"><span class="emo">🃏</span><span class="nome">Memória</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Memória">☆</button></div><div class="card"><button class="abrir"><span class="emo">🛋️</span><span class="nome">Sala</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Sala">☆</button></div><div class="card"><button class="abrir"><span class="emo">🎬</span><span class="nome">Eu tentei eu juro</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Eu tentei eu juro">☆</button></div><div class="card"><button class="abrir"><span class="emo">🐶</span><span class="nome">Fofinha, eu amei ksksk</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Fofinha, eu amei ksksk">☆</button></div><div class="card"><button class="abrir"><span class="emo">💞</span><span class="nome">Te amo tá ?</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Te amo tá ?">☆</button></div><div class="card"><button class="abrir"><span class="emo">⚽</span><span class="nome">Foi triste e bom ksks</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Foi triste e bom ksks">☆</button></div><div class="card"><button class="abrir"><span class="emo">⚖️</span><span class="nome">Tem que se decidir ksksk</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Tem que se decidir ksksk">☆</button></div><div class="card"><button class="abrir"><span class="emo">🎁</span><span class="nome">Surpresa para ti</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Surpresa para ti">☆</button></div></div>
+      </section>
+
+      <section class="sec" data-sec="pes">
+        <h3 class="categoria" id="btn-lirios">🌸 Pessoal</h3>
+        <div class="grid"><div class="card"><button class="abrir"><span class="emo">📜</span><span class="nome">Suas Obrigações</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Suas Obrigações">☆</button></div><div class="card"><button class="abrir"><span class="emo">💌</span><span class="nome">Convite</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Convite">☆</button></div><div class="card"><button class="abrir"><span class="emo">📦</span><span class="nome">Caixas</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Caixas">☆</button></div><div class="card"><button class="abrir"><span class="emo">🔄</span><span class="nome">Alterações</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Alterações">☆</button></div><div class="card"><button class="abrir"><span class="emo">⚠️</span><span class="nome">CIA</span></button><button class="pin" aria-pressed="false" aria-label="Fixar CIA">☆</button></div><div class="card"><button class="abrir"><span class="emo">✨</span><span class="nome">PÁGINA NOVA</span></button><button class="pin" aria-pressed="false" aria-label="Fixar PÁGINA NOVA">☆</button></div><div class="card"><button class="abrir"><span class="emo">📍</span><span class="nome">Coordenadas</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Coordenadas">☆</button></div><div class="card"><button class="abrir"><span class="emo">🌸</span><span class="nome">Flores especiais</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Flores especiais">☆</button></div><div class="card"><button class="abrir"><span class="emo">🏴</span><span class="nome">Garrudos ?</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Garrudos ?">☆</button></div><div class="card"><button class="abrir"><span class="emo">🏆</span><span class="nome">Domingo especial</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Domingo especial">☆</button></div><div class="card"><button class="abrir"><span class="emo">🧩</span><span class="nome">Mini jogo</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Mini jogo">☆</button></div><div class="card"><button class="abrir"><span class="emo">🌍</span><span class="nome">8 bilhões</span></button><button class="pin" aria-pressed="false" aria-label="Fixar 8 bilhões">☆</button></div><div class="card"><button class="abrir"><span class="emo">🥅</span><span class="nome">Para Você</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Para Você">☆</button></div><div class="card"><button class="abrir"><span class="emo">🚆</span><span class="nome">Primeira parada</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Primeira parada">☆</button></div><div class="card"><button class="abrir"><span class="emo">🏟️</span><span class="nome">Sempre comigo</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Sempre comigo">☆</button></div><div class="card"><button class="abrir"><span class="emo">🖼️</span><span class="nome">Sempre foi você</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Sempre foi você">☆</button></div><div class="card"><button class="abrir"><span class="emo">🪷</span><span class="nome">Lírios Rosa</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Lírios Rosa">☆</button></div><div class="card"><button class="abrir"><span class="emo">🕐</span><span class="nome">Hora</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Hora">☆</button></div><div class="card"><button class="abrir"><span class="emo">💓</span><span class="nome">Para você ver</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Para você ver">☆</button></div><div class="card"><button class="abrir"><span class="emo">🆕</span><span class="nome">NOVAS</span></button><button class="pin" aria-pressed="false" aria-label="Fixar NOVAS">☆</button></div></div>
+      </section>
+
+      <section class="sec" data-sec="res">
+        <h3 id="flor" class="categoria">🦀 Área Restrita</h3>
+        <p id="msgFoto"></p>
+        <div class="grid"><div class="card"><button class="abrir"><span class="emo">⚠️</span><span class="nome">Não entre por favor</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Não entre por favor">☆</button></div><div class="card"><button class="abrir"><span class="emo">🦀</span><span class="nome">Garrudos</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Garrudos">☆</button></div><div class="card"><button class="abrir"><span class="emo">😂</span><span class="nome">KKKKK</span></button><button class="pin" aria-pressed="false" aria-label="Fixar KKKKK">☆</button></div><div class="card"><button class="abrir"><span class="emo">💬</span><span class="nome">WhatsApp</span></button><button class="pin" aria-pressed="false" aria-label="Fixar WhatsApp">☆</button></div><div class="card"><button class="abrir"><span class="emo">🛣️</span><span class="nome">Caminho</span></button><button class="pin" aria-pressed="false" aria-label="Fixar Caminho">☆</button></div></div>
+      </section>
+
+      <div class="vazio" id="vazio" style="display: none;"><strong>Nada encontrado</strong>Tente outra palavra ou limpe o filtro.</div>
+    </div>
+
+    <script src="js/hearts.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/script2.js"></script>
+
+    <script>
+      (function () {
+        if (typeof window.go !== "function") window.go = function (u) { location.href = u; };
+
+        // [emoji, nome, arquivo, palavras-chave extras]
+        var DADOS = {
+          sis: [
+            ["🔍", "Analise", "analise.html"], ["📊", "Estatistica", "estatistica.html"],
+            ["🗂️", "Arquivo", "arquivo.html"], ["🧠", "IA", "ia.html"],
+            ["🌐", "Wikipedia", "wikipedia.html"], ["🧪", "Processo", "processo.html"],
+            ["💭", "Se você se esquecer", "esquecer.html"], ["💘", "Por que você?", "pqVc.html"],
+            ["💯", "Motivos", "100motivos.html"], ["➕", "Mais 100 ?", "maismotivos.html", "motivos"],
+            ["💡", "Luz", "luz.html"], ["➗", "Matemática ?", "math.html"],
+            ["🧸", "Minha Julia", "leva3d.html", "3d"], ["❤️", "Coração", "coracao.html"],
+            ["🪟", "Julia e Missi", "janela.html", "janela"], ["📅", "2026", "2026.html"],
+            ["📸", "Melhor foto e Melhor Abraço", "abraco.html", "abraco foto"],
+            ["💻", "Hacker", "levaHacker.html"], ["🌳", "Muito Importante", "arvore.html", "arvore"],
+            ["🌷", "Para Você", "flor3d.html", "flor 3d"], ["🕰️", "Coincidência ?", "maquinaTempo.html", "maquina do tempo"],
+            ["❓", "Você me conhece ?", "quiz.html", "quiz"], ["🎵", "Especial", "musicas.html", "musicas"],
+            ["🗺️", "Eu e Você", "mapa.html"], ["📝", "Recados", "recados.html"],
+            ["🃏", "Memória", "memoria.html"], ["🛋️", "Sala", "sala.html"],
+            ["🎬", "Eu tentei eu juro", "videos.html", "videos"], ["🐶", "Fofinha, eu amei ksksk", "scoobyDoo.html", "scooby doo"],
+            ["💞", "Te amo tá ?", "ressonancia.html"], ["⚽", "Foi triste e bom ksks", "penalty.html", "penalti"],
+            ["⚖️", "Tem que se decidir ksksk", "decisao.html"], ["🎁", "Surpresa para ti", "ese.html"]
+          ],
+          pes: [
+            ["📜", "Suas Obrigações", "obrigacoes.html"], ["💌", "Convite", "convite.html"],
+            ["📦", "Caixas", "caixas.html"], ["🔄", "Alterações", "alteracao.html"],
+            ["⚠️", "CIA", "cia.html"], ["✨", "PÁGINA NOVA", "404.html", "nova"],
+            ["📍", "Coordenadas", "coordenadas.html"], ["🌸", "Flores especiais", "lirios.html", "lirios"],
+            ["🏴", "Garrudos ?", "bandeira.html", "bandeira"], ["🏆", "Domingo especial", "podio.html", "podio"],
+            ["🧩", "Mini jogo", "quebraCabeca.html", "quebra cabeca"], ["🌍", "8 bilhões", "universo.html", "universo"],
+            ["🥅", "Para Você", "gol.html", "gol"], ["🚆", "Primeira parada", "trem.html", "trem"],
+            ["🏟️", "Sempre comigo", "arquibancada.html", "arquibancada"], ["🖼️", "Sempre foi você", "imagens.html", "imagens"],
+            ["🪷", "Lírios Rosa", "florReal2.html", "flor"], ["🕐", "Hora", "relogio.html", "relogio"],
+            ["💓", "Para você ver", "batimentos.html", "batimentos"], ["🆕", "NOVAS", "loginHoje.html", "novas"]
+            // ["🚨", "S.O.S", "sos.html"], ["🎟️", "Cupons de amor", "cupons.html"]
+          ],
+          res: [
+            ["⚠️", "Não entre por favor", "loginInfo.html"], ["🦀", "Garrudos", "loginGarrudos.html"],
+            ["😂", "KKKKK", "resenha.html", "resenha"], ["💬", "WhatsApp", "wpp.html", "zap"],
+            ["🛣️", "Caminho", "caminho.html"]
+          ]
+        };
+
+        var todos = [];
+        Object.keys(DADOS).forEach(function (s) {
+          DADOS[s].forEach(function (d) { todos.push({ s: s, e: d[0], n: d[1], u: d[2], k: d[3] || "" }); });
+        });
+
+        function norm(t) { return (t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); }
+        todos.forEach(function (p) { p.q = norm(p.n + " " + p.u.replace(".html", "") + " " + p.k); });
+
+        var pins = [];
+        try { pins = JSON.parse(localStorage.getItem("homePins") || "[]"); } catch (e) {}
+        function salvaPins() { try { localStorage.setItem("homePins", JSON.stringify(pins)); } catch (e) {} }
+
+        var filtro = "todos";
+        var $busca = document.getElementById("busca");
+
+        function card(p) {
+          var c = document.createElement("div");
+          c.className = "card";
+          var b = document.createElement("button");
+          b.className = "abrir";
+          b.innerHTML = '<span class="emo"></span><span class="nome"></span>';
+          b.children[0].textContent = p.e;
+          b.children[1].textContent = p.n;
+          b.onclick = function () { window.go(p.u); };
+          var f = document.createElement("button");
+          var on = pins.indexOf(p.u) > -1;
+          f.className = "pin";
+          f.textContent = on ? "★" : "☆";
+          f.setAttribute("aria-pressed", on);
+          f.setAttribute("aria-label", (on ? "Desafixar " : "Fixar ") + p.n);
+          f.onclick = function () {
+            var i = pins.indexOf(p.u);
+            if (i > -1) pins.splice(i, 1); else pins.push(p.u);
+            salvaPins(); render();
+          };
+          c.onmousemove = function (ev) {
+            var r = c.getBoundingClientRect();
+            c.style.setProperty("--mx", ev.clientX - r.left + "px");
+            c.style.setProperty("--my", ev.clientY - r.top + "px");
+          };
+          c.appendChild(b); c.appendChild(f);
+          return c;
+        }
+
+        function render() {
+          var q = norm($busca.value.trim());
+          var total = 0;
+          var passa = function (p) {
+            if (filtro === "pin") return pins.indexOf(p.u) > -1 && (!q || p.q.indexOf(q) > -1);
+            return (filtro === "todos" || filtro === p.s) && (!q || p.q.indexOf(q) > -1);
+          };
+
+          document.querySelectorAll("section[data-sec]").forEach(function (sec) {
+            var g = sec.querySelector(".grid");
+            g.innerHTML = "";
+            var lista = todos.filter(function (p) { return p.s === sec.dataset.sec && passa(p); });
+            lista.forEach(function (p) { g.appendChild(card(p)); });
+            sec.hidden = filtro === "pin" || !lista.length;
+            if (filtro !== "pin") total += lista.length;
+          });
+
+          var secPin = document.getElementById("secPin");
+          var gp = secPin.querySelector(".grid");
+          gp.innerHTML = "";
+          var fix = todos.filter(function (p) { return pins.indexOf(p.u) > -1 && (!q || p.q.indexOf(q) > -1); });
+          if (filtro === "pin") total = fix.length;
+          fix.forEach(function (p) { gp.appendChild(card(p)); });
+          secPin.hidden = !(fix.length && (filtro === "pin" || (filtro === "todos" && !q)));
+
+          document.getElementById("vazio").style.display = total ? "none" : "block";
+          document.getElementById("contagem").textContent = q || filtro !== "todos"
+            ? total + (total === 1 ? " página encontrada" : " páginas encontradas")
+            : todos.length + " páginas no total";
+        }
+
+        $busca.addEventListener("input", render);
+        document.getElementById("chips").addEventListener("click", function (ev) {
+          var c = ev.target.closest(".chip[data-f]");
+          if (!c) return;
+          filtro = c.dataset.f;
+          document.querySelectorAll(".chip[data-f]").forEach(function (x) { x.setAttribute("aria-pressed", x === c); });
+          render();
+        });
+        document.getElementById("sorte").onclick = function () {
+          var pool = todos.filter(function (p) { return p.s !== "res"; });
+          window.go(pool[Math.floor(Math.random() * pool.length)].u);
+        };
+        document.addEventListener("keydown", function (ev) {
+          var tag = (document.activeElement || {}).tagName;
+          if ((ev.key === "/" && tag !== "INPUT") || ((ev.ctrlKey || ev.metaKey) && ev.key.toLowerCase() === "k")) {
+            ev.preventDefault(); $busca.focus(); $busca.select();
+          } else if (ev.key === "Escape" && document.activeElement === $busca) { $busca.value = ""; render(); $busca.blur(); }
+        });
+
+        // relógio ao vivo
+        var dias = ["domingo", "segunda", "terça", "quarta", "quinta", "sexta", "sábado"];
+        function tick() {
+          var d = new Date(), z = function (n) { return String(n).padStart(2, "0"); };
+          document.getElementById("hora").textContent = z(d.getHours()) + ":" + z(d.getMinutes()) + ":" + z(d.getSeconds());
+          document.getElementById("dataHoje").textContent = dias[d.getDay()] + ", " + z(d.getDate()) + "/" + z(d.getMonth() + 1) + "/" + d.getFullYear();
+        }
+        tick(); setInterval(tick, 1000);
+
+        render();
+      })();
+    </script>
+  
+
+</body></html> -->
