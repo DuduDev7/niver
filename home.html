@@ -125,6 +125,156 @@
         transform: translateY(-3px);
         box-shadow: 0 8px 25px rgba(255, 255, 255, 0.4);
       }
+
+      #aviso005 {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 22px;
+        background: rgba(3, 4, 10, 0.82);
+        backdrop-filter: blur(9px);
+        -webkit-backdrop-filter: blur(9px);
+      }
+
+      #aviso005.aberto {
+        display: flex;
+        animation: avisoFundo 0.35s ease both;
+      }
+
+      #aviso005 .aviso-card {
+        position: relative;
+        width: min(100%, 460px);
+        padding: 32px 26px;
+        overflow: hidden;
+        color: #fff;
+        text-align: center;
+        background: radial-gradient(
+            circle at top,
+            rgba(150, 35, 50, 0.22),
+            transparent 55%
+          ),
+          linear-gradient(145deg, #17131a, #090a10);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 22px;
+        box-shadow: 0 25px 90px rgba(0, 0, 0, 0.55);
+        animation: avisoEntrada 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+        font-family: 'Segoe UI', Arial, sans-serif;
+      }
+
+      #aviso005 .aviso-linha {
+        width: 58px;
+        height: 3px;
+        margin: 0 auto 22px;
+        border-radius: 10px;
+        background: #d64b5b;
+        box-shadow: 0 0 18px rgba(214, 75, 91, 0.5);
+      }
+
+      #aviso005 .aviso-etiqueta {
+        display: inline-block;
+        margin-bottom: 20px;
+        padding: 8px 12px;
+        color: #ffb9c0;
+        border: 1px solid rgba(214, 75, 91, 0.35);
+        border-radius: 50px;
+        background: rgba(214, 75, 91, 0.08);
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 1.7px;
+      }
+
+      #aviso005 h2 {
+        margin: 0 0 18px;
+        color: #fff;
+        font-size: clamp(22px, 5vw, 29px);
+        line-height: 1.2;
+        font-weight: 800;
+        letter-spacing: -0.6px;
+      }
+
+      #aviso005 .aviso-texto {
+        margin: 0;
+        color: #d0ccd3;
+        font-size: 15px;
+        line-height: 1.8;
+      }
+
+      #aviso005 .aviso-destaque {
+        display: block;
+        margin-top: 15px;
+        color: #fff;
+        font-weight: 600;
+      }
+
+      #aviso005 .aviso-botao {
+        width: 100%;
+        margin-top: 26px;
+        padding: 15px 20px;
+        color: #fff;
+        background: linear-gradient(135deg, #a92f43, #d94c5b);
+        border: 0;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+        cursor: pointer;
+        transition: transform 0.2s ease, filter 0.2s ease;
+      }
+
+      #aviso005 .aviso-botao:hover {
+        filter: brightness(1.12);
+        transform: translateY(-2px);
+      }
+
+      #aviso005 .aviso-botao:focus-visible {
+        outline: 2px solid white;
+        outline-offset: 4px;
+      }
+
+      @keyframes avisoFundo {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes avisoEntrada {
+        from {
+          opacity: 0;
+          transform: translateY(18px) scale(0.97);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      @media (max-width: 480px) {
+        #aviso005 .aviso-card {
+          padding: 28px 21px;
+          border-radius: 18px;
+        }
+
+        #aviso005 .aviso-texto {
+          font-size: 14px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        #aviso005.aberto,
+        #aviso005 .aviso-card {
+          animation: none;
+        }
+
+        #aviso005 .aviso-botao {
+          transition: none;
+        }
+      }
     </style>
   </head>
 
@@ -156,6 +306,36 @@
           ✨ Abrir Meus Cupons
         </button>
       </div> -->
+
+      <div
+        id="aviso005"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="aviso005-titulo"
+        aria-describedby="aviso005-descricao"
+      >
+        <div class="aviso-card">
+          <div class="aviso-linha"></div>
+
+          <span class="aviso-etiqueta"> AVISO - LEIA COM ATENÇÃO </span>
+
+          <h2 id="aviso005-titulo">CUIDADO COM AS PRÓXIMAS MUDANÇAS.</h2>
+
+          <p class="aviso-texto" id="aviso005-descricao">
+            Este site pode sofrer alterações inesperadas a qualquer momento, e
+            algumas partes podem deixar de existir permanentemente.
+
+            <span class="aviso-destaque">
+              Aproveite cada detalhe enquanto ele ainda está aqui. Nem tudo
+              ficará disponível para sempre.
+            </span>
+          </p>
+
+          <button class="aviso-botao" id="aviso005-fechar" type="button">
+            ENTENDI
+          </button>
+        </div>
+      </div>
 
       <div class="status-box">
         <h3 id="levaTempo">📡 Status Atual</h3>
@@ -243,9 +423,9 @@
       <button onclick="go('arvore.html')">Muito Importante</button>
       <button onclick="go('flor3d.html')">Para Você 🫶🏽🫵🏽</button>
       <button onclick="go('maquinaTempo.html')">Coincidencia ?</button>
-      <button onclick="go('quiz.html')"> você me conhece ? </button>
+      <button onclick="go('quiz.html')">você me conhece ?</button>
       <button onclick="go('musicas.html')">Especial</button>
-      <button onclick="go('mapa.html')"> Eu e Você </button>
+      <button onclick="go('mapa.html')">Eu e Você</button>
       <button onclick="go('recados.html')">recados</button>
       <button onclick="go('memoria.html')">memoria</button>
       <button onclick="go('sala.html')">sala</button>
@@ -268,14 +448,14 @@
       <button onclick="go('lirios.html')">🌸 flores especiais</button>
       <button onclick="go('bandeira.html')">garrudos ?</button>
       <button onclick="go('podio.html')">domingo especial</button>
-      <button onclick="go('quebraCabeca.html')"> mini jogo</button>
-      <button onclick="go('universo.html')"> 8 bilhões</button>
-      <button onclick="go('gol.html')"> Para Você </button>
-      <button onclick="go('trem.html')"> primeira parada</button>
-      <button onclick="go('arquibancada.html')"> sempre comigo</button>
-      <button onclick="go('imagens.html')"> Sempre foi você </button>
-      <button onclick="go('florReal2.html')"> lirios Rosa </button>
-      <button onclick="go('relogio.html')"> hora</button>
+      <button onclick="go('quebraCabeca.html')">mini jogo</button>
+      <button onclick="go('universo.html')">8 bilhões</button>
+      <button onclick="go('gol.html')">Para Você</button>
+      <button onclick="go('trem.html')">primeira parada</button>
+      <button onclick="go('arquibancada.html')">sempre comigo</button>
+      <button onclick="go('imagens.html')">Sempre foi você</button>
+      <button onclick="go('florReal2.html')">lirios Rosa</button>
+      <button onclick="go('relogio.html')">hora</button>
       <button onclick="go('batimentos.html')">Para você ver</button>
       <button onclick="go('loginHoje.html')">NOVAS</button>
 
@@ -298,6 +478,53 @@
     <script src="js/hearts.js"></script>
     <script src="js/script.js"></script>
     <script src="js/script2.js"></script>
+
+    <script>
+      ;(() => {
+        const modal = document.getElementById('aviso005')
+        const fechar = document.getElementById('aviso005-fechar')
+
+        if (!modal || !fechar) return
+
+        let temporizador
+
+        function abrirAviso() {
+          modal.classList.add('aberto')
+          fechar.focus()
+        }
+
+        function fecharAviso() {
+          modal.classList.remove('aberto')
+          clearTimeout(temporizador)
+        }
+
+        fechar.addEventListener('click', fecharAviso)
+
+        modal.addEventListener('click', evento => {
+          if (evento.target === modal) {
+            fecharAviso()
+          }
+        })
+
+        document.addEventListener('keydown', evento => {
+          if (evento.key === 'Escape' && modal.classList.contains('aberto')) {
+            fecharAviso()
+          }
+        })
+
+        if (document.readyState === 'loading') {
+          document.addEventListener(
+            'DOMContentLoaded',
+            () => {
+              temporizador = setTimeout(abrirAviso, 5000)
+            },
+            { once: true }
+          )
+        } else {
+          temporizador = setTimeout(abrirAviso, 5000)
+        }
+      })()
+    </script>
   </body>
 </html>
 
