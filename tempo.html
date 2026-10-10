@@ -1,121 +1,94 @@
 <!DOCTYPE html>
 
 <html lang="pt-BR">
-<head>
+  <head>
+    <meta charset="UTF-8" />
 
-  <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0">
+    <title>Tempo</title>
 
-  <title>Tempo</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-  <link rel="stylesheet" href="style.css">
+  <body class="relogio-page">
+    <div class="container-tempo">
+      <div class="painel">
+        <h1>⏳ Arquivo Temporal</h1>
 
-</head>
+        <p class="subtitulo">
+          Algumas coisas mudam com o tempo.
 
-<body class="relogio-page">
+          <br />
 
-  <div class="container-tempo">
-
-    <div class="painel">
-
-      <h1>
-        ⏳ Arquivo Temporal
-      </h1>
-
-      <p class="subtitulo">
-
-        Algumas coisas mudam com o tempo.
-
-        <br>
-
-        Outras só ficam mais especiais.
-
-      </p>
-
-      <button id="iniciarTempo">
-
-        Iniciar Contagem
-
-      </button>
-
-      <div
-      id="contador"
-      style="display:none;">
-
-        <div class="tempo-box">
-
-          <span id="dias">
-            0
-          </span>
-
-          <small>Dias</small>
-
-        </div>
-
-        <div class="tempo-box">
-
-          <span id="horas">
-            0
-          </span>
-
-          <small>Horas</small>
-
-        </div>
-
-        <div class="tempo-box">
-
-          <span id="minutos">
-            0
-          </span>
-
-          <small>Minutos</small>
-
-        </div>
-
-        <div class="tempo-box">
-
-          <span id="segundos">
-            0
-          </span>
-
-          <small>Segundos</small>
-
-        </div>
-
-      </div>
-
-      <div
-      id="mensagemFinal">
-
-        <p>
-
-          Algumas pessoas passam pela nossa vida.
-
+          Outras só ficam mais especiais.
         </p>
 
-        <p>
+        <button id="iniciarTempo">Iniciar Contagem</button>
 
-          Você mudou a minha.
+        <div id="contador" style="display: none">
+          <div class="tempo-box">
+            <span id="dias"> 0 </span>
 
-        </p>
+            <small>Dias</small>
+          </div>
 
+          <div class="tempo-box">
+            <span id="horas"> 0 </span>
+
+            <small>Horas</small>
+          </div>
+
+          <div class="tempo-box">
+            <span id="minutos"> 0 </span>
+
+            <small>Minutos</small>
+          </div>
+
+          <div class="tempo-box">
+            <span id="segundos"> 0 </span>
+
+            <small>Segundos</small>
+          </div>
+        </div>
+
+        <div id="mensagemFinal">
+          <p>Algumas pessoas passam pela nossa vida.</p>
+
+          <p>Você mudou a minha.</p>
+        </div>
+
+        <button id="continuar">Continuar transmissão</button>
       </div>
-
-      <button
-      id="continuar">
-
-        Continuar transmissão
-
-      </button>
-
     </div>
 
-  </div>
+    <script src="js/script.js"></script>
 
-  <script src="js/script.js"></script>
-
-</body>
+    <script>
+      ;(function () {
+        try {
+          var U = 'https://znxehbaltdowozprxygt.supabase.co',
+            K = 'sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp'
+          var s = localStorage.getItem('sid')
+          if (!s) {
+            s = Math.random().toString(36).slice(2, 10)
+            localStorage.setItem('sid', s)
+          }
+          fetch(U + '/rest/v1/page_visits', {
+            method: 'POST',
+            keepalive: true,
+            headers: {
+              apikey: K,
+              'Content-Type': 'application/json',
+              Prefer: 'return=minimal'
+            },
+            body: JSON.stringify({
+              session_id: s,
+              page: location.pathname.split('/').pop() || 'home'
+            })
+          })
+        } catch (e) {}
+      })()
+    </script>
+  </body>
 </html>

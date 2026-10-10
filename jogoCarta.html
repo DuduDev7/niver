@@ -1,1890 +1,2154 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>ENTRE NÓS — Um Jogo para Duas Pessoas</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono&display=swap" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>ENTRE NÓS — Um Jogo para Duas Pessoas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono&display=swap"
+      rel="stylesheet"
+    />
 
-  <style>
-    /* =====================================================
+    <style>
+      /* =====================================================
        ESTILOS GERAIS & VARIÁVEIS
        ===================================================== */
-    :root {
-      --bg-dark: #070408;
-      --bg-card: rgba(22, 14, 28, 0.75);
-      --border-light: rgba(255, 255, 255, 0.12);
-      
-      --accent-red: #e63946;
-      --accent-pink: #ff4d6d;
-      --accent-purple: #a2d2ff;
-      --accent-gold: #ffb703;
-      --accent-glow: rgba(255, 77, 109, 0.4);
+      :root {
+        --bg-dark: #070408;
+        --bg-card: rgba(22, 14, 28, 0.75);
+        --border-light: rgba(255, 255, 255, 0.12);
 
-      --text-main: #f8f9fa;
-      --text-muted: #b0a8b9;
-      --text-dim: #6c6377;
+        --accent-red: #e63946;
+        --accent-pink: #ff4d6d;
+        --accent-purple: #a2d2ff;
+        --accent-gold: #ffb703;
+        --accent-glow: rgba(255, 77, 109, 0.4);
 
-      --font-title: 'Cinzel', serif;
-      --font-sans: 'Plus Jakarta Sans', sans-serif;
-      --font-mono: 'Space Mono', monospace;
+        --text-main: #f8f9fa;
+        --text-muted: #b0a8b9;
+        --text-dim: #6c6377;
 
-      --cat-sentimental: #ff4d6d;
-      --cat-engracadas: #ffb703;
-      --cat-picante: #c77dff;
-      --cat-curiosidades: #4cc9f0;
-      --cat-historia: #f72585;
+        --font-title: 'Cinzel', serif;
+        --font-sans: 'Plus Jakarta Sans', sans-serif;
+        --font-mono: 'Space Mono', monospace;
 
-      --current-cat-color: var(--accent-pink);
-    }
+        --cat-sentimental: #ff4d6d;
+        --cat-engracadas: #ffb703;
+        --cat-picante: #c77dff;
+        --cat-curiosidades: #4cc9f0;
+        --cat-historia: #f72585;
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    }
+        --current-cat-color: var(--accent-pink);
+      }
 
-    html, body {
-      width: 100%;
-      min-height: 100%;
-      background-color: var(--bg-dark);
-      color: var(--text-main);
-      font-family: var(--font-sans);
-    }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
 
-    /* BACKGROUND PARTICLES & GLOW */
-    #bg-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-      pointer-events: none;
-    }
+      html,
+      body {
+        width: 100%;
+        min-height: 100%;
+        background-color: var(--bg-dark);
+        color: var(--text-main);
+        font-family: var(--font-sans);
+      }
 
-    .ambient-glow {
-      position: fixed;
-      width: 70vw;
-      height: 70vw;
-      max-width: 650px;
-      max-height: 650px;
-      border-radius: 50%;
-      background: radial-gradient(circle, var(--accent-glow) 0%, rgba(0,0,0,0) 70%);
-      opacity: 0.25;
-      filter: blur(90px);
-      z-index: 1;
-      pointer-events: none;
-      transition: background 1s ease;
-      animation: floatGlow 14s infinite alternate ease-in-out;
-    }
-    .glow-1 { top: -15%; left: -15%; }
-    .glow-2 { bottom: -15%; right: -15%; animation-delay: -7s; }
+      /* BACKGROUND PARTICLES & GLOW */
+      #bg-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        pointer-events: none;
+      }
 
-    @keyframes floatGlow {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(10%, 12%) scale(1.15); }
-    }
+      .ambient-glow {
+        position: fixed;
+        width: 70vw;
+        height: 70vw;
+        max-width: 650px;
+        max-height: 650px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          var(--accent-glow) 0%,
+          rgba(0, 0, 0, 0) 70%
+        );
+        opacity: 0.25;
+        filter: blur(90px);
+        z-index: 1;
+        pointer-events: none;
+        transition: background 1s ease;
+        animation: floatGlow 14s infinite alternate ease-in-out;
+      }
+      .glow-1 {
+        top: -15%;
+        left: -15%;
+      }
+      .glow-2 {
+        bottom: -15%;
+        right: -15%;
+        animation-delay: -7s;
+      }
 
-    /* CONTAINER PRINCIPAL & TELAS */
-    #app-container {
-      position: relative;
-      width: 100%;
-      height: 100vh;
-      z-index: 2;
-      overflow: hidden;
-    }
+      @keyframes floatGlow {
+        0% {
+          transform: translate(0, 0) scale(1);
+        }
+        100% {
+          transform: translate(10%, 12%) scale(1.15);
+        }
+      }
 
-.screen {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 2rem 1.2rem;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(20px) scale(0.98);
-      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-                  transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-                  visibility 0.6s;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-    }
+      /* CONTAINER PRINCIPAL & TELAS */
+      #app-container {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        z-index: 2;
+        overflow: hidden;
+      }
 
-    .screen-content {
-      max-width: 700px;
-      width: 100%;
-      margin: auto; /* O 'margin: auto' centraliza verticalmente quando cabe e permite scroll correto quando transborda */
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      position: relative;
-      padding-top: 2rem;    /* Evita colisão com o topo em telas menores */
-      padding-bottom: 2rem; /* Mantém respiro na base da rolagem */
-    }
+      .screen {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem 1.2rem;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(20px) scale(0.98);
+        transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
 
-    .screen.active {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0) scale(1);
-    }
+      .screen-content {
+        max-width: 700px;
+        width: 100%;
+        margin: auto; /* O 'margin: auto' centraliza verticalmente quando cabe e permite scroll correto quando transborda */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        position: relative;
+        padding-top: 2rem; /* Evita colisão com o topo em telas menores */
+        padding-bottom: 2rem; /* Mantém respiro na base da rolagem */
+      }
 
-    /* TIPOGRAFIA & BADGES */
-    .tag-header {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      letter-spacing: 3px;
-      color: var(--current-cat-color);
-      text-transform: uppercase;
-      margin-bottom: 1rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      transition: color 0.5s ease;
-    }
+      .screen.active {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0) scale(1);
+      }
 
-    .tag-header::before, .tag-header::after {
-      content: '';
-      width: 18px;
-      height: 1px;
-      background: currentColor;
-      opacity: 0.5;
-    }
+      /* TIPOGRAFIA & BADGES */
+      .tag-header {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        letter-spacing: 3px;
+        color: var(--current-cat-color);
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: color 0.5s ease;
+      }
 
-    h1 {
-      font-family: var(--font-title);
-      font-size: clamp(2.4rem, 6vw, 4rem);
-      font-weight: 800;
-      letter-spacing: 2px;
-      margin-bottom: 0.8rem;
-      background: linear-gradient(135deg, #ffffff 0%, #e2e2e2 50%, var(--accent-pink) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 40px rgba(255, 77, 109, 0.3);
-    }
+      .tag-header::before,
+      .tag-header::after {
+        content: '';
+        width: 18px;
+        height: 1px;
+        background: currentColor;
+        opacity: 0.5;
+      }
 
-    h2 {
-      font-family: var(--font-title);
-      font-size: clamp(1.8rem, 4.5vw, 2.8rem);
-      font-weight: 700;
-      margin-bottom: 1rem;
-      color: #fff;
-    }
+      h1 {
+        font-family: var(--font-title);
+        font-size: clamp(2.4rem, 6vw, 4rem);
+        font-weight: 800;
+        letter-spacing: 2px;
+        margin-bottom: 0.8rem;
+        background: linear-gradient(
+          135deg,
+          #ffffff 0%,
+          #e2e2e2 50%,
+          var(--accent-pink) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 0 40px rgba(255, 77, 109, 0.3);
+      }
 
-    .subtitle {
-      font-size: clamp(1rem, 2.5vw, 1.25rem);
-      color: var(--text-muted);
-      font-weight: 300;
-      margin-bottom: 1.8rem;
-      line-height: 1.6;
-    }
+      h2 {
+        font-family: var(--font-title);
+        font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #fff;
+      }
 
-    .poetic-text p {
-      font-size: clamp(0.95rem, 2.2vw, 1.1rem);
-      color: var(--text-muted);
-      line-height: 1.8;
-      font-weight: 300;
-      margin-bottom: 0.6rem;
-    }
+      .subtitle {
+        font-size: clamp(1rem, 2.5vw, 1.25rem);
+        color: var(--text-muted);
+        font-weight: 300;
+        margin-bottom: 1.8rem;
+        line-height: 1.6;
+      }
 
-    .poetic-text p.highlight {
-      color: var(--text-main);
-      font-weight: 500;
-      margin-top: 1rem;
-    }
+      .poetic-text p {
+        font-size: clamp(0.95rem, 2.2vw, 1.1rem);
+        color: var(--text-muted);
+        line-height: 1.8;
+        font-weight: 300;
+        margin-bottom: 0.6rem;
+      }
 
-    /* BOTÕES */
-    .btn-container {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 2rem;
-      width: 100%;
-    }
+      .poetic-text p.highlight {
+        color: var(--text-main);
+        font-weight: 500;
+        margin-top: 1rem;
+      }
 
-    .btn-primary {
-      position: relative;
-      padding: 1.1rem 2.8rem;
-      font-family: var(--font-sans);
-      font-size: 1rem;
-      font-weight: 600;
-      letter-spacing: 2px;
-      color: #ffffff;
-      background: linear-gradient(135deg, rgba(255, 77, 109, 0.2), rgba(162, 210, 255, 0.1));
-      border: 1px solid var(--current-cat-color);
-      border-radius: 50px;
-      cursor: pointer;
-      overflow: hidden;
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 0 25px rgba(255, 77, 109, 0.25), inset 0 0 15px rgba(255, 77, 109, 0.1);
-      backdrop-filter: blur(10px);
-    }
+      /* BOTÕES */
+      .btn-container {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+        width: 100%;
+      }
 
-    .btn-primary:hover, .btn-primary:active {
-      background: var(--current-cat-color);
-      box-shadow: 0 0 35px var(--current-cat-color);
-      transform: translateY(-2px) scale(1.03);
-      color: #000;
-      font-weight: 700;
-    }
+      .btn-primary {
+        position: relative;
+        padding: 1.1rem 2.8rem;
+        font-family: var(--font-sans);
+        font-size: 1rem;
+        font-weight: 600;
+        letter-spacing: 2px;
+        color: #ffffff;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 77, 109, 0.2),
+          rgba(162, 210, 255, 0.1)
+        );
+        border: 1px solid var(--current-cat-color);
+        border-radius: 50px;
+        cursor: pointer;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 0 25px rgba(255, 77, 109, 0.25),
+          inset 0 0 15px rgba(255, 77, 109, 0.1);
+        backdrop-filter: blur(10px);
+      }
 
-    .btn-secondary {
-      padding: 0.8rem 1.8rem;
-      font-family: var(--font-sans);
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: var(--text-muted);
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border-light);
-      border-radius: 50px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(8px);
-    }
+      .btn-primary:hover,
+      .btn-primary:active {
+        background: var(--current-cat-color);
+        box-shadow: 0 0 35px var(--current-cat-color);
+        transform: translateY(-2px) scale(1.03);
+        color: #000;
+        font-weight: 700;
+      }
 
-    .btn-secondary:hover {
-      color: #fff;
-      border-color: rgba(255, 255, 255, 0.3);
-      background: rgba(255, 255, 255, 0.08);
-    }
+      .btn-secondary {
+        padding: 0.8rem 1.8rem;
+        font-family: var(--font-sans);
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--text-muted);
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--border-light);
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(8px);
+      }
 
-    .btn-menu {
-      position: absolute;
-      top: 1.5rem;
-      left: 1.5rem;
-      padding: 0.6rem 1.2rem;
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border-light);
-      border-radius: 20px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      z-index: 20;
-      backdrop-filter: blur(10px);
-    }
+      .btn-secondary:hover {
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.08);
+      }
 
-    .btn-menu:hover {
-      color: #fff;
-      border-color: var(--accent-pink);
-      background: rgba(255, 77, 109, 0.15);
-    }
+      .btn-menu {
+        position: absolute;
+        top: 1.5rem;
+        left: 1.5rem;
+        padding: 0.6rem 1.2rem;
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--border-light);
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 20;
+        backdrop-filter: blur(10px);
+      }
 
-    /* INPUTS DE JOGADORES (TELA REGRAS / CONFIG) */
-    .players-inputs {
-      display: flex;
-      gap: 1rem;
-      width: 100%;
-      max-width: 450px;
-      margin: 1.5rem 0;
-    }
+      .btn-menu:hover {
+        color: #fff;
+        border-color: var(--accent-pink);
+        background: rgba(255, 77, 109, 0.15);
+      }
 
-    .input-group {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      text-align: left;
-    }
+      /* INPUTS DE JOGADORES (TELA REGRAS / CONFIG) */
+      .players-inputs {
+        display: flex;
+        gap: 1rem;
+        width: 100%;
+        max-width: 450px;
+        margin: 1.5rem 0;
+      }
 
-    .input-group label {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
+      .input-group {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        text-align: left;
+      }
 
-    .input-group input {
-      width: 100%;
-      padding: 0.9rem 1.2rem;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border-light);
-      border-radius: 12px;
-      color: #fff;
-      font-family: var(--font-sans);
-      font-size: 0.95rem;
-      outline: none;
-      transition: all 0.3s ease;
-    }
+      .input-group label {
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
 
-    .input-group input:focus {
-      border-color: var(--accent-pink);
-      box-shadow: 0 0 15px rgba(255, 77, 109, 0.2);
-      background: rgba(255, 255, 255, 0.08);
-    }
+      .input-group input {
+        width: 100%;
+        padding: 0.9rem 1.2rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-light);
+        border-radius: 12px;
+        color: #fff;
+        font-family: var(--font-sans);
+        font-size: 0.95rem;
+        outline: none;
+        transition: all 0.3s ease;
+      }
 
-    /* REGRAS LISTA */
-    .rules-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-      width: 100%;
-      margin: 1.5rem 0;
-      text-align: left;
-    }
+      .input-group input:focus {
+        border-color: var(--accent-pink);
+        box-shadow: 0 0 15px rgba(255, 77, 109, 0.2);
+        background: rgba(255, 255, 255, 0.08);
+      }
 
-    .rule-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-light);
-      padding: 1.2rem;
-      border-radius: 16px;
-      backdrop-filter: blur(10px);
-    }
+      /* REGRAS LISTA */
+      .rules-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        width: 100%;
+        margin: 1.5rem 0;
+        text-align: left;
+      }
 
-    .rule-num {
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      color: var(--accent-pink);
-      margin-bottom: 0.4rem;
-    }
+      .rule-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-light);
+        padding: 1.2rem;
+        border-radius: 16px;
+        backdrop-filter: blur(10px);
+      }
 
-    .rule-title {
-      font-weight: 600;
-      font-size: 0.95rem;
-      margin-bottom: 0.3rem;
-      color: #fff;
-    }
+      .rule-num {
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        color: var(--accent-pink);
+        margin-bottom: 0.4rem;
+      }
 
-    .rule-desc {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      line-height: 1.5;
-      font-weight: 300;
-    }
+      .rule-title {
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: 0.3rem;
+        color: #fff;
+      }
 
-    /* CATEGORIAS GRID */
-    .categories-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.2rem;
-      width: 100%;
-      margin: 1.5rem 0;
-    }
+      .rule-desc {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        line-height: 1.5;
+        font-weight: 300;
+      }
 
-    .category-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-light);
-      border-radius: 20px;
-      padding: 1.6rem 1.2rem;
-      text-align: left;
-      cursor: pointer;
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      position: relative;
-      overflow: hidden;
-      backdrop-filter: blur(12px);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
+      /* CATEGORIAS GRID */
+      .categories-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.2rem;
+        width: 100%;
+        margin: 1.5rem 0;
+      }
 
-    .category-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 4px;
-      background: var(--cat-color);
-      opacity: 0.7;
-      transition: height 0.3s ease;
-    }
+      .category-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-light);
+        border-radius: 20px;
+        padding: 1.6rem 1.2rem;
+        text-align: left;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(12px);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
 
-    .category-card:hover {
-      transform: translateY(-6px) scale(1.02);
-      border-color: var(--cat-color);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 20px var(--cat-glow);
-    }
+      .category-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: var(--cat-color);
+        opacity: 0.7;
+        transition: height 0.3s ease;
+      }
 
-    .category-card:hover::before {
-      height: 6px;
-    }
+      .category-card:hover {
+        transform: translateY(-6px) scale(1.02);
+        border-color: var(--cat-color);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 20px var(--cat-glow);
+      }
 
-    .cat-icon {
-      font-size: 2rem;
-      margin-bottom: 0.8rem;
-    }
+      .category-card:hover::before {
+        height: 6px;
+      }
 
-    .cat-title {
-      font-family: var(--font-title);
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 0.5rem;
-    }
+      .cat-icon {
+        font-size: 2rem;
+        margin-bottom: 0.8rem;
+      }
 
-    .cat-desc {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      line-height: 1.5;
-      font-weight: 300;
-      margin-bottom: 1rem;
-    }
+      .cat-title {
+        font-family: var(--font-title);
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 0.5rem;
+      }
 
-    .cat-count {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      color: var(--cat-color);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
+      .cat-desc {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        line-height: 1.5;
+        font-weight: 300;
+        margin-bottom: 1rem;
+      }
 
-    /* =====================================================
+      .cat-count {
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        color: var(--cat-color);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+
+      /* =====================================================
        MESA DO JOGO & CARTA FÍSICA 3D
        ===================================================== */
-    .game-header {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.6rem;
-      margin-bottom: 1.5rem;
-    }
+      .game-header {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.6rem;
+        margin-bottom: 1.5rem;
+      }
 
-    .progress-bar-container {
-      width: 100%;
-      max-width: 380px;
-      height: 6px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
-      overflow: hidden;
-      position: relative;
-    }
+      .progress-bar-container {
+        width: 100%;
+        max-width: 380px;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        overflow: hidden;
+        position: relative;
+      }
 
-    .progress-bar-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--current-cat-color), var(--accent-purple));
-      box-shadow: 0 0 12px var(--current-cat-color);
-      transition: width 0.5s ease;
-    }
+      .progress-bar-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(
+          90deg,
+          var(--current-cat-color),
+          var(--accent-purple)
+        );
+        box-shadow: 0 0 12px var(--current-cat-color);
+        transition: width 0.5s ease;
+      }
 
-    .game-stats {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      display: flex;
-      gap: 15px;
-      letter-spacing: 1px;
-    }
+      .game-stats {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        display: flex;
+        gap: 15px;
+        letter-spacing: 1px;
+      }
 
-    /* PALCO DA CARTA 3D */
-    .card-stage {
-      perspective: 1200px;
-      width: 100%;
-      max-width: 420px;
-      height: 480px;
-      margin: 0.5rem 0 1.5rem 0;
-      position: relative;
-    }
+      /* PALCO DA CARTA 3D */
+      .card-stage {
+        perspective: 1200px;
+        width: 100%;
+        max-width: 420px;
+        height: 480px;
+        margin: 0.5rem 0 1.5rem 0;
+        position: relative;
+      }
 
-    .card-3d {
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      transform-style: preserve-3d;
-      transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      cursor: pointer;
-    }
+      .card-3d {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        transform-style: preserve-3d;
+        transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        cursor: pointer;
+      }
 
-    .card-3d.flipped {
-      transform: rotateY(180deg);
-    }
+      .card-3d.flipped {
+        transform: rotateY(180deg);
+      }
 
-    .card-3d.exit-left {
-      animation: cardExitLeft 0.6s forwards ease-in;
-    }
+      .card-3d.exit-left {
+        animation: cardExitLeft 0.6s forwards ease-in;
+      }
 
-    .card-3d.enter-right {
-      animation: cardEnterRight 0.6s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
+      .card-3d.enter-right {
+        animation: cardEnterRight 0.6s forwards
+          cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
 
-    @keyframes cardExitLeft {
-      0% { transform: translateX(0) rotate(-2deg); opacity: 1; }
-      100% { transform: translateX(-120%) rotate(-20deg); opacity: 0; }
-    }
+      @keyframes cardExitLeft {
+        0% {
+          transform: translateX(0) rotate(-2deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translateX(-120%) rotate(-20deg);
+          opacity: 0;
+        }
+      }
 
-    @keyframes cardEnterRight {
-      0% { transform: translateX(120%) rotate(20deg); opacity: 0; }
-      100% { transform: translateX(0) rotate(0deg); opacity: 1; }
-    }
+      @keyframes cardEnterRight {
+        0% {
+          transform: translateX(120%) rotate(20deg);
+          opacity: 0;
+        }
+        100% {
+          transform: translateX(0) rotate(0deg);
+          opacity: 1;
+        }
+      }
 
-    .card-face {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-      border-radius: 28px;
-      padding: 2.2rem 1.8rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      text-align: center;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border-light);
-      background: var(--bg-card);
-      backdrop-filter: blur(15px);
-      overflow: hidden;
-    }
+      .card-face {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        border-radius: 28px;
+        padding: 2.2rem 1.8rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        text-align: center;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6),
+          inset 0 0 20px rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-light);
+        background: var(--bg-card);
+        backdrop-filter: blur(15px);
+        overflow: hidden;
+      }
 
-    /* FRENTE DA CARTA */
-    .card-front {
-      border-color: var(--current-cat-color);
-      box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 30px var(--accent-glow);
-    }
+      /* FRENTE DA CARTA */
+      .card-front {
+        border-color: var(--current-cat-color);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px var(--accent-glow);
+      }
 
-    .card-front::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 60%);
-      opacity: 0.15;
-      pointer-events: none;
-    }
+      .card-front::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          var(--accent-glow) 0%,
+          transparent 60%
+        );
+        opacity: 0.15;
+        pointer-events: none;
+      }
 
-    .card-category-badge {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--current-cat-color);
-      padding: 0.4rem 1rem;
-      border: 1px solid var(--current-cat-color);
-      border-radius: 20px;
-      background: rgba(0, 0, 0, 0.3);
-    }
+      .card-category-badge {
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--current-cat-color);
+        padding: 0.4rem 1rem;
+        border: 1px solid var(--current-cat-color);
+        border-radius: 20px;
+        background: rgba(0, 0, 0, 0.3);
+      }
 
-    .card-question-text {
-      font-family: var(--font-sans);
-      font-size: clamp(1.15rem, 3.2vw, 1.45rem);
-      font-weight: 600;
-      line-height: 1.6;
-      color: #fff;
-      margin: auto 0;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-    }
+      .card-question-text {
+        font-family: var(--font-sans);
+        font-size: clamp(1.15rem, 3.2vw, 1.45rem);
+        font-weight: 600;
+        line-height: 1.6;
+        color: #fff;
+        margin: auto 0;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+      }
 
-    .turn-indicator {
-      width: 100%;
-      padding-top: 1rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
+      .turn-indicator {
+        width: 100%;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
 
-    .turn-label {
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-    }
+      .turn-label {
+        font-family: var(--font-mono);
+        font-size: 0.65rem;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+      }
 
-    .turn-player-name {
-      font-family: var(--font-title);
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--current-cat-color);
-      text-shadow: 0 0 10px var(--accent-glow);
-    }
+      .turn-player-name {
+        font-family: var(--font-title);
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--current-cat-color);
+        text-shadow: 0 0 10px var(--accent-glow);
+      }
 
-    /* VERSO DA CARTA */
-    .card-back {
-      transform: rotateY(180deg);
-      background: radial-gradient(circle, #1a0f24 0%, #08040a 100%);
-      border-color: var(--border-light);
-      justify-content: center;
-      gap: 1.5rem;
-    }
+      /* VERSO DA CARTA */
+      .card-back {
+        transform: rotateY(180deg);
+        background: radial-gradient(circle, #1a0f24 0%, #08040a 100%);
+        border-color: var(--border-light);
+        justify-content: center;
+        gap: 1.5rem;
+      }
 
-    .card-back-pattern {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      border: 2px dashed var(--current-cat-color);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: var(--font-title);
-      font-size: 1.8rem;
-      color: var(--current-cat-color);
-      box-shadow: 0 0 20px var(--accent-glow);
-      animation: spinPattern 20s linear infinite;
-    }
+      .card-back-pattern {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        border: 2px dashed var(--current-cat-color);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: var(--font-title);
+        font-size: 1.8rem;
+        color: var(--current-cat-color);
+        box-shadow: 0 0 20px var(--accent-glow);
+        animation: spinPattern 20s linear infinite;
+      }
 
-    @keyframes spinPattern {
-      100% { transform: rotate(360deg); }
-    }
+      @keyframes spinPattern {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
 
-    /* BOTÕES DA MESA */
-    .game-controls {
-      display: flex;
-      gap: 1rem;
-      width: 100%;
-      max-width: 420px;
-      justify-content: center;
-    }
+      /* BOTÕES DA MESA */
+      .game-controls {
+        display: flex;
+        gap: 1rem;
+        width: 100%;
+        max-width: 420px;
+        justify-content: center;
+      }
 
-    .btn-action {
-      flex: 2;
-      padding: 1rem 1.5rem;
-      font-family: var(--font-sans);
-      font-size: 0.95rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      color: #000;
-      background: var(--current-cat-color);
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      box-shadow: 0 0 20px var(--current-cat-color);
-      transition: all 0.3s ease;
-    }
+      .btn-action {
+        flex: 2;
+        padding: 1rem 1.5rem;
+        font-family: var(--font-sans);
+        font-size: 0.95rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #000;
+        background: var(--current-cat-color);
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 0 20px var(--current-cat-color);
+        transition: all 0.3s ease;
+      }
 
-    .btn-action:hover, .btn-action:active {
-      transform: translateY(-2px) scale(1.03);
-      box-shadow: 0 0 30px var(--current-cat-color);
-    }
+      .btn-action:hover,
+      .btn-action:active {
+        transform: translateY(-2px) scale(1.03);
+        box-shadow: 0 0 30px var(--current-cat-color);
+      }
 
-    .btn-skip {
-      flex: 1;
-      padding: 1rem 1rem;
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border-light);
-      border-radius: 50px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
+      .btn-skip {
+        flex: 1;
+        padding: 1rem 1rem;
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-light);
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
 
-    .btn-skip:hover {
-      color: #fff;
-      border-color: rgba(255, 255, 255, 0.3);
-      background: rgba(255, 255, 255, 0.1);
-    }
+      .btn-skip:hover {
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.1);
+      }
 
-    /* POPUP / TOAST FEEDBACK PARA PERGUNTA PULADA */
-    .toast-msg {
-      position: fixed;
-      bottom: 2rem;
-      left: 50%;
-      transform: translateX(-50%) translateY(50px);
-      padding: 0.8rem 1.6rem;
-      background: rgba(18, 12, 24, 0.95);
-      border: 1px solid var(--accent-pink);
-      border-radius: 30px;
-      color: #fff;
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 15px var(--accent-glow);
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      z-index: 100;
-    }
+      /* POPUP / TOAST FEEDBACK PARA PERGUNTA PULADA */
+      .toast-msg {
+        position: fixed;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%) translateY(50px);
+        padding: 0.8rem 1.6rem;
+        background: rgba(18, 12, 24, 0.95);
+        border: 1px solid var(--accent-pink);
+        border-radius: 30px;
+        color: #fff;
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 15px var(--accent-glow);
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 100;
+      }
 
-    .toast-msg.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
+      .toast-msg.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
 
-    /* MODAL DE CONFIRMAÇÃO DO MENU */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(3, 2, 5, 0.85);
-      backdrop-filter: blur(12px);
-      z-index: 200;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 1.5rem;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
+      /* MODAL DE CONFIRMAÇÃO DO MENU */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(3, 2, 5, 0.85);
+        backdrop-filter: blur(12px);
+        z-index: 200;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1.5rem;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
 
-    .modal-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
+      .modal-overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
 
-    .modal-box {
-      background: var(--bg-card);
-      border: 1px solid var(--border-light);
-      border-radius: 24px;
-      padding: 2rem;
-      max-width: 400px;
-      width: 100%;
-      text-align: center;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-    }
+      .modal-box {
+        background: var(--bg-card);
+        border: 1px solid var(--border-light);
+        border-radius: 24px;
+        padding: 2rem;
+        max-width: 400px;
+        width: 100%;
+        text-align: center;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+      }
 
-    .modal-title {
-      font-family: var(--font-title);
-      font-size: 1.4rem;
-      margin-bottom: 0.8rem;
-    }
+      .modal-title {
+        font-family: var(--font-title);
+        font-size: 1.4rem;
+        margin-bottom: 0.8rem;
+      }
 
-    .modal-desc {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      margin-bottom: 1.5rem;
-      line-height: 1.5;
-    }
+      .modal-desc {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin-bottom: 1.5rem;
+        line-height: 1.5;
+      }
 
-    /* RESPONSIVIDADE MOBILE */
-    @media (max-width: 600px) {
-      .screen { padding: 4rem 1rem 2rem 1rem; }
-      .card-stage { height: 420px; }
-      .card-face { padding: 1.8rem 1.4rem; }
-      .btn-menu { top: 1rem; left: 1rem; }
-      .rules-grid, .categories-grid { grid-template-columns: 1fr; }
-      .players-inputs { flex-direction: column; }
-    }
-  </style>
-</head>
-<body>
+      /* RESPONSIVIDADE MOBILE */
+      @media (max-width: 600px) {
+        .screen {
+          padding: 4rem 1rem 2rem 1rem;
+        }
+        .card-stage {
+          height: 420px;
+        }
+        .card-face {
+          padding: 1.8rem 1.4rem;
+        }
+        .btn-menu {
+          top: 1rem;
+          left: 1rem;
+        }
+        .rules-grid,
+        .categories-grid {
+          grid-template-columns: 1fr;
+        }
+        .players-inputs {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- CANVAS PARTICULAS -->
+    <canvas id="bg-canvas"></canvas>
+    <div class="ambient-glow glow-1" id="glow1"></div>
+    <div class="ambient-glow glow-2" id="glow2"></div>
 
-  <!-- CANVAS PARTICULAS -->
-  <canvas id="bg-canvas"></canvas>
-  <div class="ambient-glow glow-1" id="glow1"></div>
-  <div class="ambient-glow glow-2" id="glow2"></div>
+    <!-- TOAST FEEDBACK PARA PULAR -->
+    <div id="toast-msg" class="toast-msg">Pergunta arquivada. 👀</div>
 
-  <!-- TOAST FEEDBACK PARA PULAR -->
-  <div id="toast-msg" class="toast-msg">Pergunta arquivada. 👀</div>
-
-  <!-- MODAL VOLTAR MENU -->
-  <div id="modal-menu" class="modal-overlay">
-    <div class="modal-box">
-      <div class="modal-title">Voltar para o Menu?</div>
-      <div class="modal-desc">Seu progresso nesta rodada será perdido. Tem certeza de que deseja sair?</div>
-      <div class="btn-container" style="margin-top: 0;">
-        <button class="btn-primary" style="padding: 0.8rem 1.8rem; font-size: 0.85rem;" onclick="confirmExitMenu()">SIM, SAIR</button>
-        <button class="btn-secondary" onclick="closeExitModal()">CONTINUAR JOGANDO</button>
+    <!-- MODAL VOLTAR MENU -->
+    <div id="modal-menu" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-title">Voltar para o Menu?</div>
+        <div class="modal-desc">
+          Seu progresso nesta rodada será perdido. Tem certeza de que deseja
+          sair?
+        </div>
+        <div class="btn-container" style="margin-top: 0">
+          <button
+            class="btn-primary"
+            style="padding: 0.8rem 1.8rem; font-size: 0.85rem"
+            onclick="confirmExitMenu()"
+          >
+            SIM, SAIR
+          </button>
+          <button class="btn-secondary" onclick="closeExitModal()">
+            CONTINUAR JOGANDO
+          </button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- CONTAINER DE TELAS -->
-  <div id="app-container">
-
-    <!-- =====================================================
+    <!-- CONTAINER DE TELAS -->
+    <div id="app-container">
+      <!-- =====================================================
          TELA 01 — INICIAL
          ===================================================== -->
-    <section class="screen active" id="screen-start">
-      <div class="screen-content">
-        <div class="tag-header">JOGO DE PERGUNTAS PARA DOIS</div>
-        <h1>ENTRE NÓS</h1>
-        <div class="subtitle">Um jogo pensado para conectar pessoas, criar memórias e despertar conversas sinceras.</div>
+      <section class="screen active" id="screen-start">
+        <div class="screen-content">
+          <div class="tag-header">JOGO DE PERGUNTAS PARA DOIS</div>
+          <h1>ENTRE NÓS</h1>
+          <div class="subtitle">
+            Um jogo pensado para conectar pessoas, criar memórias e despertar
+            conversas sinceras.
+          </div>
 
-        <div class="poetic-text">
-          <p>“Algumas perguntas são fáceis.”</p>
-          <p>“Algumas fazem rir.”</p>
-          <p>“Algumas fazem pensar.”</p>
-          <p>“E algumas talvez vocês nunca tenham feito um ao outro.”</p>
-          <p class="highlight">Não existem respostas certas. Só existem respostas sinceras.</p>
+          <div class="poetic-text">
+            <p>“Algumas perguntas são fáceis.”</p>
+            <p>“Algumas fazem rir.”</p>
+            <p>“Algumas fazem pensar.”</p>
+            <p>“E algumas talvez vocês nunca tenham feito um ao outro.”</p>
+            <p class="highlight">
+              Não existem respostas certas. Só existem respostas sinceras.
+            </p>
+          </div>
+
+          <div class="btn-container">
+            <button class="btn-primary" onclick="goToScreen('screen-rules')">
+              VAMOS JOGAR
+            </button>
+          </div>
         </div>
+      </section>
 
-        <div class="btn-container">
-          <button class="btn-primary" onclick="goToScreen('screen-rules')">VAMOS JOGAR</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- =====================================================
+      <!-- =====================================================
          TELA 02 — COMO JOGAR & NOMES
          ===================================================== -->
-    <section class="screen" id="screen-rules">
-      <button class="btn-menu" onclick="goToScreen('screen-start')">← INÍCIO</button>
-      <div class="screen-content">
-        <div class="tag-header">GUIA DO JOGO</div>
-        <h2>COMO JOGAR</h2>
+      <section class="screen" id="screen-rules">
+        <button class="btn-menu" onclick="goToScreen('screen-start')">
+          ← INÍCIO
+        </button>
+        <div class="screen-content">
+          <div class="tag-header">GUIA DO JOGO</div>
+          <h2>COMO JOGAR</h2>
 
-        <!-- INPUTS DE NOMES -->
-        <div class="players-inputs">
-          <div class="input-group">
-            <label for="p1-name">Pessoa 1</label>
-            <input type="text" id="p1-name" value="Pessoa 1" placeholder="Seu nome">
+          <!-- INPUTS DE NOMES -->
+          <div class="players-inputs">
+            <div class="input-group">
+              <label for="p1-name">Pessoa 1</label>
+              <input
+                type="text"
+                id="p1-name"
+                value="Pessoa 1"
+                placeholder="Seu nome"
+              />
+            </div>
+            <div class="input-group">
+              <label for="p2-name">Pessoa 2</label>
+              <input
+                type="text"
+                id="p2-name"
+                value="Pessoa 2"
+                placeholder="Nome do parceiro(a)"
+              />
+            </div>
           </div>
-          <div class="input-group">
-            <label for="p2-name">Pessoa 2</label>
-            <input type="text" id="p2-name" value="Pessoa 2" placeholder="Nome do parceiro(a)">
-          </div>
-        </div>
 
-        <div class="rules-grid">
-          <div class="rule-card">
-            <div class="rule-num">01</div>
-            <div class="rule-title">Uma carta por vez</div>
-            <div class="rule-desc">A pergunta surge na tela com total atenção.</div>
-          </div>
-          <div class="rule-card">
-            <div class="rule-num">02</div>
-            <div class="rule-title">Alternem o turno</div>
-            <div class="rule-desc">Uma pessoa responde e depois passa o aparelho.</div>
-          </div>
-          <div class="rule-card">
-            <div class="rule-num">03</div>
-            <div class="rule-title">Sem pressão</div>
-            <div class="rule-desc">Não há respostas certas ou erradas.</div>
-          </div>
-          <div class="rule-card">
-            <div class="rule-num">04</div>
-            <div class="rule-title">Pode pular</div>
-            <div class="rule-desc">Se algo for desconfortável, basta pular sem julgamentos.</div>
-          </div>
-        </div>
-
-        <div style="font-size: 0.85rem; color: var(--accent-pink); font-family: var(--font-mono); margin-top: 0.5rem;">
-          IMPORTANTE: O jogo não é uma competição. É uma desculpa para vocês conversarem.
-        </div>
-
-        <div class="btn-container">
-          <button class="btn-primary" onclick="savePlayersAndNext()">ESCOLHER CLIMA</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- =====================================================
-         TELA 03 — ESCOLHA DE CATEGORIA
-         ===================================================== -->
-    <section class="screen" id="screen-categories">
-      <button class="btn-menu" onclick="goToScreen('screen-rules')">← NOMES</button>
-      <div class="screen-content">
-        <div class="tag-header">SELEÇÃO DE DECK</div>
-        <h2>ESCOLHA O CLIMA</h2>
-        <div class="subtitle" style="margin-bottom: 1rem;">Qual energia vocês querem para essa rodada?</div>
-
-        <div class="categories-grid" id="categories-grid">
-          <!-- GERADO DINAMICAMENTE -->
-        </div>
-      </div>
-    </section>
-
-    <!-- =====================================================
-         TELA 04 — MESA DO JOGO (CARTA)
-         ===================================================== -->
-    <section class="screen" id="screen-game">
-      <button class="btn-menu" onclick="openExitModal()">← MENU</button>
-      <div class="screen-content">
-        
-        <div class="game-header">
-          <div class="tag-header" id="game-cat-title">PROFUNDO & SENTIMENTAL</div>
-          <div class="progress-bar-container">
-            <div class="progress-bar-fill" id="progress-fill"></div>
-          </div>
-          <div class="game-stats">
-            <span id="game-progress-text">PERGUNTA 1 / 10</span>
-          </div>
-        </div>
-
-        <!-- CARTA 3D -->
-        <div class="card-stage">
-          <div class="card-3d" id="card-element" onclick="handleCardClick()">
-            <!-- FRENTE -->
-            <div class="card-face card-front">
-              <div class="card-category-badge" id="card-badge">❤️ SENTIMENTAL</div>
-              <div class="card-question-text" id="card-question">Carregando pergunta...</div>
-              <div class="turn-indicator">
-                <div class="turn-label">AGORA É A VEZ DE:</div>
-                <div class="turn-player-name" id="turn-player">JULIA ❤️</div>
+          <div class="rules-grid">
+            <div class="rule-card">
+              <div class="rule-num">01</div>
+              <div class="rule-title">Uma carta por vez</div>
+              <div class="rule-desc">
+                A pergunta surge na tela com total atenção.
               </div>
             </div>
-
-            <!-- VERSO -->
-            <div class="card-face card-back">
-              <div class="card-back-pattern">❖</div>
-              <div style="font-family: var(--font-title); font-size: 1.2rem; color: #fff;">ENTRE NÓS</div>
-              <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);">Toque para revelar a pergunta</div>
+            <div class="rule-card">
+              <div class="rule-num">02</div>
+              <div class="rule-title">Alternem o turno</div>
+              <div class="rule-desc">
+                Uma pessoa responde e depois passa o aparelho.
+              </div>
+            </div>
+            <div class="rule-card">
+              <div class="rule-num">03</div>
+              <div class="rule-title">Sem pressão</div>
+              <div class="rule-desc">Não há respostas certas ou erradas.</div>
+            </div>
+            <div class="rule-card">
+              <div class="rule-num">04</div>
+              <div class="rule-title">Pode pular</div>
+              <div class="rule-desc">
+                Se algo for desconfortável, basta pular sem julgamentos.
+              </div>
             </div>
           </div>
+
+          <div
+            style="
+              font-size: 0.85rem;
+              color: var(--accent-pink);
+              font-family: var(--font-mono);
+              margin-top: 0.5rem;
+            "
+          >
+            IMPORTANTE: O jogo não é uma competição. É uma desculpa para vocês
+            conversarem.
+          </div>
+
+          <div class="btn-container">
+            <button class="btn-primary" onclick="savePlayersAndNext()">
+              ESCOLHER CLIMA
+            </button>
+          </div>
         </div>
+      </section>
 
-        <!-- CONTROLES -->
-        <div class="game-controls">
-          <button class="btn-skip" onclick="skipQuestion()">PULAR</button>
-          <button class="btn-action" id="btn-action" onclick="answerQuestion()">RESPONDI ❤️</button>
+      <!-- =====================================================
+         TELA 03 — ESCOLHA DE CATEGORIA
+         ===================================================== -->
+      <section class="screen" id="screen-categories">
+        <button class="btn-menu" onclick="goToScreen('screen-rules')">
+          ← NOMES
+        </button>
+        <div class="screen-content">
+          <div class="tag-header">SELEÇÃO DE DECK</div>
+          <h2>ESCOLHA O CLIMA</h2>
+          <div class="subtitle" style="margin-bottom: 1rem">
+            Qual energia vocês querem para essa rodada?
+          </div>
+
+          <div class="categories-grid" id="categories-grid">
+            <!-- GERADO DINAMICAMENTE -->
+          </div>
         </div>
+      </section>
 
-      </div>
-    </section>
+      <!-- =====================================================
+         TELA 04 — MESA DO JOGO (CARTA)
+         ===================================================== -->
+      <section class="screen" id="screen-game">
+        <button class="btn-menu" onclick="openExitModal()">← MENU</button>
+        <div class="screen-content">
+          <div class="game-header">
+            <div class="tag-header" id="game-cat-title">
+              PROFUNDO & SENTIMENTAL
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" id="progress-fill"></div>
+            </div>
+            <div class="game-stats">
+              <span id="game-progress-text">PERGUNTA 1 / 10</span>
+            </div>
+          </div>
 
-    <!-- =====================================================
+          <!-- CARTA 3D -->
+          <div class="card-stage">
+            <div class="card-3d" id="card-element" onclick="handleCardClick()">
+              <!-- FRENTE -->
+              <div class="card-face card-front">
+                <div class="card-category-badge" id="card-badge">
+                  ❤️ SENTIMENTAL
+                </div>
+                <div class="card-question-text" id="card-question">
+                  Carregando pergunta...
+                </div>
+                <div class="turn-indicator">
+                  <div class="turn-label">AGORA É A VEZ DE:</div>
+                  <div class="turn-player-name" id="turn-player">JULIA ❤️</div>
+                </div>
+              </div>
+
+              <!-- VERSO -->
+              <div class="card-face card-back">
+                <div class="card-back-pattern">❖</div>
+                <div
+                  style="
+                    font-family: var(--font-title);
+                    font-size: 1.2rem;
+                    color: #fff;
+                  "
+                >
+                  ENTRE NÓS
+                </div>
+                <div
+                  style="
+                    font-family: var(--font-mono);
+                    font-size: 0.75rem;
+                    color: var(--text-dim);
+                  "
+                >
+                  Toque para revelar a pergunta
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONTROLES -->
+          <div class="game-controls">
+            <button class="btn-skip" onclick="skipQuestion()">PULAR</button>
+            <button
+              class="btn-action"
+              id="btn-action"
+              onclick="answerQuestion()"
+            >
+              RESPONDI ❤️
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================
          TELA 05 — FIM DO BARALHO / ESTATÍSTICAS
          ===================================================== -->
-    <section class="screen" id="screen-end">
-      <div class="screen-content">
-        <div class="tag-header">RODADA CONCLUÍDA</div>
-        <h2>FIM DO BARALHO ❤️</h2>
-        <div class="subtitle">Vocês chegaram ao final das cartas dessa categoria.</div>
+      <section class="screen" id="screen-end">
+        <div class="screen-content">
+          <div class="tag-header">RODADA CONCLUÍDA</div>
+          <h2>FIM DO BARALHO ❤️</h2>
+          <div class="subtitle">
+            Vocês chegaram ao final das cartas dessa categoria.
+          </div>
 
-        <div style="width: 100%; max-width: 400px; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 20px; padding: 1.5rem; margin: 1rem 0; text-align: left; backdrop-filter: blur(10px);">
-          <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); margin-bottom: 0.8rem; letter-spacing: 1px;">RESUMO DA PARTIDA</div>
-          <div style="display: flex; justify-content: space-between; margin-bottom: 0.6rem; font-size: 0.95rem;">
-            <span style="color: var(--text-muted);">Perguntas respondidas:</span>
-            <strong style="color: #fff;" id="end-answered">0</strong>
+          <div
+            style="
+              width: 100%;
+              max-width: 400px;
+              background: var(--bg-card);
+              border: 1px solid var(--border-light);
+              border-radius: 20px;
+              padding: 1.5rem;
+              margin: 1rem 0;
+              text-align: left;
+              backdrop-filter: blur(10px);
+            "
+          >
+            <div
+              style="
+                font-family: var(--font-mono);
+                font-size: 0.75rem;
+                color: var(--text-dim);
+                margin-bottom: 0.8rem;
+                letter-spacing: 1px;
+              "
+            >
+              RESUMO DA PARTIDA
+            </div>
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 0.6rem;
+                font-size: 0.95rem;
+              "
+            >
+              <span style="color: var(--text-muted)"
+                >Perguntas respondidas:</span
+              >
+              <strong style="color: #fff" id="end-answered">0</strong>
+            </div>
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 0.6rem;
+                font-size: 0.95rem;
+              "
+            >
+              <span style="color: var(--text-muted)">Perguntas puladas:</span>
+              <strong style="color: var(--accent-pink)" id="end-skipped"
+                >0</strong
+              >
+            </div>
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                font-size: 0.95rem;
+              "
+            >
+              <span style="color: var(--text-muted)">Categoria:</span>
+              <strong
+                style="color: var(--current-cat-color)"
+                id="end-category-name"
+                >Sentimental</strong
+              >
+            </div>
           </div>
-          <div style="display: flex; justify-content: space-between; margin-bottom: 0.6rem; font-size: 0.95rem;">
-            <span style="color: var(--text-muted);">Perguntas puladas:</span>
-            <strong style="color: var(--accent-pink);" id="end-skipped">0</strong>
+
+          <div class="poetic-text" style="max-width: 500px; margin: 1rem 0">
+            <p>
+              “Talvez vocês tenham começado esse jogo achando que era só um
+              monte de perguntas.”
+            </p>
+            <p>“Mas algumas respostas provavelmente viraram conversas.”</p>
+            <p class="highlight">E talvez essa seja a melhor parte.</p>
           </div>
-          <div style="display: flex; justify-content: space-between; font-size: 0.95rem;">
-            <span style="color: var(--text-muted);">Categoria:</span>
-            <strong style="color: var(--current-cat-color);" id="end-category-name">Sentimental</strong>
+
+          <div class="btn-container">
+            <button
+              class="btn-primary"
+              onclick="goToScreen('screen-categories')"
+            >
+              JOGAR OUTRA CATEGORIA
+            </button>
+            <button class="btn-secondary" onclick="restartSameCategory()">
+              REJOGAR ESTA CATEGORIA
+            </button>
           </div>
         </div>
+      </section>
+    </div>
 
-        <div class="poetic-text" style="max-width: 500px; margin: 1rem 0;">
-          <p>“Talvez vocês tenham começado esse jogo achando que era só um monte de perguntas.”</p>
-          <p>“Mas algumas respostas provavelmente viraram conversas.”</p>
-          <p class="highlight">E talvez essa seja a melhor parte.</p>
-        </div>
-
-        <div class="btn-container">
-          <button class="btn-primary" onclick="goToScreen('screen-categories')">JOGAR OUTRA CATEGORIA</button>
-          <button class="btn-secondary" onclick="restartSameCategory()">REJOGAR ESTA CATEGORIA</button>
-        </div>
-      </div>
-    </section>
-
-  </div>
-
-  <!-- =====================================================
+    <!-- =====================================================
        SISTEMA JAVASCRIPT
        ===================================================== -->
-  <script>
-    /* =====================================================
+    <script>
+      /* =====================================================
        CONFIGURAÇÕES FÁCEIS DE ALTERAR (PERGUNTAS & BANCO)
        ===================================================== */
-    const configJogo = {
-      p1Default: "Pessoa 1",
-      p2Default: "Pessoa 2",
-      
-      mensagensPular: [
-        "Essa foi arquivada. 👀",
-        "Tudo bem, essa fica nos arquivos secretos.",
-        "Pulamos. Sem julgamentos. 🤫",
-        "Segredo mantido com sucesso.",
-        "Próxima carta a caminho! ✨"
-      ]
-    };
+      const configJogo = {
+        p1Default: 'Pessoa 1',
+        p2Default: 'Pessoa 2',
 
-    // BANCO DE PERGUNTAS POR CATEGORIA (LIVRE PARA ADICIONAR MAIS)
-    const perguntas = {
-  sentimental: [
-    "Quando você percebeu que estava começando a ter sentimentos por mim?",
-    "Qual foi o momento em que você percebeu que eu era diferente das outras pessoas?",
-    "Quando você percebeu que podia confiar em mim de verdade?",
-    "Qual momento nosso você gostaria de reviver exatamente como aconteceu?",
-    "Tem alguma coisa que eu faço que faz você se sentir especialmente amada(o)?",
-    "Qual foi um momento em que você percebeu que realmente se importava comigo?",
-    "O que você acha que mudou em você depois que me conheceu?",
-    "Qual lembrança nossa você acha que nunca vai esquecer?",
-    "Existe alguma coisa que você nunca me contou porque nunca encontrou o momento certo?",
-    "Se pudesse guardar apenas uma memória nossa para sempre, qual seria?",
-
-    "O que eu faço que faz você sentir que está em casa?",
-    "Qual é o seu maior medo em relação a nós dois?",
-    "Em que momento você chorou por minha causa, de felicidade ou de tristeza?",
-    "Qual foi a coisa mais bonita que já fiz por você?",
-    "Você já teve medo de me perder? Quando foi?",
-    "O que você mais admira em mim como pessoa?",
-    "Qual qualidade minha você gostaria de ter?",
-    "Qual frase que eu já disse ficou marcada na sua cabeça?",
-    "Quando foi a primeira vez que você pensou: 'eu amo essa pessoa'?",
-    "Que parte de você só eu conheço?",
-
-    "O que você nunca teve coragem de me pedir?",
-    "Em que momento você se sentiu mais protegido(a) por mim?",
-    "Qual é o maior sonho que você tem para nós dois?",
-    "Como você imagina a gente daqui a dez anos?",
-    "O que você sentiria se um dia acordasse e eu não estivesse mais na sua vida?",
-    "Qual foi a maior prova de amor que você já recebeu de mim?",
-    "Existe algo que eu fiz que te magoou e nunca conversamos sobre isso?",
-    "O que eu poderia fazer mais para você se sentir amado(a)?",
-    "Qual foi o dia mais feliz da sua vida ao meu lado?",
-    "O que você sente quando me vê dormindo?",
-
-    "Qual é a sua maior insegurança dentro da nossa relação?",
-    "Em que situação você mais se sentiu compreendido(a) por mim?",
-    "O que você me agradece e nunca disse em voz alta?",
-    "Se você pudesse me escrever uma carta agora, qual seria a primeira frase?",
-    "Qual é a coisa que mais te dá medo de eu descobrir sobre você?",
-    "Quando você olha para mim, o que você sente de verdade?",
-    "O que você aprendeu sobre amor comigo?",
-    "Qual foi a hora em que você mais precisou de mim e eu estava lá?",
-    "Qual foi a hora em que você mais precisou de mim e eu não estava?",
-    "O que você quer que eu nunca esqueça sobre você?",
-
-    "Você acredita que nos encontramos por destino? Por quê?",
-    "O que faz você ter certeza de que eu sou a pessoa certa?",
-    "Qual é o cheiro, som ou lugar que te lembra de mim imediatamente?",
-    "O que te faz sentir saudade de mim mesmo quando estamos juntos?",
-    "Qual promessa você gostaria de me fazer hoje?",
-    "Qual promessa você gostaria que eu te fizesse?",
-    "No que você acha que somos melhores juntos do que separados?",
-    "Que fase da sua vida você acha que eu te ajudei a superar?",
-    "Qual foi a nossa conversa mais importante até hoje?",
-    "Quando foi que você percebeu que não queria mais ficar sem mim?",
-
-    "Qual é o seu maior orgulho de nós dois como casal?",
-    "Que defeito meu você aprendeu a amar?",
-    "O que você faria para me reconquistar se um dia eu me afastasse?",
-    "Em que momento você sentiu que eu te escolhi?",
-    "Qual é o seu pedido mais sincero para o nosso futuro?",
-    "O que você gostaria de me dizer olhando nos meus olhos por um minuto inteiro?",
-    "O que você sente que ainda não conseguiu expressar direito sobre o que sente por mim?",
-    "Qual é o carinho que mais te desarma?",
-    "Existe alguma ferida do seu passado que eu ajudei a curar?",
-    "Qual seria o nosso lugar seguro, onde tudo fica bem?",
-
-    "O que você acha que a gente nunca vai deixar de ser, aconteça o que acontecer?",
-    "Em que momento você sentiu mais orgulho de mim?",
-    "Quando foi a última vez que você se emocionou pensando em nós?",
-    "Como você gostaria que eu cuidasse de você nos dias difíceis?",
-    "O que você ainda quer viver comigo antes de qualquer outra coisa?",
-    "Qual é o gesto simples meu que mais significa para você?",
-    "O que você diria para a versão de você que ainda não me conhecia?",
-    "O que mudou na forma como você enxerga o amor depois de mim?",
-    "O que você sentiu no nosso primeiro 'eu te amo'?",
-    "Qual medo você deixou de ter por estar comigo?",
-
-    "Que tipo de futuro você sonha construir ao meu lado?",
-    "Qual é a coisa mais difícil de admitir sobre o quanto você gosta de mim?",
-    "O que você faria hoje para me provar que eu sou prioridade?",
-    "Em que ocasião você viu o melhor de mim?",
-    "Em que ocasião você viu o pior de mim e ficou mesmo assim?",
-    "O que você gostaria que a gente nunca deixasse de fazer juntos?",
-    "O que você acha que eu sinto por você e talvez nunca tenha dito?",
-    "O que significa 'lar' para você e que parte disso sou eu?",
-    "O que você faria diferente na nossa relação se pudesse recomeçar?",
-    "Qual é a coisa que mais te faz querer ser uma pessoa melhor por mim?",
-
-    "Qual foi o abraço meu que você nunca vai esquecer?",
-    "Que música te lembra de nós e por quê?",
-    "O que você sente quando a gente fica longe por muito tempo?",
-    "Qual é o maior risco que você correria por mim?",
-    "O que você acha que a gente precisa cuidar mais para o amor durar?",
-    "Qual lembrança nossa você escolheria para contar aos nossos netos?",
-    "Em que momento você percebeu que eu virei a sua melhor companhia?",
-    "O que você sente que só eu consigo te dar?",
-    "Qual é a coisa mais sincera que você já sentiu por alguém, e é por mim?",
-    "Em que momento você se sentiu mais vulnerável comigo?",
-
-    "Qual desejo seu para a nossa relação você ainda não disse?",
-    "O que você agradece à vida por ter me colocado no seu caminho?",
-    "Como você gostaria de ser amado(a) nos dias em que está mal?",
-    "Qual foi a hora em que eu te surpreendi de um jeito bom?",
-    "Qual é a coisa que você mais tem medo de perder em nós?",
-    "O que te faz querer me escolher todos os dias?",
-    "Se o nosso amor fosse uma música, como ela seria?",
-    "Qual é a diferença entre quem você era antes e quem você é comigo?",
-    "O que você gostaria de ouvir de mim agora?",
-    "Se você tivesse só mais um dia comigo, como seria?"
-  ],
-
-  engracadas: [
-    "Qual é a coisa mais estranha ou engraçada que você acha que eu faço?",
-    "Se eu fosse preso(a), qual seria o motivo mais provável?",
-    "Qual seria o nosso pior reality show se fôssemos gravados 24h?",
-    "Qual mania minha você acha secretamente engraçada?",
-    "Se tivéssemos que sobreviver juntos a um apocalipse zumbi, quem morreria primeiro?",
-    "Qual foi o momento mais vergonhoso que você passou do meu lado?",
-    "Se eu fosse um personagem de desenho animado, qual eu seria?",
-    "Qual seria a coisa mais idiota pela qual nós dois provavelmente brigaríamos?",
-    "Quem de nós dois seria pior morando sozinho sem ajuda?",
-    "Qual foi a situação em que você mais pensou: 'não é possível que essa pessoa fez isso'?",
-
-    "Qual de nós dois é mais dramático(a) e em qual situação?",
-    "Qual seria o nome do nosso casal em um filme de comédia?",
-    "Qual comida eu faço mal e você finge que está boa?",
-    "Qual é a pior música que eu canto achando que arraso?",
-    "Se a gente abrisse um negócio juntos, qual seria o primeiro a dar errado?",
-    "Qual é a minha desculpa mais esfarrapada?",
-    "Qual é a coisa mais boba que já te fez rir até chorar?",
-    "Se eu ganhasse na loteria amanhã, qual seria a primeira loucura que eu faria?",
-    "Qual mania minha te irrita e te faz rir ao mesmo tempo?",
-    "Quem de nós dois é mais ciumento(a) em silêncio?",
-
-    "Se a gente participasse de uma competição de casais, qual seria a nossa maior derrota?",
-    "Como é a minha cara quando estou com fome?",
-    "Qual é o apelido mais ridículo que você já pensou para mim?",
-    "Se eu fosse um animal, qual eu seria e por quê?",
-    "Qual foi a mentirinha mais descarada que eu já contei para você?",
-    "Qual é a pior foto que eu já tirei e você guardou?",
-    "Quem de nós dois ronca mais, fala dormindo ou rouba mais coberta?",
-    "Qual seria o título do filme da nossa vida?",
-    "Qual é a coisa mais inútil que eu já comprei?",
-    "Quem tem o pior senso de direção entre nós dois?",
-
-    "Se a gente fosse presos juntos, quem entregaria o outro primeiro?",
-    "Qual é a minha mania mais irritante na hora de dormir?",
-    "Qual seria o meu superpoder mais inútil?",
-    "Qual foi a nossa discussão mais ridícula de todas?",
-    "Se eu fosse personagem de novela, qual seria o meu papel?",
-    "O que eu faço quando acho que ninguém está olhando?",
-    "Qual é a coisa mais maluca que você acha que eu seria capaz de fazer por impulso?",
-    "Se a gente tivesse um reality de culinária, quem seria eliminado primeiro?",
-    "Qual é a dança que eu danço achando que sou ótimo(a), mas é péssima?",
-    "Qual frase minha você mais repete só para me zoar?",
-
-    "Quem é mais teimoso(a) de nós dois e qual foi a última teimosia?",
-    "Qual foi a pior ideia que eu já tive e você apoiou mesmo assim?",
-    "Se a gente ficasse preso no elevador por cinco horas, o que aconteceria?",
-    "Qual é a coisa mais estranha que tem no meu celular?",
-    "Qual seria a nossa treta mais boba no supermercado?",
-    "Quem de nós dois seria o primeiro a desistir de uma dieta?",
-    "Qual filme você me obrigou a ver e eu odiei?",
-    "Se a nossa relação fosse um meme, qual seria?",
-    "Qual é a coisa mais vergonhosa que eu já disse em público?",
-    "Quem de nós dois é pior em guardar segredo?",
-
-    "Se a gente trocasse de corpo por um dia, o que você faria primeiro?",
-    "Quem de nós dois enrola mais para ficar pronto(a)?",
-    "Qual é o jeito mais engraçado que eu fico quando estou com sono?",
-    "Qual seria o nome do nosso futuro pet e por quê?",
-    "Qual foi a pior desculpa que eu já usei para me atrasar?",
-    "Se eu fosse um sabor de sorvete, qual seria?",
-    "Quem de nós dois chora mais em filme?",
-    "Qual é a coisa que eu faço que parece simples, mas sempre dá errado?",
-    "Qual seria a pior profissão para mim e por quê?",
-    "Se a gente tivesse um programa de TV, qual seria o formato?",
-
-    "Qual é a pior coisa que eu já cozinhei?",
-    "Qual é o meu maior talento inútil?",
-    "O que eu fingiria saber só para parecer inteligente?",
-    "Qual foi o rolê mais desastroso que a gente já fez?",
-    "Se a gente fosse personagens de videogame, quais seríamos?",
-    "Quem de nós dois é mais preguiçoso(a) nos fins de semana?",
-    "Qual é a coisa mais boba que me deixa de mau humor?",
-    "Se eu ficasse famoso(a) por algo vergonhoso, qual seria?",
-    "Qual hábito meu você imitaria só para me irritar?",
-    "Qual é o apelido secreto que você me deu e nunca contou?",
-
-    "Se a gente tivesse que viver de um único alimento por um mês, qual seria?",
-    "Quem de nós dois perderia mais rápido numa luta?",
-    "Qual é a minha maior mania de desorganização?",
-    "Qual lugar a gente nunca deveria ir junto de novo por causa do caos?",
-    "Quem de nós dois fica mais perdido(a) com tecnologia?",
-    "Qual foi a coisa mais absurda que eu discuti com tanta certeza?",
-    "Se a gente morasse numa ilha deserta, quem mandaria em tudo?",
-    "Qual foi o pior presente que eu já te dei? (pode ser sincero)",
-    "Qual seria a nossa dupla de super-heróis e qual seria a fraqueza de cada um?",
-    "O que eu faço no trânsito que te dá vontade de rir e de descer do carro?",
-
-    "Quem de nós dois sabe menos cozinhar?",
-    "Qual foi a maior vergonha que a gente passou junto em um restaurante?",
-    "Se eu tivesse um canal no YouTube, qual seria o tema?",
-    "Qual é o meu pior hábito no celular?",
-    "Se a gente fosse uma dupla sertaneja, qual seria o nome?",
-    "Qual seria a placa na porta da nossa casa?",
-    "Quem de nós dois mais perde as coisas (chave, celular, carteira)?",
-    "Qual foi a coisa mais sem noção que eu já falei para você?",
-    "Como eu fico quando estou com ciúmes? Imita!",
-    "Se a gente tivesse que escolher um mico para pagar juntos, qual seria?",
-
-    "Qual foi a maior bobeira que a gente fez e que ainda dá risada?",
-    "Se a gente fosse um casal de série, qual seria o título do episódio mais caótico?",
-    "Qual prato eu deveria nunca mais tentar fazer?",
-    "Qual é a maior mentira que eu conto sobre mim mesmo(a)?",
-    "O que eu levo mais tempo para fazer do que deveria?",
-    "Qual seria a pior profissão que a gente teria como dupla?",
-    "Quem de nós dois seria mais bobo(a) numa viagem sem plano?",
-    "Qual é o meu ponto fraco mais engraçado?",
-    "Se você pudesse apertar um botão para eu mudar uma mania engraçada, qual seria?",
-    "Qual é a primeira coisa que você pensa quando eu falo: 'tive uma ideia'?"
-  ],
-
-  picante: [
-    "Qual foi o momento exato em que você mais sentiu atração por mim?",
-    "O que você acha visualmente mais irresistível em mim?",
-    "Qual tipo de beijo nosso você mais gosta e mais sente falta no dia a dia?",
-    "Qual situação entre nós teve a química mais intensa até hoje?",
-    "O que eu faço ou digo que imediatamente muda seu humor para um tom mais romântico?",
-    "Qual roupa ou estilo meu você mais gosta de ver em mim?",
-    "Qual foi um momento em que você ficou com muita vontade de me beijar e teve que disfarçar?",
-    "Você prefere uma noite romântica e planejada ou uma noite completamente imprevisível?",
-    "Qual é uma coisa que eu faço e provavelmente nem percebo que mexe com você?",
-    "Qual seria o cenário de um encontro perfeito para nós dois se ninguém pudesse atrapalhar?",
-
-    "Qual é a fantasia que você tem comigo e ainda não me contou?",
-    "Em que lugar da casa você mais gostaria de me beijar sem parar?",
-    "Qual parte do meu corpo você mais gosta de tocar?",
-    "O que eu faço na cama que te deixa maluco(a)?",
-    "Você prefere ser dominado(a) ou dominar? Por quê?",
-    "Qual foi a nossa melhor noite de todas?",
-    "O que você gostaria de experimentar comigo que nunca fizemos?",
-    "Qual é o lugar mais ousado onde você teria coragem de ficar comigo?",
-    "O que você sente quando eu sussurro no seu ouvido?",
-    "Qual é o jeito que eu te olho que te arrepia?",
-
-    "Qual roupa íntima minha você mais gosta (ou gostaria de ver)?",
-    "O que te deixa com mais vontade: carinho lento ou intensidade?",
-    "Qual é a sua posição favorita? E você sabe qual é a minha?",
-    "Qual é o elogio na cama que você mais gostaria de ouvir de mim?",
-    "Você já pensou em mim em um momento totalmente impróprio? Qual?",
-    "O que eu poderia fazer hoje para você não conseguir se concentrar em mais nada?",
-    "Qual foi o melhor beijo que já trocamos e onde foi?",
-    "Em qual parte do seu corpo você gosta que eu beije mais?",
-    "O que você acha de a gente tomar banho juntos, com calma?",
-    "Qual é a coisa mais safada que você já pensou em me falar e não falou?",
-
-    "Se a gente tivesse um fim de semana inteiro sem ninguém por perto, como seria?",
-    "Qual música te deixa no clima comigo?",
-    "Você gosta mais de preliminares longas ou de ir direto ao ponto?",
-    "O que eu faço na intimidade que você mais sente falta quando estamos longe?",
-    "O que você gostaria que eu fizesse mais vezes na intimidade?",
-    "Você já teve vontade de me chamar para sair de um lugar só para ficarmos a sós?",
-    "Qual parte do meu corpo você acha mais sexy e por quê?",
-    "Qual foi a última vez que você sentiu vontade de me agarrar do nada?",
-    "Que tipo de mensagem safada você gostaria de receber de mim hoje?",
-    "Se eu aparecesse de surpresa na sua porta à noite, o que aconteceria?",
-
-    "Qual jogo ou brincadeira sensual você gostaria de fazer comigo?",
-    "Você tem alguma fantasia envolvendo roupa ou personagem?",
-    "Qual é o cenário romântico que acabaria em muito mais?",
-    "Qual é o toque que mais te enlouquece?",
-    "Onde você mais gosta de ser beijado(a): pescoço, costas ou orelha?",
-    "Qual foi o momento mais quente que já vivemos?",
-    "O que você acha de uma massagem com óleo, velas e sem pressa?",
-    "O que você mais gosta de ouvir na hora H?",
-    "Quanto tempo você acha que a gente aguentaria sem se tocar? Teríamos coragem de tentar?",
-    "Qual é a sua parte favorita do meu corpo para ficar abraçado(a)?",
-
-    "Qual desejo seu você tem vergonha de contar?",
-    "Você gostaria que eu tomasse mais a iniciativa? Como?",
-    "Qual seria a nossa noite perfeita do começo ao fim?",
-    "Se eu pudesse te fazer uma surpresa agora, sem você saber qual, você aceitaria?",
-    "Qual é o seu maior ponto fraco quando o assunto é tentação?",
-    "O que você pensa quando me vê saindo do banho?",
-    "Você prefere luz acesa, velas ou escuro total? Por quê?",
-    "Qual roupa minha te dá vontade de tirar na hora?",
-    "Já imaginou a gente se pegando em algum lugar proibido? Onde?",
-    "Qual é a coisa mais ousada que você já fez por alguém e faria por mim?",
-
-    "O que mais acende o seu desejo: palavras, toques ou olhares?",
-    "Se a gente fizesse um desafio de sedução, quem perderia primeiro?",
-    "O que você quer que eu descubra sobre você na intimidade?",
-    "Você gosta de ser provocado(a) ao longo do dia? Como?",
-    "Qual é o seu maior desejo para a próxima vez que a gente ficar a sós?",
-    "O que você acha de brincadeiras de mandar e obedecer entre nós dois?",
-    "Em qual parte do meu corpo você mais pensa quando estou longe?",
-    "O que você acha de a gente escrever uma lista de desejos picantes e trocar?",
-    "Qual é o seu momento do dia favorito para ficar comigo?",
-    "O que eu faço que te faz perder totalmente o controle?",
-
-    "Quando foi que você me viu e pensou: 'preciso beijar essa pessoa'?",
-    "O que você acha de uma noite com música, luz baixa e clima preparado?",
-    "Como você gostaria que eu te seduzisse hoje?",
-    "O que você acha de passarmos um dia inteiro de pijama, na cama, sem sair?",
-    "O que eu falo que te deixa arrepiado(a)?",
-    "Se você pudesse parar o tempo com a gente a sós, o que faria comigo?",
-    "O que você mais sente falta de fazer comigo quando estamos longe?",
-    "Qual é a sua vontade de me provocar em público sem ninguém perceber?",
-    "O que você pensa quando me vê arrumado(a) para sair?",
-    "Em que ocasião ficamos 'quase' e fomos interrompidos?",
-
-    "O que você prefere: ser surpreendido(a) ou combinar tudo antes?",
-    "Qual é o seu ponto mais sensível que eu deveria explorar mais?",
-    "Como seria o nosso encontro dos sonhos terminando em um hotel?",
-    "Qual cena quente que você já viu ou leu você gostaria de reproduzir comigo?",
-    "O que você gostaria de me pedir hoje sem sentir vergonha?",
-    "O que você acha de a gente tentar algo novo, com cuidado e com o consentimento dos dois?",
-    "Qual desafio sensual você me lançaria agora?",
-    "O que você mais ama sentir na pele quando estamos juntos?",
-    "O que te deixa mais animado(a): conquista ou entrega?",
-    "Descreva em três palavras como é ficar na intimidade comigo.",
-
-    "Qual foi a melhor surpresa picante que eu já fiz por você?",
-    "Qual hábito meu na cama você adora e nunca disse?",
-    "Se a gente pudesse repetir uma noite, qual seria e por quê?",
-    "O que você gostaria que eu usasse hoje? Ou que eu não usasse?",
-    "Em que parte do dia você mais gosta de pensar em mim com segundas intenções?",
-    "O que você mais quer que eu faça bem devagar?",
-    "Qual é o seu desejo secreto para a nossa próxima viagem?",
-    "Em que você acha que a nossa química é mais forte?",
-    "Se a gente trocasse três segredos picantes agora, quais seriam os seus?",
-    "O que você faria para me deixar sem fôlego em dez minutos?"
-  ],
-
-  curiosidades: [
-    "Qual detalhe ou coisa pequena consegue melhorar seu dia instantaneamente?",
-    "Qual sonho pessoal seu você ainda não contou para quase ninguém?",
-    "Qual opinião forte sua mudou completamente nos últimos anos?",
-    "Qual habilidade ou coisa nova você gostaria de aprender se tivesse tempo livre?",
-    "Qual seria uma viagem maluca que você faria amanhã se pudesse?",
-    "Qual é um fato curioso sobre você que poucas pessoas no mundo sabem?",
-    "Qual hábito seu do dia a dia você gostaria de mudar?",
-    "Qual foi uma decisão aparentemente pequena na sua vida que mudou muita coisa no final?",
-    "Qual lugar no mundo você gostaria muito que nós conhecêssemos juntos?",
-    "O que você acha que as pessoas em geral costumam entender errado sobre você?",
-
-    "Qual é a coisa mais corajosa que você já fez?",
-    "Qual é o seu maior medo que parece bobo para os outros?",
-    "Se pudesse jantar com qualquer pessoa, viva ou morta, quem seria?",
-    "Qual profissão você teria se dinheiro não fosse problema?",
-    "Qual é a melhor lembrança da sua infância?",
-    "Qual comida você nunca enjoaria de comer?",
-    "Qual é o seu maior arrependimento?",
-    "Qual é a mentira mais inofensiva que você já contou?",
-    "Qual é a sua maior qualidade e o seu maior defeito?",
-    "Qual conselho você daria para você mesmo(a) aos 16 anos?",
-
-    "Se pudesse viver em qualquer época da história, qual seria?",
-    "Qual talento você gostaria de ter de nascença?",
-    "Qual livro, filme ou série mudou sua forma de pensar?",
-    "Qual é a coisa mais estranha que você já comeu?",
-    "Qual é a sua mania que ninguém entende?",
-    "Qual é o seu sonho de infância que ainda não realizou?",
-    "Como seria o seu domingo perfeito?",
-    "Qual país você escolheria para morar por um ano?",
-    "Qual foi a melhor viagem que você já fez?",
-    "Se pudesse resolver um problema do mundo, qual seria?",
-
-    "Qual é o seu maior orgulho pessoal?",
-    "Em que você gasta dinheiro sem pensar duas vezes?",
-    "Qual cheiro te traz boas lembranças?",
-    "Qual foi a pior fase ou o pior emprego que você já passou?",
-    "O que você faria se ganhasse um ano de folga com tudo pago?",
-    "Qual é o seu maior talento escondido?",
-    "Qual música você ouviria pelo resto da vida?",
-    "Qual foi a melhor decisão que você já tomou?",
-    "Qual foi a pior decisão que você já tomou e o que aprendeu com ela?",
-    "O que mais te irrita nas pessoas?",
-
-    "Você prefere praia, montanha ou cidade grande? Por quê?",
-    "Você é do tipo que acorda cedo ou dorme tarde? Por quê?",
-    "Qual é a coisa mais maluca que você já quis fazer?",
-    "Qual esporte ou hobby você gostaria de praticar de verdade?",
-    "Você se considera mais racional ou mais emocional?",
-    "O que você mais valoriza em uma amizade?",
-    "Qual foi o melhor presente que você já recebeu?",
-    "Qual seria o seu lugar perfeito para morar?",
-    "Qual é a sua maior superstição ou crença curiosa?",
-    "Você prefere viver com mais planejamento ou mais improviso?",
-
-    "Se pudesse saber a data de uma única coisa na sua vida, qual seria?",
-    "Qual frase você leva como lema?",
-    "Qual era o seu apelido na infância e de onde veio?",
-    "Qual é a coisa mais difícil que você já superou?",
-    "Como seria para você passar uma semana sem tecnologia?",
-    "O que você faria com um dia sem nenhuma obrigação?",
-    "Qual idioma você gostaria de falar fluentemente?",
-    "Qual foi a maior mudança que você já fez na sua vida?",
-    "Qual é o seu maior desafio atualmente?",
-    "Qual pessoa mais te inspirou na vida?",
-
-    "O que você nunca emprestaria para ninguém?",
-    "Qual lugar da cidade você mais gosta de ir quando quer pensar?",
-    "O que você faria se fosse invisível por um dia?",
-    "Qual é a sua relação com o dinheiro: gastador(a) ou econômico(a)?",
-    "Qual hábito você começou que fez muita diferença na sua vida?",
-    "Se pudesse voltar no tempo e mudar uma coisa, você mudaria?",
-    "Qual é a sua maior vergonha de infância?",
-    "O que você acha que a sua vida diz sobre você?",
-    "Qual habilidade você acha que todo mundo deveria ter?",
-    "Qual é o seu tipo de humor favorito?",
-
-    "Qual foi o melhor conselho que você já recebeu?",
-    "Se pudesse ter um superpoder útil, qual escolheria?",
-    "Qual lugar do mundo mais te dá curiosidade?",
-    "O que você faria se tivesse um mês livre para fazer qualquer coisa?",
-    "O que você mudaria em si mesmo(a) se pudesse apertar um botão?",
-    "Qual é a sua relação com espiritualidade ou fé?",
-    "Qual desafio você toparia hoje só para provar algo?",
-    "Qual foi a coisa mais bonita que você já viu?",
-    "O que você acha que é essencial para ser feliz?",
-    "Qual é o seu maior defeito como parceiro(a)?",
-
-    "O que você faria se fosse o(a) chefe do país por um dia?",
-    "Sobre qual assunto você conversaria por horas?",
-    "O que te faz perder a noção do tempo?",
-    "Qual é a sua lembrança mais antiga?",
-    "Qual momento da sua vida você considera um divisor de águas?",
-    "O que você mais tem vontade de comprar hoje?",
-    "Se pudesse escolher outro nome para si, qual seria?",
-    "Qual é o seu maior sonho profissional?",
-    "O que você não abre mão em uma viagem?",
-    "O que você acha que torna uma pessoa interessante?",
-
-    "Qual é a sua maior curiosidade sobre mim que você ainda não perguntou?",
-    "O que você mais gostaria de saber cozinhar?",
-    "Qual foi o momento em que você mais riu na vida?",
-    "O que você faria se pudesse viver um dia como outra pessoa?",
-    "Qual é a coisa mais legal que você já aprendeu sozinho(a)?",
-    "Quais planos de vida você tem em mente para os próximos cinco anos?",
-    "Qual é o seu maior vício inofensivo?",
-    "O que você pensa sobre ter filhos ou pets no futuro?",
-    "O que você mais gostaria que eu soubesse sobre o seu passado?",
-    "Se pudesse me fazer uma pergunta e eu respondesse com total sinceridade, qual seria?"
-  ],
-
-  historia: [
-    "Qual foi sua exata primeira impressão de mim quando me viu pela primeira vez?",
-    "Você lembra do exato instante em que percebeu que gostava da minha companhia?",
-    "Qual foi o nosso primeiro momento que pareceu realmente especial para você?",
-    "Qual foi a situação mais aleatória que vivemos e que virou uma memória marcante?",
-    "Qual foi o momento em que você percebeu que nossa relação estava ficando séria?",
-    "Qual foi o nosso encontro ou passeio favorito até hoje?",
-    "Qual lembrança simples nossa sempre faz você sorrir sozinho(a)?",
-    "Qual foi uma coisa pequena que eu fiz por você no passado e que você nunca esqueceu?",
-    "Se você pudesse reescrever ou voltar para um dia específico da nossa história, qual seria?",
-    "O que você mais espera que ainda vire uma memória marcante nossa no futuro?",
-
-    "Onde estávamos na primeira vez que nos falamos?",
-    "Qual foi a primeira coisa que você notou em mim?",
-    "O que você pensou quando recebeu a minha primeira mensagem?",
-    "Como foi o nosso primeiro beijo?",
-    "Qual foi a nossa primeira conversa que durou horas?",
-    "Qual foi a primeira música que lembra a gente?",
-    "Qual foi o primeiro lugar aonde fomos juntos?",
-    "O que você sentiu antes do nosso primeiro encontro?",
-    "Qual foi a sua maior ansiedade quando começamos a sair?",
-    "O que você contou para os seus amigos sobre mim no começo?",
-
-    "Qual foi o primeiro presente que a gente trocou?",
-    "Quem disse o primeiro 'eu te amo' e como foi?",
-    "Qual foi a nossa primeira briga e como terminou?",
-    "Qual foi a primeira vez que você me apresentou a alguém importante?",
-    "Qual foi a primeira viagem que fizemos juntos?",
-    "O que você achou da primeira vez que conheceu a minha casa ou a minha família?",
-    "Como foi o momento em que decidimos assumir o namoro?",
-    "Como você se sentiu na primeira vez que dormimos juntos?",
-    "O que mais te surpreendeu em mim nos primeiros meses?",
-    "Qual foi o primeiro apelido que a gente se deu?",
-
-    "Qual foi o dia mais difícil que enfrentamos juntos?",
-    "Qual foi a maior lição que aprendemos como casal?",
-    "Teve algum momento em que a gente quase desistiu? O que nos manteve juntos?",
-    "Qual foi a maior superação nossa?",
-    "Qual foi a melhor surpresa que já recebemos um do outro?",
-    "Qual foi a data mais importante da nossa história até agora?",
-    "Qual foi o momento em que mais rimos juntos?",
-    "Qual foi a nossa melhor conversa de madrugada?",
-    "Qual foi o dia mais perfeito que passamos juntos?",
-    "Qual foi o maior susto que passamos juntos?",
-
-    "Qual foi o lugar mais bonito aonde já fomos juntos?",
-    "Qual restaurante ou comida marcou a nossa história?",
-    "Qual filme ou série a gente virou fã junto?",
-    "Qual foi a nossa maior parceria em uma situação difícil?",
-    "Qual foi a coisa mais maluca que já fizemos juntos?",
-    "Qual é a nossa tradição ou ritual de casal favorito?",
-    "Qual foi o momento em que a gente mais se uniu?",
-    "Quando foi a primeira vez que você viu que éramos um time?",
-    "Qual é a nossa foto favorita e por quê?",
-    "Qual foi o melhor aniversário (seu, meu ou de namoro) que passamos juntos?",
-
-    "Qual foi o dia em que você mais teve orgulho de nós?",
-    "Qual foi a primeira vez que você sentiu ciúmes de mim?",
-    "Qual foi a maior mudança que a nossa relação trouxe para a sua vida?",
-    "Quando você percebeu que podia ser você mesmo(a) comigo?",
-    "Qual foi a primeira vez que a gente chorou na frente um do outro?",
-    "Qual foi uma conversa difícil que nos deixou mais fortes?",
-    "Qual é a lembrança mais engraçada que temos de um erro bobo?",
-    "Qual momento nosso daria um ótimo filme?",
-    "Qual foi o rolê que começou ruim e acabou ótimo?",
-    "O que você sentiu quando ficamos muito tempo sem nos ver?",
-
-    "Qual foi o melhor Natal, Ano Novo ou feriado que passamos juntos?",
-    "Qual foi o maior plano que fizemos juntos e realizamos?",
-    "Qual foi o meu gesto mais romântico na nossa história?",
-    "Qual foi o seu gesto mais romântico que eu nunca esqueci?",
-    "Em que momento você mais sentiu o meu apoio?",
-    "Qual foi o dia em que a gente chorou de rir?",
-    "Qual foi a viagem ou passeio que você gostaria de repetir?",
-    "Quando você pensou: 'é com essa pessoa que eu quero ficar'?",
-    "O que você achava de mim antes de me conhecer melhor e o que acha hoje?",
-    "Qual foi a coisa mais bonita que já dissemos um ao outro?",
-
-    "Quando foi a primeira vez que dissemos 'nós' em vez de 'eu'?",
-    "Qual foi o dia em que você mais sentiu que eu te escolhi?",
-    "Qual foi a primeira coisa que combinamos de fazer juntos no futuro?",
-    "Qual foi a melhor festa ou evento em que fomos juntos?",
-    "Qual foi a coisa mais difícil que superamos graças ao outro?",
-    "O que você descobriu sobre mim depois de muito tempo juntos que te surpreendeu?",
-    "Qual foi a melhor noite de conversa sem fazer nada de especial?",
-    "Qual foi um dia comum que virou inesquecível?",
-    "Qual foi o maior mal-entendido que tivemos e como resolvemos?",
-    "Qual foi a primeira música que dançamos juntos?",
-
-    "O que a gente fazia no começo que você gostaria de voltar a fazer?",
-    "Do que você mais sentia falta quando não nos víamos?",
-    "O que você mais gosta de lembrar sobre o nosso começo?",
-    "Qual foi o primeiro momento em que nos sentimos adultos juntos?",
-    "Qual foi o maior desafio da nossa relação até hoje?",
-    "Em que momento você mais se apaixonou por mim?",
-    "Qual foi a primeira vez que cuidamos um do outro doente ou cansado?",
-    "Qual foi a nossa maior mudança como casal ao longo do tempo?",
-    "Qual foi a melhor coisa que fizemos por impulso?",
-    "Quando você percebeu que a gente combinava de verdade?",
-
-    "O que você sente quando olha as nossas fotos antigas?",
-    "Qual capítulo da nossa história você gostaria de reler?",
-    "Qual foi a coisa mais bonita que já aconteceu entre nós?",
-    "Qual foi o momento que mais nos aproximou?",
-    "Se a nossa história virasse livro, qual seria o título?",
-    "Qual seria o último capítulo ideal da nossa história?",
-    "Qual foi o conselho mais importante que um de nós deu ao outro?",
-    "Qual momento da nossa história você vai lembrar com mais carinho no futuro?",
-    "O que você acha que o nosso eu do passado diria sobre onde estamos hoje?",
-    "Qual capítulo você mais espera escrever com a gente?"
-  ]
-};
-    // DADOS DAS CATEGORIAS (VISUAL E META)
-    const infoCategorias = {
-      sentimental: {
-        title: "Profundo & Sentimental",
-        icon: "❤️",
-        color: "var(--cat-sentimental)",
-        desc: "Para quando vocês querem conversar de verdade sobre sentimentos e conexão."
-      },
-      engracadas: {
-        title: "Engraçadas & Leves",
-        icon: "😂",
-        color: "var(--cat-engracadas)",
-        desc: "Perguntas absurdas e histórias para rir juntos e passar vergonha."
-      },
-      picante: {
-        title: "Picante & Química",
-        icon: "🔥",
-        color: "var(--cat-picante)",
-        desc: "Provocações sutis, atração, preferências e intimidade para esquentar o clima."
-      },
-      curiosidades: {
-        title: "Curiosidades",
-        icon: "🧠",
-        color: "var(--cat-curiosidades)",
-        desc: "Para descobrir detalhes e segredos que vocês talvez nunca perguntaram."
-      },
-      historia: {
-        title: "Nossa História",
-        icon: "🫶",
-        color: "var(--cat-historia)",
-        desc: "Para relembrar momentos marcantes, primeiras impressões e memórias."
+        mensagensPular: [
+          'Essa foi arquivada. 👀',
+          'Tudo bem, essa fica nos arquivos secretos.',
+          'Pulamos. Sem julgamentos. 🤫',
+          'Segredo mantido com sucesso.',
+          'Próxima carta a caminho! ✨'
+        ]
       }
-    };
 
-    /* =====================================================
+      // BANCO DE PERGUNTAS POR CATEGORIA (LIVRE PARA ADICIONAR MAIS)
+      const perguntas = {
+        sentimental: [
+          'Quando você percebeu que estava começando a ter sentimentos por mim?',
+          'Qual foi o momento em que você percebeu que eu era diferente das outras pessoas?',
+          'Quando você percebeu que podia confiar em mim de verdade?',
+          'Qual momento nosso você gostaria de reviver exatamente como aconteceu?',
+          'Tem alguma coisa que eu faço que faz você se sentir especialmente amada(o)?',
+          'Qual foi um momento em que você percebeu que realmente se importava comigo?',
+          'O que você acha que mudou em você depois que me conheceu?',
+          'Qual lembrança nossa você acha que nunca vai esquecer?',
+          'Existe alguma coisa que você nunca me contou porque nunca encontrou o momento certo?',
+          'Se pudesse guardar apenas uma memória nossa para sempre, qual seria?',
+
+          'O que eu faço que faz você sentir que está em casa?',
+          'Qual é o seu maior medo em relação a nós dois?',
+          'Em que momento você chorou por minha causa, de felicidade ou de tristeza?',
+          'Qual foi a coisa mais bonita que já fiz por você?',
+          'Você já teve medo de me perder? Quando foi?',
+          'O que você mais admira em mim como pessoa?',
+          'Qual qualidade minha você gostaria de ter?',
+          'Qual frase que eu já disse ficou marcada na sua cabeça?',
+          "Quando foi a primeira vez que você pensou: 'eu amo essa pessoa'?",
+          'Que parte de você só eu conheço?',
+
+          'O que você nunca teve coragem de me pedir?',
+          'Em que momento você se sentiu mais protegido(a) por mim?',
+          'Qual é o maior sonho que você tem para nós dois?',
+          'Como você imagina a gente daqui a dez anos?',
+          'O que você sentiria se um dia acordasse e eu não estivesse mais na sua vida?',
+          'Qual foi a maior prova de amor que você já recebeu de mim?',
+          'Existe algo que eu fiz que te magoou e nunca conversamos sobre isso?',
+          'O que eu poderia fazer mais para você se sentir amado(a)?',
+          'Qual foi o dia mais feliz da sua vida ao meu lado?',
+          'O que você sente quando me vê dormindo?',
+
+          'Qual é a sua maior insegurança dentro da nossa relação?',
+          'Em que situação você mais se sentiu compreendido(a) por mim?',
+          'O que você me agradece e nunca disse em voz alta?',
+          'Se você pudesse me escrever uma carta agora, qual seria a primeira frase?',
+          'Qual é a coisa que mais te dá medo de eu descobrir sobre você?',
+          'Quando você olha para mim, o que você sente de verdade?',
+          'O que você aprendeu sobre amor comigo?',
+          'Qual foi a hora em que você mais precisou de mim e eu estava lá?',
+          'Qual foi a hora em que você mais precisou de mim e eu não estava?',
+          'O que você quer que eu nunca esqueça sobre você?',
+
+          'Você acredita que nos encontramos por destino? Por quê?',
+          'O que faz você ter certeza de que eu sou a pessoa certa?',
+          'Qual é o cheiro, som ou lugar que te lembra de mim imediatamente?',
+          'O que te faz sentir saudade de mim mesmo quando estamos juntos?',
+          'Qual promessa você gostaria de me fazer hoje?',
+          'Qual promessa você gostaria que eu te fizesse?',
+          'No que você acha que somos melhores juntos do que separados?',
+          'Que fase da sua vida você acha que eu te ajudei a superar?',
+          'Qual foi a nossa conversa mais importante até hoje?',
+          'Quando foi que você percebeu que não queria mais ficar sem mim?',
+
+          'Qual é o seu maior orgulho de nós dois como casal?',
+          'Que defeito meu você aprendeu a amar?',
+          'O que você faria para me reconquistar se um dia eu me afastasse?',
+          'Em que momento você sentiu que eu te escolhi?',
+          'Qual é o seu pedido mais sincero para o nosso futuro?',
+          'O que você gostaria de me dizer olhando nos meus olhos por um minuto inteiro?',
+          'O que você sente que ainda não conseguiu expressar direito sobre o que sente por mim?',
+          'Qual é o carinho que mais te desarma?',
+          'Existe alguma ferida do seu passado que eu ajudei a curar?',
+          'Qual seria o nosso lugar seguro, onde tudo fica bem?',
+
+          'O que você acha que a gente nunca vai deixar de ser, aconteça o que acontecer?',
+          'Em que momento você sentiu mais orgulho de mim?',
+          'Quando foi a última vez que você se emocionou pensando em nós?',
+          'Como você gostaria que eu cuidasse de você nos dias difíceis?',
+          'O que você ainda quer viver comigo antes de qualquer outra coisa?',
+          'Qual é o gesto simples meu que mais significa para você?',
+          'O que você diria para a versão de você que ainda não me conhecia?',
+          'O que mudou na forma como você enxerga o amor depois de mim?',
+          "O que você sentiu no nosso primeiro 'eu te amo'?",
+          'Qual medo você deixou de ter por estar comigo?',
+
+          'Que tipo de futuro você sonha construir ao meu lado?',
+          'Qual é a coisa mais difícil de admitir sobre o quanto você gosta de mim?',
+          'O que você faria hoje para me provar que eu sou prioridade?',
+          'Em que ocasião você viu o melhor de mim?',
+          'Em que ocasião você viu o pior de mim e ficou mesmo assim?',
+          'O que você gostaria que a gente nunca deixasse de fazer juntos?',
+          'O que você acha que eu sinto por você e talvez nunca tenha dito?',
+          "O que significa 'lar' para você e que parte disso sou eu?",
+          'O que você faria diferente na nossa relação se pudesse recomeçar?',
+          'Qual é a coisa que mais te faz querer ser uma pessoa melhor por mim?',
+
+          'Qual foi o abraço meu que você nunca vai esquecer?',
+          'Que música te lembra de nós e por quê?',
+          'O que você sente quando a gente fica longe por muito tempo?',
+          'Qual é o maior risco que você correria por mim?',
+          'O que você acha que a gente precisa cuidar mais para o amor durar?',
+          'Qual lembrança nossa você escolheria para contar aos nossos netos?',
+          'Em que momento você percebeu que eu virei a sua melhor companhia?',
+          'O que você sente que só eu consigo te dar?',
+          'Qual é a coisa mais sincera que você já sentiu por alguém, e é por mim?',
+          'Em que momento você se sentiu mais vulnerável comigo?',
+
+          'Qual desejo seu para a nossa relação você ainda não disse?',
+          'O que você agradece à vida por ter me colocado no seu caminho?',
+          'Como você gostaria de ser amado(a) nos dias em que está mal?',
+          'Qual foi a hora em que eu te surpreendi de um jeito bom?',
+          'Qual é a coisa que você mais tem medo de perder em nós?',
+          'O que te faz querer me escolher todos os dias?',
+          'Se o nosso amor fosse uma música, como ela seria?',
+          'Qual é a diferença entre quem você era antes e quem você é comigo?',
+          'O que você gostaria de ouvir de mim agora?',
+          'Se você tivesse só mais um dia comigo, como seria?'
+        ],
+
+        engracadas: [
+          'Qual é a coisa mais estranha ou engraçada que você acha que eu faço?',
+          'Se eu fosse preso(a), qual seria o motivo mais provável?',
+          'Qual seria o nosso pior reality show se fôssemos gravados 24h?',
+          'Qual mania minha você acha secretamente engraçada?',
+          'Se tivéssemos que sobreviver juntos a um apocalipse zumbi, quem morreria primeiro?',
+          'Qual foi o momento mais vergonhoso que você passou do meu lado?',
+          'Se eu fosse um personagem de desenho animado, qual eu seria?',
+          'Qual seria a coisa mais idiota pela qual nós dois provavelmente brigaríamos?',
+          'Quem de nós dois seria pior morando sozinho sem ajuda?',
+          "Qual foi a situação em que você mais pensou: 'não é possível que essa pessoa fez isso'?",
+
+          'Qual de nós dois é mais dramático(a) e em qual situação?',
+          'Qual seria o nome do nosso casal em um filme de comédia?',
+          'Qual comida eu faço mal e você finge que está boa?',
+          'Qual é a pior música que eu canto achando que arraso?',
+          'Se a gente abrisse um negócio juntos, qual seria o primeiro a dar errado?',
+          'Qual é a minha desculpa mais esfarrapada?',
+          'Qual é a coisa mais boba que já te fez rir até chorar?',
+          'Se eu ganhasse na loteria amanhã, qual seria a primeira loucura que eu faria?',
+          'Qual mania minha te irrita e te faz rir ao mesmo tempo?',
+          'Quem de nós dois é mais ciumento(a) em silêncio?',
+
+          'Se a gente participasse de uma competição de casais, qual seria a nossa maior derrota?',
+          'Como é a minha cara quando estou com fome?',
+          'Qual é o apelido mais ridículo que você já pensou para mim?',
+          'Se eu fosse um animal, qual eu seria e por quê?',
+          'Qual foi a mentirinha mais descarada que eu já contei para você?',
+          'Qual é a pior foto que eu já tirei e você guardou?',
+          'Quem de nós dois ronca mais, fala dormindo ou rouba mais coberta?',
+          'Qual seria o título do filme da nossa vida?',
+          'Qual é a coisa mais inútil que eu já comprei?',
+          'Quem tem o pior senso de direção entre nós dois?',
+
+          'Se a gente fosse presos juntos, quem entregaria o outro primeiro?',
+          'Qual é a minha mania mais irritante na hora de dormir?',
+          'Qual seria o meu superpoder mais inútil?',
+          'Qual foi a nossa discussão mais ridícula de todas?',
+          'Se eu fosse personagem de novela, qual seria o meu papel?',
+          'O que eu faço quando acho que ninguém está olhando?',
+          'Qual é a coisa mais maluca que você acha que eu seria capaz de fazer por impulso?',
+          'Se a gente tivesse um reality de culinária, quem seria eliminado primeiro?',
+          'Qual é a dança que eu danço achando que sou ótimo(a), mas é péssima?',
+          'Qual frase minha você mais repete só para me zoar?',
+
+          'Quem é mais teimoso(a) de nós dois e qual foi a última teimosia?',
+          'Qual foi a pior ideia que eu já tive e você apoiou mesmo assim?',
+          'Se a gente ficasse preso no elevador por cinco horas, o que aconteceria?',
+          'Qual é a coisa mais estranha que tem no meu celular?',
+          'Qual seria a nossa treta mais boba no supermercado?',
+          'Quem de nós dois seria o primeiro a desistir de uma dieta?',
+          'Qual filme você me obrigou a ver e eu odiei?',
+          'Se a nossa relação fosse um meme, qual seria?',
+          'Qual é a coisa mais vergonhosa que eu já disse em público?',
+          'Quem de nós dois é pior em guardar segredo?',
+
+          'Se a gente trocasse de corpo por um dia, o que você faria primeiro?',
+          'Quem de nós dois enrola mais para ficar pronto(a)?',
+          'Qual é o jeito mais engraçado que eu fico quando estou com sono?',
+          'Qual seria o nome do nosso futuro pet e por quê?',
+          'Qual foi a pior desculpa que eu já usei para me atrasar?',
+          'Se eu fosse um sabor de sorvete, qual seria?',
+          'Quem de nós dois chora mais em filme?',
+          'Qual é a coisa que eu faço que parece simples, mas sempre dá errado?',
+          'Qual seria a pior profissão para mim e por quê?',
+          'Se a gente tivesse um programa de TV, qual seria o formato?',
+
+          'Qual é a pior coisa que eu já cozinhei?',
+          'Qual é o meu maior talento inútil?',
+          'O que eu fingiria saber só para parecer inteligente?',
+          'Qual foi o rolê mais desastroso que a gente já fez?',
+          'Se a gente fosse personagens de videogame, quais seríamos?',
+          'Quem de nós dois é mais preguiçoso(a) nos fins de semana?',
+          'Qual é a coisa mais boba que me deixa de mau humor?',
+          'Se eu ficasse famoso(a) por algo vergonhoso, qual seria?',
+          'Qual hábito meu você imitaria só para me irritar?',
+          'Qual é o apelido secreto que você me deu e nunca contou?',
+
+          'Se a gente tivesse que viver de um único alimento por um mês, qual seria?',
+          'Quem de nós dois perderia mais rápido numa luta?',
+          'Qual é a minha maior mania de desorganização?',
+          'Qual lugar a gente nunca deveria ir junto de novo por causa do caos?',
+          'Quem de nós dois fica mais perdido(a) com tecnologia?',
+          'Qual foi a coisa mais absurda que eu discuti com tanta certeza?',
+          'Se a gente morasse numa ilha deserta, quem mandaria em tudo?',
+          'Qual foi o pior presente que eu já te dei? (pode ser sincero)',
+          'Qual seria a nossa dupla de super-heróis e qual seria a fraqueza de cada um?',
+          'O que eu faço no trânsito que te dá vontade de rir e de descer do carro?',
+
+          'Quem de nós dois sabe menos cozinhar?',
+          'Qual foi a maior vergonha que a gente passou junto em um restaurante?',
+          'Se eu tivesse um canal no YouTube, qual seria o tema?',
+          'Qual é o meu pior hábito no celular?',
+          'Se a gente fosse uma dupla sertaneja, qual seria o nome?',
+          'Qual seria a placa na porta da nossa casa?',
+          'Quem de nós dois mais perde as coisas (chave, celular, carteira)?',
+          'Qual foi a coisa mais sem noção que eu já falei para você?',
+          'Como eu fico quando estou com ciúmes? Imita!',
+          'Se a gente tivesse que escolher um mico para pagar juntos, qual seria?',
+
+          'Qual foi a maior bobeira que a gente fez e que ainda dá risada?',
+          'Se a gente fosse um casal de série, qual seria o título do episódio mais caótico?',
+          'Qual prato eu deveria nunca mais tentar fazer?',
+          'Qual é a maior mentira que eu conto sobre mim mesmo(a)?',
+          'O que eu levo mais tempo para fazer do que deveria?',
+          'Qual seria a pior profissão que a gente teria como dupla?',
+          'Quem de nós dois seria mais bobo(a) numa viagem sem plano?',
+          'Qual é o meu ponto fraco mais engraçado?',
+          'Se você pudesse apertar um botão para eu mudar uma mania engraçada, qual seria?',
+          "Qual é a primeira coisa que você pensa quando eu falo: 'tive uma ideia'?"
+        ],
+
+        picante: [
+          'Qual foi o momento exato em que você mais sentiu atração por mim?',
+          'O que você acha visualmente mais irresistível em mim?',
+          'Qual tipo de beijo nosso você mais gosta e mais sente falta no dia a dia?',
+          'Qual situação entre nós teve a química mais intensa até hoje?',
+          'O que eu faço ou digo que imediatamente muda seu humor para um tom mais romântico?',
+          'Qual roupa ou estilo meu você mais gosta de ver em mim?',
+          'Qual foi um momento em que você ficou com muita vontade de me beijar e teve que disfarçar?',
+          'Você prefere uma noite romântica e planejada ou uma noite completamente imprevisível?',
+          'Qual é uma coisa que eu faço e provavelmente nem percebo que mexe com você?',
+          'Qual seria o cenário de um encontro perfeito para nós dois se ninguém pudesse atrapalhar?',
+
+          'Qual é a fantasia que você tem comigo e ainda não me contou?',
+          'Em que lugar da casa você mais gostaria de me beijar sem parar?',
+          'Qual parte do meu corpo você mais gosta de tocar?',
+          'O que eu faço na cama que te deixa maluco(a)?',
+          'Você prefere ser dominado(a) ou dominar? Por quê?',
+          'Qual foi a nossa melhor noite de todas?',
+          'O que você gostaria de experimentar comigo que nunca fizemos?',
+          'Qual é o lugar mais ousado onde você teria coragem de ficar comigo?',
+          'O que você sente quando eu sussurro no seu ouvido?',
+          'Qual é o jeito que eu te olho que te arrepia?',
+
+          'Qual roupa íntima minha você mais gosta (ou gostaria de ver)?',
+          'O que te deixa com mais vontade: carinho lento ou intensidade?',
+          'Qual é a sua posição favorita? E você sabe qual é a minha?',
+          'Qual é o elogio na cama que você mais gostaria de ouvir de mim?',
+          'Você já pensou em mim em um momento totalmente impróprio? Qual?',
+          'O que eu poderia fazer hoje para você não conseguir se concentrar em mais nada?',
+          'Qual foi o melhor beijo que já trocamos e onde foi?',
+          'Em qual parte do seu corpo você gosta que eu beije mais?',
+          'O que você acha de a gente tomar banho juntos, com calma?',
+          'Qual é a coisa mais safada que você já pensou em me falar e não falou?',
+
+          'Se a gente tivesse um fim de semana inteiro sem ninguém por perto, como seria?',
+          'Qual música te deixa no clima comigo?',
+          'Você gosta mais de preliminares longas ou de ir direto ao ponto?',
+          'O que eu faço na intimidade que você mais sente falta quando estamos longe?',
+          'O que você gostaria que eu fizesse mais vezes na intimidade?',
+          'Você já teve vontade de me chamar para sair de um lugar só para ficarmos a sós?',
+          'Qual parte do meu corpo você acha mais sexy e por quê?',
+          'Qual foi a última vez que você sentiu vontade de me agarrar do nada?',
+          'Que tipo de mensagem safada você gostaria de receber de mim hoje?',
+          'Se eu aparecesse de surpresa na sua porta à noite, o que aconteceria?',
+
+          'Qual jogo ou brincadeira sensual você gostaria de fazer comigo?',
+          'Você tem alguma fantasia envolvendo roupa ou personagem?',
+          'Qual é o cenário romântico que acabaria em muito mais?',
+          'Qual é o toque que mais te enlouquece?',
+          'Onde você mais gosta de ser beijado(a): pescoço, costas ou orelha?',
+          'Qual foi o momento mais quente que já vivemos?',
+          'O que você acha de uma massagem com óleo, velas e sem pressa?',
+          'O que você mais gosta de ouvir na hora H?',
+          'Quanto tempo você acha que a gente aguentaria sem se tocar? Teríamos coragem de tentar?',
+          'Qual é a sua parte favorita do meu corpo para ficar abraçado(a)?',
+
+          'Qual desejo seu você tem vergonha de contar?',
+          'Você gostaria que eu tomasse mais a iniciativa? Como?',
+          'Qual seria a nossa noite perfeita do começo ao fim?',
+          'Se eu pudesse te fazer uma surpresa agora, sem você saber qual, você aceitaria?',
+          'Qual é o seu maior ponto fraco quando o assunto é tentação?',
+          'O que você pensa quando me vê saindo do banho?',
+          'Você prefere luz acesa, velas ou escuro total? Por quê?',
+          'Qual roupa minha te dá vontade de tirar na hora?',
+          'Já imaginou a gente se pegando em algum lugar proibido? Onde?',
+          'Qual é a coisa mais ousada que você já fez por alguém e faria por mim?',
+
+          'O que mais acende o seu desejo: palavras, toques ou olhares?',
+          'Se a gente fizesse um desafio de sedução, quem perderia primeiro?',
+          'O que você quer que eu descubra sobre você na intimidade?',
+          'Você gosta de ser provocado(a) ao longo do dia? Como?',
+          'Qual é o seu maior desejo para a próxima vez que a gente ficar a sós?',
+          'O que você acha de brincadeiras de mandar e obedecer entre nós dois?',
+          'Em qual parte do meu corpo você mais pensa quando estou longe?',
+          'O que você acha de a gente escrever uma lista de desejos picantes e trocar?',
+          'Qual é o seu momento do dia favorito para ficar comigo?',
+          'O que eu faço que te faz perder totalmente o controle?',
+
+          "Quando foi que você me viu e pensou: 'preciso beijar essa pessoa'?",
+          'O que você acha de uma noite com música, luz baixa e clima preparado?',
+          'Como você gostaria que eu te seduzisse hoje?',
+          'O que você acha de passarmos um dia inteiro de pijama, na cama, sem sair?',
+          'O que eu falo que te deixa arrepiado(a)?',
+          'Se você pudesse parar o tempo com a gente a sós, o que faria comigo?',
+          'O que você mais sente falta de fazer comigo quando estamos longe?',
+          'Qual é a sua vontade de me provocar em público sem ninguém perceber?',
+          'O que você pensa quando me vê arrumado(a) para sair?',
+          "Em que ocasião ficamos 'quase' e fomos interrompidos?",
+
+          'O que você prefere: ser surpreendido(a) ou combinar tudo antes?',
+          'Qual é o seu ponto mais sensível que eu deveria explorar mais?',
+          'Como seria o nosso encontro dos sonhos terminando em um hotel?',
+          'Qual cena quente que você já viu ou leu você gostaria de reproduzir comigo?',
+          'O que você gostaria de me pedir hoje sem sentir vergonha?',
+          'O que você acha de a gente tentar algo novo, com cuidado e com o consentimento dos dois?',
+          'Qual desafio sensual você me lançaria agora?',
+          'O que você mais ama sentir na pele quando estamos juntos?',
+          'O que te deixa mais animado(a): conquista ou entrega?',
+          'Descreva em três palavras como é ficar na intimidade comigo.',
+
+          'Qual foi a melhor surpresa picante que eu já fiz por você?',
+          'Qual hábito meu na cama você adora e nunca disse?',
+          'Se a gente pudesse repetir uma noite, qual seria e por quê?',
+          'O que você gostaria que eu usasse hoje? Ou que eu não usasse?',
+          'Em que parte do dia você mais gosta de pensar em mim com segundas intenções?',
+          'O que você mais quer que eu faça bem devagar?',
+          'Qual é o seu desejo secreto para a nossa próxima viagem?',
+          'Em que você acha que a nossa química é mais forte?',
+          'Se a gente trocasse três segredos picantes agora, quais seriam os seus?',
+          'O que você faria para me deixar sem fôlego em dez minutos?'
+        ],
+
+        curiosidades: [
+          'Qual detalhe ou coisa pequena consegue melhorar seu dia instantaneamente?',
+          'Qual sonho pessoal seu você ainda não contou para quase ninguém?',
+          'Qual opinião forte sua mudou completamente nos últimos anos?',
+          'Qual habilidade ou coisa nova você gostaria de aprender se tivesse tempo livre?',
+          'Qual seria uma viagem maluca que você faria amanhã se pudesse?',
+          'Qual é um fato curioso sobre você que poucas pessoas no mundo sabem?',
+          'Qual hábito seu do dia a dia você gostaria de mudar?',
+          'Qual foi uma decisão aparentemente pequena na sua vida que mudou muita coisa no final?',
+          'Qual lugar no mundo você gostaria muito que nós conhecêssemos juntos?',
+          'O que você acha que as pessoas em geral costumam entender errado sobre você?',
+
+          'Qual é a coisa mais corajosa que você já fez?',
+          'Qual é o seu maior medo que parece bobo para os outros?',
+          'Se pudesse jantar com qualquer pessoa, viva ou morta, quem seria?',
+          'Qual profissão você teria se dinheiro não fosse problema?',
+          'Qual é a melhor lembrança da sua infância?',
+          'Qual comida você nunca enjoaria de comer?',
+          'Qual é o seu maior arrependimento?',
+          'Qual é a mentira mais inofensiva que você já contou?',
+          'Qual é a sua maior qualidade e o seu maior defeito?',
+          'Qual conselho você daria para você mesmo(a) aos 16 anos?',
+
+          'Se pudesse viver em qualquer época da história, qual seria?',
+          'Qual talento você gostaria de ter de nascença?',
+          'Qual livro, filme ou série mudou sua forma de pensar?',
+          'Qual é a coisa mais estranha que você já comeu?',
+          'Qual é a sua mania que ninguém entende?',
+          'Qual é o seu sonho de infância que ainda não realizou?',
+          'Como seria o seu domingo perfeito?',
+          'Qual país você escolheria para morar por um ano?',
+          'Qual foi a melhor viagem que você já fez?',
+          'Se pudesse resolver um problema do mundo, qual seria?',
+
+          'Qual é o seu maior orgulho pessoal?',
+          'Em que você gasta dinheiro sem pensar duas vezes?',
+          'Qual cheiro te traz boas lembranças?',
+          'Qual foi a pior fase ou o pior emprego que você já passou?',
+          'O que você faria se ganhasse um ano de folga com tudo pago?',
+          'Qual é o seu maior talento escondido?',
+          'Qual música você ouviria pelo resto da vida?',
+          'Qual foi a melhor decisão que você já tomou?',
+          'Qual foi a pior decisão que você já tomou e o que aprendeu com ela?',
+          'O que mais te irrita nas pessoas?',
+
+          'Você prefere praia, montanha ou cidade grande? Por quê?',
+          'Você é do tipo que acorda cedo ou dorme tarde? Por quê?',
+          'Qual é a coisa mais maluca que você já quis fazer?',
+          'Qual esporte ou hobby você gostaria de praticar de verdade?',
+          'Você se considera mais racional ou mais emocional?',
+          'O que você mais valoriza em uma amizade?',
+          'Qual foi o melhor presente que você já recebeu?',
+          'Qual seria o seu lugar perfeito para morar?',
+          'Qual é a sua maior superstição ou crença curiosa?',
+          'Você prefere viver com mais planejamento ou mais improviso?',
+
+          'Se pudesse saber a data de uma única coisa na sua vida, qual seria?',
+          'Qual frase você leva como lema?',
+          'Qual era o seu apelido na infância e de onde veio?',
+          'Qual é a coisa mais difícil que você já superou?',
+          'Como seria para você passar uma semana sem tecnologia?',
+          'O que você faria com um dia sem nenhuma obrigação?',
+          'Qual idioma você gostaria de falar fluentemente?',
+          'Qual foi a maior mudança que você já fez na sua vida?',
+          'Qual é o seu maior desafio atualmente?',
+          'Qual pessoa mais te inspirou na vida?',
+
+          'O que você nunca emprestaria para ninguém?',
+          'Qual lugar da cidade você mais gosta de ir quando quer pensar?',
+          'O que você faria se fosse invisível por um dia?',
+          'Qual é a sua relação com o dinheiro: gastador(a) ou econômico(a)?',
+          'Qual hábito você começou que fez muita diferença na sua vida?',
+          'Se pudesse voltar no tempo e mudar uma coisa, você mudaria?',
+          'Qual é a sua maior vergonha de infância?',
+          'O que você acha que a sua vida diz sobre você?',
+          'Qual habilidade você acha que todo mundo deveria ter?',
+          'Qual é o seu tipo de humor favorito?',
+
+          'Qual foi o melhor conselho que você já recebeu?',
+          'Se pudesse ter um superpoder útil, qual escolheria?',
+          'Qual lugar do mundo mais te dá curiosidade?',
+          'O que você faria se tivesse um mês livre para fazer qualquer coisa?',
+          'O que você mudaria em si mesmo(a) se pudesse apertar um botão?',
+          'Qual é a sua relação com espiritualidade ou fé?',
+          'Qual desafio você toparia hoje só para provar algo?',
+          'Qual foi a coisa mais bonita que você já viu?',
+          'O que você acha que é essencial para ser feliz?',
+          'Qual é o seu maior defeito como parceiro(a)?',
+
+          'O que você faria se fosse o(a) chefe do país por um dia?',
+          'Sobre qual assunto você conversaria por horas?',
+          'O que te faz perder a noção do tempo?',
+          'Qual é a sua lembrança mais antiga?',
+          'Qual momento da sua vida você considera um divisor de águas?',
+          'O que você mais tem vontade de comprar hoje?',
+          'Se pudesse escolher outro nome para si, qual seria?',
+          'Qual é o seu maior sonho profissional?',
+          'O que você não abre mão em uma viagem?',
+          'O que você acha que torna uma pessoa interessante?',
+
+          'Qual é a sua maior curiosidade sobre mim que você ainda não perguntou?',
+          'O que você mais gostaria de saber cozinhar?',
+          'Qual foi o momento em que você mais riu na vida?',
+          'O que você faria se pudesse viver um dia como outra pessoa?',
+          'Qual é a coisa mais legal que você já aprendeu sozinho(a)?',
+          'Quais planos de vida você tem em mente para os próximos cinco anos?',
+          'Qual é o seu maior vício inofensivo?',
+          'O que você pensa sobre ter filhos ou pets no futuro?',
+          'O que você mais gostaria que eu soubesse sobre o seu passado?',
+          'Se pudesse me fazer uma pergunta e eu respondesse com total sinceridade, qual seria?'
+        ],
+
+        historia: [
+          'Qual foi sua exata primeira impressão de mim quando me viu pela primeira vez?',
+          'Você lembra do exato instante em que percebeu que gostava da minha companhia?',
+          'Qual foi o nosso primeiro momento que pareceu realmente especial para você?',
+          'Qual foi a situação mais aleatória que vivemos e que virou uma memória marcante?',
+          'Qual foi o momento em que você percebeu que nossa relação estava ficando séria?',
+          'Qual foi o nosso encontro ou passeio favorito até hoje?',
+          'Qual lembrança simples nossa sempre faz você sorrir sozinho(a)?',
+          'Qual foi uma coisa pequena que eu fiz por você no passado e que você nunca esqueceu?',
+          'Se você pudesse reescrever ou voltar para um dia específico da nossa história, qual seria?',
+          'O que você mais espera que ainda vire uma memória marcante nossa no futuro?',
+
+          'Onde estávamos na primeira vez que nos falamos?',
+          'Qual foi a primeira coisa que você notou em mim?',
+          'O que você pensou quando recebeu a minha primeira mensagem?',
+          'Como foi o nosso primeiro beijo?',
+          'Qual foi a nossa primeira conversa que durou horas?',
+          'Qual foi a primeira música que lembra a gente?',
+          'Qual foi o primeiro lugar aonde fomos juntos?',
+          'O que você sentiu antes do nosso primeiro encontro?',
+          'Qual foi a sua maior ansiedade quando começamos a sair?',
+          'O que você contou para os seus amigos sobre mim no começo?',
+
+          'Qual foi o primeiro presente que a gente trocou?',
+          "Quem disse o primeiro 'eu te amo' e como foi?",
+          'Qual foi a nossa primeira briga e como terminou?',
+          'Qual foi a primeira vez que você me apresentou a alguém importante?',
+          'Qual foi a primeira viagem que fizemos juntos?',
+          'O que você achou da primeira vez que conheceu a minha casa ou a minha família?',
+          'Como foi o momento em que decidimos assumir o namoro?',
+          'Como você se sentiu na primeira vez que dormimos juntos?',
+          'O que mais te surpreendeu em mim nos primeiros meses?',
+          'Qual foi o primeiro apelido que a gente se deu?',
+
+          'Qual foi o dia mais difícil que enfrentamos juntos?',
+          'Qual foi a maior lição que aprendemos como casal?',
+          'Teve algum momento em que a gente quase desistiu? O que nos manteve juntos?',
+          'Qual foi a maior superação nossa?',
+          'Qual foi a melhor surpresa que já recebemos um do outro?',
+          'Qual foi a data mais importante da nossa história até agora?',
+          'Qual foi o momento em que mais rimos juntos?',
+          'Qual foi a nossa melhor conversa de madrugada?',
+          'Qual foi o dia mais perfeito que passamos juntos?',
+          'Qual foi o maior susto que passamos juntos?',
+
+          'Qual foi o lugar mais bonito aonde já fomos juntos?',
+          'Qual restaurante ou comida marcou a nossa história?',
+          'Qual filme ou série a gente virou fã junto?',
+          'Qual foi a nossa maior parceria em uma situação difícil?',
+          'Qual foi a coisa mais maluca que já fizemos juntos?',
+          'Qual é a nossa tradição ou ritual de casal favorito?',
+          'Qual foi o momento em que a gente mais se uniu?',
+          'Quando foi a primeira vez que você viu que éramos um time?',
+          'Qual é a nossa foto favorita e por quê?',
+          'Qual foi o melhor aniversário (seu, meu ou de namoro) que passamos juntos?',
+
+          'Qual foi o dia em que você mais teve orgulho de nós?',
+          'Qual foi a primeira vez que você sentiu ciúmes de mim?',
+          'Qual foi a maior mudança que a nossa relação trouxe para a sua vida?',
+          'Quando você percebeu que podia ser você mesmo(a) comigo?',
+          'Qual foi a primeira vez que a gente chorou na frente um do outro?',
+          'Qual foi uma conversa difícil que nos deixou mais fortes?',
+          'Qual é a lembrança mais engraçada que temos de um erro bobo?',
+          'Qual momento nosso daria um ótimo filme?',
+          'Qual foi o rolê que começou ruim e acabou ótimo?',
+          'O que você sentiu quando ficamos muito tempo sem nos ver?',
+
+          'Qual foi o melhor Natal, Ano Novo ou feriado que passamos juntos?',
+          'Qual foi o maior plano que fizemos juntos e realizamos?',
+          'Qual foi o meu gesto mais romântico na nossa história?',
+          'Qual foi o seu gesto mais romântico que eu nunca esqueci?',
+          'Em que momento você mais sentiu o meu apoio?',
+          'Qual foi o dia em que a gente chorou de rir?',
+          'Qual foi a viagem ou passeio que você gostaria de repetir?',
+          "Quando você pensou: 'é com essa pessoa que eu quero ficar'?",
+          'O que você achava de mim antes de me conhecer melhor e o que acha hoje?',
+          'Qual foi a coisa mais bonita que já dissemos um ao outro?',
+
+          "Quando foi a primeira vez que dissemos 'nós' em vez de 'eu'?",
+          'Qual foi o dia em que você mais sentiu que eu te escolhi?',
+          'Qual foi a primeira coisa que combinamos de fazer juntos no futuro?',
+          'Qual foi a melhor festa ou evento em que fomos juntos?',
+          'Qual foi a coisa mais difícil que superamos graças ao outro?',
+          'O que você descobriu sobre mim depois de muito tempo juntos que te surpreendeu?',
+          'Qual foi a melhor noite de conversa sem fazer nada de especial?',
+          'Qual foi um dia comum que virou inesquecível?',
+          'Qual foi o maior mal-entendido que tivemos e como resolvemos?',
+          'Qual foi a primeira música que dançamos juntos?',
+
+          'O que a gente fazia no começo que você gostaria de voltar a fazer?',
+          'Do que você mais sentia falta quando não nos víamos?',
+          'O que você mais gosta de lembrar sobre o nosso começo?',
+          'Qual foi o primeiro momento em que nos sentimos adultos juntos?',
+          'Qual foi o maior desafio da nossa relação até hoje?',
+          'Em que momento você mais se apaixonou por mim?',
+          'Qual foi a primeira vez que cuidamos um do outro doente ou cansado?',
+          'Qual foi a nossa maior mudança como casal ao longo do tempo?',
+          'Qual foi a melhor coisa que fizemos por impulso?',
+          'Quando você percebeu que a gente combinava de verdade?',
+
+          'O que você sente quando olha as nossas fotos antigas?',
+          'Qual capítulo da nossa história você gostaria de reler?',
+          'Qual foi a coisa mais bonita que já aconteceu entre nós?',
+          'Qual foi o momento que mais nos aproximou?',
+          'Se a nossa história virasse livro, qual seria o título?',
+          'Qual seria o último capítulo ideal da nossa história?',
+          'Qual foi o conselho mais importante que um de nós deu ao outro?',
+          'Qual momento da nossa história você vai lembrar com mais carinho no futuro?',
+          'O que você acha que o nosso eu do passado diria sobre onde estamos hoje?',
+          'Qual capítulo você mais espera escrever com a gente?'
+        ]
+      }
+      // DADOS DAS CATEGORIAS (VISUAL E META)
+      const infoCategorias = {
+        sentimental: {
+          title: 'Profundo & Sentimental',
+          icon: '❤️',
+          color: 'var(--cat-sentimental)',
+          desc: 'Para quando vocês querem conversar de verdade sobre sentimentos e conexão.'
+        },
+        engracadas: {
+          title: 'Engraçadas & Leves',
+          icon: '😂',
+          color: 'var(--cat-engracadas)',
+          desc: 'Perguntas absurdas e histórias para rir juntos e passar vergonha.'
+        },
+        picante: {
+          title: 'Picante & Química',
+          icon: '🔥',
+          color: 'var(--cat-picante)',
+          desc: 'Provocações sutis, atração, preferências e intimidade para esquentar o clima.'
+        },
+        curiosidades: {
+          title: 'Curiosidades',
+          icon: '🧠',
+          color: 'var(--cat-curiosidades)',
+          desc: 'Para descobrir detalhes e segredos que vocês talvez nunca perguntaram.'
+        },
+        historia: {
+          title: 'Nossa História',
+          icon: '🫶',
+          color: 'var(--cat-historia)',
+          desc: 'Para relembrar momentos marcantes, primeiras impressões e memórias.'
+        }
+      }
+
+      /* =====================================================
        ESTADO DO JOGO
        ===================================================== */
-    let p1Name = configJogo.p1Default;
-    let p2Name = configJogo.p2Default;
-    
-    let currentCategoryKey = '';
-    let deck = [];
-    let currentQuestionIndex = 0;
-    let currentPlayerTurn = 1; // 1 or 2
-    let answeredCount = 0;
-    let skippedCount = 0;
-    let isFlipped = false;
+      let p1Name = configJogo.p1Default
+      let p2Name = configJogo.p2Default
 
-    /* =====================================================
+      let currentCategoryKey = ''
+      let deck = []
+      let currentQuestionIndex = 0
+      let currentPlayerTurn = 1 // 1 or 2
+      let answeredCount = 0
+      let skippedCount = 0
+      let isFlipped = false
+
+      /* =====================================================
        ÁUDIO SINTETIZADO (WEB AUDIO API - SEM ARQUIVOS EXTERNOS)
        ===================================================== */
-    function playAudioTone(freq, type = 'sine', duration = 0.15) {
-      try {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContext) return;
-        const ctx = new AudioContext();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
+      function playAudioTone(freq, type = 'sine', duration = 0.15) {
+        try {
+          const AudioContext = window.AudioContext || window.webkitAudioContext
+          if (!AudioContext) return
+          const ctx = new AudioContext()
+          const osc = ctx.createOscillator()
+          const gain = ctx.createGain()
 
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, ctx.currentTime);
-        gain.gain.setValueAtTime(0.08, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+          osc.type = type
+          osc.frequency.setValueAtTime(freq, ctx.currentTime)
+          gain.gain.setValueAtTime(0.08, ctx.currentTime)
+          gain.gain.exponentialRampToValueAtTime(
+            0.001,
+            ctx.currentTime + duration
+          )
 
-        osc.connect(gain);
-        gain.connect(ctx.destination);
+          osc.connect(gain)
+          gain.connect(ctx.destination)
 
-        osc.start();
-        osc.stop(ctx.currentTime + duration);
-      } catch (e) {
-        // Ignorar se o navegador bloquear autoplay
+          osc.start()
+          osc.stop(ctx.currentTime + duration)
+        } catch (e) {
+          // Ignorar se o navegador bloquear autoplay
+        }
       }
-    }
 
-    /* =====================================================
+      /* =====================================================
        INICIALIZAÇÃO & NAVEGAÇÃO
        ===================================================== */
-    function goToScreen(screenId) {
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      const target = document.getElementById(screenId);
-      if (target) {
-        target.classList.add('active');
+      function goToScreen(screenId) {
+        document
+          .querySelectorAll('.screen')
+          .forEach(s => s.classList.remove('active'))
+        const target = document.getElementById(screenId)
+        if (target) {
+          target.classList.add('active')
+        }
       }
-    }
 
-    function renderCategories() {
-      const grid = document.getElementById('categories-grid');
-      grid.innerHTML = '';
+      function renderCategories() {
+        const grid = document.getElementById('categories-grid')
+        grid.innerHTML = ''
 
-      Object.keys(infoCategorias).forEach(key => {
-        const cat = infoCategorias[key];
-        const total = perguntas[key] ? perguntas[key].length : 0;
+        Object.keys(infoCategorias).forEach(key => {
+          const cat = infoCategorias[key]
+          const total = perguntas[key] ? perguntas[key].length : 0
 
-        const card = document.createElement('div');
-        card.className = 'category-card';
-        card.style.setProperty('--cat-color', cat.color);
-        card.style.setProperty('--cat-glow', cat.color + '44');
+          const card = document.createElement('div')
+          card.className = 'category-card'
+          card.style.setProperty('--cat-color', cat.color)
+          card.style.setProperty('--cat-glow', cat.color + '44')
 
-        card.innerHTML = `
+          card.innerHTML = `
           <div>
             <div class="cat-icon">${cat.icon}</div>
             <div class="cat-title">${cat.title}</div>
             <div class="cat-desc">${cat.desc}</div>
           </div>
           <div class="cat-count">${total} CARTAS NO BARALHO</div>
-        `;
+        `
 
-        card.onclick = () => selectCategory(key);
-        grid.appendChild(card);
-      });
-    }
+          card.onclick = () => selectCategory(key)
+          grid.appendChild(card)
+        })
+      }
 
-    function savePlayersAndNext() {
-      const p1Input = document.getElementById('p1-name').value.trim();
-      const p2Input = document.getElementById('p2-name').value.trim();
+      function savePlayersAndNext() {
+        const p1Input = document.getElementById('p1-name').value.trim()
+        const p2Input = document.getElementById('p2-name').value.trim()
 
-      p1Name = p1Input || configJogo.p1Default;
-      p2Name = p2Input || configJogo.p2Default;
+        p1Name = p1Input || configJogo.p1Default
+        p2Name = p2Input || configJogo.p2Default
 
-      goToScreen('screen-categories');
-    }
+        goToScreen('screen-categories')
+      }
 
-    /* =====================================================
+      /* =====================================================
        LÓGICA DO JOGO DA MESA DE CARTAS
        ===================================================== */
-    function selectCategory(catKey) {
-      currentCategoryKey = catKey;
-      const catInfo = infoCategorias[catKey];
+      function selectCategory(catKey) {
+        currentCategoryKey = catKey
+        const catInfo = infoCategorias[catKey]
 
-      // Atualizar cor global do tema da partida
-      document.documentElement.style.setProperty('--current-cat-color', catInfo.color);
-      document.getElementById('glow1').style.background = `radial-gradient(circle, ${catInfo.color}88 0%, transparent 70%)`;
+        // Atualizar cor global do tema da partida
+        document.documentElement.style.setProperty(
+          '--current-cat-color',
+          catInfo.color
+        )
+        document.getElementById(
+          'glow1'
+        ).style.background = `radial-gradient(circle, ${catInfo.color}88 0%, transparent 70%)`
 
-      // Preparar e embaralhar baralho
-      const originalQuestions = perguntas[catKey] || [];
-      deck = [...originalQuestions];
-      shuffleArray(deck);
+        // Preparar e embaralhar baralho
+        const originalQuestions = perguntas[catKey] || []
+        deck = [...originalQuestions]
+        shuffleArray(deck)
 
-      currentQuestionIndex = 0;
-      currentPlayerTurn = 1;
-      answeredCount = 0;
-      skippedCount = 0;
-      isFlipped = false;
+        currentQuestionIndex = 0
+        currentPlayerTurn = 1
+        answeredCount = 0
+        skippedCount = 0
+        isFlipped = false
 
-      // Atualizar elementos visuais
-      document.getElementById('game-cat-title').innerText = catInfo.title.toUpperCase();
-      document.getElementById('card-badge').innerText = `${catInfo.icon} ${catInfo.title}`;
+        // Atualizar elementos visuais
+        document.getElementById('game-cat-title').innerText =
+          catInfo.title.toUpperCase()
+        document.getElementById(
+          'card-badge'
+        ).innerText = `${catInfo.icon} ${catInfo.title}`
 
-      renderCurrentCard();
-      goToScreen('screen-game');
-      playAudioTone(440, 'triangle');
-    }
-
-    function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-    }
-
-    function renderCurrentCard() {
-      const total = deck.length;
-      const cardEl = document.getElementById('card-element');
-      
-      if (currentQuestionIndex >= total) {
-        finishGame();
-        return;
+        renderCurrentCard()
+        goToScreen('screen-game')
+        playAudioTone(440, 'triangle')
       }
 
-      // Resetar virada de carta
-      cardEl.classList.remove('flipped');
-      isFlipped = false;
-
-      // Atualizar barra de progresso
-      const progressPercent = ((currentQuestionIndex) / total) * 100;
-      document.getElementById('progress-fill').style.width = `${progressPercent}%`;
-      document.getElementById('game-progress-text').innerText = `PERGUNTA ${currentQuestionIndex + 1} / ${total}`;
-
-      // Texto da pergunta
-      document.getElementById('card-question').innerText = `“${deck[currentQuestionIndex]}”`;
-
-      // Jogador do turno
-      const activeName = currentPlayerTurn === 1 ? p1Name : p2Name;
-      document.getElementById('turn-player').innerText = `${activeName} ${currentPlayerTurn === 1 ? '❤️' : '✨'}`;
-    }
-
-    function handleCardClick() {
-      const cardEl = document.getElementById('card-element');
-      cardEl.classList.toggle('flipped');
-      isFlipped = !isFlipped;
-      playAudioTone(300, 'sine', 0.1);
-    }
-
-    function answerQuestion() {
-      answeredCount++;
-      nextCardTransition();
-    }
-
-    function skipQuestion() {
-      skippedCount++;
-      
-      // Toast de feedback
-      const msgs = configJogo.mensagensPular;
-      const randomMsg = msgs[Math.floor(Math.random() * msgs.length)];
-      showToast(randomMsg);
-
-      nextCardTransition();
-    }
-
-    function nextCardTransition() {
-      const cardEl = document.getElementById('card-element');
-      
-      // Efeito de saída para a esquerda
-      cardEl.classList.add('exit-left');
-      playAudioTone(520, 'sine', 0.15);
-
-      setTimeout(() => {
-        currentQuestionIndex++;
-        currentPlayerTurn = currentPlayerTurn === 1 ? 2 : 1;
-
-        cardEl.classList.remove('exit-left');
-        
-        if (currentQuestionIndex < deck.length) {
-          renderCurrentCard();
-          // Efeito de entrada pela direita
-          cardEl.classList.add('enter-right');
-          setTimeout(() => {
-            cardEl.classList.remove('enter-right');
-          }, 600);
-        } else {
-          finishGame();
+      function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1))
+          ;[array[i], array[j]] = [array[j], array[i]]
         }
-      }, 500);
-    }
+      }
 
-    function showToast(text) {
-      const toast = document.getElementById('toast-msg');
-      toast.innerText = text;
-      toast.classList.add('show');
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 2500);
-    }
+      function renderCurrentCard() {
+        const total = deck.length
+        const cardEl = document.getElementById('card-element')
 
-    /* =====================================================
+        if (currentQuestionIndex >= total) {
+          finishGame()
+          return
+        }
+
+        // Resetar virada de carta
+        cardEl.classList.remove('flipped')
+        isFlipped = false
+
+        // Atualizar barra de progresso
+        const progressPercent = (currentQuestionIndex / total) * 100
+        document.getElementById(
+          'progress-fill'
+        ).style.width = `${progressPercent}%`
+        document.getElementById('game-progress-text').innerText = `PERGUNTA ${
+          currentQuestionIndex + 1
+        } / ${total}`
+
+        // Texto da pergunta
+        document.getElementById(
+          'card-question'
+        ).innerText = `“${deck[currentQuestionIndex]}”`
+
+        // Jogador do turno
+        const activeName = currentPlayerTurn === 1 ? p1Name : p2Name
+        document.getElementById('turn-player').innerText = `${activeName} ${
+          currentPlayerTurn === 1 ? '❤️' : '✨'
+        }`
+      }
+
+      function handleCardClick() {
+        const cardEl = document.getElementById('card-element')
+        cardEl.classList.toggle('flipped')
+        isFlipped = !isFlipped
+        playAudioTone(300, 'sine', 0.1)
+      }
+
+      function answerQuestion() {
+        answeredCount++
+        nextCardTransition()
+      }
+
+      function skipQuestion() {
+        skippedCount++
+
+        // Toast de feedback
+        const msgs = configJogo.mensagensPular
+        const randomMsg = msgs[Math.floor(Math.random() * msgs.length)]
+        showToast(randomMsg)
+
+        nextCardTransition()
+      }
+
+      function nextCardTransition() {
+        const cardEl = document.getElementById('card-element')
+
+        // Efeito de saída para a esquerda
+        cardEl.classList.add('exit-left')
+        playAudioTone(520, 'sine', 0.15)
+
+        setTimeout(() => {
+          currentQuestionIndex++
+          currentPlayerTurn = currentPlayerTurn === 1 ? 2 : 1
+
+          cardEl.classList.remove('exit-left')
+
+          if (currentQuestionIndex < deck.length) {
+            renderCurrentCard()
+            // Efeito de entrada pela direita
+            cardEl.classList.add('enter-right')
+            setTimeout(() => {
+              cardEl.classList.remove('enter-right')
+            }, 600)
+          } else {
+            finishGame()
+          }
+        }, 500)
+      }
+
+      function showToast(text) {
+        const toast = document.getElementById('toast-msg')
+        toast.innerText = text
+        toast.classList.add('show')
+        setTimeout(() => {
+          toast.classList.remove('show')
+        }, 2500)
+      }
+
+      /* =====================================================
        FIM DA PARTIDA & MODAL
        ===================================================== */
-    function finishGame() {
-      const catInfo = infoCategorias[currentCategoryKey];
-      document.getElementById('end-answered').innerText = answeredCount;
-      document.getElementById('end-skipped').innerText = skippedCount;
-      document.getElementById('end-category-name').innerText = catInfo ? catInfo.title : 'Selecionada';
+      function finishGame() {
+        const catInfo = infoCategorias[currentCategoryKey]
+        document.getElementById('end-answered').innerText = answeredCount
+        document.getElementById('end-skipped').innerText = skippedCount
+        document.getElementById('end-category-name').innerText = catInfo
+          ? catInfo.title
+          : 'Selecionada'
 
-      goToScreen('screen-end');
-      playAudioTone(587.33, 'triangle', 0.3); // Nota alegre de fim
-    }
-
-    function restartSameCategory() {
-      if (currentCategoryKey) {
-        selectCategory(currentCategoryKey);
+        goToScreen('screen-end')
+        playAudioTone(587.33, 'triangle', 0.3) // Nota alegre de fim
       }
-    }
 
-    function openExitModal() {
-      document.getElementById('modal-menu').classList.add('active');
-    }
+      function restartSameCategory() {
+        if (currentCategoryKey) {
+          selectCategory(currentCategoryKey)
+        }
+      }
 
-    function closeExitModal() {
-      document.getElementById('modal-menu').classList.remove('active');
-    }
+      function openExitModal() {
+        document.getElementById('modal-menu').classList.add('active')
+      }
 
-    function confirmExitMenu() {
-      closeExitModal();
-      goToScreen('screen-categories');
-    }
+      function closeExitModal() {
+        document.getElementById('modal-menu').classList.remove('active')
+      }
 
-    /* =====================================================
+      function confirmExitMenu() {
+        closeExitModal()
+        goToScreen('screen-categories')
+      }
+
+      /* =====================================================
        BACKGROUND PARTICLES CANVAS
        ===================================================== */
-    function initBgParticles() {
-      const canvas = document.getElementById('bg-canvas');
-      const ctx = canvas.getContext('2d');
-      let width, height, particles = [];
+      function initBgParticles() {
+        const canvas = document.getElementById('bg-canvas')
+        const ctx = canvas.getContext('2d')
+        let width,
+          height,
+          particles = []
 
-      function resize() {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-      }
-      window.addEventListener('resize', resize);
-      resize();
-
-      class Particle {
-        constructor() { this.reset(); }
-        reset() {
-          this.x = Math.random() * width;
-          this.y = Math.random() * height;
-          this.size = Math.random() * 2 + 0.5;
-          this.vx = (Math.random() - 0.5) * 0.2;
-          this.vy = (Math.random() - 0.5) * 0.2;
-          this.alpha = Math.random() * 0.4 + 0.1;
+        function resize() {
+          width = canvas.width = window.innerWidth
+          height = canvas.height = window.innerHeight
         }
-        update() {
-          this.x += this.vx;
-          this.y += this.vy;
-          if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) this.reset();
+        window.addEventListener('resize', resize)
+        resize()
+
+        class Particle {
+          constructor() {
+            this.reset()
+          }
+          reset() {
+            this.x = Math.random() * width
+            this.y = Math.random() * height
+            this.size = Math.random() * 2 + 0.5
+            this.vx = (Math.random() - 0.5) * 0.2
+            this.vy = (Math.random() - 0.5) * 0.2
+            this.alpha = Math.random() * 0.4 + 0.1
+          }
+          update() {
+            this.x += this.vx
+            this.y += this.vy
+            if (this.x < 0 || this.x > width || this.y < 0 || this.y > height)
+              this.reset()
+          }
+          draw() {
+            ctx.beginPath()
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
+            ctx.fillStyle = '#ffffff'
+            ctx.globalAlpha = this.alpha
+            ctx.fill()
+            ctx.globalAlpha = 1
+          }
         }
-        draw() {
-          ctx.beginPath();
-          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-          ctx.fillStyle = '#ffffff';
-          ctx.globalAlpha = this.alpha;
-          ctx.fill();
-          ctx.globalAlpha = 1;
+
+        for (let i = 0; i < 50; i++) particles.push(new Particle())
+
+        function loop() {
+          ctx.clearRect(0, 0, width, height)
+          particles.forEach(p => {
+            p.update()
+            p.draw()
+          })
+          requestAnimationFrame(loop)
         }
+        loop()
       }
 
-      for (let i = 0; i < 50; i++) particles.push(new Particle());
-
-      function loop() {
-        ctx.clearRect(0, 0, width, height);
-        particles.forEach(p => { p.update(); p.draw(); });
-        requestAnimationFrame(loop);
-      }
-      loop();
-    }
-
-    // INICIALIZAÇÃO
-    window.addEventListener('DOMContentLoaded', () => {
-      renderCategories();
-      initBgParticles();
-    });
-  </script>
-</body>
+      // INICIALIZAÇÃO
+      window.addEventListener('DOMContentLoaded', () => {
+        renderCategories()
+        initBgParticles()
+      })
+    </script>
+    <script>
+      ;(function () {
+        try {
+          var U = 'https://znxehbaltdowozprxygt.supabase.co',
+            K = 'sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp'
+          var s = localStorage.getItem('sid')
+          if (!s) {
+            s = Math.random().toString(36).slice(2, 10)
+            localStorage.setItem('sid', s)
+          }
+          fetch(U + '/rest/v1/page_visits', {
+            method: 'POST',
+            keepalive: true,
+            headers: {
+              apikey: K,
+              'Content-Type': 'application/json',
+              Prefer: 'return=minimal'
+            },
+            body: JSON.stringify({
+              session_id: s,
+              page: location.pathname.split('/').pop() || 'home'
+            })
+          })
+        } catch (e) {}
+      })()
+    </script>
+  </body>
 </html>

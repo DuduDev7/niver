@@ -133,9 +133,7 @@
 
           <br />
 
-          <h3>
-            "Seu sorriso é perfeito"
-          </h3>
+          <h3>"Seu sorriso é perfeito"</h3>
 
           <p>Cânticos 6:6</p>
 
@@ -238,12 +236,39 @@
 
           <p style="opacity: 0.8">E escolheria de novo.</p>
 
-          <p class="ultima-frase destaque brilho">TE AMO MUITO MEU AMOR 💍 ❤️</p>
-
+          <p class="ultima-frase destaque brilho">
+            TE AMO MUITO MEU AMOR 💍 ❤️
+          </p>
         </div>
       </section>
     </main>
 
     <script src="js/script2.js"></script>
+    <script>
+      ;(function () {
+        try {
+          var U = 'https://znxehbaltdowozprxygt.supabase.co',
+            K = 'sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp'
+          var s = localStorage.getItem('sid')
+          if (!s) {
+            s = Math.random().toString(36).slice(2, 10)
+            localStorage.setItem('sid', s)
+          }
+          fetch(U + '/rest/v1/page_visits', {
+            method: 'POST',
+            keepalive: true,
+            headers: {
+              apikey: K,
+              'Content-Type': 'application/json',
+              Prefer: 'return=minimal'
+            },
+            body: JSON.stringify({
+              session_id: s,
+              page: location.pathname.split('/').pop() || 'home'
+            })
+          })
+        } catch (e) {}
+      })()
+    </script>
   </body>
 </html>

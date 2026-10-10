@@ -693,7 +693,9 @@
           cheio de incertezas, enquanto cada um seguia seu próprio caminho. Você
           nem fazia ideia de quem eu era. E eu também não fazia ideia de quem
           você era. Engraçado pensar que, mesmo vivendo na mesma cidade, nossos
-          caminhos ainda não tinham encontrado o momento certo para se cruzarem.. ou melhor, é claro que nao iriamos se cruzar, tinha que ficar em casa ne kkkkk.
+          caminhos ainda não tinham encontrado o momento certo para se
+          cruzarem.. ou melhor, é claro que nao iriamos se cruzar, tinha que
+          ficar em casa ne kkkkk.
         </p>
       </div>
     </section>
@@ -1142,6 +1144,32 @@
           'A máquina do tempo guardou essa história para sempre. ❤️ O seu futuro começa agora!'
         )
       }
+    </script>
+    <script>
+      ;(function () {
+        try {
+          var U = 'https://znxehbaltdowozprxygt.supabase.co',
+            K = 'sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp'
+          var s = localStorage.getItem('sid')
+          if (!s) {
+            s = Math.random().toString(36).slice(2, 10)
+            localStorage.setItem('sid', s)
+          }
+          fetch(U + '/rest/v1/page_visits', {
+            method: 'POST',
+            keepalive: true,
+            headers: {
+              apikey: K,
+              'Content-Type': 'application/json',
+              Prefer: 'return=minimal'
+            },
+            body: JSON.stringify({
+              session_id: s,
+              page: location.pathname.split('/').pop() || 'home'
+            })
+          })
+        } catch (e) {}
+      })()
     </script>
   </body>
 </html>

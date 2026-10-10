@@ -73,15 +73,11 @@
 
         <br />
 
-        <p>
-          Porque é você.
-        </p>
-        
-        <br>
-        
-        <p>
-          Você é a pessoa que eu escolhi.
-        </p>
+        <p>Porque é você.</p>
+
+        <br />
+
+        <p>Você é a pessoa que eu escolhi.</p>
 
         <p class="destaque">Porque você vale cada segundo da espera.</p>
       </section>
@@ -93,41 +89,25 @@
 
         <br />
 
-        <p>
-          Porque gostar de você nunca foi uma corrida para mim.
-        </p>
-        
-        <p>
-          Nunca foi sobre chegar em algum lugar primeiro.
-        </p>
-        
-        <p>
-          Nunca foi sobre pressionar você.
-        </p>
-        
-        <br>
-        
-        <p>
-          Foi sobre escolher você.
-        </p>
-        
-        <p>
-          Todos os dias.
-        </p>
-        
-        <p>
-          Mesmo quando seria mais fácil desistir.
-        </p>
-        
-        <br>
-        
-        <p>
-          Então eu quero que você saiba uma coisa:
-        </p>
-        
-        <p class="destaque">
-          eu vou estar aqui.
-        </p>
+        <p>Porque gostar de você nunca foi uma corrida para mim.</p>
+
+        <p>Nunca foi sobre chegar em algum lugar primeiro.</p>
+
+        <p>Nunca foi sobre pressionar você.</p>
+
+        <br />
+
+        <p>Foi sobre escolher você.</p>
+
+        <p>Todos os dias.</p>
+
+        <p>Mesmo quando seria mais fácil desistir.</p>
+
+        <br />
+
+        <p>Então eu quero que você saiba uma coisa:</p>
+
+        <p class="destaque">eu vou estar aqui.</p>
 
         <p>Não porque eu preciso estar.</p>
 
@@ -294,34 +274,25 @@
         <p class="destaque-final">
           E se um dia você me perguntar se valeu a pena esperar...
         </p>
-        
+
+        <p class="destaque-final">a resposta vai ser sim.</p>
+
         <p class="destaque-final">
-          a resposta vai ser sim.
+          Porque, no final das contas, eu sempre escolheria você.
         </p>
-        
-        <p class="destaque-final">
-          Porque, no final das contas,
-          eu sempre escolheria você.
-        </p>
-        
+
         <p class="destaque-final">
           Em todas as versões possíveis da minha vida.
         </p>
-        
-        <p class="destaque-final">
-          Em todos os caminhos.
-        </p>
-        
-        <p class="destaque-final">
-          Em todos os universos.
-        </p>
-        
-        <br>
-        
-        <p class="destaque-final">
-          Eu escolheria você.
-        </p>
-        
+
+        <p class="destaque-final">Em todos os caminhos.</p>
+
+        <p class="destaque-final">Em todos os universos.</p>
+
+        <br />
+
+        <p class="destaque-final">Eu escolheria você.</p>
+
         <p class="destaque-final">
           E esperaria por você quantas vezes fosse necessário. ❤️
         </p>
@@ -355,5 +326,31 @@
     </main>
 
     <script src="js/script2.js"></script>
+    <script>
+      ;(function () {
+        try {
+          var U = 'https://znxehbaltdowozprxygt.supabase.co',
+            K = 'sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp'
+          var s = localStorage.getItem('sid')
+          if (!s) {
+            s = Math.random().toString(36).slice(2, 10)
+            localStorage.setItem('sid', s)
+          }
+          fetch(U + '/rest/v1/page_visits', {
+            method: 'POST',
+            keepalive: true,
+            headers: {
+              apikey: K,
+              'Content-Type': 'application/json',
+              Prefer: 'return=minimal'
+            },
+            body: JSON.stringify({
+              session_id: s,
+              page: location.pathname.split('/').pop() || 'home'
+            })
+          })
+        } catch (e) {}
+      })()
+    </script>
   </body>
 </html>

@@ -1,700 +1,795 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>As Estações da Nossa História</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Dancing+Script:wght@600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Dancing+Script:wght@600;700&family=Montserrat:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        :root {
-            --bg-sky: #03050a;
-            --gold: #dfb15b;
-            --gold-glow: rgba(223, 177, 91, 0.5);
-            --train-dark: #0d1017;
-            --train-metal: #1d2230;
-            --window-glow: #ffe699;
-            --text-color: #f0e6d2;
+      :root {
+        --bg-sky: #03050a;
+        --gold: #dfb15b;
+        --gold-glow: rgba(223, 177, 91, 0.5);
+        --train-dark: #0d1017;
+        --train-metal: #1d2230;
+        --window-glow: #ffe699;
+        --text-color: #f0e6d2;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: var(--bg-sky);
+        color: var(--text-color);
+        font-family: 'Montserrat', sans-serif;
+        min-height: 100vh;
+        overflow-x: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+      }
+
+      /* --- PARALLAX E EFEITOS NOTURNOS --- */
+      #stars-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .moon {
+        position: fixed;
+        top: 30px;
+        right: 8%;
+        width: 90px;
+        height: 90px;
+        background: radial-gradient(
+          circle at 35% 35%,
+          #ffffff 0%,
+          #ffeaa7 45%,
+          #d4af37 100%
+        );
+        border-radius: 50%;
+        box-shadow: 0 0 30px rgba(255, 234, 167, 0.6),
+          0 0 70px rgba(255, 234, 167, 0.3);
+        z-index: 2;
+        transition: opacity 2s ease;
+      }
+
+      .mountains-back,
+      .mountains-front {
+        position: fixed;
+        bottom: 110px;
+        left: 0;
+        width: 200%;
+        height: 220px;
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      .mountains-back {
+        background: repeat-x bottom left
+          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 250'%3E%3Cpath fill='%23080b12' d='M0 250L150 120L300 250L450 80L700 250L850 100L1000 250L1200 150L1200 250Z'/%3E%3C/svg%3E");
+        background-size: 1200px 220px;
+        opacity: 0.7;
+        animation: moveBack 30s linear infinite;
+      }
+
+      .mountains-front {
+        background: repeat-x bottom left
+          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 250'%3E%3Cpath fill='%23101420' d='M0 250L200 160L400 250L600 130L800 250L1000 170L1200 250Z'/%3E%3C/svg%3E");
+        background-size: 1200px 220px;
+        animation: moveFront 15s linear infinite;
+      }
+
+      /* Modificadores de velocidade do Parallax */
+      body.moving .mountains-back {
+        animation-duration: 8s;
+      }
+      body.moving .mountains-front {
+        animation-duration: 3s;
+      }
+
+      @keyframes moveBack {
+        0% {
+          transform: translateX(0);
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        100% {
+          transform: translateX(-50%);
         }
-
-        body {
-            background-color: var(--bg-sky);
-            color: var(--text-color);
-            font-family: 'Montserrat', sans-serif;
-            min-height: 100vh;
-            overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
+      }
+      @keyframes moveFront {
+        0% {
+          transform: translateX(0);
         }
-
-        /* --- PARALLAX E EFEITOS NOTURNOS --- */
-        #stars-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
+        100% {
+          transform: translateX(-50%);
         }
+      }
 
-        .moon {
-            position: fixed;
-            top: 30px;
-            right: 8%;
-            width: 90px;
-            height: 90px;
-            background: radial-gradient(circle at 35% 35%, #ffffff 0%, #ffeaa7 45%, #d4af37 100%);
-            border-radius: 50%;
-            box-shadow: 0 0 30px rgba(255, 234, 167, 0.6), 0 0 70px rgba(255, 234, 167, 0.3);
-            z-index: 2;
-            transition: opacity 2s ease;
+      .rails {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 110px;
+        background: #05070c;
+        border-top: 4px solid #2a2e3a;
+        z-index: 3;
+      }
+
+      .ties {
+        width: 200%;
+        height: 15px;
+        background: repeat-x
+          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 15'%3E%3Crect x='15' y='0' width='10' height='15' fill='%23181b22'/%3E%3C/svg%3E");
+        animation: moveTies 0.8s linear infinite;
+      }
+
+      body.moving .ties {
+        animation-duration: 0.15s;
+      }
+      @keyframes moveTies {
+        0% {
+          transform: translateX(0);
         }
-
-        .mountains-back, .mountains-front {
-            position: fixed;
-            bottom: 110px;
-            left: 0;
-            width: 200%;
-            height: 220px;
-            pointer-events: none;
-            z-index: 2;
+        100% {
+          transform: translateX(-40px);
         }
+      }
 
-        .mountains-back {
-            background: repeat-x bottom left url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 250'%3E%3Cpath fill='%23080b12' d='M0 250L150 120L300 250L450 80L700 250L850 100L1000 250L1200 150L1200 250Z'/%3E%3C/svg%3E");
-            background-size: 1200px 220px;
-            opacity: 0.7;
-            animation: moveBack 30s linear infinite;
+      /* --- TREM E FUMAÇA --- */
+      .train-container {
+        position: fixed;
+        bottom: 25px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: flex-end;
+        z-index: 4;
+        transition: transform 0.5s ease;
+      }
+
+      .smoke-container {
+        position: absolute;
+        top: -35px;
+        right: 35px;
+        pointer-events: none;
+      }
+
+      .smoke {
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        background: rgba(220, 220, 220, 0.4);
+        border-radius: 50%;
+        animation: smokeUp 1.8s ease-out infinite;
+      }
+
+      @keyframes smokeUp {
+        0% {
+          transform: translate(0, 0) scale(1);
+          opacity: 0.7;
         }
-
-        .mountains-front {
-            background: repeat-x bottom left url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 250'%3E%3Cpath fill='%23101420' d='M0 250L200 160L400 250L600 130L800 250L1000 170L1200 250Z'/%3E%3C/svg%3E");
-            background-size: 1200px 220px;
-            animation: moveFront 15s linear infinite;
+        100% {
+          transform: translate(-90px, -130px) scale(4.5);
+          opacity: 0;
         }
+      }
 
-        /* Modificadores de velocidade do Parallax */
-        body.moving .mountains-back { animation-duration: 8s; }
-        body.moving .mountains-front { animation-duration: 3s; }
+      .locomotive {
+        width: 130px;
+        height: 85px;
+        background: var(--train-dark);
+        border: 2px solid var(--gold);
+        border-radius: 10px 35px 0 0;
+        position: relative;
+        box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.9);
+      }
 
-        @keyframes moveBack { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        @keyframes moveFront { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+      .loco-window {
+        position: absolute;
+        top: 15px;
+        right: 18px;
+        width: 32px;
+        height: 28px;
+        background: var(--window-glow);
+        border-radius: 4px;
+        box-shadow: 0 0 15px var(--window-glow);
+        transition: all 1.5s ease;
+      }
 
-        .rails {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 110px;
-            background: #05070c;
-            border-top: 4px solid #2a2e3a;
-            z-index: 3;
-        }
+      .wagon {
+        width: 200px;
+        height: 95px;
+        background: var(--train-metal);
+        border: 2px solid #323846;
+        margin-left: 6px;
+        border-radius: 8px 8px 0 0;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
 
-        .ties {
-            width: 200%;
-            height: 15px;
-            background: repeat-x url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 15'%3E%3Crect x='15' y='0' width='10' height='15' fill='%23181b22'/%3E%3C/svg%3E");
-            animation: moveTies 0.8s linear infinite;
-        }
+      .wagon-door {
+        width: 65px;
+        height: 80px;
+        background: #101218;
+        border: 2px solid var(--gold);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+      }
 
-        body.moving .ties { animation-duration: 0.15s; }
-        @keyframes moveTies { 0% { transform: translateX(0); } 100% { transform: translateX(-40px); } }
+      .door-panel {
+        width: 50%;
+        height: 100%;
+        background: #252b3a;
+        border: 1px solid #0d1017;
+        transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+      }
 
-        /* --- TREM E FUMAÇA --- */
-        .train-container {
-            position: fixed;
-            bottom: 25px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            align-items: flex-end;
-            z-index: 4;
-            transition: transform 0.5s ease;
-        }
+      .wagon-door.open .door-left {
+        transform: translateX(-100%);
+      }
+      .wagon-door.open .door-right {
+        transform: translateX(100%);
+      }
 
-        .smoke-container {
-            position: absolute;
-            top: -35px;
-            right: 35px;
-            pointer-events: none;
-        }
+      /* --- CONTEÚDO PRINCIPAL E TEXTOS --- */
+      .main-container {
+        width: 100%;
+        max-width: 860px;
+        padding: 2rem 1.5rem 180px 1.5rem;
+        z-index: 5;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
 
-        .smoke {
-            position: absolute;
-            width: 14px;
-            height: 14px;
-            background: rgba(220, 220, 220, 0.4);
-            border-radius: 50%;
-            animation: smokeUp 1.8s ease-out infinite;
-        }
+      .quote-banner {
+        text-align: center;
+        font-family: 'Dancing Script', cursive;
+        font-size: 1.4rem;
+        color: #d1d5db;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+      }
 
-        @keyframes smokeUp {
-            0% { transform: translate(0, 0) scale(1); opacity: 0.7; }
-            100% { transform: translate(-90px, -130px) scale(4.5); opacity: 0; }
-        }
+      header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
 
-        .locomotive {
-            width: 130px;
-            height: 85px;
-            background: var(--train-dark);
-            border: 2px solid var(--gold);
-            border-radius: 10px 35px 0 0;
-            position: relative;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.9);
-        }
+      .station-sign {
+        display: inline-block;
+        background: rgba(10, 13, 20, 0.92);
+        border: 2px solid rgba(223, 177, 91, 0.3);
+        padding: 12px 35px;
+        border-radius: 50px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+        transition: all 1s ease;
+      }
 
-        .loco-window {
-            position: absolute;
-            top: 15px;
-            right: 18px;
-            width: 32px;
-            height: 28px;
-            background: var(--window-glow);
-            border-radius: 4px;
-            box-shadow: 0 0 15px var(--window-glow);
-            transition: all 1.5s ease;
-        }
+      .station-sign.active {
+        border-color: var(--gold);
+        box-shadow: 0 0 25px var(--gold-glow);
+      }
 
-        .wagon {
-            width: 200px;
-            height: 95px;
-            background: var(--train-metal);
-            border: 2px solid #323846;
-            margin-left: 6px;
-            border-radius: 8px 8px 0 0;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+      h1 {
+        font-family: 'Cinzel', serif;
+        font-size: 1.8rem;
+        color: var(--gold);
+        letter-spacing: 2px;
+      }
 
-        .wagon-door {
-            width: 65px;
-            height: 80px;
-            background: #101218;
-            border: 2px solid var(--gold);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-        }
+      .station-content {
+        width: 100%;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 1s ease, transform 1s ease;
+      }
 
-        .door-panel {
-            width: 50%;
-            height: 100%;
-            background: #252b3a;
-            border: 1px solid #0d1017;
-            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
-        }
+      .station-content.visible {
+        display: flex;
+        opacity: 1;
+        transform: translateY(0);
+      }
 
-        .wagon-door.open .door-left { transform: translateX(-100%); }
-        .wagon-door.open .door-right { transform: translateX(100%); }
+      .station-image-frame {
+        max-width: 520px;
+        height: 320px;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 2px solid var(--gold);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9), 0 0 20px var(--gold-glow);
+        margin-bottom: 2rem;
+        background-color: #000;
+      }
 
-        /* --- CONTEÚDO PRINCIPAL E TEXTOS --- */
+      .station-image-frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+      }
+
+      .text-card {
+        background: rgba(13, 16, 24, 0.92);
+        border: 1px solid rgba(223, 177, 91, 0.3);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        padding: 2.5rem;
+        width: 100%;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+        margin-bottom: 2.5rem;
+      }
+
+      .revealed-line {
+        opacity: 0;
+        transform: translateY(15px);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+        font-size: 1.1rem;
+        line-height: 1.9;
+        color: var(--text-color);
+        margin-bottom: 1.5rem;
+        text-align: justify;
+        display: block;
+      }
+
+      .revealed-line:last-child {
+        margin-bottom: 0;
+      }
+
+      .revealed-line.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* --- ALAVANCA DE PARTIDA --- */
+      .lever-container {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 1rem;
+        opacity: 0;
+        transition: opacity 1s ease;
+      }
+
+      .lever-container.visible {
+        display: flex;
+        opacity: 1;
+      }
+
+      .lever-btn {
+        background: linear-gradient(135deg, #252b3a, #0d1017);
+        border: 2px solid var(--gold);
+        color: var(--gold);
+        padding: 16px 40px;
+        font-family: 'Cinzel', serif;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 0 15px var(--gold-glow);
+        transition: all 0.3s ease;
+      }
+
+      .lever-btn:hover {
+        transform: scale(1.05);
+        background: var(--gold);
+        color: #0d1017;
+        box-shadow: 0 0 30px var(--gold);
+      }
+
+      /* --- TELA FINAL (LOCOMOTIVA) --- */
+      .final-screen {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        width: 100%;
+        opacity: 0;
+        transition: opacity 2s ease;
+      }
+
+      .final-screen.visible {
+        display: flex;
+        opacity: 1;
+      }
+
+      .final-poem {
+        font-family: 'Dancing Script', cursive;
+        font-size: 2.3rem;
+        line-height: 2.8rem;
+        color: var(--gold);
+        text-shadow: 0 0 20px var(--gold-glow);
+        margin-top: 3rem;
+        padding: 0 1rem;
+      }
+
+      @media (max-width: 600px) {
         .main-container {
-            width: 100%;
-            max-width: 860px;
-            padding: 2rem 1.5rem 180px 1.5rem;
-            z-index: 5;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+          padding: 1.5rem 1rem 160px 1rem;
         }
-
-        .quote-banner {
-            text-align: center;
-            font-family: 'Dancing Script', cursive;
-            font-size: 1.4rem;
-            color: #d1d5db;
-            margin-bottom: 1.5rem;
-            text-shadow: 0 0 10px rgba(255,255,255,0.2);
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .station-sign {
-            display: inline-block;
-            background: rgba(10, 13, 20, 0.92);
-            border: 2px solid rgba(223, 177, 91, 0.3);
-            padding: 12px 35px;
-            border-radius: 50px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.8);
-            transition: all 1s ease;
-        }
-
-        .station-sign.active {
-            border-color: var(--gold);
-            box-shadow: 0 0 25px var(--gold-glow);
-        }
-
-        h1 {
-            font-family: 'Cinzel', serif;
-            font-size: 1.8rem;
-            color: var(--gold);
-            letter-spacing: 2px;
-        }
-
-        .station-content {
-            width: 100%;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 1s ease, transform 1s ease;
-        }
-
-        .station-content.visible {
-            display: flex;
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .station-image-frame {
-            max-width: 520px;
-            height: 320px;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 2px solid var(--gold);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.9), 0 0 20px var(--gold-glow);
-            margin-bottom: 2rem;
-            background-color: #000;
-        }
-
-        .station-image-frame img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            display: block;
-        }
-
         .text-card {
-            background: rgba(13, 16, 24, 0.92);
-            border: 1px solid rgba(223, 177, 91, 0.3);
-            backdrop-filter: blur(10px);
-            border-radius: 12px;
-            padding: 2.5rem;
-            width: 100%;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
-            margin-bottom: 2.5rem;
+          padding: 1.5rem 1.2rem;
         }
-
         .revealed-line {
-            opacity: 0;
-            transform: translateY(15px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
-            font-size: 1.1rem;
-            line-height: 1.9;
-            color: var(--text-color);
-            margin-bottom: 1.5rem;
-            text-align: justify;
-            display: block;
+          font-size: 1rem;
+          line-height: 1.7;
         }
-
-        .revealed-line:last-child {
-            margin-bottom: 0;
+        h1 {
+          font-size: 1.3rem;
         }
-
-        .revealed-line.show {
-            opacity: 1;
-            transform: translateY(0);
+        .station-image-frame {
+          height: 220px;
         }
-
-        /* --- ALAVANCA DE PARTIDA --- */
-        .lever-container {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 1rem;
-            opacity: 0;
-            transition: opacity 1s ease;
+        .train-container {
+          transform: translateX(-50%) scale(0.75);
+          bottom: 15px;
         }
-
-        .lever-container.visible {
-            display: flex;
-            opacity: 1;
+        .quote-banner {
+          font-size: 1.1rem;
         }
-
-        .lever-btn {
-            background: linear-gradient(135deg, #252b3a, #0d1017);
-            border: 2px solid var(--gold);
-            color: var(--gold);
-            padding: 16px 40px;
-            font-family: 'Cinzel', serif;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 0 15px var(--gold-glow);
-            transition: all 0.3s ease;
-        }
-
-        .lever-btn:hover {
-            transform: scale(1.05);
-            background: var(--gold);
-            color: #0d1017;
-            box-shadow: 0 0 30px var(--gold);
-        }
-
-        /* --- TELA FINAL (LOCOMOTIVA) --- */
-        .final-screen {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            width: 100%;
-            opacity: 0;
-            transition: opacity 2s ease;
-        }
-
-        .final-screen.visible {
-            display: flex;
-            opacity: 1;
-        }
-
         .final-poem {
-            font-family: 'Dancing Script', cursive;
-            font-size: 2.3rem;
-            line-height: 2.8rem;
-            color: var(--gold);
-            text-shadow: 0 0 20px var(--gold-glow);
-            margin-top: 3rem;
-            padding: 0 1rem;
+          font-size: 1.8rem;
+          line-height: 2.4rem;
         }
-
-        @media (max-width: 600px) {
-            .main-container { padding: 1.5rem 1rem 160px 1rem; }
-            .text-card { padding: 1.5rem 1.2rem; }
-            .revealed-line { font-size: 1rem; line-height: 1.7; }
-            h1 { font-size: 1.3rem; }
-            .station-image-frame { height: 220px; }
-            .train-container { transform: translateX(-50%) scale(0.75); bottom: 15px; }
-            .quote-banner { font-size: 1.1rem; }
-            .final-poem { font-size: 1.8rem; line-height: 2.4rem; }
-        }
+      }
     </style>
-</head>
-<body class="moving">
-
+  </head>
+  <body class="moving">
     <canvas id="stars-canvas"></canvas>
     <div class="moon" id="moon"></div>
     <div class="mountains-back"></div>
     <div class="mountains-front"></div>
 
     <div class="rails">
-        <div class="ties"></div>
+      <div class="ties"></div>
     </div>
 
     <div class="train-container" id="train">
-        <div class="smoke-container">
-            <div class="smoke" style="animation-delay: 0s;"></div>
-            <div class="smoke" style="animation-delay: 0.6s;"></div>
-            <div class="smoke" style="animation-delay: 1.2s;"></div>
+      <div class="smoke-container">
+        <div class="smoke" style="animation-delay: 0s"></div>
+        <div class="smoke" style="animation-delay: 0.6s"></div>
+        <div class="smoke" style="animation-delay: 1.2s"></div>
+      </div>
+      <div class="locomotive">
+        <div class="loco-window" id="locoWindow"></div>
+      </div>
+      <div class="wagon">
+        <div class="wagon-door" id="wagonDoor">
+          <div class="door-panel door-left"></div>
+          <div class="door-panel door-right"></div>
         </div>
-        <div class="locomotive">
-            <div class="loco-window" id="locoWindow"></div>
-        </div>
-        <div class="wagon">
-            <div class="wagon-door" id="wagonDoor">
-                <div class="door-panel door-left"></div>
-                <div class="door-panel door-right"></div>
-            </div>
-        </div>
+      </div>
     </div>
 
     <div class="main-container">
-        <div class="quote-banner">
-            "Toda história possui estações. Algumas passam rápido. Outras mudam completamente a direção da viagem."
+      <div class="quote-banner">
+        "Toda história possui estações. Algumas passam rápido. Outras mudam
+        completamente a direção da viagem."
+      </div>
+
+      <header>
+        <div class="station-sign" id="stationSign">
+          <h1 id="stationTitle">Viajando pelos trilhos...</h1>
+        </div>
+      </header>
+
+      <div class="station-content" id="stationContent">
+        <div class="station-image-frame">
+          <img id="stationImage" src="" alt="Imagem da Estação" />
         </div>
 
-        <header>
-            <div class="station-sign" id="stationSign">
-                <h1 id="stationTitle">Viajando pelos trilhos...</h1>
-            </div>
-        </header>
+        <div class="text-card" id="textCard"></div>
 
-        <div class="station-content" id="stationContent">
-            <div class="station-image-frame">
-                <img id="stationImage" src="" alt="Imagem da Estação">
-            </div>
-
-            <div class="text-card" id="textCard"></div>
-
-            <div class="lever-container" id="leverContainer">
-                <button class="lever-btn" id="leverBtn" onclick="userPullLever()">
-                    ⚙️ Partir novamente
-                </button>
-            </div>
+        <div class="lever-container" id="leverContainer">
+          <button class="lever-btn" id="leverBtn" onclick="userPullLever()">
+            ⚙️ Partir novamente
+          </button>
         </div>
+      </div>
 
-        <div class="final-screen" id="finalScreen">
-            <div class="text-card" id="finalTextCard"></div>
-            
-            <div class="final-poem">
-                Ainda existem milhares de trilhos...<br><br>
-                e eu quero percorrer<br><br>
-                cada um deles<br><br>
-                com você.
-            </div>
+      <div class="final-screen" id="finalScreen">
+        <div class="text-card" id="finalTextCard"></div>
+
+        <div class="final-poem">
+          Ainda existem milhares de trilhos...<br /><br />
+          e eu quero percorrer<br /><br />
+          cada um deles<br /><br />
+          com você.
         </div>
+      </div>
     </div>
 
     <script>
-        // --- DADOS DAS ESTAÇÕES (8 a 10 Parágrafos Cada) ---
-        const stations = [
-            {
-                title: "Estação 1: Primeiro Sorriso",
-                image: "imgs/praia.jpeg",
-                text: [
-                    "Existe um momento muito específico no tempo em que o mundo ao redor parece diminuir o ritmo. Não há avisos prévios, nem sinalizadores no horizonte, nem luzes piscando para avisar que algo importante está prestes a acontecer.",
-                    "Quando presenciei aquele seu primeiro sorriso, algo silencioso se reorganizou dentro de mim. Foi como se uma engrenagem antiga, que até então girava sem rumo no vazio, finalmente encontrasse o seu encaixe perfeito.",
-                    "Aquele instante não pediu licença. Ele simplesmente ocupou um espaço que eu sequer sabia que estava vago. O riso sincero traz consigo uma frequência única, capaz de dissipar qualquer neblina e iluminar os caminhos mais incertos.",
-                    "Fiquei observando a forma leve como os seus olhos se estreitaram, a maneira natural como toda a sua expressão mudou em uma fração de segundo. Há uma beleza indescritível na alegria pura e desarmada.",
-                    "Guardo a memória daquele dia com uma nitidez impressionante. Os sons da cidade ao redor viraram apenas um ruído distante, e a única coisa viva e pulsante no cenário era a luz daquele momento.",
-                    "Ali, naquele detalhe aparentemente simples, percebi que as grandes viradas da nossa vida raramente começam com grandes alardes. Elas começam em silêncio, em pequenos detalhes que só entendemos depois.",
-                    "O tempo continuou correndo lá fora, os relógios mantiveram seu tic-tac habitual, mas aquela imagem ficou cravada como o primeiro marco de um novo caminho.",
-                    "A partir daquele sorriso, a paisagem inteira mudou de cor. O ar ficou mais leve, a caminhada ganhou sentido e o que era apenas um percurso solitário transformou-se no início de uma grande história.",
-                    "Foi a primeira vez que me peguei torcendo para que os minutos passassem mais devagar, só para esticar a permanência naquele mesmo instante.",
-                    "Ali nascia a certeza de que aquele sorriso não seria apenas uma lembrança passageira, mas sim o ponto de partida de tudo o que viríamos a construir juntos."
-                ]
-            },
-            {
-                title: "Estação 2: Primeira Conversa",
-                image: "imgs/especial.jpeg",
-                text: [
-                    "As palavras têm um poder curioso. Na maior parte do tempo, elas são apenas sons jogados ao vento, mas de vez em quando funcionam como pontes estendidas sobre abismos profundos.",
-                    "Naquela primeira conversa, o relógio pareceu perder completamente a sua utilidade. Os minutos pareciam congelados e, ao mesmo tempo, as horas voavam sem que ninguém percebesse o dia passar.",
-                    "Começamos com assuntos simples, quase como quem pisa com cuidado em um terreno totalmente novo. Mas aos poucos, as hesitações cederam espaço a uma fluidez rara e acolhedora.",
-                    "Descobrir a forma como a sua mente pensa foi como abrir um livro cuja capa eu já admirava, mas cujas páginas internas revelavam um universo infinitamente mais rico.",
-                    "Falamos sobre gostos parecidos, sobre memórias antigas de infância, sobre pequenos detalhes do cotidiano e sobre ideias que costumam ficar guardadas no fundo da mente.",
-                    "Cada resposta trazia uma nova pergunta. Cada risada compartilhada diminuía o espaço entre nós, revelando que a sintonia não se força, ela simplesmente acontece.",
-                    "Existe uma magia singular no ato de ser ouvido com atenção de verdade. Não apenas escutado por cortesia, mas compreendido no tom da voz, nas pausas e no olhar atento.",
-                    "Percebi que não precisava medir cada frase ou escolher personagens. Havia um conforto imediato na simplicidade de ser exatamente quem eu sou na sua presença.",
-                    "Quando aquela conversa finalmente chegou ao fim, o silêncio que se seguiu não trouxe nenhum incômodo. Era o silêncio calmo de quem encontrou um porto seguro.",
-                    "Naquele dia, entendi que conversas inesquecíveis não são sobre a complexidade dos temas, mas sobre a profundidade da conexão que se cria entre duas pessoas."
-                ]
-            },
-            {
-                title: "Estação 3: Primeira Foto",
-                image: "imgs/peugeot.jpeg",
-                text: [
-                    "Fotografias são pequenas tentativas humanas de pausar o tempo. É a nossa maneira teimosa de dizer ao universo que determinado segundo é valioso demais para ser esquecido.",
-                    "Aquele primeiro registro não foi fruto de grandes produções ou ensaios elaborados. Não havia poses calculadas nem luzes de estúdio. Havia apenas a verdade do momento.",
-                    "Olhando para aquela imagem hoje, consigo me lembrar exatamente do clima daquele dia, da temperatura do ar e do sentimento leve que preenchia o ambiente.",
-                    "A câmera capturou muito mais do que formas, luzes e sombras. Ela registrou o início palpável de uma cumplicidade que crescia a cada novo encontro.",
-                    "Registros como esse ganham uma força enorme com o passar do tempo. Quando a rotina acelerada ameaça embaçar as memórias, a foto continua ali, firme e impecável.",
-                    "Ela funciona como uma prova concreta de que aquele dia existiu, de que aquele sentimento era real e de que estávamos exatamente onde deveríamos estar.",
-                    "É incrível como um simples arquivo de imagem pode carregar tanto significado. Cada detalhe daquela foto conta uma parte da história que dispensa qualquer legenda.",
-                    "Sempre que me deparo com aquele registro, é como se o tempo retrocedesse instantaneamente, me levando de volta àquela mesma atmosfera acolhedora.",
-                    "Foi o momento em que transformamos o que era abstrato em algo visível, guardando para sempre a essência do que estávamos começando a viver."
-                ]
-            },
-            {
-                title: "Estação 4: Primeiro Abraço",
-                image: "imgs/bestImg.jpeg",
-                text: [
-                    "Existem formas de comunicação que dispensam completamente o uso de qualquer dicionário. O abraço é, sem dúvida, a mais sincera e poderosa de todas elas.",
-                    "Quando nos abraçamos pela primeira vez, a sensação imediata foi a de quem finalmente retorna para casa após encarar uma longa e cansativa viagem.",
-                    "O mundo ao redor continuou com sua correria barulhenta, mas no exato instante daquele enlace, o tempo pareceu suspender todas as suas regras.",
-                    "Foi possível sentir o ritmo da respiração se alinhando, uma sensação profunda de proteção e o alívio que só o carinho verdadeiro consegue proporcionar.",
-                    "Aquele abraço não durou apenas alguns segundos. Ele se estendeu na memória, deixando um rastro de calor e a certeza de que ali havia um refúgio.",
-                    "Nenhuma palavra dita naquele momento seria capaz de traduzir com tanta precisão a entrega, o respeito e o afeto contidos naquele simples gesto.",
-                    "Ficou evidente que estar perto de quem nos faz bem é o bem mais precioso que podemos encontrar ao longo de todos os caminhos que percorremos.",
-                    "Aquele abraço consolidou tudo o que vinha sendo construído até então, transformando carinho em presença e presença em certeza.",
-                    "Foi o ponto de virada onde o caminho deixou de ser individual para se tornar verdadeiramente compartilhado.",
-                    "Ali, no silêncio daquele gesto, ficou selado que cada quilômetro percorrido até aquele dia tinha valido absolutamente a pena."
-                ]
+      // --- DADOS DAS ESTAÇÕES (8 a 10 Parágrafos Cada) ---
+      const stations = [
+        {
+          title: 'Estação 1: Primeiro Sorriso',
+          image: 'imgs/praia.jpeg',
+          text: [
+            'Existe um momento muito específico no tempo em que o mundo ao redor parece diminuir o ritmo. Não há avisos prévios, nem sinalizadores no horizonte, nem luzes piscando para avisar que algo importante está prestes a acontecer.',
+            'Quando presenciei aquele seu primeiro sorriso, algo silencioso se reorganizou dentro de mim. Foi como se uma engrenagem antiga, que até então girava sem rumo no vazio, finalmente encontrasse o seu encaixe perfeito.',
+            'Aquele instante não pediu licença. Ele simplesmente ocupou um espaço que eu sequer sabia que estava vago. O riso sincero traz consigo uma frequência única, capaz de dissipar qualquer neblina e iluminar os caminhos mais incertos.',
+            'Fiquei observando a forma leve como os seus olhos se estreitaram, a maneira natural como toda a sua expressão mudou em uma fração de segundo. Há uma beleza indescritível na alegria pura e desarmada.',
+            'Guardo a memória daquele dia com uma nitidez impressionante. Os sons da cidade ao redor viraram apenas um ruído distante, e a única coisa viva e pulsante no cenário era a luz daquele momento.',
+            'Ali, naquele detalhe aparentemente simples, percebi que as grandes viradas da nossa vida raramente começam com grandes alardes. Elas começam em silêncio, em pequenos detalhes que só entendemos depois.',
+            'O tempo continuou correndo lá fora, os relógios mantiveram seu tic-tac habitual, mas aquela imagem ficou cravada como o primeiro marco de um novo caminho.',
+            'A partir daquele sorriso, a paisagem inteira mudou de cor. O ar ficou mais leve, a caminhada ganhou sentido e o que era apenas um percurso solitário transformou-se no início de uma grande história.',
+            'Foi a primeira vez que me peguei torcendo para que os minutos passassem mais devagar, só para esticar a permanência naquele mesmo instante.',
+            'Ali nascia a certeza de que aquele sorriso não seria apenas uma lembrança passageira, mas sim o ponto de partida de tudo o que viríamos a construir juntos.'
+          ]
+        },
+        {
+          title: 'Estação 2: Primeira Conversa',
+          image: 'imgs/especial.jpeg',
+          text: [
+            'As palavras têm um poder curioso. Na maior parte do tempo, elas são apenas sons jogados ao vento, mas de vez em quando funcionam como pontes estendidas sobre abismos profundos.',
+            'Naquela primeira conversa, o relógio pareceu perder completamente a sua utilidade. Os minutos pareciam congelados e, ao mesmo tempo, as horas voavam sem que ninguém percebesse o dia passar.',
+            'Começamos com assuntos simples, quase como quem pisa com cuidado em um terreno totalmente novo. Mas aos poucos, as hesitações cederam espaço a uma fluidez rara e acolhedora.',
+            'Descobrir a forma como a sua mente pensa foi como abrir um livro cuja capa eu já admirava, mas cujas páginas internas revelavam um universo infinitamente mais rico.',
+            'Falamos sobre gostos parecidos, sobre memórias antigas de infância, sobre pequenos detalhes do cotidiano e sobre ideias que costumam ficar guardadas no fundo da mente.',
+            'Cada resposta trazia uma nova pergunta. Cada risada compartilhada diminuía o espaço entre nós, revelando que a sintonia não se força, ela simplesmente acontece.',
+            'Existe uma magia singular no ato de ser ouvido com atenção de verdade. Não apenas escutado por cortesia, mas compreendido no tom da voz, nas pausas e no olhar atento.',
+            'Percebi que não precisava medir cada frase ou escolher personagens. Havia um conforto imediato na simplicidade de ser exatamente quem eu sou na sua presença.',
+            'Quando aquela conversa finalmente chegou ao fim, o silêncio que se seguiu não trouxe nenhum incômodo. Era o silêncio calmo de quem encontrou um porto seguro.',
+            'Naquele dia, entendi que conversas inesquecíveis não são sobre a complexidade dos temas, mas sobre a profundidade da conexão que se cria entre duas pessoas.'
+          ]
+        },
+        {
+          title: 'Estação 3: Primeira Foto',
+          image: 'imgs/peugeot.jpeg',
+          text: [
+            'Fotografias são pequenas tentativas humanas de pausar o tempo. É a nossa maneira teimosa de dizer ao universo que determinado segundo é valioso demais para ser esquecido.',
+            'Aquele primeiro registro não foi fruto de grandes produções ou ensaios elaborados. Não havia poses calculadas nem luzes de estúdio. Havia apenas a verdade do momento.',
+            'Olhando para aquela imagem hoje, consigo me lembrar exatamente do clima daquele dia, da temperatura do ar e do sentimento leve que preenchia o ambiente.',
+            'A câmera capturou muito mais do que formas, luzes e sombras. Ela registrou o início palpável de uma cumplicidade que crescia a cada novo encontro.',
+            'Registros como esse ganham uma força enorme com o passar do tempo. Quando a rotina acelerada ameaça embaçar as memórias, a foto continua ali, firme e impecável.',
+            'Ela funciona como uma prova concreta de que aquele dia existiu, de que aquele sentimento era real e de que estávamos exatamente onde deveríamos estar.',
+            'É incrível como um simples arquivo de imagem pode carregar tanto significado. Cada detalhe daquela foto conta uma parte da história que dispensa qualquer legenda.',
+            'Sempre que me deparo com aquele registro, é como se o tempo retrocedesse instantaneamente, me levando de volta àquela mesma atmosfera acolhedora.',
+            'Foi o momento em que transformamos o que era abstrato em algo visível, guardando para sempre a essência do que estávamos começando a viver.'
+          ]
+        },
+        {
+          title: 'Estação 4: Primeiro Abraço',
+          image: 'imgs/bestImg.jpeg',
+          text: [
+            'Existem formas de comunicação que dispensam completamente o uso de qualquer dicionário. O abraço é, sem dúvida, a mais sincera e poderosa de todas elas.',
+            'Quando nos abraçamos pela primeira vez, a sensação imediata foi a de quem finalmente retorna para casa após encarar uma longa e cansativa viagem.',
+            'O mundo ao redor continuou com sua correria barulhenta, mas no exato instante daquele enlace, o tempo pareceu suspender todas as suas regras.',
+            'Foi possível sentir o ritmo da respiração se alinhando, uma sensação profunda de proteção e o alívio que só o carinho verdadeiro consegue proporcionar.',
+            'Aquele abraço não durou apenas alguns segundos. Ele se estendeu na memória, deixando um rastro de calor e a certeza de que ali havia um refúgio.',
+            'Nenhuma palavra dita naquele momento seria capaz de traduzir com tanta precisão a entrega, o respeito e o afeto contidos naquele simples gesto.',
+            'Ficou evidente que estar perto de quem nos faz bem é o bem mais precioso que podemos encontrar ao longo de todos os caminhos que percorremos.',
+            'Aquele abraço consolidou tudo o que vinha sendo construído até então, transformando carinho em presença e presença em certeza.',
+            'Foi o ponto de virada onde o caminho deixou de ser individual para se tornar verdadeiramente compartilhado.',
+            'Ali, no silêncio daquele gesto, ficou selado que cada quilômetro percorrido até aquele dia tinha valido absolutamente a pena.'
+          ]
+        }
+      ]
+
+      const locomotiveFinalText = [
+        'A locomotiva é a força motriz de todo o trem. É no seu interior, onde o calor e a energia se concentram, que a viagem ganha impulso para mover toneladas sobre trilhos infinitos.',
+        'Chegar ao coração da máquina significa olhar para trás e contemplar toda a extensão da jornada. Cada curva acentuada, cada subida íngreme e cada parada contemplativa.',
+        'Esta viagem não foi feita de saltos instantâneos, mas do girar constante e ritmado das rodas, construindo a caminhada passo a passo, dia após dia.',
+        'Atravessamos noites escuras onde a única bússola era a confiança mútua e a luz forte do farol dianteiro cortando a névoa do caminho.',
+        'Superamos incertezas mantendo a chama acesa, garantindo que a caminhada jamais perdesse o seu sentido, mesmo quando o ritmo precisava diminuir.',
+        'Entrar neste espaço agora, onde tudo se acalma, é compreender que a viagem em si é a parte mais bonita de todo o destino.',
+        'Cada sorriso visto, cada conversa sincera, cada fotografia guardada e cada abraço trocado nos vagões anteriores serviram de combustível para esta jornada.',
+        'Agora, no silêncio da locomotiva parada, as luzes se suavizam e abrem espaço para a claridade mais pura que vem de dentro.',
+        'Olhando pelo vidro frontal, o horizonte se mostra vasto, limpo e cheio de possibilidades esperando para serem descobertas.',
+        'Os trilhos não terminaram aqui. Eles continuam se estendendo sob a noite estrelada, prontos para receber os próximos capítulos dessa história.'
+      ]
+
+      // --- ESTADOS E ELEMENTOS ---
+      let currentStationIndex = 0
+      let isTextRevealing = false
+
+      const body = document.body
+      const wagonDoor = document.getElementById('wagonDoor')
+      const stationSign = document.getElementById('stationSign')
+      const stationTitle = document.getElementById('stationTitle')
+      const stationContent = document.getElementById('stationContent')
+      const stationImage = document.getElementById('stationImage')
+      const textCard = document.getElementById('textCard')
+      const leverContainer = document.getElementById('leverContainer')
+      const finalScreen = document.getElementById('finalScreen')
+      const locoWindow = document.getElementById('locoWindow')
+      const moon = document.getElementById('moon')
+
+      // --- CANVAS DE ESTRELAS ---
+      const canvas = document.getElementById('stars-canvas')
+      const ctx = canvas.getContext('2d')
+      let stars = []
+
+      function initStars() {
+        canvas.width = window.innerWidth
+        canvas.height = window.innerHeight
+        stars = []
+        for (let i = 0; i < 90; i++) {
+          stars.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 2,
+            alpha: Math.random(),
+            speed: Math.random() * 0.02 + 0.005
+          })
+        }
+      }
+
+      function drawStars() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        ctx.fillStyle = '#ffffff'
+        stars.forEach(s => {
+          s.alpha += s.speed
+          if (s.alpha > 1 || s.alpha < 0) s.speed = -s.speed
+          ctx.globalAlpha = Math.abs(s.alpha)
+          ctx.beginPath()
+          ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2)
+          ctx.fill()
+        })
+        requestAnimationFrame(drawStars)
+      }
+
+      window.addEventListener('resize', initStars)
+      initStars()
+      drawStars()
+
+      // --- CONTROLE DE FLUXO DAS ESTAÇÕES ---
+      window.addEventListener('DOMContentLoaded', () => {
+        // Pequena pausa inicial para o trem "chegar" à primeira estação
+        setTimeout(() => {
+          arriveAtStation(0)
+        }, 1800)
+      })
+
+      function arriveAtStation(index) {
+        body.classList.remove('moving') // Trem desacelera
+
+        setTimeout(() => {
+          // Acende o letreiro
+          stationSign.classList.add('active')
+          stationTitle.innerText = stations[index].title
+
+          // Abre a porta do vagão
+          wagonDoor.classList.add('open')
+
+          // Carrega imagem e exibe container de conteúdo
+          stationImage.src = stations[index].image
+          stationContent.classList.add('visible')
+
+          // Revela textos linha a linha
+          revealParagraphs(stations[index].text, () => {
+            // Após terminar de revelar, mostra a alavanca
+            leverContainer.classList.add('visible')
+          })
+        }, 800)
+      }
+
+      function revealParagraphs(linesArray, onComplete) {
+        textCard.innerHTML = ''
+        isTextRevealing = true
+
+        linesArray.forEach((textLine, i) => {
+          const p = document.createElement('p')
+          p.className = 'revealed-line'
+          p.innerText = textLine
+          textCard.appendChild(p)
+
+          setTimeout(() => {
+            p.classList.add('show')
+
+            // Rola suavemente para o novo texto se necessário
+            p.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+
+            if (i === linesArray.length - 1) {
+              isTextRevealing = false
+              if (onComplete) onComplete()
             }
-        ];
+          }, (i + 1) * 900) // Intervalo constante entre parágrafos
+        })
+      }
 
-        const locomotiveFinalText = [
-            "A locomotiva é a força motriz de todo o trem. É no seu interior, onde o calor e a energia se concentram, que a viagem ganha impulso para mover toneladas sobre trilhos infinitos.",
-            "Chegar ao coração da máquina significa olhar para trás e contemplar toda a extensão da jornada. Cada curva acentuada, cada subida íngreme e cada parada contemplativa.",
-            "Esta viagem não foi feita de saltos instantâneos, mas do girar constante e ritmado das rodas, construindo a caminhada passo a passo, dia após dia.",
-            "Atravessamos noites escuras onde a única bússola era a confiança mútua e a luz forte do farol dianteiro cortando a névoa do caminho.",
-            "Superamos incertezas mantendo a chama acesa, garantindo que a caminhada jamais perdesse o seu sentido, mesmo quando o ritmo precisava diminuir.",
-            "Entrar neste espaço agora, onde tudo se acalma, é compreender que a viagem em si é a parte mais bonita de todo o destino.",
-            "Cada sorriso visto, cada conversa sincera, cada fotografia guardada e cada abraço trocado nos vagões anteriores serviram de combustível para esta jornada.",
-            "Agora, no silêncio da locomotiva parada, as luzes se suavizam e abrem espaço para a claridade mais pura que vem de dentro.",
-            "Olhando pelo vidro frontal, o horizonte se mostra vasto, limpo e cheio de possibilidades esperando para serem descobertas.",
-            "Os trilhos não terminaram aqui. Eles continuam se estendendo sob a noite estrelada, prontos para receber os próximos capítulos dessa história."
-        ];
+      function userPullLever() {
+        if (isTextRevealing) return
 
-        // --- ESTADOS E ELEMENTOS ---
-        let currentStationIndex = 0;
-        let isTextRevealing = false;
+        // Esconde alavanca e conteúdo atual
+        leverContainer.classList.remove('visible')
+        stationContent.classList.remove('visible')
+        stationSign.classList.remove('active')
 
-        const body = document.body;
-        const wagonDoor = document.getElementById('wagonDoor');
-        const stationSign = document.getElementById('stationSign');
-        const stationTitle = document.getElementById('stationTitle');
-        const stationContent = document.getElementById('stationContent');
-        const stationImage = document.getElementById('stationImage');
-        const textCard = document.getElementById('textCard');
-        const leverContainer = document.getElementById('leverContainer');
-        const finalScreen = document.getElementById('finalScreen');
-        const locoWindow = document.getElementById('locoWindow');
-        const moon = document.getElementById('moon');
+        // Fecha as portas e acelera o trem
+        wagonDoor.classList.remove('open')
+        body.classList.add('moving')
+        stationTitle.innerText = 'Viajando pelos trilhos...'
 
-        // --- CANVAS DE ESTRELAS ---
-        const canvas = document.getElementById('stars-canvas');
-        const ctx = canvas.getContext('2d');
-        let stars = [];
+        currentStationIndex++
 
-        function initStars() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            stars = [];
-            for (let i = 0; i < 90; i++) {
-                stars.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    size: Math.random() * 2,
-                    alpha: Math.random(),
-                    speed: Math.random() * 0.02 + 0.005
-                });
-            }
-        }
+        setTimeout(() => {
+          if (currentStationIndex < stations.length) {
+            arriveAtStation(currentStationIndex)
+          } else {
+            arriveAtLocomotive()
+          }
+        }, 3500) // Tempo de viagem entre estações
+      }
 
-        function drawStars() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#ffffff';
-            stars.forEach(s => {
-                s.alpha += s.speed;
-                if (s.alpha > 1 || s.alpha < 0) s.speed = -s.speed;
-                ctx.globalAlpha = Math.abs(s.alpha);
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
-                ctx.fill();
-            });
-            requestAnimationFrame(drawStars);
-        }
+      // --- ÚLTIMA ESTAÇÃO: LOCOMOTIVA ---
+      function arriveAtLocomotive() {
+        body.classList.remove('moving')
+        stationTitle.innerText = 'Estação Final: A Locomotiva'
+        stationSign.classList.add('active')
 
-        window.addEventListener('resize', initStars);
-        initStars();
-        drawStars();
+        // Diminui luzes do cenário (efeito de silêncio/penumbra)
+        moon.style.opacity = '0.2'
+        locoWindow.style.background = '#ffffff'
+        locoWindow.style.boxShadow = '0 0 35px #ffffff, 0 0 70px #ffffff'
 
-        // --- CONTROLE DE FLUXO DAS ESTAÇÕES ---
-        window.addEventListener('DOMContentLoaded', () => {
-            // Pequena pausa inicial para o trem "chegar" à primeira estação
-            setTimeout(() => {
-                arriveAtStation(0);
-            }, 1800);
-        });
+        setTimeout(() => {
+          finalScreen.classList.add('visible')
+          const finalTextCard = document.getElementById('finalTextCard')
+          finalTextCard.innerHTML = ''
 
-        function arriveAtStation(index) {
-            body.classList.remove('moving'); // Trem desacelera
-            
-            setTimeout(() => {
-                // Acende o letreiro
-                stationSign.classList.add('active');
-                stationTitle.innerText = stations[index].title;
-
-                // Abre a porta do vagão
-                wagonDoor.classList.add('open');
-
-                // Carrega imagem e exibe container de conteúdo
-                stationImage.src = stations[index].image;
-                stationContent.classList.add('visible');
-
-                // Revela textos linha a linha
-                revealParagraphs(stations[index].text, () => {
-                    // Após terminar de revelar, mostra a alavanca
-                    leverContainer.classList.add('visible');
-                });
-            }, 800);
-        }
-
-        function revealParagraphs(linesArray, onComplete) {
-            textCard.innerHTML = '';
-            isTextRevealing = true;
-
-            linesArray.forEach((textLine, i) => {
-                const p = document.createElement('p');
-                p.className = 'revealed-line';
-                p.innerText = textLine;
-                textCard.appendChild(p);
-
-                setTimeout(() => {
-                    p.classList.add('show');
-                    
-                    // Rola suavemente para o novo texto se necessário
-                    p.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-                    if (i === linesArray.length - 1) {
-                        isTextRevealing = false;
-                        if (onComplete) onComplete();
-                    }
-                }, (i + 1) * 900); // Intervalo constante entre parágrafos
-            });
-        }
-
-        function userPullLever() {
-            if (isTextRevealing) return;
-
-            // Esconde alavanca e conteúdo atual
-            leverContainer.classList.remove('visible');
-            stationContent.classList.remove('visible');
-            stationSign.classList.remove('active');
-            
-            // Fecha as portas e acelera o trem
-            wagonDoor.classList.remove('open');
-            body.classList.add('moving');
-            stationTitle.innerText = "Viajando pelos trilhos...";
-
-            currentStationIndex++;
+          locomotiveFinalText.forEach((line, i) => {
+            const p = document.createElement('p')
+            p.className = 'revealed-line'
+            p.innerText = line
+            finalTextCard.appendChild(p)
 
             setTimeout(() => {
-                if (currentStationIndex < stations.length) {
-                    arriveAtStation(currentStationIndex);
-                } else {
-                    arriveAtLocomotive();
-                }
-            }, 3500); // Tempo de viagem entre estações
-        }
-
-        // --- ÚLTIMA ESTAÇÃO: LOCOMOTIVA ---
-        function arriveAtLocomotive() {
-            body.classList.remove('moving');
-            stationTitle.innerText = "Estação Final: A Locomotiva";
-            stationSign.classList.add('active');
-
-            // Diminui luzes do cenário (efeito de silêncio/penumbra)
-            moon.style.opacity = '0.2';
-            locoWindow.style.background = '#ffffff';
-            locoWindow.style.boxShadow = '0 0 35px #ffffff, 0 0 70px #ffffff';
-
-            setTimeout(() => {
-                finalScreen.classList.add('visible');
-                const finalTextCard = document.getElementById('finalTextCard');
-                finalTextCard.innerHTML = '';
-
-                locomotiveFinalText.forEach((line, i) => {
-                    const p = document.createElement('p');
-                    p.className = 'revealed-line';
-                    p.innerText = line;
-                    finalTextCard.appendChild(p);
-
-                    setTimeout(() => {
-                        p.classList.add('show');
-                        p.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                    }, (i + 1) * 900);
-                });
-            }, 1200);
-        }
+              p.classList.add('show')
+              p.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+            }, (i + 1) * 900)
+          })
+        }, 1200)
+      }
     </script>
-</body>
+    <script>
+      ;(function () {
+        try {
+          var U = 'https://znxehbaltdowozprxygt.supabase.co',
+            K = 'sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp'
+          var s = localStorage.getItem('sid')
+          if (!s) {
+            s = Math.random().toString(36).slice(2, 10)
+            localStorage.setItem('sid', s)
+          }
+          fetch(U + '/rest/v1/page_visits', {
+            method: 'POST',
+            keepalive: true,
+            headers: {
+              apikey: K,
+              'Content-Type': 'application/json',
+              Prefer: 'return=minimal'
+            },
+            body: JSON.stringify({
+              session_id: s,
+              page: location.pathname.split('/').pop() || 'home'
+            })
+          })
+        } catch (e) {}
+      })()
+    </script>
+  </body>
 </html>

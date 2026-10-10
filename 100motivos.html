@@ -1,60 +1,93 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100 Motivos</title>
 
-  <title>100 Motivos</title>
+    <link rel="stylesheet" href="style2.css" />
+  </head>
 
-  <link rel="stylesheet" href="style2.css">
+  <body class="motivos-page">
+    <div class="bg"></div>
 
-</head>
+    <main class="motivos-container">
+      <!-- CARD -->
+      <section class="motivos-card" id="card">
+        <span class="contador" id="contador"> Motivo 1 de 100 </span>
 
-<body class="motivos-page">
+        <h1 id="titulo">Motivo #1</h1>
 
-  <div class="bg"></div>
+        <p id="texto">Seu sorriso.</p>
 
-  <main class="motivos-container">
+        <button id="btn">Próximo ❤️</button>
+      </section>
+    </main>
 
-    <!-- CARD -->
-    <section class="motivos-card" id="card">
+    <!-- TELA FINAL -->
 
-      <span class="contador" id="contador">
-        Motivo 1 de 100
-      </span>
-
-      <h1 id="titulo">
-        Motivo #1
-      </h1>
-
-      <p id="texto">
-        Seu sorriso.
-      </p>
-
-      <button id="btn">
-        Próximo ❤️
-      </button>
-
+    <section class="final" id="final">
+      <div class="final-box" id="finalBox">
+        <p class="digitando" id="digitando">
+          Calculando quantidade de motivos...
+        </p>
+      </div>
     </section>
 
-  </main>
+    <script src="js/script2.js"></script>
+    <script>
+      ;(function () {
+        try {
+          var U = 'https://znxehbaltdowozprxygt.supabase.co',
+            K = 'sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp'
+          var s = localStorage.getItem('sid')
+          if (!s) {
+            s = Math.random().toString(36).slice(2, 10)
+            localStorage.setItem('sid', s)
+          }
+          fetch(U + '/rest/v1/page_visits', {
+            method: 'POST',
+            keepalive: true,
+            headers: {
+              apikey: K,
+              'Content-Type': 'application/json',
+              Prefer: 'return=minimal'
+            },
+            body: JSON.stringify({
+              session_id: s,
+              page: location.pathname.split('/').pop() || 'home'
+            })
+          })
+        } catch (e) {}
+      })()
+    </script>
 
-  <!-- TELA FINAL -->
-
-  <section class="final" id="final">
-
-    <div class="final-box" id="finalBox">
-
-      <p class="digitando" id="digitando">
-        Calculando quantidade de motivos...
-      </p>
-
-    </div>
-
-  </section>
-
-  <script src="js/script2.js"></script>
-
-</body>
+    <script>
+      ;(function () {
+        try {
+          var U = 'https://znxehbaltdowozprxygt.supabase.co',
+            K = 'sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp'
+          var s = localStorage.getItem('sid')
+          if (!s) {
+            s = Math.random().toString(36).slice(2, 10)
+            localStorage.setItem('sid', s)
+          }
+          fetch(U + '/rest/v1/page_visits', {
+            method: 'POST',
+            keepalive: true,
+            headers: {
+              apikey: K,
+              'Content-Type': 'application/json',
+              Prefer: 'return=minimal'
+            },
+            body: JSON.stringify({
+              session_id: s,
+              page: location.pathname.split('/').pop() || 'home'
+            })
+          })
+        } catch (e) {}
+      })()
+    </script>
+  </body>
 </html>

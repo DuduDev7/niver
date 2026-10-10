@@ -606,8 +606,7 @@
         },
         {
           pergunta: '16 — Qual meu passa tempo favorito',
-          descricao:
-            'Pensa bem hein kkk',
+          descricao: 'Pensa bem hein kkk',
           imagem: 'imgs/especial.jpeg',
           opcoes: [
             'Jogar futebol.',
@@ -645,16 +644,9 @@
         },
         {
           pergunta: '19 — Quem eu amo mais ?',
-          descricao:
-            'Essa é facil hein',
+          descricao: 'Essa é facil hein',
           imagem: 'imgs/carro.jpeg',
-          opcoes: [
-            'Pai.',
-            'Mãe.',
-            'Rafa',
-            'Julia',
-            'todos'
-          ],
+          opcoes: ['Pai.', 'Mãe.', 'Rafa', 'Julia', 'todos'],
           correta: 4
         },
         {
@@ -897,6 +889,32 @@
         requestAnimationFrame(animateFX)
       }
       animateFX()
+    </script>
+    <script>
+      ;(function () {
+        try {
+          var U = 'https://znxehbaltdowozprxygt.supabase.co',
+            K = 'sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp'
+          var s = localStorage.getItem('sid')
+          if (!s) {
+            s = Math.random().toString(36).slice(2, 10)
+            localStorage.setItem('sid', s)
+          }
+          fetch(U + '/rest/v1/page_visits', {
+            method: 'POST',
+            keepalive: true,
+            headers: {
+              apikey: K,
+              'Content-Type': 'application/json',
+              Prefer: 'return=minimal'
+            },
+            body: JSON.stringify({
+              session_id: s,
+              page: location.pathname.split('/').pop() || 'home'
+            })
+          })
+        } catch (e) {}
+      })()
     </script>
   </body>
 </html>

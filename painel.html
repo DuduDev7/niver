@@ -1,72 +1,346 @@
-<html lang="pt-BR"><head><meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="robots" content="noindex,nofollow"><title>Painel de Navegação</title>
-  <style>
-  :root{--bg:#1a1109;--card:#26190f;--ac:#e0a36b;--tx:#f3e6d8;--mu:#a58c76;--ln:#4a3322}
-  *{box-sizing:border-box}
-  body{margin:0;background:radial-gradient(circle at 20% 0,#33200f,var(--bg) 60%);color:var(--tx);
-  font-family:Georgia,serif;min-height:100vh;padding:20px 14px 60px}
-  .w{max-width:760px;margin:auto}
-  h1{font-weight:400;letter-spacing:.18em;text-transform:uppercase;font-size:clamp(18px,5vw,26px);margin:0 0 4px}
-  h1 span{color:var(--ac)}.sub{color:var(--mu);font-size:14px;margin-bottom:18px}
-  .st{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
-  .st div{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:12px;text-align:center}
-  .st b{display:block;font-size:clamp(18px,5vw,26px);color:var(--ac)}.st small{color:var(--mu);font-size:12px}
-  .bar{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
-  .bar input,.bar button{font:inherit;padding:10px 12px;border-radius:10px;border:1px solid var(--ln);background:var(--card);color:var(--tx)}
-  .bar input{flex:1;min-width:140px}.bar button{cursor:pointer;color:var(--ac)}
-  .s{background:var(--card);border:1px solid var(--ln);border-radius:16px;padding:16px;margin-bottom:16px}
-  .sh{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:12px}
-  .sh b{color:var(--ac)}.sh span{color:var(--mu);font-size:13px}
-  .tl{position:relative;margin-left:14px;padding-left:22px;border-left:2px dashed var(--ln)}
-  .it{position:relative;margin-bottom:14px}
-  .it:before{content:attr(data-n);position:absolute;left:-37px;top:0;width:26px;height:26px;border-radius:50%;
-  background:var(--ac);color:#2a1a0c;font:700 12px/26px system-ui;text-align:center}
-  .pg{font-size:16px;word-break:break-all}.tm{color:var(--mu);font-size:13px}
-  .vz{text-align:center;color:var(--mu);padding:40px 0}
-  @media(min-width:600px){.it{display:flex;justify-content:space-between;gap:12px}.tm{white-space:nowrap}}
-  </style></head><body><div class="w">
-  <h1>Painel de <span>Navegação</span></h1><div class="sub">Sequência de páginas, data e horário</div>
-  <div class="st"><div><b id="a">0</b><small>páginas vistas</small></div><div><b id="b">0</b><small>sessões</small></div><div><b id="c">—</b><small>último acesso</small></div></div>
-  <div class="bar" id="lg"><input type="password" id="pw" placeholder="senha"><button onclick="ent()">Entrar</button></div>
-  <div class="bar" id="bar" style="display:none"><input type="date" id="f"><button onclick="f.value='';r()">Todos</button><button onclick="sair()">Sair</button></div>
-  <div id="o"></div></div>
-  <script>
-  var U="https://znxehbaltdowozprxygt.supabase.co",K="sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp",L=[],pw=sessionStorage.getItem("pw")||"";
-  function ent(){pw=document.getElementById("pw").value;car()}
-  function sair(){sessionStorage.removeItem("pw");location.reload()}
-  function car(){
-    fetch(U+"/rest/v1/rpc/get_visits",{method:"POST",headers:{apikey:K,"Content-Type":"application/json"},
-    body:JSON.stringify({senha:pw,dias:365})}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(rows){
-      sessionStorage.setItem("pw",pw);
-      L=rows.reverse().map(function(v){return{s:v.session_id,p:v.page,t:new Date(v.created_at).getTime()}});
-      var n=0,ls=null,lt=0;L.forEach(function(x){if(x.s!==ls||x.t-lt>18e5)n++;ls=x.s;lt=x.t;x.s=n});
-      document.getElementById("lg").style.display="none";document.getElementById("bar").style.display="flex";r();
-    }).catch(function(){sessionStorage.removeItem("pw");alert("Senha incorreta")})}
-  var nm={home:"Home",index:"Início"};
-  function fd(t){return new Date(t).toLocaleDateString("pt-BR",{weekday:"short",day:"2-digit",month:"short",year:"numeric"})}
-  function fh(t){return new Date(t).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit",second:"2-digit"})}
-  function nome(p){var n=p.replace(".html","");return nm[n]||n}
-  function r(){
-    var d=document.getElementById("f").value,g={},ord=[];
-    L.forEach(function(v){
-      if(d&&new Date(v.t).toISOString().slice(0,10)!==d&&new Date(v.t-new Date(v.t).getTimezoneOffset()*6e4).toISOString().slice(0,10)!==d)return;
-      if(!g[v.s]){g[v.s]=[];ord.push(v.s)}g[v.s].push(v)});
-    document.getElementById("a").textContent=L.length;
-    document.getElementById("b").textContent=new Set(L.map(function(v){return v.s})).size;
-    document.getElementById("c").textContent=L.length?fh(L[L.length-1].t):"—";
-    var h="";ord.reverse().forEach(function(k,i){
-      var v=g[k],t0=v[0].t,t1=v[v.length-1].t,m=Math.round((t1-t0)/6e4);
-      h+='<div class="s"><div class="sh"><b>'+fd(t0)+' · '+fh(t0)+'</b><span>'+v.length+' páginas · '+(m<1?"menos de 1 min":m+" min")+'</span></div><div class="tl">';
-      v.forEach(function(x,j){h+='<div class="it" data-n="'+(j+1)+'"><div class="pg">'+nome(x.p)+'</div><div class="tm">'+fh(x.t)+'</div></div>'});
-      h+='</div></div>'});
-    document.getElementById("o").innerHTML=h||'<div class="vz">Nenhum acesso registrado ainda.</div>';
-  }
-  if(pw)car();
-  </script>
-  </body></html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Painel de Navegação</title>
+    <style>
+      :root {
+        --bg: #1a1109;
+        --card: #26190f;
+        --ac: #e0a36b;
+        --tx: #f3e6d8;
+        --mu: #a58c76;
+        --ln: #4a3322;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: radial-gradient(circle at 20% 0, #33200f, var(--bg) 60%);
+        color: var(--tx);
+        font-family: Georgia, serif;
+        min-height: 100vh;
+        padding: 20px 14px 60px;
+      }
+      .w {
+        max-width: 760px;
+        margin: auto;
+      }
+      h1 {
+        font-weight: 400;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        font-size: clamp(18px, 5vw, 26px);
+        margin: 0 0 4px;
+      }
+      h1 span {
+        color: var(--ac);
+      }
+      .sub {
+        color: var(--mu);
+        font-size: 14px;
+        margin-bottom: 18px;
+      }
+      .st {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+      .st div {
+        background: var(--card);
+        border: 1px solid var(--ln);
+        border-radius: 12px;
+        padding: 12px;
+        text-align: center;
+      }
+      .st b {
+        display: block;
+        font-size: clamp(18px, 5vw, 26px);
+        color: var(--ac);
+      }
+      .st small {
+        color: var(--mu);
+        font-size: 12px;
+      }
+      .bar {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 18px;
+        flex-wrap: wrap;
+      }
+      .bar input,
+      .bar button {
+        font: inherit;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid var(--ln);
+        background: var(--card);
+        color: var(--tx);
+      }
+      .bar input {
+        flex: 1;
+        min-width: 140px;
+      }
+      .bar button {
+        cursor: pointer;
+        color: var(--ac);
+      }
+      .s {
+        background: var(--card);
+        border: 1px solid var(--ln);
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+      .sh {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 12px;
+      }
+      .sh b {
+        color: var(--ac);
+      }
+      .sh span {
+        color: var(--mu);
+        font-size: 13px;
+      }
+      .tl {
+        position: relative;
+        margin-left: 14px;
+        padding-left: 22px;
+        border-left: 2px dashed var(--ln);
+      }
+      .it {
+        position: relative;
+        margin-bottom: 14px;
+      }
+      .it:before {
+        content: attr(data-n);
+        position: absolute;
+        left: -37px;
+        top: 0;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: var(--ac);
+        color: #2a1a0c;
+        font: 700 12px/26px system-ui;
+        text-align: center;
+      }
+      .pg {
+        font-size: 16px;
+        word-break: break-all;
+      }
+      .tm {
+        color: var(--mu);
+        font-size: 13px;
+      }
+      .vz {
+        text-align: center;
+        color: var(--mu);
+        padding: 40px 0;
+      }
+      @media (min-width: 600px) {
+        .it {
+          display: flex;
+          justify-content: space-between;
+          gap: 12px;
+        }
+        .tm {
+          white-space: nowrap;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="w">
+      <h1>Painel de <span>Navegação</span></h1>
+      <div class="sub">Sequência de páginas, data e horário</div>
+      <div class="st">
+        <div><b id="a">0</b><small>páginas vistas</small></div>
+        <div><b id="b">0</b><small>sessões</small></div>
+        <div><b id="c">—</b><small>último acesso</small></div>
+      </div>
+      <div class="bar" id="lg">
+        <input type="password" id="pw" placeholder="senha" /><button
+          onclick="ent()"
+        >
+          Entrar
+        </button>
+      </div>
+      <div class="bar" id="bar" style="display: none">
+        <input type="date" id="f" /><button onclick="f.value='';r()">
+          Todos</button
+        ><button onclick="sair()">Sair</button>
+      </div>
+      <div id="o"></div>
+    </div>
+    <script>
+      var U = 'https://znxehbaltdowozprxygt.supabase.co',
+        K = 'sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp',
+        L = [],
+        pw = sessionStorage.getItem('pw') || ''
+      function ent() {
+        pw = document.getElementById('pw').value
+        car()
+      }
+      function sair() {
+        sessionStorage.removeItem('pw')
+        location.reload()
+      }
+      function car() {
+        fetch(U + '/rest/v1/rpc/get_visits', {
+          method: 'POST',
+          headers: { apikey: K, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ senha: pw, dias: 365 })
+        })
+          .then(function (r) {
+            if (!r.ok) throw 0
+            return r.json()
+          })
+          .then(function (rows) {
+            sessionStorage.setItem('pw', pw)
+            L = rows.reverse().map(function (v) {
+              return {
+                s: v.session_id,
+                p: v.page,
+                t: new Date(v.created_at).getTime()
+              }
+            })
+            var n = 0,
+              ls = null,
+              lt = 0
+            L.forEach(function (x) {
+              if (x.s !== ls || x.t - lt > 18e5) n++
+              ls = x.s
+              lt = x.t
+              x.s = n
+            })
+            document.getElementById('lg').style.display = 'none'
+            document.getElementById('bar').style.display = 'flex'
+            r()
+          })
+          .catch(function () {
+            sessionStorage.removeItem('pw')
+            alert('Senha incorreta')
+          })
+      }
+      var nm = { home: 'Home', index: 'Início' }
+      function fd(t) {
+        return new Date(t).toLocaleDateString('pt-BR', {
+          weekday: 'short',
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        })
+      }
+      function fh(t) {
+        return new Date(t).toLocaleTimeString('pt-BR', {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        })
+      }
+      function nome(p) {
+        var n = p.replace('.html', '')
+        return nm[n] || n
+      }
+      function r() {
+        var d = document.getElementById('f').value,
+          g = {},
+          ord = []
+        L.forEach(function (v) {
+          if (
+            d &&
+            new Date(v.t).toISOString().slice(0, 10) !== d &&
+            new Date(v.t - new Date(v.t).getTimezoneOffset() * 6e4)
+              .toISOString()
+              .slice(0, 10) !== d
+          )
+            return
+          if (!g[v.s]) {
+            g[v.s] = []
+            ord.push(v.s)
+          }
+          g[v.s].push(v)
+        })
+        document.getElementById('a').textContent = L.length
+        document.getElementById('b').textContent = new Set(
+          L.map(function (v) {
+            return v.s
+          })
+        ).size
+        document.getElementById('c').textContent = L.length
+          ? fh(L[L.length - 1].t)
+          : '—'
+        var h = ''
+        ord.reverse().forEach(function (k, i) {
+          var v = g[k],
+            t0 = v[0].t,
+            t1 = v[v.length - 1].t,
+            m = Math.round((t1 - t0) / 6e4)
+          h +=
+            '<div class="s"><div class="sh"><b>' +
+            fd(t0) +
+            ' · ' +
+            fh(t0) +
+            '</b><span>' +
+            v.length +
+            ' páginas · ' +
+            (m < 1 ? 'menos de 1 min' : m + ' min') +
+            '</span></div><div class="tl">'
+          v.forEach(function (x, j) {
+            h +=
+              '<div class="it" data-n="' +
+              (j + 1) +
+              '"><div class="pg">' +
+              nome(x.p) +
+              '</div><div class="tm">' +
+              fh(x.t) +
+              '</div></div>'
+          })
+          h += '</div></div>'
+        })
+        document.getElementById('o').innerHTML =
+          h || '<div class="vz">Nenhum acesso registrado ainda.</div>'
+      }
+      if (pw) car()
+    </script>
+    <script>
+      ;(function () {
+        try {
+          var U = 'https://znxehbaltdowozprxygt.supabase.co',
+            K = 'sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp'
+          var s = localStorage.getItem('sid')
+          if (!s) {
+            s = Math.random().toString(36).slice(2, 10)
+            localStorage.setItem('sid', s)
+          }
+          fetch(U + '/rest/v1/page_visits', {
+            method: 'POST',
+            keepalive: true,
+            headers: {
+              apikey: K,
+              'Content-Type': 'application/json',
+              Prefer: 'return=minimal'
+            },
+            body: JSON.stringify({
+              session_id: s,
+              page: location.pathname.split('/').pop() || 'home'
+            })
+          })
+        } catch (e) {}
+      })()
+    </script>
+  </body>
+</html>
 
-  <!-- <head><script>
+<!-- <head><script>
     (function(){try{
       var U="https://znxehbaltdowozprxygt.supabase.co",K="sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp";
       var s=localStorage.getItem("sid");

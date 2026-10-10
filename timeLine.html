@@ -1,112 +1,100 @@
 <!DOCTYPE html>
 
 <html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Linha do Tempo</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Linha do Tempo</title>
 
-<link rel="stylesheet" href="style.css">
-</head>
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-<body class="timeline-page">
+  <body class="timeline-page">
+    <canvas id="hearts"></canvas>
 
-<canvas id="hearts"></canvas>
+    <div class="timeline-container">
+      <h1>
+        Entre todas as coisas boas que a vida me trouxe...
+        <br />
+        você continua sendo a minha favorita.
+      </h1>
 
-<div class="timeline-container">
+      <p class="intro">
+        Mas existe uma pergunta que eu sempre tive curiosidade de responder...
+      </p>
 
-  <h1>
-    Entre todas as coisas boas que a vida me trouxe...
-    <br>
-    você continua sendo a minha favorita.
-  </h1>
+      <h2>E se eu nunca tivesse te conhecido?</h2>
 
-  <p class="intro">
-    Mas existe uma pergunta que eu sempre tive curiosidade de responder...
-  </p>
+      <div id="timeline">
+        <div class="evento ativo" id="evento1">✅ Conheci você</div>
 
-  <h2>
-    E se eu nunca tivesse te conhecido?
-  </h2>
+        <div class="evento ativo" id="evento2">
+          ✅ Surgiram conversas que eu não queria terminar
+        </div>
 
-  <div id="timeline">
-    
-<div class="evento ativo" id="evento1">
-  ✅ Conheci você
-</div>
+        <div class="evento ativo" id="evento3">✅ Vieram as risadas</div>
 
-<div class="evento ativo" id="evento2">
-  ✅ Surgiram conversas que eu não queria terminar
-</div>
+        <div class="evento ativo" id="evento4">✅ Vieram as memórias</div>
 
-<div class="evento ativo" id="evento3">
-  ✅ Vieram as risadas
-</div>
+        <div class="evento ativo" id="evento5">
+          ✅ Você me fez treinar Nível 2
+        </div>
 
-<div class="evento ativo" id="evento4">
-  ✅ Vieram as memórias
-</div>
+        <div class="evento ativo" id="evento6">✅ Esse site existiu</div>
 
-<div class="evento ativo" id="evento5">
-  ✅ Você me fez treinar Nível 2
-</div>
+        <div class="evento ativo" id="evento7">✅ Eu me apaixonei por você</div>
+      </div>
 
-<div class="evento ativo" id="evento6">
-  ✅ Esse site existiu
-</div>
+      <button id="removerEvento">Remover "Conheci você"</button>
 
-<div class="evento ativo" id="evento7">
-  ✅ Eu me apaixonei por você
-</div>
+      <div id="finalTimeline">
+        <h2>Ainda bem que essa linha do tempo nunca aconteceu.</h2>
 
+        <p>Porque algumas pessoas passam pela nossa vida.</p>
 
-  </div>
+        <p>Mas outras mudam completamente a direção dela.</p>
 
-  <button id="removerEvento">
+        <p>E você fez isso comigo.</p>
 
-Remover "Conheci você"
+        <div class="frase-final">
+          Eu encontrei aquela a quem minha alma ama.
 
-  </button>
+          <br /><br />
 
-  <div id="finalTimeline">
+          <small> Cânticos 3:4 </small>
+        </div>
+      </div>
+    </div>
 
-<h2>
-  Ainda bem que essa linha do tempo nunca aconteceu.
-</h2>
+    <a class="back-btn" href="home.html"> ⬅ Voltar </a>
 
-<p>
-  Porque algumas pessoas passam pela nossa vida.
-</p>
+    <script src="js/script.js"></script>
 
-<p>
-  Mas outras mudam completamente a direção dela.
-</p>
-
-<p>
-  E você fez isso comigo.
-</p>
-
-<div class="frase-final">
-
-  Eu encontrei aquela a quem minha alma ama.
-
-  <br><br>
-
-  <small>
-    Cânticos 3:4
-  </small>
-
-</div>
-
-  </div>
-
-</div>
-
-<a class="back-btn" href="home.html">
-⬅ Voltar
-</a>
-
-<script src="js/script.js"></script>
-
-</body>
+    <script>
+      ;(function () {
+        try {
+          var U = 'https://znxehbaltdowozprxygt.supabase.co',
+            K = 'sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp'
+          var s = localStorage.getItem('sid')
+          if (!s) {
+            s = Math.random().toString(36).slice(2, 10)
+            localStorage.setItem('sid', s)
+          }
+          fetch(U + '/rest/v1/page_visits', {
+            method: 'POST',
+            keepalive: true,
+            headers: {
+              apikey: K,
+              'Content-Type': 'application/json',
+              Prefer: 'return=minimal'
+            },
+            body: JSON.stringify({
+              session_id: s,
+              page: location.pathname.split('/').pop() || 'home'
+            })
+          })
+        } catch (e) {}
+      })()
+    </script>
+  </body>
 </html>

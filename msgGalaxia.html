@@ -1,74 +1,70 @@
 <!DOCTYPE html>
 
 <html lang="pt-BR">
-<head>
+  <head>
+    <meta charset="UTF-8" />
 
-  <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0">
+    <title>Transmissão</title>
 
-  <title>Transmissão</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-  <link rel="stylesheet" href="style.css">
+  <body class="galaxia-page">
+    <div class="estrelas"></div>
 
-</head>
+    <div class="transmissao">
+      <div id="inicio">
+        <h1>📡 Recebendo sinal...</h1>
 
-<body class="galaxia-page">
-
-  <div class="estrelas"></div>
-
-  <div class="transmissao">
-
-    <div id="inicio">
-
-      <h1>
-        📡 Recebendo sinal...
-      </h1>
-
-      <div class="barra">
-
-        <div id="progressoGalaxia"></div>
-
+        <div class="barra">
+          <div id="progressoGalaxia"></div>
+        </div>
       </div>
 
-    </div>
+      <div id="conteudoGalaxia">
+        <div class="cabecalho">
+          <p>Origem: Sistema J-04</p>
 
-    <div id="conteudoGalaxia">
+          <p>Destino: Julia</p>
+        </div>
 
-      <div class="cabecalho">
+        <div id="textoDigitando"></div>
 
-        <p>
-          Origem:
-          Sistema J-04
-        </p>
+        <img src="imgs/especial.jpeg" alt="" id="fotoGalaxia" />
 
-        <p>
-          Destino:
-          Julia
-        </p>
-
+        <button id="btnConstelacao">Visualizar coordenadas estelares</button>
       </div>
-
-      <div id="textoDigitando"></div>
-
-      <img
-      src="imgs/especial.jpeg"
-      alt=""
-      id="fotoGalaxia">
-
-      <button id="btnConstelacao">
-
-        Visualizar coordenadas estelares
-
-      </button>
-
     </div>
 
-  </div>
+    <script src="js/script.js"></script>
 
-  <script src="js/script.js"></script>
-
-</body>
+    <script>
+      ;(function () {
+        try {
+          var U = 'https://znxehbaltdowozprxygt.supabase.co',
+            K = 'sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp'
+          var s = localStorage.getItem('sid')
+          if (!s) {
+            s = Math.random().toString(36).slice(2, 10)
+            localStorage.setItem('sid', s)
+          }
+          fetch(U + '/rest/v1/page_visits', {
+            method: 'POST',
+            keepalive: true,
+            headers: {
+              apikey: K,
+              'Content-Type': 'application/json',
+              Prefer: 'return=minimal'
+            },
+            body: JSON.stringify({
+              session_id: s,
+              page: location.pathname.split('/').pop() || 'home'
+            })
+          })
+        } catch (e) {}
+      })()
+    </script>
+  </body>
 </html>

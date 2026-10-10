@@ -473,13 +473,37 @@
 
     <div class="scene">
       <div class="intro-text-block" id="introTextBlock">
-        <p>Se um dia me perguntarem qual foi o lugar onde eu mais me senti em paz, talvez esperem que eu responda uma cidade, uma praia ou algum lugar bonito.</p>
-        <p>Mas a verdade é muito mais simples: o meu lugar favorito nunca foi um lugar. Sempre foi um momento.</p>
-        <p>Sempre foi aquele instante em que o mundo inteiro parecia desaparecer porque eu estava exatamente onde queria estar.</p>
-        <p>Existem milhares de fotografias espalhadas pelo mundo. Algumas registram paisagens, outras mostram viagens ou grandes acontecimentos.</p>
-        <p>Esta não. Esta guarda algo muito mais raro: guarda a sensação de estar perto da pessoa que transformou dias comuns nas melhores lembranças da minha vida.</p>
-        <p>Talvez, daqui a muitos anos, eu nem lembre de todos os detalhes daquele dia. Mas de uma coisa eu tenho certeza: eu nunca vou esquecer como me senti quando esse abraço aconteceu.</p>
-        <p>Porque existem momentos que passam... e existem momentos que passam a morar para sempre dentro da gente.</p>
+        <p>
+          Se um dia me perguntarem qual foi o lugar onde eu mais me senti em
+          paz, talvez esperem que eu responda uma cidade, uma praia ou algum
+          lugar bonito.
+        </p>
+        <p>
+          Mas a verdade é muito mais simples: o meu lugar favorito nunca foi um
+          lugar. Sempre foi um momento.
+        </p>
+        <p>
+          Sempre foi aquele instante em que o mundo inteiro parecia desaparecer
+          porque eu estava exatamente onde queria estar.
+        </p>
+        <p>
+          Existem milhares de fotografias espalhadas pelo mundo. Algumas
+          registram paisagens, outras mostram viagens ou grandes acontecimentos.
+        </p>
+        <p>
+          Esta não. Esta guarda algo muito mais raro: guarda a sensação de estar
+          perto da pessoa que transformou dias comuns nas melhores lembranças da
+          minha vida.
+        </p>
+        <p>
+          Talvez, daqui a muitos anos, eu nem lembre de todos os detalhes
+          daquele dia. Mas de uma coisa eu tenho certeza: eu nunca vou esquecer
+          como me senti quando esse abraço aconteceu.
+        </p>
+        <p>
+          Porque existem momentos que passam... e existem momentos que passam a
+          morar para sempre dentro da gente.
+        </p>
       </div>
 
       <p class="instruction-text" id="instruction">
@@ -523,7 +547,6 @@
       <div class="subtitle-box">
         <span class="typewriter-text" id="legendText"></span>
       </div>
-
     </div>
 
     <script>
@@ -564,7 +587,7 @@
       function iniciarDigitacaoIntro() {
         const container = document.getElementById('introTextBlock')
         const paragrafos = container.querySelectorAll('p')
-        
+
         // Mapeia e limpa os textos originais salvando-os em um array
         const textosOriginais = Array.from(paragrafos).map(p => {
           const t = p.textContent.trim()
@@ -586,7 +609,7 @@
                 pAtual.textContent += textoCompleto.charAt(charIndex)
                 charIndex++
                 // Ajuste a velocidade da digitação aqui (35ms por letra)
-                setTimeout(digitarLetra, 35) 
+                setTimeout(digitarLetra, 35)
               } else {
                 pAtual.classList.remove('typing')
                 pAtual.classList.add('done')
@@ -616,7 +639,7 @@
 
         document.getElementById('instruction').style.opacity = '0'
         setTimeout(() => {
-           document.getElementById('instruction').style.display = 'none'
+          document.getElementById('instruction').style.display = 'none'
         }, 500)
 
         // 1. Flash
@@ -646,7 +669,12 @@
       }
 
       // --- DIGITAÇÃO DAS FRASES DA FOTO ---
-      function escreverTexto(texto, elemento, velocidade = 50, callback = null) {
+      function escreverTexto(
+        texto,
+        elemento,
+        velocidade = 50,
+        callback = null
+      ) {
         elemento.textContent = ''
         let index = 0
 
@@ -724,6 +752,32 @@
         gerarPoeira()
         iniciarDigitacaoIntro()
       })
+    </script>
+    <script>
+      ;(function () {
+        try {
+          var U = 'https://znxehbaltdowozprxygt.supabase.co',
+            K = 'sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp'
+          var s = localStorage.getItem('sid')
+          if (!s) {
+            s = Math.random().toString(36).slice(2, 10)
+            localStorage.setItem('sid', s)
+          }
+          fetch(U + '/rest/v1/page_visits', {
+            method: 'POST',
+            keepalive: true,
+            headers: {
+              apikey: K,
+              'Content-Type': 'application/json',
+              Prefer: 'return=minimal'
+            },
+            body: JSON.stringify({
+              session_id: s,
+              page: location.pathname.split('/').pop() || 'home'
+            })
+          })
+        } catch (e) {}
+      })()
     </script>
   </body>
 </html>

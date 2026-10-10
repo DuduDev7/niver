@@ -34,7 +34,7 @@
 
       <section class="jm-section jm-hidden">
         <p>Talvez você nem lembre desse dia.</p>
-        
+
         <p>Você estava ali...</p>
 
         <p>fazendo carinho na Míssi...</p>
@@ -46,13 +46,13 @@
         <p>existe uma paz nela.</p>
 
         <p>Uma paz difícil de explicar.</p>
-      
+
         <p>A luz entrando pela janela.</p>
 
         <p>Você sorrindo sem perceber.</p>
 
         <p>A Míssi tranquila.</p>
-      
+
         <h2>Então eu percebi...</h2>
 
         <p>Meu lugar favorito...</p>
@@ -76,5 +76,31 @@
     </main>
 
     <script src="js/script2.js"></script>
+    <script>
+      ;(function () {
+        try {
+          var U = 'https://znxehbaltdowozprxygt.supabase.co',
+            K = 'sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp'
+          var s = localStorage.getItem('sid')
+          if (!s) {
+            s = Math.random().toString(36).slice(2, 10)
+            localStorage.setItem('sid', s)
+          }
+          fetch(U + '/rest/v1/page_visits', {
+            method: 'POST',
+            keepalive: true,
+            headers: {
+              apikey: K,
+              'Content-Type': 'application/json',
+              Prefer: 'return=minimal'
+            },
+            body: JSON.stringify({
+              session_id: s,
+              page: location.pathname.split('/').pop() || 'home'
+            })
+          })
+        } catch (e) {}
+      })()
+    </script>
   </body>
 </html>

@@ -605,107 +605,107 @@
       /* ==========================================================================
   SISTEMA DE ARRASTAR E SOLTAR CORRIGIDO
   ========================================================================== */
-function addDragEvents(piece) {
-  piece.addEventListener('pointerdown', startDrag)
-}
+      function addDragEvents(piece) {
+        piece.addEventListener('pointerdown', startDrag)
+      }
 
-function startDrag(e) {
-  if (this.classList.contains('placed')) return
+      function startDrag(e) {
+        if (this.classList.contains('placed')) return
 
-  state.activePiece = this
+        state.activePiece = this
 
-  // 1. Pega a posição exata da peça na tela antes de desanexar
-  const rect = this.getBoundingClientRect()
-  
-  // 2. Calcula onde o dedo/mouse tocou dentro da peça
-  state.dragOffset.x = e.clientX - rect.left
-  state.dragOffset.y = e.clientY - rect.top
+        // 1. Pega a posição exata da peça na tela antes de desanexar
+        const rect = this.getBoundingClientRect()
 
-  // 3. Salva de onde a peça veio (caso precise voltar)
-  this.dataset.originalParent = 'bank'
+        // 2. Calcula onde o dedo/mouse tocou dentro da peça
+        state.dragOffset.x = e.clientX - rect.left
+        state.dragOffset.y = e.clientY - rect.top
 
-  // 4. IMPORTANTE: Move a peça diretamente para o <body> 
-  // Isso cancela a interferência do 'backdrop-filter' dos containers!
-  document.body.appendChild(this)
+        // 3. Salva de onde a peça veio (caso precise voltar)
+        this.dataset.originalParent = 'bank'
 
-  // 5. Aplica os estilos de arrasto
-  this.style.position = 'fixed'
-  this.style.width = `${state.pieceWidth}px`
-  this.style.height = `${state.pieceHeight}px`
-  this.style.left = `${e.clientX - state.dragOffset.x}px`
-  this.style.top = `${e.clientY - state.dragOffset.y}px`
-  this.style.zIndex = '9999'
+        // 4. IMPORTANTE: Move a peça diretamente para o <body>
+        // Isso cancela a interferência do 'backdrop-filter' dos containers!
+        document.body.appendChild(this)
 
-  // Captura o ponteiro
-  this.setPointerCapture(e.pointerId)
+        // 5. Aplica os estilos de arrasto
+        this.style.position = 'fixed'
+        this.style.width = `${state.pieceWidth}px`
+        this.style.height = `${state.pieceHeight}px`
+        this.style.left = `${e.clientX - state.dragOffset.x}px`
+        this.style.top = `${e.clientY - state.dragOffset.y}px`
+        this.style.zIndex = '9999'
 
-  this.addEventListener('pointermove', onDrag)
-  this.addEventListener('pointerup', stopDrag)
-  this.addEventListener('pointercancel', stopDrag)
-}
+        // Captura o ponteiro
+        this.setPointerCapture(e.pointerId)
 
-function onDrag(e) {
-  if (!state.activePiece || state.activePiece !== this) return
+        this.addEventListener('pointermove', onDrag)
+        this.addEventListener('pointerup', stopDrag)
+        this.addEventListener('pointercancel', stopDrag)
+      }
 
-  // A peça agora segue 100% cravada no seu dedo/cursor
-  this.style.left = `${e.clientX - state.dragOffset.x}px`
-  this.style.top = `${e.clientY - state.dragOffset.y}px`
-}
+      function onDrag(e) {
+        if (!state.activePiece || state.activePiece !== this) return
 
-function stopDrag(e) {
-  if (!state.activePiece || state.activePiece !== this) return
+        // A peça agora segue 100% cravada no seu dedo/cursor
+        this.style.left = `${e.clientX - state.dragOffset.x}px`
+        this.style.top = `${e.clientY - state.dragOffset.y}px`
+      }
 
-  this.releasePointerCapture(e.pointerId)
-  this.removeEventListener('pointermove', onDrag)
-  this.removeEventListener('pointerup', stopDrag)
-  this.removeEventListener('pointercancel', stopDrag)
+      function stopDrag(e) {
+        if (!state.activePiece || state.activePiece !== this) return
 
-  const piece = state.activePiece
-  const pieceIndex = piece.dataset.index
-  const targetSlot = board.querySelector(
-    `.board-slot[data-index="${pieceIndex}"]`
-  )
-  
-  const slotRect = targetSlot.getBoundingClientRect()
-  const pieceRect = piece.getBoundingClientRect()
+        this.releasePointerCapture(e.pointerId)
+        this.removeEventListener('pointermove', onDrag)
+        this.removeEventListener('pointerup', stopDrag)
+        this.removeEventListener('pointercancel', stopDrag)
 
-  const tolerance = 45
+        const piece = state.activePiece
+        const pieceIndex = piece.dataset.index
+        const targetSlot = board.querySelector(
+          `.board-slot[data-index="${pieceIndex}"]`
+        )
 
-  const isCorrectX = Math.abs(pieceRect.left - slotRect.left) < tolerance
-  const isCorrectY = Math.abs(pieceRect.top - slotRect.top) < tolerance
+        const slotRect = targetSlot.getBoundingClientRect()
+        const pieceRect = piece.getBoundingClientRect()
 
-  if (isCorrectX && isCorrectY) {
-    snapPiece(piece, targetSlot)
-  } else {
-    resetPieceToBank(piece)
-  }
+        const tolerance = 45
 
-  state.activePiece = null
-}
+        const isCorrectX = Math.abs(pieceRect.left - slotRect.left) < tolerance
+        const isCorrectY = Math.abs(pieceRect.top - slotRect.top) < tolerance
 
-function snapPiece(piece, slot) {
-  piece.classList.add('placed')
-  piece.style.position = 'absolute'
-  piece.style.left = '0'
-  piece.style.top = '0'
-  piece.style.zIndex = '1'
+        if (isCorrectX && isCorrectY) {
+          snapPiece(piece, targetSlot)
+        } else {
+          resetPieceToBank(piece)
+        }
 
-  slot.appendChild(piece)
+        state.activePiece = null
+      }
 
-  piece.classList.add('glow')
-  setTimeout(() => piece.classList.remove('glow'), 800)
+      function snapPiece(piece, slot) {
+        piece.classList.add('placed')
+        piece.style.position = 'absolute'
+        piece.style.left = '0'
+        piece.style.top = '0'
+        piece.style.zIndex = '1'
 
-  state.placedCount++
-  onPiecePlacedProgress()
-}
+        slot.appendChild(piece)
 
-function resetPieceToBank(piece) {
-  piece.style.position = 'relative'
-  piece.style.left = 'auto'
-  piece.style.top = 'auto'
-  piece.style.zIndex = '2'
-  piecesBank.appendChild(piece)
-}
+        piece.classList.add('glow')
+        setTimeout(() => piece.classList.remove('glow'), 800)
+
+        state.placedCount++
+        onPiecePlacedProgress()
+      }
+
+      function resetPieceToBank(piece) {
+        piece.style.position = 'relative'
+        piece.style.left = 'auto'
+        piece.style.top = 'auto'
+        piece.style.zIndex = '2'
+        piecesBank.appendChild(piece)
+      }
 
       /* ==========================================================================
         PROGRESSO DO JOGO & FINALIZAÇÃO
@@ -785,6 +785,32 @@ function resetPieceToBank(piece) {
           })
         }
       })
+    </script>
+    <script>
+      ;(function () {
+        try {
+          var U = 'https://znxehbaltdowozprxygt.supabase.co',
+            K = 'sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp'
+          var s = localStorage.getItem('sid')
+          if (!s) {
+            s = Math.random().toString(36).slice(2, 10)
+            localStorage.setItem('sid', s)
+          }
+          fetch(U + '/rest/v1/page_visits', {
+            method: 'POST',
+            keepalive: true,
+            headers: {
+              apikey: K,
+              'Content-Type': 'application/json',
+              Prefer: 'return=minimal'
+            },
+            body: JSON.stringify({
+              session_id: s,
+              page: location.pathname.split('/').pop() || 'home'
+            })
+          })
+        } catch (e) {}
+      })()
     </script>
   </body>
 </html>

@@ -10,51 +10,51 @@
   </head>
   <body class="center">
     <canvas id="hearts"></canvas>
-      <div class="container">
-        <h1>Estatísticas da dupla</h1>
+    <div class="container">
+      <h1>Estatísticas da dupla</h1>
 
-        <div class="stats">
-          <div class="stat">
-            <p>Carinho</p>
+      <div class="stats">
+        <div class="stat">
+          <p>Carinho</p>
 
-            <div class="barra">
-              <div class="progresso p1"></div>
-            </div>
-
-            <span>100%</span>
+          <div class="barra">
+            <div class="progresso p1"></div>
           </div>
 
-          <div class="stat">
-            <p>Ciúmes</p>
+          <span>100%</span>
+        </div>
 
-            <div class="barra">
-              <div class="progresso p2"></div>
-            </div>
+        <div class="stat">
+          <p>Ciúmes</p>
 
-            <span>100%</span>
+          <div class="barra">
+            <div class="progresso p2"></div>
           </div>
 
-          <div class="stat">
-            <p id="LevaMuseu">Beleza Absurda</p>
-            <p id="msgFoto"></p>
-            <div class="barra">
-              <div class="progresso p3"></div>
-            </div>
+          <span>100%</span>
+        </div>
 
-            <span>100%</span>
+        <div class="stat">
+          <p id="LevaMuseu">Beleza Absurda</p>
+          <p id="msgFoto"></p>
+          <div class="barra">
+            <div class="progresso p3"></div>
           </div>
 
-          <div class="stat">
-            <p>Compatibilidade</p>
+          <span>100%</span>
+        </div>
 
-            <div class="barra">
-              <div class="progresso p4"></div>
-            </div>
+        <div class="stat">
+          <p>Compatibilidade</p>
 
-            <span>100%</span>
+          <div class="barra">
+            <div class="progresso p4"></div>
           </div>
+
+          <span>100%</span>
         </div>
       </div>
+    </div>
 
     <a class="back-btn" href="home.html">⬅ Voltar</a>
     <script src="js/hearts.js"></script>
@@ -75,5 +75,31 @@
         document.getElementById('img').src = imgs[i]
       }
     </script> -->
+    <script>
+      ;(function () {
+        try {
+          var U = 'https://znxehbaltdowozprxygt.supabase.co',
+            K = 'sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp'
+          var s = localStorage.getItem('sid')
+          if (!s) {
+            s = Math.random().toString(36).slice(2, 10)
+            localStorage.setItem('sid', s)
+          }
+          fetch(U + '/rest/v1/page_visits', {
+            method: 'POST',
+            keepalive: true,
+            headers: {
+              apikey: K,
+              'Content-Type': 'application/json',
+              Prefer: 'return=minimal'
+            },
+            body: JSON.stringify({
+              session_id: s,
+              page: location.pathname.split('/').pop() || 'home'
+            })
+          })
+        } catch (e) {}
+      })()
+    </script>
   </body>
 </html>

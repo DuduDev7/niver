@@ -1,456 +1,487 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nosso Mapa de Memórias ❤️</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nosso Mapa de Memórias ❤️</title>
 
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
 
-  <style>
-    /* ==========================================================================
+    <style>
+      /* ==========================================================================
        1. ESTILOS GERAIS E PALETA DARK ROMÂNTICA
        ========================================================================== */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      }
 
-    body {
-      background-color: #0f0d13;
-      color: #e2e8f0;
-      height: 100vh;
-      width: 100vw;
-      overflow: hidden;
-    }
+      body {
+        background-color: #0f0d13;
+        color: #e2e8f0;
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+      }
 
-    /* Layout Principal em Split-Screen */
-    .app-layout {
-      display: flex;
-      height: 100vh;
-      width: 100vw;
-    }
+      /* Layout Principal em Split-Screen */
+      .app-layout {
+        display: flex;
+        height: 100vh;
+        width: 100vw;
+      }
 
-    /* ==========================================================================
+      /* ==========================================================================
        2. PAINEL LATERAL DE HISTÓRIAS (ESQUERDA)
        ========================================================================== */
-    .story-panel {
-      width: 450px;
-      min-width: 350px;
-      height: 100%;
-      background: rgba(23, 19, 31, 0.95);
-      border-right: 1px solid rgba(255, 117, 160, 0.2);
-      display: flex;
-      flex-direction: column;
-      z-index: 1000;
-      box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
-      overflow-y: auto;
-    }
-
-    .story-header {
-      padding: 30px 25px 20px 25px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      background: linear-gradient(180deg, rgba(255, 117, 160, 0.05) 0%, rgba(0,0,0,0) 100%);
-    }
-
-    .story-header h1 {
-      color: #ff75a0;
-      font-size: 1.8rem;
-      margin-bottom: 10px;
-      text-shadow: 0 0 15px rgba(255, 117, 160, 0.3);
-      font-weight: 700;
-    }
-
-    .story-header p {
-      color: #a0aec0;
-      font-size: 0.95rem;
-      line-height: 1.6;
-    }
-
-    .story-content {
-      padding: 25px;
-      flex-grow: 1;
-    }
-
-    /* Card da Memória Ativa */
-    .memory-card {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 18px;
-      overflow: hidden;
-      transition: all 0.4s ease;
-      animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(15px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .memory-img-box {
-      width: 100%;
-      height: 230px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .memory-img-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: block;
-      transition: transform 0.5s ease;
-    }
-
-    .memory-card:hover .memory-img-box img {
-      transform: scale(1.03);
-    }
-
-    .memory-body {
-      padding: 22px;
-    }
-
-    .memory-category {
-      display: inline-block;
-      background: rgba(255, 117, 160, 0.15);
-      color: #ff75a0;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-
-    .memory-title {
-      font-size: 1.4rem;
-      color: #ffffff;
-      margin-bottom: 12px;
-      font-weight: 700;
-    }
-
-    .memory-text {
-      color: #cbd5e1;
-      font-size: 0.98rem;
-      line-height: 1.7;
-      white-space: pre-line;
-    }
-
-    /* Estado Inicial do Painel */
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: #718096;
-    }
-
-    .empty-state-icon {
-      font-size: 3rem;
-      margin-bottom: 15px;
-      display: block;
-    }
-
-    /* Lista de Navegação Rápida */
-    .section-label {
-      font-size: 0.8rem;
-      color: #ff75a0;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-top: 20px;
-      margin-bottom: 10px;
-      font-weight: 700;
-    }
-
-    .memory-list-nav {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .nav-item-btn {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      color: #a0aec0;
-      padding: 12px 16px;
-      border-radius: 12px;
-      text-align: left;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .nav-item-btn:hover, .nav-item-btn.active {
-      background: rgba(255, 117, 160, 0.15);
-      border-color: #ff75a0;
-      color: #ffffff;
-    }
-
-    /* ==========================================================================
-       3. AREA DO MAPA LEAFLET (DIREITA)
-       ========================================================================== */
-    .map-container {
-      flex-grow: 1;
-      height: 100%;
-      position: relative;
-    }
-
-    #map {
-      width: 100%;
-      height: 100%;
-      background: #0f0d13;
-    }
-
-    /* Personalização dos Marcadores de Coração no Mapa */
-    .custom-heart-pin {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 38px !important;
-      height: 38px !important;
-      background: linear-gradient(135deg, #ff75a0 0%, #f72585 100%);
-      border-radius: 50% 50% 50% 0;
-      transform: rotate(-45deg);
-      box-shadow: 0 4px 15px rgba(247, 37, 133, 0.5);
-      border: 2px solid #ffffff;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .custom-heart-pin::after {
-      content: '❤️';
-      font-size: 16px;
-      transform: rotate(45deg);
-    }
-
-    .custom-heart-pin:hover {
-      transform: rotate(-45deg) scale(1.15);
-      box-shadow: 0 6px 20px rgba(247, 37, 133, 0.8);
-    }
-
-    /* Ajuste dos Popups do Mapa */
-    .leaflet-popup-content-wrapper {
-      background: rgba(23, 19, 31, 0.95) !important;
-      color: #fff !important;
-      border: 1px solid rgba(255, 117, 160, 0.3);
-      border-radius: 12px !important;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5) !important;
-    }
-
-    .leaflet-popup-tip {
-      background: rgba(23, 19, 31, 0.95) !important;
-    }
-
-    .popup-title {
-      font-weight: 700;
-      color: #ff75a0;
-      font-size: 0.95rem;
-    }
-
-    /* ==========================================================================
-       4. ADAPTAÇÃO RESPONSIVA (MOBILE)
-       ========================================================================== */
-    @media (max-width: 768px) {
-      .app-layout {
-        flex-direction: column-reverse;
-      }
-
-      .map-container {
-        height: 45vh;
-        width: 100%;
-      }
-
       .story-panel {
-        width: 100%;
-        height: 55vh;
-        border-right: none;
-        border-top: 1px solid rgba(255, 117, 160, 0.2);
+        width: 450px;
+        min-width: 350px;
+        height: 100%;
+        background: rgba(23, 19, 31, 0.95);
+        border-right: 1px solid rgba(255, 117, 160, 0.2);
+        display: flex;
+        flex-direction: column;
+        z-index: 1000;
+        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+        overflow-y: auto;
       }
 
       .story-header {
-        padding: 20px 20px 15px 20px;
+        padding: 30px 25px 20px 25px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 117, 160, 0.05) 0%,
+          rgba(0, 0, 0, 0) 100%
+        );
       }
 
       .story-header h1 {
-        font-size: 1.4rem;
+        color: #ff75a0;
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+        text-shadow: 0 0 15px rgba(255, 117, 160, 0.3);
+        font-weight: 700;
+      }
+
+      .story-header p {
+        color: #a0aec0;
+        font-size: 0.95rem;
+        line-height: 1.6;
       }
 
       .story-content {
-        padding: 15px;
+        padding: 25px;
+        flex-grow: 1;
       }
-    }
-  </style>
-</head>
-<body>
 
-  <div class="app-layout">
-    
-    <div class="story-panel">
-      <div class="story-header">
-        <h1>Mapa das Nossas Memórias ❤️</h1>
-        <p>Cada marcador neste mapa guarda um capítulo inesquecível da nossa jornada e os caminhos que ainda vamos trilhar juntos.</p>
-      </div>
+      /* Card da Memória Ativa */
+      .memory-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 18px;
+        overflow: hidden;
+        transition: all 0.4s ease;
+        animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
 
-      <div class="story-content">
-        <div id="memory-display">
-          <div class="empty-state">
-            <span class="empty-state-icon">🗺️</span>
-            <p>Selecione um ponto no mapa para ler a nossa história.</p>
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(15px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .memory-img-box {
+        width: 100%;
+        height: 230px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .memory-img-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+        transition: transform 0.5s ease;
+      }
+
+      .memory-card:hover .memory-img-box img {
+        transform: scale(1.03);
+      }
+
+      .memory-body {
+        padding: 22px;
+      }
+
+      .memory-category {
+        display: inline-block;
+        background: rgba(255, 117, 160, 0.15);
+        color: #ff75a0;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+
+      .memory-title {
+        font-size: 1.4rem;
+        color: #ffffff;
+        margin-bottom: 12px;
+        font-weight: 700;
+      }
+
+      .memory-text {
+        color: #cbd5e1;
+        font-size: 0.98rem;
+        line-height: 1.7;
+        white-space: pre-line;
+      }
+
+      /* Estado Inicial do Painel */
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #718096;
+      }
+
+      .empty-state-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        display: block;
+      }
+
+      /* Lista de Navegação Rápida */
+      .section-label {
+        font-size: 0.8rem;
+        color: #ff75a0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        font-weight: 700;
+      }
+
+      .memory-list-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .nav-item-btn {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #a0aec0;
+        padding: 12px 16px;
+        border-radius: 12px;
+        text-align: left;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .nav-item-btn:hover,
+      .nav-item-btn.active {
+        background: rgba(255, 117, 160, 0.15);
+        border-color: #ff75a0;
+        color: #ffffff;
+      }
+
+      /* ==========================================================================
+       3. AREA DO MAPA LEAFLET (DIREITA)
+       ========================================================================== */
+      .map-container {
+        flex-grow: 1;
+        height: 100%;
+        position: relative;
+      }
+
+      #map {
+        width: 100%;
+        height: 100%;
+        background: #0f0d13;
+      }
+
+      /* Personalização dos Marcadores de Coração no Mapa */
+      .custom-heart-pin {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 38px !important;
+        height: 38px !important;
+        background: linear-gradient(135deg, #ff75a0 0%, #f72585 100%);
+        border-radius: 50% 50% 50% 0;
+        transform: rotate(-45deg);
+        box-shadow: 0 4px 15px rgba(247, 37, 133, 0.5);
+        border: 2px solid #ffffff;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .custom-heart-pin::after {
+        content: '❤️';
+        font-size: 16px;
+        transform: rotate(45deg);
+      }
+
+      .custom-heart-pin:hover {
+        transform: rotate(-45deg) scale(1.15);
+        box-shadow: 0 6px 20px rgba(247, 37, 133, 0.8);
+      }
+
+      /* Ajuste dos Popups do Mapa */
+      .leaflet-popup-content-wrapper {
+        background: rgba(23, 19, 31, 0.95) !important;
+        color: #fff !important;
+        border: 1px solid rgba(255, 117, 160, 0.3);
+        border-radius: 12px !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
+      }
+
+      .leaflet-popup-tip {
+        background: rgba(23, 19, 31, 0.95) !important;
+      }
+
+      .popup-title {
+        font-weight: 700;
+        color: #ff75a0;
+        font-size: 0.95rem;
+      }
+
+      /* ==========================================================================
+       4. ADAPTAÇÃO RESPONSIVA (MOBILE)
+       ========================================================================== */
+      @media (max-width: 768px) {
+        .app-layout {
+          flex-direction: column-reverse;
+        }
+
+        .map-container {
+          height: 45vh;
+          width: 100%;
+        }
+
+        .story-panel {
+          width: 100%;
+          height: 55vh;
+          border-right: none;
+          border-top: 1px solid rgba(255, 117, 160, 0.2);
+        }
+
+        .story-header {
+          padding: 20px 20px 15px 20px;
+        }
+
+        .story-header h1 {
+          font-size: 1.4rem;
+        }
+
+        .story-content {
+          padding: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-layout">
+      <div class="story-panel">
+        <div class="story-header">
+          <h1>Mapa das Nossas Memórias ❤️</h1>
+          <p>
+            Cada marcador neste mapa guarda um capítulo inesquecível da nossa
+            jornada e os caminhos que ainda vamos trilhar juntos.
+          </p>
+        </div>
+
+        <div class="story-content">
+          <div id="memory-display">
+            <div class="empty-state">
+              <span class="empty-state-icon">🗺️</span>
+              <p>Selecione um ponto no mapa para ler a nossa história.</p>
+            </div>
+          </div>
+
+          <div style="margin-top: 20px">
+            <div class="section-label">📍 Onde Já Fomos</div>
+            <div class="memory-list-nav" id="nav-onde-fomos"></div>
+
+            <div class="section-label">✨ Onde Queremos Ir</div>
+            <div class="memory-list-nav" id="nav-queremos-ir"></div>
           </div>
         </div>
+      </div>
 
-        <div style="margin-top: 20px;">
-          <div class="section-label">📍 Onde Já Fomos</div>
-          <div class="memory-list-nav" id="nav-onde-fomos"></div>
-
-          <div class="section-label">✨ Onde Queremos Ir</div>
-          <div class="memory-list-nav" id="nav-queremos-ir"></div>
-        </div>
+      <div class="map-container">
+        <div id="map"></div>
       </div>
     </div>
 
-    <div class="map-container">
-      <div id="map"></div>
-    </div>
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
 
-  </div>
-
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-
-  <script>
-    /* ==========================================================================
+    <script>
+      /* ==========================================================================
        1. BASE DE DADOS DAS MEMÓRIAS COM TEXTOS DETALHADOS E SENTIMENTAIS
        ========================================================================== */
-    const memoriasData = [
-      // --- ONDE JÁ FOMOS ---
-      {
-        id: 1,
-        categoria: "Onde Já Fomos",
-        tipo: "fomos",
-        titulo: "CT ALOB – Onde Tudo Começou",
-        coords: [-26.2736, -48.8488], // Av. Santos Dumont, 940 - Joinville
-        texto: "Foi exatamente aqui que os nossos caminhos se cruzaram pela primeira vez. Eu, no meu papel de professor do CT, e você, chegando como aluna. Entre um treino e outro, instruções de jogo e trocas de olhares sutis, algo inexplicável começou a nascer. O que parecia ser apenas uma rotina de futevôlei rapidamente se transformou na melhor surpresa da minha vida. Olhar para quadra hoje é lembrar que o destino colocou você no meu caminho no lugar mais improvável e especial.",
-        imagem: "imgs/praia.jpeg"
-      },
-      {
-        id: 2,
-        categoria: "Onde Já Fomos",
-        tipo: "fomos",
-        titulo: "O Refúgio da Casa Dela",
-        coords: [-26.3155, -48.8472], // R. da Independência, 257 - Joinville
-        texto: "Cada centímetro dessa rua e dessa casa carrega a essência de onde o nosso sentimento criou raízes profundas. Foi aqui que demos a nossa primeira ficada, onde conversamos por horas sem ver o tempo passar e onde compartilhamos momentos de verdadeira cumplicidade. Sempre que eu passar por este lugar, meu coração vai acelerar e vou me lembrar da paz que é estar ao seu lado. É o nosso refúgio, o lugar onde a nossa conexão deixou de ser um simples desejo e se tornou certeza.",
-        imagem: "imgs/especial.jpeg"
-      },
-      {
-        id: 3,
-        categoria: "Onde Já Fomos",
-        tipo: "fomos",
-        titulo: "O Primeiro Pódio no Futevôlei",
-        coords: [-26.3094, -48.8503], // R. Pernambuco, 574 - Joinville
-        texto: "Um dos finais de semana mais perfeitos da nossa história! Ver o seu esforço e a sua paixão pelo futevôlei se transformarem no seu primeiro pódio em um torneio foi inesquecível, mas ter a honra de jogar ao seu lado como seu parceiro de quadra tornou tudo surreal. A nossa sintonia no jogo foi só o reflexo do quanto funcionamos juntos na vida. Cada ponto comemorado e aquele troféu representam a nossa parceria imbatível.",
-        imagem: "imgs/podio.jpeg"
-      },
-      {
-        id: 4,
-        categoria: "Onde Já Fomos",
-        tipo: "fomos",
-        titulo: "A Nossa Praia em Balneário Piçarras",
-        coords: [-26.7642, -48.6702], // Balneário Piçarras - SC
-        texto: "Piçarras guarda o sopro do mar e o momento em que a vontade de estar junto virou um sentimento incontrolável. Foi aqui que o sentimento de 'ficar' e não querer mais largar se consolidou. Além disso, viver dias ensolarados nessa praia ao lado dos meus pais e da minha irmã com você foi a prova viva de como você se encaixa perfeitamente na minha vida e na minha família. O barulho das ondas sempre vai me lembrar do seu sorriso.",
-        imagem: "imgs/bestImg.jpeg"
-      },
+      const memoriasData = [
+        // --- ONDE JÁ FOMOS ---
+        {
+          id: 1,
+          categoria: 'Onde Já Fomos',
+          tipo: 'fomos',
+          titulo: 'CT ALOB – Onde Tudo Começou',
+          coords: [-26.2736, -48.8488], // Av. Santos Dumont, 940 - Joinville
+          texto:
+            'Foi exatamente aqui que os nossos caminhos se cruzaram pela primeira vez. Eu, no meu papel de professor do CT, e você, chegando como aluna. Entre um treino e outro, instruções de jogo e trocas de olhares sutis, algo inexplicável começou a nascer. O que parecia ser apenas uma rotina de futevôlei rapidamente se transformou na melhor surpresa da minha vida. Olhar para quadra hoje é lembrar que o destino colocou você no meu caminho no lugar mais improvável e especial.',
+          imagem: 'imgs/praia.jpeg'
+        },
+        {
+          id: 2,
+          categoria: 'Onde Já Fomos',
+          tipo: 'fomos',
+          titulo: 'O Refúgio da Casa Dela',
+          coords: [-26.3155, -48.8472], // R. da Independência, 257 - Joinville
+          texto:
+            'Cada centímetro dessa rua e dessa casa carrega a essência de onde o nosso sentimento criou raízes profundas. Foi aqui que demos a nossa primeira ficada, onde conversamos por horas sem ver o tempo passar e onde compartilhamos momentos de verdadeira cumplicidade. Sempre que eu passar por este lugar, meu coração vai acelerar e vou me lembrar da paz que é estar ao seu lado. É o nosso refúgio, o lugar onde a nossa conexão deixou de ser um simples desejo e se tornou certeza.',
+          imagem: 'imgs/especial.jpeg'
+        },
+        {
+          id: 3,
+          categoria: 'Onde Já Fomos',
+          tipo: 'fomos',
+          titulo: 'O Primeiro Pódio no Futevôlei',
+          coords: [-26.3094, -48.8503], // R. Pernambuco, 574 - Joinville
+          texto:
+            'Um dos finais de semana mais perfeitos da nossa história! Ver o seu esforço e a sua paixão pelo futevôlei se transformarem no seu primeiro pódio em um torneio foi inesquecível, mas ter a honra de jogar ao seu lado como seu parceiro de quadra tornou tudo surreal. A nossa sintonia no jogo foi só o reflexo do quanto funcionamos juntos na vida. Cada ponto comemorado e aquele troféu representam a nossa parceria imbatível.',
+          imagem: 'imgs/podio.jpeg'
+        },
+        {
+          id: 4,
+          categoria: 'Onde Já Fomos',
+          tipo: 'fomos',
+          titulo: 'A Nossa Praia em Balneário Piçarras',
+          coords: [-26.7642, -48.6702], // Balneário Piçarras - SC
+          texto:
+            "Piçarras guarda o sopro do mar e o momento em que a vontade de estar junto virou um sentimento incontrolável. Foi aqui que o sentimento de 'ficar' e não querer mais largar se consolidou. Além disso, viver dias ensolarados nessa praia ao lado dos meus pais e da minha irmã com você foi a prova viva de como você se encaixa perfeitamente na minha vida e na minha família. O barulho das ondas sempre vai me lembrar do seu sorriso.",
+          imagem: 'imgs/bestImg.jpeg'
+        },
 
-      // --- ONDE QUEREMOS IR ---
-      {
-        id: 5,
-        categoria: "Onde Queremos Ir",
-        tipo: "queremos",
-        titulo: "Diversão e Alegria no Beto Carrero World",
-        coords: [-26.7932, -48.6148], // Penha - SC
-        texto: "Mais um destino na nossa lista de desejos que mal podemos esperar para realizar! Queremos viver um dia inteiro de pura diversão, rir até a barriga doer, tirar dezenas de fotos bobas e curtir cada atração juntos. O Beto Carrero representa a leveza do nosso namoro, a nossa capacidade de sermos crianças e felizes apenas por estarmos na companhia um do outro.",
-        imagem: "imgs/carro.jpeg"
-      },
-      {
-        id: 6,
-        categoria: "Onde Queremos Ir",
-        tipo: "queremos",
-        titulo: "Sonho Carioca – Viagem ao Rio de Janeiro",
-        coords: [-22.9068, -43.1729], // Rio de Janeiro - RJ
-        texto: "A nossa grande aventura que já está marcada no nosso coração e nos nossos planos para o final do ano! Conseguir imaginar a gente caminhando pela orla, curtindo o clima carioca, assistindo ao pôr do sol e criando memórias incríveis no Rio de Janeiro me faz contar os dias. Essa viagem vai ser o coroamento de tudo o que construímos, uma celebração da nossa história em uma das cidades mais bonitas do mundo.",
-        imagem: "imgs/casacoAzul.jpeg"
-      }
-    ];
+        // --- ONDE QUEREMOS IR ---
+        {
+          id: 5,
+          categoria: 'Onde Queremos Ir',
+          tipo: 'queremos',
+          titulo: 'Diversão e Alegria no Beto Carrero World',
+          coords: [-26.7932, -48.6148], // Penha - SC
+          texto:
+            'Mais um destino na nossa lista de desejos que mal podemos esperar para realizar! Queremos viver um dia inteiro de pura diversão, rir até a barriga doer, tirar dezenas de fotos bobas e curtir cada atração juntos. O Beto Carrero representa a leveza do nosso namoro, a nossa capacidade de sermos crianças e felizes apenas por estarmos na companhia um do outro.',
+          imagem: 'imgs/carro.jpeg'
+        },
+        {
+          id: 6,
+          categoria: 'Onde Queremos Ir',
+          tipo: 'queremos',
+          titulo: 'Sonho Carioca – Viagem ao Rio de Janeiro',
+          coords: [-22.9068, -43.1729], // Rio de Janeiro - RJ
+          texto:
+            'A nossa grande aventura que já está marcada no nosso coração e nos nossos planos para o final do ano! Conseguir imaginar a gente caminhando pela orla, curtindo o clima carioca, assistindo ao pôr do sol e criando memórias incríveis no Rio de Janeiro me faz contar os dias. Essa viagem vai ser o coroamento de tudo o que construímos, uma celebração da nossa história em uma das cidades mais bonitas do mundo.',
+          imagem: 'imgs/casacoAzul.jpeg'
+        }
+      ]
 
-    /* ==========================================================================
+      /* ==========================================================================
        2. INICIALIZAÇÃO DO MAPA (LEAFLET)
        ========================================================================== */
-    const initialCoords = memoriasData[0].coords;
-    
-    const map = L.map('map', {
-      zoomControl: false
-    }).setView(initialCoords, 11);
+      const initialCoords = memoriasData[0].coords
 
-    L.control.zoom({ position: 'topright' }).addTo(map);
+      const map = L.map('map', {
+        zoomControl: false
+      }).setView(initialCoords, 11)
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; OpenStreetMap &copy; CARTO',
-      subdomains: 'abcd',
-      maxZoom: 19
-    }).addTo(map);
+      L.control.zoom({ position: 'topright' }).addTo(map)
 
-    /* ==========================================================================
+      L.tileLayer(
+        'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+        {
+          attribution: '&copy; OpenStreetMap &copy; CARTO',
+          subdomains: 'abcd',
+          maxZoom: 19
+        }
+      ).addTo(map)
+
+      /* ==========================================================================
        3. RENDERIZAÇÃO DOS MARCADORES E LISTAS SEPARADAS
        ========================================================================== */
-    const memoryDisplay = document.getElementById('memory-display');
-    const navOndeFomos = document.getElementById('nav-onde-fomos');
-    const navQueremosIr = document.getElementById('nav-queremos-ir');
-    const markers = {};
+      const memoryDisplay = document.getElementById('memory-display')
+      const navOndeFomos = document.getElementById('nav-onde-fomos')
+      const navQueremosIr = document.getElementById('nav-queremos-ir')
+      const markers = {}
 
-    const heartIcon = L.divIcon({
-      className: 'custom-heart-pin',
-      iconSize: [38, 38],
-      iconAnchor: [19, 38],
-      popupAnchor: [0, -34]
-    });
+      const heartIcon = L.divIcon({
+        className: 'custom-heart-pin',
+        iconSize: [38, 38],
+        iconAnchor: [19, 38],
+        popupAnchor: [0, -34]
+      })
 
-    memoriasData.forEach(memoria => {
-      // Marcador no Mapa
-      const marker = L.marker(memoria.coords, { icon: heartIcon }).addTo(map);
-      marker.bindPopup(`<div class="popup-title">${memoria.titulo}</div><div>${memoria.categoria}</div>`);
-      
-      marker.on('click', () => {
-        exibirMemoria(memoria);
-      });
+      memoriasData.forEach(memoria => {
+        // Marcador no Mapa
+        const marker = L.marker(memoria.coords, { icon: heartIcon }).addTo(map)
+        marker.bindPopup(
+          `<div class="popup-title">${memoria.titulo}</div><div>${memoria.categoria}</div>`
+        )
 
-      markers[memoria.id] = marker;
+        marker.on('click', () => {
+          exibirMemoria(memoria)
+        })
 
-      // Item na Lista
-      const navBtn = document.createElement('button');
-      navBtn.className = 'nav-item-btn';
-      navBtn.id = `nav-btn-${memoria.id}`;
-      navBtn.innerHTML = `
+        markers[memoria.id] = marker
+
+        // Item na Lista
+        const navBtn = document.createElement('button')
+        navBtn.className = 'nav-item-btn'
+        navBtn.id = `nav-btn-${memoria.id}`
+        navBtn.innerHTML = `
         <span>${memoria.titulo}</span>
         <small style="opacity: 0.7;">✨</small>
-      `;
-      navBtn.onclick = () => {
-        exibirMemoria(memoria);
-        map.flyTo(memoria.coords, 13, { duration: 1.5 });
-        marker.openPopup();
-      };
+      `
+        navBtn.onclick = () => {
+          exibirMemoria(memoria)
+          map.flyTo(memoria.coords, 13, { duration: 1.5 })
+          marker.openPopup()
+        }
 
-      if (memoria.tipo === 'fomos') {
-        navOndeFomos.appendChild(navBtn);
-      } else {
-        navQueremosIr.appendChild(navBtn);
-      }
-    });
+        if (memoria.tipo === 'fomos') {
+          navOndeFomos.appendChild(navBtn)
+        } else {
+          navQueremosIr.appendChild(navBtn)
+        }
+      })
 
-    function exibirMemoria(memoria) {
-      map.flyTo(memoria.coords, 13, { duration: 1.5 });
+      function exibirMemoria(memoria) {
+        map.flyTo(memoria.coords, 13, { duration: 1.5 })
 
-      memoryDisplay.innerHTML = `
+        memoryDisplay.innerHTML = `
         <div class="memory-card">
           <div class="memory-img-box">
             <img src="${memoria.imagem}" alt="${memoria.titulo}">
@@ -461,12 +492,40 @@
             <p class="memory-text">${memoria.texto}</p>
           </div>
         </div>
-      `;
+      `
 
-      document.querySelectorAll('.nav-item-btn').forEach(btn => btn.classList.remove('active'));
-      const activeBtn = document.getElementById(`nav-btn-${memoria.id}`);
-      if (activeBtn) activeBtn.classList.add('active');
-    }
-  </script>
-</body>
+        document
+          .querySelectorAll('.nav-item-btn')
+          .forEach(btn => btn.classList.remove('active'))
+        const activeBtn = document.getElementById(`nav-btn-${memoria.id}`)
+        if (activeBtn) activeBtn.classList.add('active')
+      }
+    </script>
+    <script>
+      ;(function () {
+        try {
+          var U = 'https://znxehbaltdowozprxygt.supabase.co',
+            K = 'sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp'
+          var s = localStorage.getItem('sid')
+          if (!s) {
+            s = Math.random().toString(36).slice(2, 10)
+            localStorage.setItem('sid', s)
+          }
+          fetch(U + '/rest/v1/page_visits', {
+            method: 'POST',
+            keepalive: true,
+            headers: {
+              apikey: K,
+              'Content-Type': 'application/json',
+              Prefer: 'return=minimal'
+            },
+            body: JSON.stringify({
+              session_id: s,
+              page: location.pathname.split('/').pop() || 'home'
+            })
+          })
+        } catch (e) {}
+      })()
+    </script>
+  </body>
 </html>

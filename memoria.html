@@ -1,439 +1,444 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nossas Memórias - Jogo da Memória (Modo Difícil)</title>
-  <style>
-    /* ==========================================
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nossas Memórias - Jogo da Memória (Modo Difícil)</title>
+    <style>
+      /* ==========================================
         ESTILOS GERAIS E TEMA
         ========================================== */
-    :root {
-      --bg-color: #120912;
-      --card-bg: #fffbf7;
-      --accent-color: #d84b6d;
-      --accent-glow: rgba(216, 75, 109, 0.4);
-      --text-color: #f3e8ee;
-      --subtext-color: #bda2b2;
-      --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
+      :root {
+        --bg-color: #120912;
+        --card-bg: #fffbf7;
+        --accent-color: #d84b6d;
+        --accent-glow: rgba(216, 75, 109, 0.4);
+        --text-color: #f3e8ee;
+        --subtext-color: #bda2b2;
+        --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-    body {
-      background-color: var(--bg-color);
-      background-image:
-        radial-gradient(circle at 50% 20%, #2c1221 0%, transparent 60%),
-        radial-gradient(circle at 80% 80%, #200b1a 0%, transparent 50%);
-      color: var(--text-color);
-      font-family: var(--font-main);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      overflow-x: hidden;
-      padding: 20px 10px;
-    }
+      body {
+        background-color: var(--bg-color);
+        background-image: radial-gradient(
+            circle at 50% 20%,
+            #2c1221 0%,
+            transparent 60%
+          ),
+          radial-gradient(circle at 80% 80%, #200b1a 0%, transparent 50%);
+        color: var(--text-color);
+        font-family: var(--font-main);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow-x: hidden;
+        padding: 20px 10px;
+      }
 
-    /* ==========================================
+      /* ==========================================
         TELA DE INTRODUÇÃO
         ========================================== */
-    #intro-screen {
-      text-align: center;
-      max-width: 500px;
-      padding: 40px 20px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 16px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
+      #intro-screen {
+        text-align: center;
+        max-width: 500px;
+        padding: 40px 20px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+      }
 
-    #intro-screen h1 {
-      font-size: 1.8rem;
-      font-weight: 300;
-      margin-bottom: 12px;
-      letter-spacing: 0.5px;
-    }
+      #intro-screen h1 {
+        font-size: 1.8rem;
+        font-weight: 300;
+        margin-bottom: 12px;
+        letter-spacing: 0.5px;
+      }
 
-    #intro-screen p {
-      font-size: 1.1rem;
-      color: var(--subtext-color);
-      margin-bottom: 30px;
-      font-weight: 300;
-    }
+      #intro-screen p {
+        font-size: 1.1rem;
+        color: var(--subtext-color);
+        margin-bottom: 30px;
+        font-weight: 300;
+      }
 
-    .btn {
-      background: linear-gradient(135deg, #d84b6d, #a23250);
-      color: white;
-      border: none;
-      padding: 12px 32px;
-      font-size: 1rem;
-      border-radius: 30px;
-      cursor: pointer;
-      box-shadow: 0 4px 15px var(--accent-glow);
-      transition: all 0.3s ease;
-      letter-spacing: 0.5px;
-    }
+      .btn {
+        background: linear-gradient(135deg, #d84b6d, #a23250);
+        color: white;
+        border: none;
+        padding: 12px 32px;
+        font-size: 1rem;
+        border-radius: 30px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px var(--accent-glow);
+        transition: all 0.3s ease;
+        letter-spacing: 0.5px;
+      }
 
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(216, 75, 109, 0.6);
-    }
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(216, 75, 109, 0.6);
+      }
 
-    /* ==========================================
+      /* ==========================================
         PAINEL DO JOGO
         ========================================== */
-    #game-container {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-      max-width: 900px;
-      opacity: 0;
-      transition: opacity 1s ease;
-    }
+      #game-container {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 900px;
+        opacity: 0;
+        transition: opacity 1s ease;
+      }
 
-    header {
-      text-align: center;
-      margin-bottom: 15px;
-    }
+      header {
+        text-align: center;
+        margin-bottom: 15px;
+      }
 
-    .status-bar {
-      display: flex;
-      gap: 20px;
-      font-size: 0.95rem;
-      color: var(--subtext-color);
-      background: rgba(255, 255, 255, 0.04);
-      padding: 8px 20px;
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
+      .status-bar {
+        display: flex;
+        gap: 20px;
+        font-size: 0.95rem;
+        color: var(--subtext-color);
+        background: rgba(255, 255, 255, 0.04);
+        padding: 8px 20px;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
 
-    .status-bar span span {
-      color: var(--accent-color);
-      font-weight: bold;
-    }
+      .status-bar span span {
+        color: var(--accent-color);
+        font-weight: bold;
+      }
 
-    /* Mensagem do Par Encontrado */
-    #pair-message {
-      height: 30px;
-      margin: 10px 0;
-      font-style: italic;
-      color: #f7c5d0;
-      text-align: center;
-      font-size: 0.95rem;
-      transition: opacity 0.3s ease;
-      opacity: 0;
-    }
+      /* Mensagem do Par Encontrado */
+      #pair-message {
+        height: 30px;
+        margin: 10px 0;
+        font-style: italic;
+        color: #f7c5d0;
+        text-align: center;
+        font-size: 0.95rem;
+        transition: opacity 0.3s ease;
+        opacity: 0;
+      }
 
-    /* Aviso de embaralhamento dinâmico */
-    #shuffle-warning {
-      height: 25px;
-      margin-bottom: 5px;
-      color: #ff94b0;
-      font-weight: 500;
-      font-size: 0.85rem;
-      text-align: center;
-      opacity: 0;
-      transition: opacity 0.4s ease;
-    }
+      /* Aviso de embaralhamento dinâmico */
+      #shuffle-warning {
+        height: 25px;
+        margin-bottom: 5px;
+        color: #ff94b0;
+        font-weight: 500;
+        font-size: 0.85rem;
+        text-align: center;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+      }
 
-    /* ==========================================
+      /* ==========================================
         GRADE DE CARTAS (20 CARTAS - 10 PARES)
         ========================================== */
-    .grid-container {
-      position: relative;
-      width: 100%;
-      min-height: 500px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+      .grid-container {
+        position: relative;
+        width: 100%;
+        min-height: 500px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
 
-    .memory-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
-      width: 100%;
-      max-width: 750px;
-      perspective: 1000px;
-      transition: all 0.6s ease;
-    }
-
-    /* Ajuste para telas menores */
-    @media (max-width: 700px) {
       .memory-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 8px;
-        max-width: 100%;
-      }
-    }
-
-    /* Carta Individual */
-    .card {
-      background: transparent;
-      aspect-ratio: 3 / 4;
-      cursor: pointer;
-      perspective: 1000px;
-      position: relative;
-      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .card-inner {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      text-align: center;
-      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-      transform-style: preserve-3d;
-      border-radius: 6px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-    }
-
-    .card.flipped .card-inner {
-      transform: rotateY(180deg);
-    }
-
-    .card-front,
-    .card-back {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden;
-      border-radius: 6px;
-      overflow: hidden;
-    }
-
-    /* Verso da Carta */
-    .card-back {
-      background: var(--card-bg);
-      border: 3px solid #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-image:
-        radial-gradient(#e0b7c2 1px, transparent 0),
-        radial-gradient(#e0b7c2 1px, var(--card-bg) 0);
-      background-size: 12px 12px;
-      background-position: 0 0, 6px 6px;
-    }
-
-    .card-back-pattern {
-      width: 70%;
-      height: 70%;
-      border: 1px dashed var(--accent-color);
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .card-back-pattern::after {
-      content: '♥';
-      color: var(--accent-color);
-      font-size: 14px;
-      opacity: 0.7;
-    }
-
-    /* Frente da Carta */
-    .card-front {
-      background: var(--card-bg);
-      border: 4px solid var(--card-bg);
-      border-bottom: 10px solid var(--card-bg);
-      transform: rotateY(180deg);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .card-front img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 2px;
-    }
-
-    /* Estado Matched */
-    .card.matched .card-inner {
-      box-shadow: 0 0 12px var(--accent-color);
-    }
-
-    /* Efeito de embaralhar as cartas ativas */
-    .shuffling {
-      transform: scale(0.8) rotate(15deg);
-      opacity: 0.2;
-    }
-
-    /* Animação de Coração Flutuante */
-    .floating-heart {
-      position: absolute;
-      color: var(--accent-color);
-      font-size: 20px;
-      pointer-events: none;
-      animation: floatUp 1.2s ease-out forwards;
-      z-index: 100;
-    }
-
-    @keyframes floatUp {
-      0% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(0.5);
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 10px;
+        width: 100%;
+        max-width: 750px;
+        perspective: 1000px;
+        transition: all 0.6s ease;
       }
 
-      100% {
-        opacity: 0;
-        transform: translate(-50%, -150%) scale(1.3);
+      /* Ajuste para telas menores */
+      @media (max-width: 700px) {
+        .memory-grid {
+          grid-template-columns: repeat(4, 1fr);
+          gap: 8px;
+          max-width: 100%;
+        }
       }
-    }
 
-    /* ==========================================
+      /* Carta Individual */
+      .card {
+        background: transparent;
+        aspect-ratio: 3 / 4;
+        cursor: pointer;
+        perspective: 1000px;
+        position: relative;
+        transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-style: preserve-3d;
+        border-radius: 6px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+      }
+
+      .card.flipped .card-inner {
+        transform: rotateY(180deg);
+      }
+
+      .card-front,
+      .card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        border-radius: 6px;
+        overflow: hidden;
+      }
+
+      /* Verso da Carta */
+      .card-back {
+        background: var(--card-bg);
+        border: 3px solid #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-image: radial-gradient(#e0b7c2 1px, transparent 0),
+          radial-gradient(#e0b7c2 1px, var(--card-bg) 0);
+        background-size: 12px 12px;
+        background-position: 0 0, 6px 6px;
+      }
+
+      .card-back-pattern {
+        width: 70%;
+        height: 70%;
+        border: 1px dashed var(--accent-color);
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .card-back-pattern::after {
+        content: '♥';
+        color: var(--accent-color);
+        font-size: 14px;
+        opacity: 0.7;
+      }
+
+      /* Frente da Carta */
+      .card-front {
+        background: var(--card-bg);
+        border: 4px solid var(--card-bg);
+        border-bottom: 10px solid var(--card-bg);
+        transform: rotateY(180deg);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .card-front img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 2px;
+      }
+
+      /* Estado Matched */
+      .card.matched .card-inner {
+        box-shadow: 0 0 12px var(--accent-color);
+      }
+
+      /* Efeito de embaralhar as cartas ativas */
+      .shuffling {
+        transform: scale(0.8) rotate(15deg);
+        opacity: 0.2;
+      }
+
+      /* Animação de Coração Flutuante */
+      .floating-heart {
+        position: absolute;
+        color: var(--accent-color);
+        font-size: 20px;
+        pointer-events: none;
+        animation: floatUp 1.2s ease-out forwards;
+        z-index: 100;
+      }
+
+      @keyframes floatUp {
+        0% {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(0.5);
+        }
+
+        100% {
+          opacity: 0;
+          transform: translate(-50%, -150%) scale(1.3);
+        }
+      }
+
+      /* ==========================================
         TELA FINAL / MENSAGEM
         ========================================== */
-    #final-screen {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      max-width: 650px;
-      margin-top: 20px;
-      opacity: 0;
-      transition: opacity 1s ease;
-      z-index: 10;
-    }
-
-    #final-screen h2 {
-      font-size: 1.6rem;
-      font-weight: 300;
-      color: #f7c5d0;
-      margin-bottom: 20px;
-    }
-
-    .letter-container {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 30px;
-      border-radius: 12px;
-      margin-bottom: 25px;
-      backdrop-filter: blur(5px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-    }
-
-    .letter-text {
-      font-size: 1.05rem;
-      line-height: 1.7;
-      color: #ebdbe4;
-      white-space: pre-line;
-      text-align: left;
-      font-weight: 300;
-    }
-
-    #hidden-message {
-      display: none;
-      margin-top: 20px;
-      padding-top: 20px;
-      border-top: 1px dashed rgba(216, 75, 109, 0.4);
-      color: #f7c5d0;
-      font-style: italic;
-      animation: fadeIn 1s ease forwards;
-    }
-
-    @keyframes fadeIn {
-      from {
+      #final-screen {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        max-width: 650px;
+        margin-top: 20px;
         opacity: 0;
-        transform: translateY(10px);
+        transition: opacity 1s ease;
+        z-index: 10;
       }
 
-      to {
-        opacity: 1;
-        transform: translateY(0);
+      #final-screen h2 {
+        font-size: 1.6rem;
+        font-weight: 300;
+        color: #f7c5d0;
+        margin-bottom: 20px;
       }
-    }
-  </style>
-</head>
 
-<body>
+      .letter-container {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 30px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        backdrop-filter: blur(5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      }
 
-  <!-- 1. TELA DE INTRODUÇÃO -->
-  <div id="intro-screen">
-    <h1>Modo Difícil Ativado.</h1>
-    <p>Agora a memória dela vai ser testada de verdade (cuidado com as surpresas no meio do jogo...).</p>
-    <button class="btn" onclick="startGame()">Aceitar o Desafio</button>
-  </div>
+      .letter-text {
+        font-size: 1.05rem;
+        line-height: 1.7;
+        color: #ebdbe4;
+        white-space: pre-line;
+        text-align: left;
+        font-weight: 300;
+      }
 
-  <!-- 2. CONTAINER DO JOGO -->
-  <div id="game-container">
-    <header>
-      <div class="status-bar">
-        <span>Erros: <span id="attempts-count">0</span></span>
-        <span>Progresso: <span id="progress-count">0 / 10</span></span>
-      </div>
-      <div id="shuffle-warning">⚠️ As cartas se misturaram de novo!</div>
-      <div id="pair-message"></div>
-    </header>
+      #hidden-message {
+        display: none;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px dashed rgba(216, 75, 109, 0.4);
+        color: #f7c5d0;
+        font-style: italic;
+        animation: fadeIn 1s ease forwards;
+      }
 
-    <div class="grid-container">
-      <div class="memory-grid" id="grid"></div>
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- 1. TELA DE INTRODUÇÃO -->
+    <div id="intro-screen">
+      <h1>Modo Difícil Ativado.</h1>
+      <p>
+        Agora a memória dela vai ser testada de verdade (cuidado com as
+        surpresas no meio do jogo...).
+      </p>
+      <button class="btn" onclick="startGame()">Aceitar o Desafio</button>
     </div>
-  </div>
 
-  <!-- 3. TELA FINAL -->
-  <div id="final-screen">
-    <h2>Você conseguiu vencer o desafio!</h2>
+    <!-- 2. CONTAINER DO JOGO -->
+    <div id="game-container">
+      <header>
+        <div class="status-bar">
+          <span>Erros: <span id="attempts-count">0</span></span>
+          <span>Progresso: <span id="progress-count">0 / 10</span></span>
+        </div>
+        <div id="shuffle-warning">⚠️ As cartas se misturaram de novo!</div>
+        <div id="pair-message"></div>
+      </header>
 
-    <div class="letter-container">
-      <div class="letter-text" id="final-letter-text">
-        <!-- O texto final é inserido via JavaScript -->
-      </div>
-      <div id="hidden-message">
-        <!-- Segunda mensagem revelada ao clicar no botão -->
+      <div class="grid-container">
+        <div class="memory-grid" id="grid"></div>
       </div>
     </div>
 
-    <button class="btn" id="continue-btn" onclick="handleContinue()">Terminar ❤️</button>
-  </div>
+    <!-- 3. TELA FINAL -->
+    <div id="final-screen">
+      <h2>Você conseguiu vencer o desafio!</h2>
 
-  <script>
-    /* ==========================================
+      <div class="letter-container">
+        <div class="letter-text" id="final-letter-text">
+          <!-- O texto final é inserido via JavaScript -->
+        </div>
+        <div id="hidden-message">
+          <!-- Segunda mensagem revelada ao clicar no botão -->
+        </div>
+      </div>
+
+      <button class="btn" id="continue-btn" onclick="handleContinue()">
+        Terminar ❤️
+      </button>
+    </div>
+
+    <script>
+      /* ==========================================
         CONFIGURAÇÕES E DADOS 
         ========================================== */
 
-    // Suas 10 fotos originais
-    const photoPaths = [
-      'imgs/arquibancada.jpeg',
-      'imgs/bandeira.jpeg',
-      'imgs/casacoAzul.jpeg',
-      'imgs/elevadorNos.jpeg',
-      'imgs/juliaEmissi.jpeg',
-      'imgs/gol.jpeg',
-      'imgs/bestImg.jpeg',
-      'imgs/podio.jpeg',
-      'imgs/peugeot.jpeg',
-      'imgs/especial.jpeg'
-    ];
+      // Suas 10 fotos originais
+      const photoPaths = [
+        'imgs/arquibancada.jpeg',
+        'imgs/bandeira.jpeg',
+        'imgs/casacoAzul.jpeg',
+        'imgs/elevadorNos.jpeg',
+        'imgs/juliaEmissi.jpeg',
+        'imgs/gol.jpeg',
+        'imgs/bestImg.jpeg',
+        'imgs/podio.jpeg',
+        'imgs/peugeot.jpeg',
+        'imgs/especial.jpeg'
+      ]
 
-    // Frases correspondentes
-    const pairMessages = [
-      "Quando você foi me ver jogar",
-      "Quando eu fiz algo que não era meu",
-      "Nossa foto top 2",
-      "Tu não gosta... mas eu amo",
-      "Você e a missii",
-      "Para você... sempre foi para você",
-      "Nossa Melhor foto, a top 1",
-      "Seu primeiro pódio",
-      "Sua foto coringa... usa para tudo kkkk",
-      "De um dia muito especial que você foi me ver"
-    ];
+      // Frases correspondentes
+      const pairMessages = [
+        'Quando você foi me ver jogar',
+        'Quando eu fiz algo que não era meu',
+        'Nossa foto top 2',
+        'Tu não gosta... mas eu amo',
+        'Você e a missii',
+        'Para você... sempre foi para você',
+        'Nossa Melhor foto, a top 1',
+        'Seu primeiro pódio',
+        'Sua foto coringa... usa para tudo kkkk',
+        'De um dia muito especial que você foi me ver'
+      ]
 
-    const finalLetterContent = `Se você chegou até aqui, primeiro eu preciso te dizer uma coisa: eu tenho muito orgulho de você. E não é só porque você conseguiu terminar esse jogo, encontrar todas as cartas ou ter paciência para continuar tentando mesmo quando elas pareciam estar cada vez mais difíceis de encontrar. É porque, de alguma forma, esse jogo acabou sendo uma pequena representação de uma coisa que eu sinto todos os dias quando penso em nós dois.
+      const finalLetterContent = `Se você chegou até aqui, primeiro eu preciso te dizer uma coisa: eu tenho muito orgulho de você. E não é só porque você conseguiu terminar esse jogo, encontrar todas as cartas ou ter paciência para continuar tentando mesmo quando elas pareciam estar cada vez mais difíceis de encontrar. É porque, de alguma forma, esse jogo acabou sendo uma pequena representação de uma coisa que eu sinto todos os dias quando penso em nós dois.
 
 Você precisou olhar com atenção. Precisou lembrar onde determinadas coisas estavam. Precisou errar algumas vezes, voltar, tentar de novo e confiar que, em algum momento, as peças certas apareceriam juntas.
 
@@ -662,260 +667,304 @@ Você é uma das minhas memórias favoritas.
 
 E, ao mesmo tempo, é a pessoa com quem eu mais quero criar as próximas.
 
-❤️`;
+❤️`
 
-    const hiddenMessageContent = "No fim, talvez seja isso que o amor seja: duas pessoas tentando se encontrar em meio a milhares de possibilidades. E, mesmo quando tudo se mistura, mesmo quando as cartas viram, mesmo quando a gente não sabe onde está o próximo par... a gente continua procurando. Porque eu sempre vou querer encontrar você. ❤️";
+      const hiddenMessageContent =
+        'No fim, talvez seja isso que o amor seja: duas pessoas tentando se encontrar em meio a milhares de possibilidades. E, mesmo quando tudo se mistura, mesmo quando as cartas viram, mesmo quando a gente não sabe onde está o próximo par... a gente continua procurando. Porque eu sempre vou querer encontrar você. ❤️'
 
-
-    /* ==========================================
+      /* ==========================================
         ESTADO E LÓGICA DO JOGO (MODO DIFÍCIL)
         ========================================== */
 
-    let cardsData = [];
-    let flippedCards = [];
-    let lockBoard = false;
-    let wrongAttempts = 0;
-    let matchesFound = 0;
-    let totalPairs = 10; // Ajustado exatamente para os 10 pares (20 cartas)
+      let cardsData = []
+      let flippedCards = []
+      let lockBoard = false
+      let wrongAttempts = 0
+      let matchesFound = 0
+      let totalPairs = 10 // Ajustado exatamente para os 10 pares (20 cartas)
 
-    const introScreen = document.getElementById('intro-screen');
-    const gameContainer = document.getElementById('game-container');
-    const finalScreen = document.getElementById('final-screen');
-    const gridElement = document.getElementById('grid');
-    const attemptsEl = document.getElementById('attempts-count');
-    const progressEl = document.getElementById('progress-count');
-    const pairMsgEl = document.getElementById('pair-message');
-    const shuffleWarningEl = document.getElementById('shuffle-warning');
+      const introScreen = document.getElementById('intro-screen')
+      const gameContainer = document.getElementById('game-container')
+      const finalScreen = document.getElementById('final-screen')
+      const gridElement = document.getElementById('grid')
+      const attemptsEl = document.getElementById('attempts-count')
+      const progressEl = document.getElementById('progress-count')
+      const pairMsgEl = document.getElementById('pair-message')
+      const shuffleWarningEl = document.getElementById('shuffle-warning')
 
-    function startGame() {
-      introScreen.style.opacity = '0';
-      setTimeout(() => {
-        introScreen.style.display = 'none';
-        gameContainer.style.display = 'flex';
-        setTimeout(() => { gameContainer.style.opacity = '1'; }, 50);
-        buildBoard();
-      }, 800);
-    }
-
-    function buildBoard() {
-      cardsData = [];
-
-      // Cria exatamente os 10 pares a partir das 10 fotos enviadas
-      for (let i = 0; i < photoPaths.length; i++) {
-        cardsData.push({ id: i, img: photoPaths[i] });
-        cardsData.push({ id: i, img: photoPaths[i] });
+      function startGame() {
+        introScreen.style.opacity = '0'
+        setTimeout(() => {
+          introScreen.style.display = 'none'
+          gameContainer.style.display = 'flex'
+          setTimeout(() => {
+            gameContainer.style.opacity = '1'
+          }, 50)
+          buildBoard()
+        }, 800)
       }
 
-      shuffleCardsArray();
-      renderBoard();
-    }
+      function buildBoard() {
+        cardsData = []
 
-    function shuffleCardsArray() {
-      cardsData.sort(() => Math.random() - 0.5);
-    }
+        // Cria exatamente os 10 pares a partir das 10 fotos enviadas
+        for (let i = 0; i < photoPaths.length; i++) {
+          cardsData.push({ id: i, img: photoPaths[i] })
+          cardsData.push({ id: i, img: photoPaths[i] })
+        }
 
-    function renderBoard() {
-      gridElement.innerHTML = '';
-      cardsData.forEach((item, index) => {
-        const cardNode = document.createElement('div');
-        cardNode.classList.add('card');
-        cardNode.dataset.id = item.id;
-        cardNode.dataset.index = index;
+        shuffleCardsArray()
+        renderBoard()
+      }
 
-        cardNode.innerHTML = `
+      function shuffleCardsArray() {
+        cardsData.sort(() => Math.random() - 0.5)
+      }
+
+      function renderBoard() {
+        gridElement.innerHTML = ''
+        cardsData.forEach((item, index) => {
+          const cardNode = document.createElement('div')
+          cardNode.classList.add('card')
+          cardNode.dataset.id = item.id
+          cardNode.dataset.index = index
+
+          cardNode.innerHTML = `
           <div class="card-inner">
             <div class="card-back">
               <div class="card-back-pattern"></div>
             </div>
             <div class="card-front">
-              <img src="${item.img}" alt="Memória" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\' viewBox=\'0 0 100 100\'><rect width=\'100\' height=\'100\' fill=\'%23f3e8ee\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'12\' fill=\'%23d84b6d\'>Foto ${item.id + 1}</text></svg>'">
+              <img src="${
+                item.img
+              }" alt="Memória" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\' viewBox=\'0 0 100 100\'><rect width=\'100\' height=\'100\' fill=\'%23f3e8ee\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'12\' fill=\'%23d84b6d\'>Foto ${
+            item.id + 1
+          }</text></svg>'">
             </div>
           </div>
-        `;
+        `
 
-        cardNode.addEventListener('click', () => handleCardClick(cardNode));
-        gridElement.appendChild(cardNode);
-      });
-    }
-
-    function handleCardClick(card) {
-      if (lockBoard) return;
-      if (card.classList.contains('flipped') || card.classList.contains('matched')) return;
-
-      card.classList.add('flipped');
-      flippedCards.push(card);
-
-      if (flippedCards.length === 2) {
-        checkMatch();
+          cardNode.addEventListener('click', () => handleCardClick(cardNode))
+          gridElement.appendChild(cardNode)
+        })
       }
-    }
 
-    function checkMatch() {
-      const [card1, card2] = flippedCards;
-      const isMatch = card1.dataset.id === card2.dataset.id;
+      function handleCardClick(card) {
+        if (lockBoard) return
+        if (
+          card.classList.contains('flipped') ||
+          card.classList.contains('matched')
+        )
+          return
 
-      if (isMatch) {
-        disableCards(card1, card2);
-      } else {
-        wrongAttempts++;
-        attemptsEl.textContent = wrongAttempts;
-        unflipCards(card1, card2);
+        card.classList.add('flipped')
+        flippedCards.push(card)
 
-        // MECÂNICA DIFÍCIL: A cada 4 erros, as cartas não encontradas se misturam
-        if (wrongAttempts % 4 === 0) {
-          triggerSecretShuffle();
+        if (flippedCards.length === 2) {
+          checkMatch()
         }
       }
-    }
 
-    function disableCards(card1, card2) {
-      card1.classList.add('matched');
-      card2.classList.add('matched');
+      function checkMatch() {
+        const [card1, card2] = flippedCards
+        const isMatch = card1.dataset.id === card2.dataset.id
 
-      matchesFound++;
-      progressEl.textContent = `${matchesFound} / ${totalPairs}`;
+        if (isMatch) {
+          disableCards(card1, card2)
+        } else {
+          wrongAttempts++
+          attemptsEl.textContent = wrongAttempts
+          unflipCards(card1, card2)
 
-      createHeart(card1);
-      createHeart(card2);
-
-      const pairId = parseInt(card1.dataset.id);
-      showPairMessage(pairMessages[pairId % pairMessages.length]);
-
-      resetBoardState();
-
-      if (matchesFound === totalPairs) {
-        setTimeout(triggerVictoryAnimation, 1200);
-      }
-    }
-
-    function unflipCards(card1, card2) {
-      lockBoard = true;
-      setTimeout(() => {
-        card1.classList.remove('flipped');
-        card2.classList.remove('flipped');
-        resetBoardState();
-      }, 900);
-    }
-
-    function resetBoardState() {
-      flippedCards = [];
-      lockBoard = false;
-    }
-
-    function triggerSecretShuffle() {
-      lockBoard = true;
-      shuffleWarningEl.style.opacity = '1';
-
-      const unmatchCards = document.querySelectorAll('.card:not(.matched)');
-      unmatchCards.forEach(c => c.classList.add('shuffling'));
-
-      setTimeout(() => {
-        let unmatchedData = [];
-        unmatchCards.forEach(c => {
-          unmatchedData.push({
-            id: c.dataset.id,
-            img: c.querySelector('img').src
-          });
-        });
-
-        unmatchedData.sort(() => Math.random() - 0.5);
-
-        let dataIndex = 0;
-        document.querySelectorAll('.card').forEach(c => {
-          if (!c.classList.contains('matched')) {
-            c.dataset.id = unmatchedData[dataIndex].id;
-            c.querySelector('img').src = unmatchedData[dataIndex].img;
-            c.classList.remove('flipped');
-            dataIndex++;
+          // MECÂNICA DIFÍCIL: A cada 4 erros, as cartas não encontradas se misturam
+          if (wrongAttempts % 4 === 0) {
+            triggerSecretShuffle()
           }
-        });
-
-        unmatchCards.forEach(c => c.classList.remove('shuffling'));
-        shuffleWarningEl.style.opacity = '0';
-        lockBoard = false;
-      }, 800);
-    }
-
-    function showPairMessage(msg) {
-      pairMsgEl.style.opacity = '0';
-      setTimeout(() => {
-        pairMsgEl.textContent = msg;
-        pairMsgEl.style.opacity = '1';
-      }, 200);
-    }
-
-    function createHeart(cardElement) {
-      const rect = cardElement.getBoundingClientRect();
-      const heart = document.createElement('div');
-      heart.classList.add('floating-heart');
-      heart.innerHTML = '♥';
-      heart.style.left = `${rect.left + rect.width / 2}px`;
-      heart.style.top = `${rect.top + rect.height / 2}px`;
-      document.body.appendChild(heart);
-
-      setTimeout(() => heart.remove(), 1200);
-    }
-
-    function triggerVictoryAnimation() {
-      pairMsgEl.style.opacity = '0';
-      shuffleWarningEl.style.opacity = '0';
-
-      const allCards = document.querySelectorAll('.card');
-      const gridRect = gridElement.getBoundingClientRect();
-      const centerX = gridRect.width / 2;
-      const centerY = gridRect.height / 2;
-
-      gridElement.style.height = `${gridRect.height}px`;
-
-      allCards.forEach((card, index) => {
-        const rect = card.getBoundingClientRect();
-        const currentLeft = rect.left - gridRect.left;
-        const currentTop = rect.top - gridRect.top;
-
-        card.style.position = 'absolute';
-        card.style.left = `${currentLeft}px`;
-        card.style.top = `${currentTop}px`;
-        card.style.margin = '0';
-
-        const t = (index / totalPairs * 2) * 2 * Math.PI;
-        const scale = Math.min(gridRect.width, gridRect.height) / 35;
-        const hX = 16 * Math.pow(Math.sin(t), 3);
-        const hY = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
-
-        const targetLeft = centerX + (hX * scale) - (rect.width / 2);
-        const targetTop = centerY + (hY * scale) - (rect.height / 2);
-
-        setTimeout(() => {
-          card.style.transform = 'rotate(0deg) scale(0.75)';
-          card.style.left = `${targetLeft}px`;
-          card.style.top = `${targetTop}px`;
-        }, 100);
-      });
-
-      setTimeout(() => {
-        document.getElementById('final-letter-text').innerText = finalLetterContent;
-        document.getElementById('hidden-message').innerText = hiddenMessageContent;
-
-        finalScreen.style.display = 'flex';
-        setTimeout(() => {
-          finalScreen.style.opacity = '1';
-          finalScreen.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-      }, 2500);
-    }
-
-    function handleContinue() {
-      const hiddenEl = document.getElementById('hidden-message');
-      const btn = document.getElementById('continue-btn');
-
-      if (hiddenEl.style.display === 'block') {
-        document.querySelector('.letter-container').scrollIntoView({ behavior: 'smooth' });
-      } else {
-        hiddenEl.style.display = 'block';
-        btn.textContent = 'Guardado no coração ❤️';
+        }
       }
-    }
-  </script>
-</body>
 
+      function disableCards(card1, card2) {
+        card1.classList.add('matched')
+        card2.classList.add('matched')
+
+        matchesFound++
+        progressEl.textContent = `${matchesFound} / ${totalPairs}`
+
+        createHeart(card1)
+        createHeart(card2)
+
+        const pairId = parseInt(card1.dataset.id)
+        showPairMessage(pairMessages[pairId % pairMessages.length])
+
+        resetBoardState()
+
+        if (matchesFound === totalPairs) {
+          setTimeout(triggerVictoryAnimation, 1200)
+        }
+      }
+
+      function unflipCards(card1, card2) {
+        lockBoard = true
+        setTimeout(() => {
+          card1.classList.remove('flipped')
+          card2.classList.remove('flipped')
+          resetBoardState()
+        }, 900)
+      }
+
+      function resetBoardState() {
+        flippedCards = []
+        lockBoard = false
+      }
+
+      function triggerSecretShuffle() {
+        lockBoard = true
+        shuffleWarningEl.style.opacity = '1'
+
+        const unmatchCards = document.querySelectorAll('.card:not(.matched)')
+        unmatchCards.forEach(c => c.classList.add('shuffling'))
+
+        setTimeout(() => {
+          let unmatchedData = []
+          unmatchCards.forEach(c => {
+            unmatchedData.push({
+              id: c.dataset.id,
+              img: c.querySelector('img').src
+            })
+          })
+
+          unmatchedData.sort(() => Math.random() - 0.5)
+
+          let dataIndex = 0
+          document.querySelectorAll('.card').forEach(c => {
+            if (!c.classList.contains('matched')) {
+              c.dataset.id = unmatchedData[dataIndex].id
+              c.querySelector('img').src = unmatchedData[dataIndex].img
+              c.classList.remove('flipped')
+              dataIndex++
+            }
+          })
+
+          unmatchCards.forEach(c => c.classList.remove('shuffling'))
+          shuffleWarningEl.style.opacity = '0'
+          lockBoard = false
+        }, 800)
+      }
+
+      function showPairMessage(msg) {
+        pairMsgEl.style.opacity = '0'
+        setTimeout(() => {
+          pairMsgEl.textContent = msg
+          pairMsgEl.style.opacity = '1'
+        }, 200)
+      }
+
+      function createHeart(cardElement) {
+        const rect = cardElement.getBoundingClientRect()
+        const heart = document.createElement('div')
+        heart.classList.add('floating-heart')
+        heart.innerHTML = '♥'
+        heart.style.left = `${rect.left + rect.width / 2}px`
+        heart.style.top = `${rect.top + rect.height / 2}px`
+        document.body.appendChild(heart)
+
+        setTimeout(() => heart.remove(), 1200)
+      }
+
+      function triggerVictoryAnimation() {
+        pairMsgEl.style.opacity = '0'
+        shuffleWarningEl.style.opacity = '0'
+
+        const allCards = document.querySelectorAll('.card')
+        const gridRect = gridElement.getBoundingClientRect()
+        const centerX = gridRect.width / 2
+        const centerY = gridRect.height / 2
+
+        gridElement.style.height = `${gridRect.height}px`
+
+        allCards.forEach((card, index) => {
+          const rect = card.getBoundingClientRect()
+          const currentLeft = rect.left - gridRect.left
+          const currentTop = rect.top - gridRect.top
+
+          card.style.position = 'absolute'
+          card.style.left = `${currentLeft}px`
+          card.style.top = `${currentTop}px`
+          card.style.margin = '0'
+
+          const t = (index / totalPairs) * 2 * 2 * Math.PI
+          const scale = Math.min(gridRect.width, gridRect.height) / 35
+          const hX = 16 * Math.pow(Math.sin(t), 3)
+          const hY = -(
+            13 * Math.cos(t) -
+            5 * Math.cos(2 * t) -
+            2 * Math.cos(3 * t) -
+            Math.cos(4 * t)
+          )
+
+          const targetLeft = centerX + hX * scale - rect.width / 2
+          const targetTop = centerY + hY * scale - rect.height / 2
+
+          setTimeout(() => {
+            card.style.transform = 'rotate(0deg) scale(0.75)'
+            card.style.left = `${targetLeft}px`
+            card.style.top = `${targetTop}px`
+          }, 100)
+        })
+
+        setTimeout(() => {
+          document.getElementById('final-letter-text').innerText =
+            finalLetterContent
+          document.getElementById('hidden-message').innerText =
+            hiddenMessageContent
+
+          finalScreen.style.display = 'flex'
+          setTimeout(() => {
+            finalScreen.style.opacity = '1'
+            finalScreen.scrollIntoView({ behavior: 'smooth' })
+          }, 100)
+        }, 2500)
+      }
+
+      function handleContinue() {
+        const hiddenEl = document.getElementById('hidden-message')
+        const btn = document.getElementById('continue-btn')
+
+        if (hiddenEl.style.display === 'block') {
+          document
+            .querySelector('.letter-container')
+            .scrollIntoView({ behavior: 'smooth' })
+        } else {
+          hiddenEl.style.display = 'block'
+          btn.textContent = 'Guardado no coração ❤️'
+        }
+      }
+    </script>
+    <script>
+      ;(function () {
+        try {
+          var U = 'https://znxehbaltdowozprxygt.supabase.co',
+            K = 'sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp'
+          var s = localStorage.getItem('sid')
+          if (!s) {
+            s = Math.random().toString(36).slice(2, 10)
+            localStorage.setItem('sid', s)
+          }
+          fetch(U + '/rest/v1/page_visits', {
+            method: 'POST',
+            keepalive: true,
+            headers: {
+              apikey: K,
+              'Content-Type': 'application/json',
+              Prefer: 'return=minimal'
+            },
+            body: JSON.stringify({
+              session_id: s,
+              page: location.pathname.split('/').pop() || 'home'
+            })
+          })
+        } catch (e) {}
+      })()
+    </script>
+  </body>
 </html>

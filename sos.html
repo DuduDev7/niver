@@ -1,379 +1,425 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Central de S.O.S ❤️ Módulo de Emergência</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap"
-    rel="stylesheet">
-  <style>
-    /* ==========================================================================
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Central de S.O.S ❤️ Módulo de Emergência</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ==========================================================================
        1. VARIÁVEIS E ESTILOS BASE (TEMA S.O.S / ACOLHEDOR)
        ========================================================================== */
-    :root {
-      --bg-dark: #080c16;
-      --primary: #3b82f6;
-      --primary-hover: #2563eb;
-      --accent: #60a5fa;
-      --card-bg: rgba(255, 255, 255, 0.03);
-      --card-border: rgba(255, 255, 255, 0.12);
-      --text-main: #f8f9fa;
-      --text-muted: #94a3b8;
-    }
+      :root {
+        --bg-dark: #080c16;
+        --primary: #3b82f6;
+        --primary-hover: #2563eb;
+        --accent: #60a5fa;
+        --card-bg: rgba(255, 255, 255, 0.03);
+        --card-border: rgba(255, 255, 255, 0.12);
+        --text-main: #f8f9fa;
+        --text-muted: #94a3b8;
+      }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+      }
 
-    body {
-      background-color: var(--bg-dark);
-      background-image:
-        radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.2) 0px, transparent 50%),
-        radial-gradient(at 50% 50%, rgba(10, 15, 30, 1) 0px, transparent 100%);
-      background-attachment: fixed;
-      color: var(--text-main);
-      min-height: 100vh;
-      padding: 40px 20px;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-    }
+      body {
+        background-color: var(--bg-dark);
+        background-image: radial-gradient(
+            at 0% 0%,
+            rgba(59, 130, 246, 0.15) 0px,
+            transparent 50%
+          ),
+          radial-gradient(
+            at 100% 100%,
+            rgba(139, 92, 246, 0.2) 0px,
+            transparent 50%
+          ),
+          radial-gradient(at 50% 50%, rgba(10, 15, 30, 1) 0px, transparent 100%);
+        background-attachment: fixed;
+        color: var(--text-main);
+        min-height: 100vh;
+        padding: 40px 20px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+      }
 
-    .main-container {
-      max-width: 1080px;
-      width: 100%;
-    }
+      .main-container {
+        max-width: 1080px;
+        width: 100%;
+      }
 
-    /* ==========================================================================
+      /* ==========================================================================
        2. CABEÇALHO ELEGANTE
        ========================================================================== */
-    .header-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--card-border);
-      border-radius: 28px;
-      overflow: hidden;
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
-      margin-bottom: 50px;
-      position: relative;
-    }
+      .header-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--card-border);
+        border-radius: 28px;
+        overflow: hidden;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+        margin-bottom: 50px;
+        position: relative;
+      }
 
-    .cover-image-box {
-      width: 100%;
-      height: 340px;
-      position: relative;
-      overflow: hidden;
-    }
+      .cover-image-box {
+        width: 100%;
+        height: 340px;
+        position: relative;
+        overflow: hidden;
+      }
 
-    .cover-image-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: brightness(0.85) contrast(1.05);
-      transition: transform 0.8s ease;
-    }
+      .cover-image-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.85) contrast(1.05);
+        transition: transform 0.8s ease;
+      }
 
-    .header-card:hover .cover-image-box img {
-      transform: scale(1.03);
-    }
+      .header-card:hover .cover-image-box img {
+        transform: scale(1.03);
+      }
 
-    .cover-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 60%;
-      background: linear-gradient(to top, rgba(8, 12, 22, 0.95), transparent);
-    }
+      .cover-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 60%;
+        background: linear-gradient(to top, rgba(8, 12, 22, 0.95), transparent);
+      }
 
-    .header-content {
-      padding: 0 40px 40px 40px;
-      margin-top: -40px;
-      position: relative;
-      z-index: 2;
-      text-align: center;
-    }
+      .header-content {
+        padding: 0 40px 40px 40px;
+        margin-top: -40px;
+        position: relative;
+        z-index: 2;
+        text-align: center;
+      }
 
-    .header-content h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.8rem;
-      background: linear-gradient(135deg, #ffffff 0%, var(--accent) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 16px;
-      letter-spacing: -0.5px;
-    }
+      .header-content h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.8rem;
+        background: linear-gradient(135deg, #ffffff 0%, var(--accent) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 16px;
+        letter-spacing: -0.5px;
+      }
 
-    .header-content p {
-      color: var(--text-muted);
-      font-size: 1.05rem;
-      line-height: 1.8;
-      max-width: 780px;
-      margin: 0 auto;
-      font-weight: 400;
-    }
+      .header-content p {
+        color: var(--text-muted);
+        font-size: 1.05rem;
+        line-height: 1.8;
+        max-width: 780px;
+        margin: 0 auto;
+        font-weight: 400;
+      }
 
-    .header-content strong {
-      color: var(--text-main);
-    }
+      .header-content strong {
+        color: var(--text-main);
+      }
 
-    /* ==========================================================================
+      /* ==========================================================================
        3. GRID DE CARDS S.O.S
        ========================================================================== */
-    .coupons-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 30px;
-    }
+      .coupons-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 30px;
+      }
 
-    .coupon-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--card-border);
-      border-radius: 24px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    }
+      .coupon-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--card-border);
+        border-radius: 24px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
 
-    .coupon-card::before,
-    .coupon-card::after {
-      content: '';
-      position: absolute;
-      top: 190px;
-      width: 24px;
-      height: 24px;
-      background-color: var(--bg-dark);
-      border-radius: 50%;
-      z-index: 3;
-      border: 1px solid var(--card-border);
-    }
+      .coupon-card::before,
+      .coupon-card::after {
+        content: '';
+        position: absolute;
+        top: 190px;
+        width: 24px;
+        height: 24px;
+        background-color: var(--bg-dark);
+        border-radius: 50%;
+        z-index: 3;
+        border: 1px solid var(--card-border);
+      }
 
-    .coupon-card::before { left: -13px; }
-    .coupon-card::after { right: -13px; }
+      .coupon-card::before {
+        left: -13px;
+      }
+      .coupon-card::after {
+        right: -13px;
+      }
 
-    .coupon-card:hover:not(.redeemed) {
-      transform: translateY(-8px);
-      border-color: rgba(59, 130, 246, 0.4);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(59, 130, 246, 0.15);
-    }
+      .coupon-card:hover:not(.redeemed) {
+        transform: translateY(-8px);
+        border-color: rgba(59, 130, 246, 0.4);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4),
+          0 0 30px rgba(59, 130, 246, 0.15);
+      }
 
-    .coupon-img-wrapper {
-      position: relative;
-      height: 190px;
-      width: 100%;
-      overflow: hidden;
-      border-bottom: 1px dashed var(--card-border);
-    }
+      .coupon-img-wrapper {
+        position: relative;
+        height: 190px;
+        width: 100%;
+        overflow: hidden;
+        border-bottom: 1px dashed var(--card-border);
+      }
 
-    .coupon-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.5s ease;
-    }
+      .coupon-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+      }
 
-    .coupon-card:hover .coupon-img {
-      transform: scale(1.05);
-    }
+      .coupon-card:hover .coupon-img {
+        transform: scale(1.05);
+      }
 
-    .coupon-badge {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      background: rgba(8, 12, 22, 0.8);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--accent);
-    }
+      .coupon-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(8, 12, 22, 0.8);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
 
-    .coupon-body {
-      padding: 25px;
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-      justify-content: space-between;
-    }
+      .coupon-body {
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        justify-content: space-between;
+      }
 
-    .coupon-title {
-      font-size: 1.25rem;
-      color: var(--text-main);
-      margin-bottom: 12px;
-      font-weight: 700;
-      line-height: 1.3;
-    }
+      .coupon-title {
+        font-size: 1.25rem;
+        color: var(--text-main);
+        margin-bottom: 12px;
+        font-weight: 700;
+        line-height: 1.3;
+      }
 
-    .coupon-desc {
-      font-size: 0.92rem;
-      color: var(--text-muted);
-      line-height: 1.6;
-      margin-bottom: 25px;
-    }
+      .coupon-desc {
+        font-size: 0.92rem;
+        color: var(--text-muted);
+        line-height: 1.6;
+        margin-bottom: 25px;
+      }
 
-    .btn-redeem {
-      background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);
-      color: white;
-      border: none;
-      padding: 16px;
-      border-radius: 16px;
-      font-weight: 700;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
-      width: 100%;
-      text-align: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
+      .btn-redeem {
+        background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);
+        color: white;
+        border: none;
+        padding: 16px;
+        border-radius: 16px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        width: 100%;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
 
-    .btn-redeem:hover {
-      background: linear-gradient(135deg, var(--primary-hover) 0%, #1e40af 100%);
-      box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
-    }
+      .btn-redeem:hover {
+        background: linear-gradient(
+          135deg,
+          var(--primary-hover) 0%,
+          #1e40af 100%
+        );
+        box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+      }
 
-    .coupon-card.redeemed {
-      opacity: 0.5;
-      filter: grayscale(0.8);
-    }
+      .coupon-card.redeemed {
+        opacity: 0.5;
+        filter: grayscale(0.8);
+      }
 
-    .coupon-card.redeemed .btn-redeem {
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--text-muted);
-      box-shadow: none;
-      cursor: not-allowed;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
+      .coupon-card.redeemed .btn-redeem {
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--text-muted);
+        box-shadow: none;
+        cursor: not-allowed;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
 
-    #fx-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 999;
-    }
+      #fx-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+        z-index: 999;
+      }
 
-    @media (max-width: 600px) {
-      body { padding: 20px 12px; }
-      .header-content { padding: 0 20px 30px 20px; }
-      .header-content h1 { font-size: 2.1rem; }
-      .header-content p { font-size: 0.95rem; }
-      .cover-image-box { height: 220px; }
-      .coupon-card::before, .coupon-card::after { top: 180px; }
-      .coupon-img-wrapper { height: 180px; }
-    }
-  </style>
-</head>
+      @media (max-width: 600px) {
+        body {
+          padding: 20px 12px;
+        }
+        .header-content {
+          padding: 0 20px 30px 20px;
+        }
+        .header-content h1 {
+          font-size: 2.1rem;
+        }
+        .header-content p {
+          font-size: 0.95rem;
+        }
+        .cover-image-box {
+          height: 220px;
+        }
+        .coupon-card::before,
+        .coupon-card::after {
+          top: 180px;
+        }
+        .coupon-img-wrapper {
+          height: 180px;
+        }
+      }
+    </style>
+  </head>
 
-<body>
+  <body>
+    <canvas id="fx-canvas"></canvas>
 
-  <canvas id="fx-canvas"></canvas>
-
-  <div class="main-container">
-
-    <div class="header-card">
-      <div class="cover-image-box">
-        <img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?q=80&w=1200&auto=format&fit=crop"
-          alt="Foto de Capa S.O.S">
-        <div class="cover-overlay"></div>
+    <div class="main-container">
+      <div class="header-card">
+        <div class="cover-image-box">
+          <img
+            src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?q=80&w=1200&auto=format&fit=crop"
+            alt="Foto de Capa S.O.S"
+          />
+          <div class="cover-overlay"></div>
+        </div>
+        <div class="header-content">
+          <h1>Central S.O.S Amor & Apoio 🚨❤️</h1>
+          <p>
+            Sempre que você precisar de mim, estiver com um dia ruim ou só
+            quiser um refúgio, esta página é o seu botão de emergência.
+            <br /><strong>Como funciona:</strong> Escolha o tipo de apoio que
+            precisa agora e clique em "Acionar S.O.S". O alerta será enviado na
+            hora direto para o meu WhatsApp com a hora exata. Estou sempre aqui
+            por você!
+          </p>
+        </div>
       </div>
-      <div class="header-content">
-        <h1>Central S.O.S Amor & Apoio 🚨❤️</h1>
-        <p>
-          Sempre que você precisar de mim, estiver com um dia ruim ou só quiser um refúgio, esta página é o seu botão de emergência.
-          <br><strong>Como funciona:</strong> Escolha o tipo de apoio que precisa agora e clique em "Acionar S.O.S". O alerta será enviado na hora direto para o meu WhatsApp com a hora exata. Estou sempre aqui por você!
-        </p>
-      </div>
+
+      <div class="coupons-grid" id="coupons-container"></div>
     </div>
 
-    <div class="coupons-grid" id="coupons-container"></div>
-
-  </div>
-
-  <script>
-    /* ==========================================================================
+    <script>
+      /* ==========================================================================
        CONFIGURAÇÕES E DADOS DOS CARDS S.O.S
        ========================================================================== */
-    const SEU_NUMERO_WHATSAPP = "5547992856297";
+      const SEU_NUMERO_WHATSAPP = '5547992856297'
 
-    const cuponsData = [
-      {
-        id: 101,
-        titulo: "S.O.S: Preciso de um Abraço Urgente 🫂",
-        descricao: "Acione este botão se o dia esteve pesado ou se você simplesmente precisa de um lugar seguro. Não precisa dar explicações. Eu vou correndo te dar um abraço até você se sentir melhor.",
-        imagem: "https://images.unsplash.com/photo-1517842645767-c639042777db?q=80&w=600&auto=format&fit=crop"
-      },
-      {
-        id: 102,
-        titulo: "S.O.S: Mimo / Doce de Emergência 🍫",
-        descricao: "Quando a TPM chegar, a ansiedade bater ou bater aquela vontade incontrolável de comer um docinho sem motivo. Acionou, eu dou um jeito de levar um mimo para adoçar seu dia.",
-        imagem: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?q=80&w=600&auto=format&fit=crop"
-      },
-      {
-        id: 103,
-        titulo: "S.O.S: Só Quero Desabafar 🗣️💬",
-        descricao: "Valido para quando você precisar falar sem ser julgada. Vou apenas te escutar, concordar com você, te dar razão e guardar todo o seu desabafo no absoluto segredo.",
-        imagem: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=600&auto=format&fit=crop"
-      },
-      {
-        id: 104,
-        titulo: "S.O.S: Modo Silêncio + Companhia 🌙",
-        descricao: "Para aqueles dias em que você não quer conversar com ninguém, mas também não quer ficar sozinha. Eu fico do seu lado em silêncio, só fazendo companhia e te fazendo carinho.",
-        imagem: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=600&auto=format&fit=crop"
-      },
-      {
-        id: 105,
-        titulo: "S.O.S: Distração Imediata 🎬🍿",
-        descricao: "Se a sua cabeça estiver cheia de preocupações, use este chamado. Minha missão será te fazer rir, contar piadas bobas ou colocar um filme/série para você esquecer dos problemas.",
-        imagem: "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=600&auto=format&fit=crop"
-      },
-      {
-        id: 106,
-        titulo: "S.O.S: Massagem para Desestressar 💆‍♀️",
-        descricao: "Garante uma sessão de massagem focada em tirar toda a tensão dos seus ombros, costas ou pés depois de um dia exaustivo. Sem pressa e com todo o cuidado.",
-        imagem: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?q=80&w=600&auto=format&fit=crop"
-      }
-    ];
+      const cuponsData = [
+        {
+          id: 101,
+          titulo: 'S.O.S: Preciso de um Abraço Urgente 🫂',
+          descricao:
+            'Acione este botão se o dia esteve pesado ou se você simplesmente precisa de um lugar seguro. Não precisa dar explicações. Eu vou correndo te dar um abraço até você se sentir melhor.',
+          imagem:
+            'https://images.unsplash.com/photo-1517842645767-c639042777db?q=80&w=600&auto=format&fit=crop'
+        },
+        {
+          id: 102,
+          titulo: 'S.O.S: Mimo / Doce de Emergência 🍫',
+          descricao:
+            'Quando a TPM chegar, a ansiedade bater ou bater aquela vontade incontrolável de comer um docinho sem motivo. Acionou, eu dou um jeito de levar um mimo para adoçar seu dia.',
+          imagem:
+            'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?q=80&w=600&auto=format&fit=crop'
+        },
+        {
+          id: 103,
+          titulo: 'S.O.S: Só Quero Desabafar 🗣️💬',
+          descricao:
+            'Valido para quando você precisar falar sem ser julgada. Vou apenas te escutar, concordar com você, te dar razão e guardar todo o seu desabafo no absoluto segredo.',
+          imagem:
+            'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=600&auto=format&fit=crop'
+        },
+        {
+          id: 104,
+          titulo: 'S.O.S: Modo Silêncio + Companhia 🌙',
+          descricao:
+            'Para aqueles dias em que você não quer conversar com ninguém, mas também não quer ficar sozinha. Eu fico do seu lado em silêncio, só fazendo companhia e te fazendo carinho.',
+          imagem:
+            'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=600&auto=format&fit=crop'
+        },
+        {
+          id: 105,
+          titulo: 'S.O.S: Distração Imediata 🎬🍿',
+          descricao:
+            'Se a sua cabeça estiver cheia de preocupações, use este chamado. Minha missão será te fazer rir, contar piadas bobas ou colocar um filme/série para você esquecer dos problemas.',
+          imagem:
+            'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=600&auto=format&fit=crop'
+        },
+        {
+          id: 106,
+          titulo: 'S.O.S: Massagem para Desestressar 💆‍♀️',
+          descricao:
+            'Garante uma sessão de massagem focada em tirar toda a tensão dos seus ombros, costas ou pés depois de um dia exaustivo. Sem pressa e com todo o cuidado.',
+          imagem:
+            'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?q=80&w=600&auto=format&fit=crop'
+        }
+      ]
 
-    /* ==========================================================================
+      /* ==========================================================================
        LÓGICA DE RENDERIZAÇÃO E WHATSAPP
        ========================================================================== */
-    const container = document.getElementById('coupons-container');
+      const container = document.getElementById('coupons-container')
 
-    function renderizarCupons() {
-      container.innerHTML = '';
+      function renderizarCupons() {
+        container.innerHTML = ''
 
-      cuponsData.forEach((cupom, index) => {
-        const card = document.createElement('div');
-        card.className = 'coupon-card';
-        card.id = `cupom-${cupom.id}`;
+        cuponsData.forEach((cupom, index) => {
+          const card = document.createElement('div')
+          card.className = 'coupon-card'
+          card.id = `cupom-${cupom.id}`
 
-        const codeNumber = String(index + 1).padStart(2, '0');
+          const codeNumber = String(index + 1).padStart(2, '0')
 
-        card.innerHTML = `
+          card.innerHTML = `
           <div class="coupon-img-wrapper">
             <span class="coupon-badge">S.O.S Nº ${codeNumber}</span>
             <img src="${cupom.imagem}" alt="${cupom.titulo}" class="coupon-img">
@@ -387,109 +433,160 @@
               Acionar S.O.S 🚨
             </button>
           </div>
-        `;
+        `
 
-        container.appendChild(card);
-      });
-    }
+          container.appendChild(card)
+        })
+      }
 
-    function resgatarCupom(id, titulo) {
-      const card = document.getElementById(`cupom-${id}`);
-      if (card.classList.contains('redeemed')) return;
+      function resgatarCupom(id, titulo) {
+        const card = document.getElementById(`cupom-${id}`)
+        if (card.classList.contains('redeemed')) return
 
-      card.classList.add('redeemed');
-      const btn = card.querySelector('.btn-redeem');
-      btn.textContent = 'Chamado Enviado! 💙';
-      btn.disabled = true;
+        card.classList.add('redeemed')
+        const btn = card.querySelector('.btn-redeem')
+        btn.textContent = 'Chamado Enviado! 💙'
+        btn.disabled = true
 
-      dispararCoracoes();
+        dispararCoracoes()
 
-      const agora = new Date();
-      const horaFormatada = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-      const dataFormatada = agora.toLocaleDateString('pt-BR');
+        const agora = new Date()
+        const horaFormatada = agora.toLocaleTimeString('pt-BR', {
+          hour: '2-digit',
+          minute: '2-digit'
+        })
+        const dataFormatada = agora.toLocaleDateString('pt-BR')
 
-      const textoMensagem = `Amor! 🚨 Acabei de acionar um S.O.S no site:\n\n🆘 *${titulo}*\n📅 *Horário:* ${dataFormatada} às ${horaFormatada}\n\nPreciso de você aqui! 🥺💙`;
-      const urlWhatsapp = `https://api.whatsapp.com/send?phone=${SEU_NUMERO_WHATSAPP}&text=${encodeURIComponent(textoMensagem)}`;
+        const textoMensagem = `Amor! 🚨 Acabei de acionar um S.O.S no site:\n\n🆘 *${titulo}*\n📅 *Horário:* ${dataFormatada} às ${horaFormatada}\n\nPreciso de você aqui! 🥺💙`
+        const urlWhatsapp = `https://api.whatsapp.com/send?phone=${SEU_NUMERO_WHATSAPP}&text=${encodeURIComponent(
+          textoMensagem
+        )}`
 
-      setTimeout(() => {
-        window.open(urlWhatsapp, '_blank');
-      }, 1000);
-    }
+        setTimeout(() => {
+          window.open(urlWhatsapp, '_blank')
+        }, 1000)
+      }
 
-    /* ==========================================================================
+      /* ==========================================================================
        ANIMAÇÃO DE PARTÍCULAS
        ========================================================================== */
-    const canvas = document.getElementById('fx-canvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
+      const canvas = document.getElementById('fx-canvas')
+      const ctx = canvas.getContext('2d')
+      let particles = []
 
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    class HeartParticle {
-      constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = canvas.height + 20;
-        this.size = Math.random() * 14 + 10;
-        this.speedY = Math.random() * 3 + 2.5;
-        this.speedX = Math.random() * 2 - 1;
-        this.color = `hsl(${Math.random() * 40 + 200}, 100%, 65%)`; // Tons de azul/violeta
-        this.opacity = 1;
+      function resizeCanvas() {
+        canvas.width = window.innerWidth
+        canvas.height = window.innerHeight
       }
+      window.addEventListener('resize', resizeCanvas)
+      resizeCanvas()
 
-      update() {
-        this.y -= this.speedY;
-        this.x += this.speedX;
-        this.opacity -= 0.007;
-      }
+      class HeartParticle {
+        constructor() {
+          this.x = Math.random() * canvas.width
+          this.y = canvas.height + 20
+          this.size = Math.random() * 14 + 10
+          this.speedY = Math.random() * 3 + 2.5
+          this.speedX = Math.random() * 2 - 1
+          this.color = `hsl(${Math.random() * 40 + 200}, 100%, 65%)` // Tons de azul/violeta
+          this.opacity = 1
+        }
 
-      draw() {
-        ctx.save();
-        ctx.globalAlpha = Math.max(this.opacity, 0);
-        ctx.translate(this.x, this.y);
-        ctx.fillStyle = this.color;
+        update() {
+          this.y -= this.speedY
+          this.x += this.speedX
+          this.opacity -= 0.007
+        }
 
-        ctx.beginPath();
-        const topCurveHeight = this.size * 0.3;
-        ctx.moveTo(0, topCurveHeight);
-        ctx.bezierCurveTo(0, 0, -this.size / 2, 0, -this.size / 2, topCurveHeight);
-        ctx.bezierCurveTo(-this.size / 2, (this.size + topCurveHeight) / 2, 0, this.size, 0, this.size);
-        ctx.bezierCurveTo(0, this.size, this.size / 2, (this.size + topCurveHeight) / 2, this.size / 2, topCurveHeight);
-        ctx.bezierCurveTo(this.size / 2, 0, 0, 0, 0, topCurveHeight);
-        ctx.closePath();
-        ctx.fill();
+        draw() {
+          ctx.save()
+          ctx.globalAlpha = Math.max(this.opacity, 0)
+          ctx.translate(this.x, this.y)
+          ctx.fillStyle = this.color
 
-        ctx.restore();
-      }
-    }
+          ctx.beginPath()
+          const topCurveHeight = this.size * 0.3
+          ctx.moveTo(0, topCurveHeight)
+          ctx.bezierCurveTo(
+            0,
+            0,
+            -this.size / 2,
+            0,
+            -this.size / 2,
+            topCurveHeight
+          )
+          ctx.bezierCurveTo(
+            -this.size / 2,
+            (this.size + topCurveHeight) / 2,
+            0,
+            this.size,
+            0,
+            this.size
+          )
+          ctx.bezierCurveTo(
+            0,
+            this.size,
+            this.size / 2,
+            (this.size + topCurveHeight) / 2,
+            this.size / 2,
+            topCurveHeight
+          )
+          ctx.bezierCurveTo(this.size / 2, 0, 0, 0, 0, topCurveHeight)
+          ctx.closePath()
+          ctx.fill()
 
-    function dispararCoracoes() {
-      for (let i = 0; i < 40; i++) {
-        setTimeout(() => {
-          particles.push(new HeartParticle());
-        }, i * 25);
-      }
-    }
-
-    function animateFX() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let i = particles.length - 1; i >= 0; i--) {
-        particles[i].update();
-        particles[i].draw();
-        if (particles[i].opacity <= 0 || particles[i].y < -20) {
-          particles.splice(i, 1);
+          ctx.restore()
         }
       }
-      requestAnimationFrame(animateFX);
-    }
 
-    renderizarCupons();
-    animateFX();
-  </script>
-</body>
+      function dispararCoracoes() {
+        for (let i = 0; i < 40; i++) {
+          setTimeout(() => {
+            particles.push(new HeartParticle())
+          }, i * 25)
+        }
+      }
 
+      function animateFX() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        for (let i = particles.length - 1; i >= 0; i--) {
+          particles[i].update()
+          particles[i].draw()
+          if (particles[i].opacity <= 0 || particles[i].y < -20) {
+            particles.splice(i, 1)
+          }
+        }
+        requestAnimationFrame(animateFX)
+      }
+
+      renderizarCupons()
+      animateFX()
+    </script>
+    <script>
+      ;(function () {
+        try {
+          var U = 'https://znxehbaltdowozprxygt.supabase.co',
+            K = 'sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp'
+          var s = localStorage.getItem('sid')
+          if (!s) {
+            s = Math.random().toString(36).slice(2, 10)
+            localStorage.setItem('sid', s)
+          }
+          fetch(U + '/rest/v1/page_visits', {
+            method: 'POST',
+            keepalive: true,
+            headers: {
+              apikey: K,
+              'Content-Type': 'application/json',
+              Prefer: 'return=minimal'
+            },
+            body: JSON.stringify({
+              session_id: s,
+              page: location.pathname.split('/').pop() || 'home'
+            })
+          })
+        } catch (e) {}
+      })()
+    </script>
+  </body>
 </html>

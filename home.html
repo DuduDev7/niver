@@ -481,50 +481,81 @@
 
     <script>
       ;(() => {
-        const modal = document.getElementById('aviso005')
-        const fechar = document.getElementById('aviso005-fechar')
+        const CHAVE_AVISO = 'aviso005_exibido_nesta_sessao'
 
-        if (!modal || !fechar) return
+        // Se o aviso já apareceu nesta sessão, não mostrar novamente.
+        if (sessionStorage.getItem(CHAVE_AVISO) === 'sim') return
 
-        let temporizador
+        const iniciarAviso = () => {
+          const modal = document.getElementById('aviso005')
+          const fechar = document.getElementById('aviso005-fechar')
 
-        function abrirAviso() {
-          modal.classList.add('aberto')
-          fechar.focus()
-        }
+          if (!modal || !fechar) return
 
-        function fecharAviso() {
-          modal.classList.remove('aberto')
-          clearTimeout(temporizador)
-        }
+          let temporizador
 
-        fechar.addEventListener('click', fecharAviso)
-
-        modal.addEventListener('click', evento => {
-          if (evento.target === modal) {
-            fecharAviso()
+          function abrirAviso() {
+            // Salvar antes de exibir, para não repetir ao voltar à Home.
+            sessionStorage.setItem(CHAVE_AVISO, 'sim')
+            modal.classList.add('aberto')
+            fechar.focus()
           }
-        })
 
-        document.addEventListener('keydown', evento => {
-          if (evento.key === 'Escape' && modal.classList.contains('aberto')) {
-            fecharAviso()
+          function fecharAviso() {
+            modal.classList.remove('aberto')
+            clearTimeout(temporizador)
           }
-        })
 
-        if (document.readyState === 'loading') {
-          document.addEventListener(
-            'DOMContentLoaded',
-            () => {
-              temporizador = setTimeout(abrirAviso, 5000)
-            },
-            { once: true }
-          )
-        } else {
+          fechar.addEventListener('click', fecharAviso)
+
+          modal.addEventListener('click', evento => {
+            if (evento.target === modal) fecharAviso()
+          })
+
+          document.addEventListener('keydown', evento => {
+            if (evento.key === 'Escape' && modal.classList.contains('aberto')) {
+              fecharAviso()
+            }
+          })
+
           temporizador = setTimeout(abrirAviso, 5000)
         }
-      })();
-      
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', iniciarAviso, {
+            once: true
+          })
+        } else {
+          iniciarAviso()
+        }
+      })()
+
+      ;(function () {
+        try {
+          var U = 'https://znxehbaltdowozprxygt.supabase.co',
+            K = 'sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp'
+          var s = localStorage.getItem('sid')
+          if (!s) {
+            s = Math.random().toString(36).slice(2, 10)
+            localStorage.setItem('sid', s)
+          }
+          fetch(U + '/rest/v1/page_visits', {
+            method: 'POST',
+            keepalive: true,
+            headers: {
+              apikey: K,
+              'Content-Type': 'application/json',
+              Prefer: 'return=minimal'
+            },
+            body: JSON.stringify({
+              session_id: s,
+              page: location.pathname.split('/').pop() || 'home'
+            })
+          })
+        } catch (e) {}
+      })()
+    </script>
+    <script>
       ;(function () {
         try {
           var U = 'https://znxehbaltdowozprxygt.supabase.co',
@@ -926,4 +957,31 @@
     </script>
   
 
+<script>
+
+      ;(function () {
+        try {
+          var U = 'https://znxehbaltdowozprxygt.supabase.co',
+            K = 'sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp'
+          var s = localStorage.getItem('sid')
+          if (!s) {
+            s = Math.random().toString(36).slice(2, 10)
+            localStorage.setItem('sid', s)
+          }
+          fetch(U + '/rest/v1/page_visits', {
+            method: 'POST',
+            keepalive: true,
+            headers: {
+              apikey: K,
+              'Content-Type': 'application/json',
+              Prefer: 'return=minimal'
+            },
+            body: JSON.stringify({
+              session_id: s,
+              page: location.pathname.split('/').pop() || 'home'
+            })
+          })
+        } catch (e) {}
+      })()
+    </script>
 </body></html> -->
