@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J.A.R.V.I.S. — Central de Inteligência Pessoal</title>
+    <style>
+        /* ==========================================================================
+           CONFIGURAÇÕES E VARIÁVEIS DE TEMA (PERSONALIZÁVEIS)
+           ========================================================================== */
+        :root {
+            --bg-deep: #05070B;
+            --bg-grafite: #101722;
+            --cyan-glow: #55E7FF;
+            --blue-electric: #3678FF;
+            --white-cold: #EAF8FF;
+            --alert-red: #FF3366;
+            --panel-bg: rgba(16, 23, 34, 0.75);
+            --border-glow: rgba(85, 231, 255, 0.3);
+            --font-tech: 'Courier New', Courier, monospace, sans-serif;
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Tema Romântico */
+        body.romantic-mode {
+            --cyan-glow: #FF77E9;
+            --blue-electric: #9B36FF;
+            --white-cold: #FFF0F8;
+            --border-glow: rgba(255, 119, 233, 0.4);
+            --alert-red: #FF3399;
+        }
+
+        /* ==========================================================================
+           RESET E ESTILOS GLOBAIS
+           ========================================================================== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--white-cold);
+            font-family: var(--font-tech);
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Efeito de scanline cinematográfico */
+        body::after {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            z-index: 99999;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        /* ==========================================================================
+           ABERTURA CINEMATOGRÁFICA (BOOT SCREEN)
+           ========================================================================== */
+        #boot-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: var(--bg-deep);
+            z-index: 100000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 5vw;
+            font-size: 14px;
+            color: var(--cyan-glow);
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        #boot-screen.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .boot-log {
+            margin-bottom: 5px;
+            text-shadow: 0 0 8px var(--cyan-glow);
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeInLog 0.3s forwards;
+        }
+
+        @keyframes fadeInLog {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ==========================================================================
+           LAYOUT PRINCIPAL
+           ========================================================================== */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background: var(--bg-grafite);
+            border-bottom: 1px solid var(--border-glow);
+            box-shadow: 0 0 15px rgba(85, 231, 255, 0.1);
+            z-index: 10;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 12px;
+            height: 12px;
+            background-color: var(--cyan-glow);
+            box-shadow: 0 0 10px var(--cyan-glow);
+            transform: rotate(45deg);
+            animation: pulseLogo 2s infinite;
+        }
+
+        @keyframes pulseLogo {
+            0%, 100% { transform: rotate(45deg) scale(1); opacity: 1; }
+            50% { transform: rotate(45deg) scale(1.3); opacity: 0.6; }
+        }
+
+        .logo-title {
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: var(--cyan-glow);
+            text-shadow: 0 0 10px var(--cyan-glow);
+        }
+
+        .system-status {
+            display: flex;
+            gap: 20px;
+            font-size: 12px;
+            color: var(--white-cold);
+        }
+
+        .status-item span {
+            color: var(--cyan-glow);
+        }
+
+        /* Grid principal da aplicação */
+        main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 320px 1fr 340px;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+            height: calc(100vh - 65px);
+        }
+
+        /* Painéis comuns */
+        .tech-panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: inset 0 0 15px rgba(54, 120, 255, 0.05), 0 0 10px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .panel-header {
+            background: rgba(16, 23, 34, 0.9);
+            padding: 10px 15px;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--border-glow);
+            color: var(--cyan-glow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* ==========================================================================
+           PAINEL ESQUERDO: NÚCLEO E DIAGNÓSTICO
+           ========================================================================== */
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .core-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 20px;
+        }
+
+        /* Núcleo SVG Holográfico */
+        .jarvis-core {
+            width: 180px;
+            height: 180px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .core-svg {
+            width: 100%;
+            height: 100%;
+            animation: rotateCore 20s linear infinite;
+        }
+
+        @keyframes rotateCore {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .core-center-dot {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: var(--cyan-glow);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--cyan-glow), 0 0 40px var(--blue-electric);
+            animation: pulseDot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { transform: scale(0.9); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+
+        .core-status-text {
+            margin-top: 15px;
+            font-size: 12px;
+            letter-spacing: 2px;
+            color: var(--cyan-glow);
+            text-align: center;
+            text-shadow: 0 0 5px var(--cyan-glow);
+        }
+
+        .diagnostics-box {
+            padding: 15px;
+            font-size: 11px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: rgba(5, 7, 11, 0.5);
+        }
+
+        .diagnostic-row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .diagnostic-row span:last-child {
+            color: var(--cyan-glow);
+        }
+
+        /* ==========================================================================
+           PAINEL CENTRAL: CHAT / CONVERSA
+           ========================================================================== */
+        .chat-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            scroll-behavior: smooth;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 4px;
+            font-size: 13px;
+            line-height: 1.4;
+            word-break: break-word;
+            animation: fadeInMsg 0.3s ease;
+        }
+
+        @keyframes fadeInMsg {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.jarvis {
+            align-self: flex-start;
+            background: rgba(16, 23, 34, 0.9);
+            border-left: 3px solid var(--cyan-glow);
+            color: var(--white-cold);
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: rgba(54, 120, 255, 0.2);
+            border-right: 3px solid var(--blue-electric);
+            color: var(--white-cold);
+        }
+
+        .message.error {
+            border-left-color: var(--alert-red);
+            background: rgba(255, 51, 102, 0.1);
+        }
+
+        .chat-input-area {
+            padding: 15px;
+            background: rgba(16, 23, 34, 0.95);
+            border-top: 1px solid var(--border-glow);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .tech-input {
+            flex: 1;
+            background: rgba(5, 7, 11, 0.8);
+            border: 1px solid var(--border-glow);
+            border-radius: 4px;
+            padding: 10px 15px;
+            color: var(--white-cold);
+            font-family: var(--font-tech);
+            font-size: 13px;
+            outline: none;
+            transition: var(--transition-smooth);
+        }
+
+        .tech-input:focus {
+            border-color: var(--cyan-glow);
+            box-shadow: 0 0 10px rgba(85, 231, 255, 0.2);
+        }
+
+        .tech-btn {
+            background: rgba(85, 231, 255, 0.1);
+            border: 1px solid var(--cyan-glow);
+            color: var(--cyan-glow);
+            padding: 10px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: var(--font-tech);
+            font-size: 12px;
+            font-weight: bold;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .tech-btn:hover {
+            background: var(--cyan-glow);
+            color: var(--bg-deep);
+            box-shadow: 0 0 15px var(--cyan-glow);
+        }
+
+        .tech-btn.active-mic {
+            background: var(--alert-red);
+            border-color: var(--alert-red);
+            color: #fff;
+            animation: pulseMic 1.5s infinite;
+        }
+
+        @keyframes pulseMic {
+            0%, 100% { box-shadow: 0 0 5px var(--alert-red); }
+            50% { box-shadow: 0 0 20px var(--alert-red); }
+        }
+
+        /* ==========================================================================
+           PAINEL DIREITO: COMANDOS, MÓDULOS E CONFIGURAÇÕES
+           ========================================================================== */
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+            padding-right: 2px;
+        }
+
+        .section-box {
+            padding: 12px;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .command-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 180px;
+            overflow-y: auto;
+        }
+
+        .command-chip {
+            background: rgba(5, 7, 11, 0.6);
+            border: 1px solid rgba(85, 231, 255, 0.15);
+            padding: 6px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            font-size: 11px;
+            color: var(--white-cold);
+        }
+
+        .command-chip:hover {
+            border-color: var(--cyan-glow);
+            background: rgba(85, 231, 255, 0.1);
+            color: var(--cyan-glow);
+            transform: translateX(3px);
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .controls-grid .tech-btn {
+            width: 100%;
+            padding: 8px;
+            font-size: 11px;
+        }
+
+        /* ==========================================================================
+           MODAL DE CONFIRMAÇÃO DE NAVEGAÇÃO / AJUDA
+           ========================================================================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(5, 7, 11, 0.85);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition-smooth);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-box {
+            background: var(--bg-grafite);
+            border: 1px solid var(--cyan-glow);
+            padding: 25px;
+            border-radius: 6px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 0 30px rgba(85, 231, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .modal-title {
+            font-size: 15px;
+            color: var(--cyan-glow);
+            letter-spacing: 1px;
+        }
+
+        .modal-desc {
+            font-size: 12px;
+            line-height: 1.5;
+            color: var(--white-cold);
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 1024px) {
+            main {
+                grid-template-columns: 1fr;
+                height: auto;
+                overflow-y: auto;
+            }
+            .left-panel, .right-panel {
+                height: auto;
+            }
+            .chat-panel {
+                height: 500px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ABERTURA CINEMATOGRÁFICA (BOOT SCREEN) -->
+    <div id="boot-screen">
+        <div id="boot-logs-container"></div>
+    </div>
+
+    <!-- HEADER SUPERIOR -->
+    <header>
+        <div class="logo-area">
+            <div class="logo-icon"></div>
+            <div class="logo-title" id="header-system-name">J.A.R.V.I.S. // CORE</div>
+        </div>
+        <div class="system-status">
+            <div class="status-item">LOCAL: <span id="clock-display">00:00:00</span></div>
+            <div class="status-item">VOZ: <span id="voice-status-indicator">STANDBY</span></div>
+            <div class="status-item">MODO: <span id="mode-status-indicator">STANDARD</span></div>
+        </div>
+    </header>
+
+    <!-- INTERFACE PRINCIPAL -->
+    <main>
+        <!-- PAINEL ESQUERDO: NÚCLEO E DIAGNÓSTICO -->
+        <section class="left-panel">
+            <div class="tech-panel core-container">
+                <div class="panel-header" style="width: 100%; position: absolute; top: 0; left: 0;">
+                    <span>NÚCLEO DE INTELIGÊNCIA</span>
+                    <span id="core-state-indicator">REPOUSO</span>
+                </div>
+                <div class="jarvis-core">
+                    <svg class="core-svg" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="42" fill="none" stroke="var(--border-glow)" stroke-width="1" stroke-dasharray="4 2"></circle>
+                        <circle cx="50" cy="50" r="34" fill="none" stroke="var(--cyan-glow)" stroke-width="1.5" stroke-dasharray="15 5 5 5" opacity="0.8"></circle>
+                        <circle cx="50" cy="50" r="24" fill="none" stroke="var(--blue-electric)" stroke-width="2" stroke-dasharray="10 10"></circle>
+                        <circle cx="50" cy="50" r="14" fill="none" stroke="var(--cyan-glow)" stroke-width="1" opacity="0.5"></circle>
+                    </svg>
+                    <div class="core-center-dot"></div>
+                </div>
+                <div class="core-status-text" id="core-subtext">SISTEMA OPERACIONAL ATIVO</div>
+            </div>
+
+            <div class="tech-panel diagnostics-box">
+                <div class="panel-header" style="margin: -12px -12px 5px -12px;">DIAGNÓSTICO LOCAL</div>
+                <div class="diagnostic-row"><span>BANCO DE COMANDOS:</span> <span>LOCAL ATIVO</span></div>
+                <div class="diagnostic-row"><span>SINTETIZADOR DE VOZ:</span> <span id="diag-speech">VERIFICANDO...</span></div>
+                <div class="diagnostic-row"><span>RECONHECIMENTO DE VOZ:</span> <span id="diag-mic">VERIFICANDO...</span></div>
+                <div class="diagnostic-row"><span>LATÊNCIA DE RESPOSTA:</span> <span>< 12ms</span></div>
+            </div>
+        </section>
+
+        <!-- PAINEL CENTRAL: CONVERSA -->
+        <section class="tech-panel chat-panel">
+            <div class="panel-header">
+                <span>CANAL DE COMUNICAÇÃO DIRETA</span>
+                <button class="tech-btn" style="padding: 2px 8px; font-size: 10px;" id="btn-clear-chat">LIMPAR</button>
+            </div>
+            <div class="chat-messages" id="chat-messages-container">
+                <!-- Mensagens inseridas via JS -->
+            </div>
+            <div class="chat-input-area">
+                <input type="text" class="tech-input" id="chat-input-field" placeholder="Digite um comando ou converse com o J.A.R.V.I.S..." autocomplete="off">
+                <button class="tech-btn" id="btn-mic" title="Comando por Voz">VOZ</button>
+                <button class="tech-btn" id="btn-send">ENVIAR</button>
+            </div>
+        </section>
+
+        <!-- PAINEL DIREITO: COMANDOS E CONTROLES -->
+        <section class="right-panel">
+            <div class="tech-panel section-box">
+                <div class="panel-header" style="margin: -12px -12px 5px -12px;">COMANDOS RÁPIDOS</div>
+                <div class="command-list" id="command-list-container">
+                    <!-- Preenchido dinamicamente -->
+                </div>
+            </div>
+
+            <div class="tech-panel section-box">
+                <div class="panel-header" style="margin: -12px -12px 5px -12px;">CONTROLES DO SISTEMA</div>
+                <div class="controls-grid">
+                    <button class="tech-btn" id="btn-toggle-voice">VOZ: ON/OFF</button>
+                    <button class="tech-btn" id="btn-romantic-mode">MODO ROMÂNTICO</button>
+                    <button class="tech-btn" id="btn-fullscreen">TELA CHEIA</button>
+                    <button class="tech-btn" id="btn-help">AJUDA</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAL DE NAVEGAÇÃO / AJUDA -->
+    <div class="modal-overlay" id="system-modal">
+        <div class="modal-box">
+            <div class="modal-title" id="modal-title-text">CONFIRMAÇÃO DE NAVEGAÇÃO</div>
+            <div class="modal-desc" id="modal-desc-text">Deseja realmente navegar para o destino solicitado?</div>
+            <div class="modal-actions">
+                <button class="tech-btn" id="modal-btn-cancel">CANCELAR</button>
+                <button class="tech-btn" id="modal-btn-confirm" style="background: var(--cyan-glow); color: var(--bg-deep);">CONFIRMAR</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+       SCRIPT JAVASCRIPT INTEGRADO
+       ========================================================================== -->
+    <script>
+        /* ==========================================================
+           SEÇÃO DE CONFIGURAÇÃO PERSONALIZÁVEL
+           ========================================================== */
+        const CONFIG = {
+            assistantName: "J.A.R.V.I.S.",
+            userName: "Chefe",
+            initialGreeting: "Sistemas locais operacionais, Chefe. Como posso auxiliar em nossa central hoje?",
+            voiceEnabledByDefault: true,
+            speechRate: 1.0,
+            
+            // Mapeamento de páginas do site (Fácil personalização de caminhos)
+            pages: {
+                inicio: "index.html",
+                jogos: "jogos.html",
+                cartas: "jogo-cartas.html",
+                memoria: "jogo-memoria.html",
+                seteErros: "sete-erros.html",
+                idiomas: "cem-idiomas.html"
+            },
+
+            // Frases românticas para o Modo Romântico
+            romanticQuotes: [
+                "Ativando frequência romântica... Nossos melhores momentos estão seguros em meus registros.",
+                "Modo romântico ativo. Cada segundo ao seu lado supera qualquer cálculo lógico.",
+                "Redirecionando matriz para o modo afetuoso. Você é a minha prioridade absoluta."
+            ],
+
+            // Lista de comandos locais e suas variações/respostas
+            commandsDatabase: [
+                {
+                    triggers: ["olá", "ola", "oi", "bom dia", "boa tarde", "boa noite"],
+                    response: "Olá, Chefe! Todos os sistemas operando perfeitamente. O que deseja fazer?",
+                    action: null
+                },
+                {
+                    triggers: ["o que você consegue fazer", "ajuda", "comandos", "funções"],
+                    response: "Posso navegar pelas páginas do site, abrir jogos, controlar o modo romântico, realizar diagnósticos ou conversar com você.",
+                    action: "help"
+                },
+                {
+                    triggers: ["abrir jogos", "jogos", "ir para jogos"],
+                    response: "Preparando redirecionamento para o painel de jogos.",
+                    action: "navigate",
+                    target: "jogos"
+                },
+                {
+                    triggers: ["jogo de cartas", "cartas", "abrir cartas"],
+                    response: "Acessando o jogo de cartas.",
+                    action: "navigate",
+                    target: "cartas"
+                },
+                {
+                    triggers: ["jogo da memória", "memoria", "memória"],
+                    response: "Carregando o jogo da memória.",
+                    action: "navigate",
+                    target: "memoria"
+                },
+                {
+                    triggers: ["sete erros", "7 erros", "jogo dos erros"],
+                    response: "Abrindo o desafio dos sete erros.",
+                    action: "navigate",
+                    target: "seteErros"
+                },
+                {
+                    triggers: ["cem idiomas", "idiomas", "100 idiomas"],
+                    response: "Abrindo a experiência de cem idiomas.",
+                    action: "navigate",
+                    target: "idiomas"
+                },
+                {
+                    triggers: ["voltar para a página inicial", "inicio", "home", "página inicial"],
+                    response: "Retornando à página inicial.",
+                    action: "navigate",
+                    target: "inicio"
+                },
+                {
+                    triggers: ["me surpreenda", "surpreenda-me", "surpresa"],
+                    response: "Analisando variáveis estéticas... Ativando pulsação quântica do núcleo!",
+                    action: "surpeise"
+                },
+                {
+                    triggers: ["ativar modo romântico", "modo romântico", "romântico"],
+                    response: "", // Preenchido dinamicamente com as frases românticas
+                    action: "romantic"
+                },
+                {
+                    triggers: ["entrar no modo noturno", "modo noturno", "escuro"],
+                    response: "Modo noturno e isolamento visual ativados em nossa central.",
+                    action: null
+                },
+                {
+                    triggers: ["limpar conversa", "limpar chat", "limpar histórico"],
+                    response: "Histórico de conversas limpo.",
+                    action: "clearChat"
+                }
+            ]
+        };
+
+        /* ==========================================================
+           ESTADO GLOBAL DA APLICAÇÃO
+           ========================================================== */
+        let state = {
+            voiceActive: CONFIG.voiceEnabledByDefault,
+            romanticMode: false,
+            listening: false,
+            pendingNavigationUrl: null
+        };
+
+        /* ==========================================================
+           INICIALIZAÇÃO E ABERTURA CINEMATOGRÁFICA
+           ========================================================== */
+        const bootLogs = [
+            "INICIALIZANDO KERNEL J.A.R.V.I.S. v4.2...",
+            "CARREGANDO MÓDULOS DE INTERFACE HOLOGRÁFICA...",
+            "ESTABELECENDO CONEXÃO COM PROTOCOLOS LOCAIS...",
+            "VERIFICANDO INTEGRIDADE DOS CAMINHOS DO SITE...",
+            "SISTEMAS LOCAIS OPERACIONAIS.",
+            "INTERFACE PRONTA."
+        ];
+
+        function runBootSequence() {
+            const container = document.getElementById("boot-logs-container");
+            container.innerHTML = "";
+            
+            bootLogs.forEach((log, index) => {
+                setTimeout(() => {
+                    const div = document.createElement("div");
+                    div.className = "boot-log";
+                    div.innerText = `> ${log}`;
+                    container.appendChild(div);
+
+                    if (index === bootLogs.length - 1) {
+                        setTimeout(() => {
+                            document.getElementById("boot-screen").classList.add("fade-out");
+                            addMessage(CONFIG.assistantName, CONFIG.initialGreeting, "jarvis");
+                            speak(CONFIG.initialGreeting);
+                        }, 600);
+                    }
+                }, index * 220);
+            });
+        }
+
+        /* ==========================================================
+           GERENCIAMENTO DE RELÓGIO E STATUS
+           ========================================================== */
+        function updateClock() {
+            const now = new Date();
+            document.getElementById("clock-display").innerText = now.toTimeString().split(' ')[0];
+        }
+        setInterval(updateClock, 1000);
+
+        function updateDiagnostics() {
+            // Sintetizador de voz
+            if ('speechSynthesis' in window) {
+                document.getElementById("diag-speech").innerText = "DISPONÍVEL";
+            } else {
+                document.getElementById("diag-speech").innerText = "INDISPONÍVEL";
+            }
+
+            // Reconhecimento de voz
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (SpeechRecognition) {
+                document.getElementById("diag-mic").innerText = "DISPONÍVEL";
+            } else {
+                document.getElementById("diag-mic").innerText = "INDISPONÍVEL";
+            }
+
+            document.getElementById("voice-status-indicator").innerText = state.voiceActive ? "ATIVO" : "MUTADO";
+            document.getElementById("mode-status-indicator").innerText = state.romanticMode ? "ROMÂNTICO" : "STANDARD";
+        }
+
+        /* ==========================================================
+           SISTEMA DE MENSAGENS E CHAT
+           ========================================================== */
+        function addMessage(sender, text, type) {
+            const container = document.getElementById("chat-messages-container");
+            const msgDiv = document.createElement("div");
+            msgDiv.className = `message ${type}`;
+            msgDiv.innerText = `${sender}: ${text}`;
+            container.appendChild(msgDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function handleUserSubmit() {
+            const input = document.getElementById("chat-input-field");
+            const text = input.value.trim();
+            if (!text) return;
+
+            addMessage(CONFIG.userName, text, "user");
+            input.value = "";
+            processCommand(text);
+        }
+
+        /* ==========================================================
+           PROCESSAMENTO INTELIGENTE DE COMANDOS LOCAIS
+           ========================================================== */
+        function processCommand(rawText) {
+            const text = rawText.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+            setCoreState("PROCESSANDO", "ANALISANDO PADRÕES...");
+
+            setTimeout(() => {
+                let matchedCommand = null;
+
+                for (let cmd of CONFIG.commandsDatabase) {
+                    for (let trigger of cmd.triggers) {
+                        if (text.includes(trigger.toLowerCase())) {
+                            matchedCommand = cmd;
+                            break;
+                        }
+                    }
+                    if (matchedCommand) break;
+                }
+
+                if (matchedCommand) {
+                    let responseText = matchedCommand.response;
+
+                    // Tratamento especial para modo romântico (frases aleatórias)
+                    if (matchedCommand.action === "romantic") {
+                        const randomQuote = CONFIG.romanticQuotes[Math.floor(Math.random() * CONFIG.romanticQuotes.length)];
+                        responseText = randomQuote;
+                        toggleRomanticMode();
+                    }
+
+                    if (matchedCommand.action === "help") {
+                        showHelpModal();
+                    }
+
+                    if (matchedCommand.action === "surpeise") {
+                        triggerSurpriseEffect();
+                    }
+
+                    if (matchedCommand.action === "clearChat") {
+                        document.getElementById("chat-messages-container").innerHTML = "";
+                    }
+
+                    if (matchedCommand.action === "navigate") {
+                        prepareNavigation(matchedCommand.target);
+                    }
+
+                    addMessage(CONFIG.assistantName, responseText, "jarvis");
+                    speak(responseText);
+                    setCoreState("REPOUSO", "SISTEMA OPERACIONAL ATIVO");
+
+                } else {
+                    const errorMsg = "Comando não reconhecido em meus registros locais. Diga 'ajuda' para verificar os comandos disponíveis.";
+                    addMessage(CONFIG.assistantName, errorMsg, "jarvis error");
+                    speak(errorMsg);
+                    setCoreState("REPOUSO", "AGUARDANDO COMANDO");
+                }
+            }, 400);
+        }
+
+        function setCoreState(stateName, subText) {
+            document.getElementById("core-state-indicator").innerText = stateName;
+            document.getElementById("core-subtext").innerText = subText;
+        }
+
+        /* ==========================================================
+           NAVEGAÇÃO SEGURA ENTRE PÁGINAS DO SITE
+           ========================================================== */
+        function prepareNavigation(pageKey) {
+            const url = CONFIG.pages[pageKey];
+            if (!url) {
+                const err = `Destino '${pageKey}' não está configurado no sistema.`;
+                addMessage(CONFIG.assistantName, err, "jarvis error");
+                speak(err);
+                return;
+            }
+
+            state.pendingNavigationUrl = url;
+            showNavigationModal(pageKey, url);
+        }
+
+        function showNavigationModal(pageKey, url) {
+            const modal = document.getElementById("system-modal");
+            document.getElementById("modal-title-text").innerText = `CONFIRMAR NAVEGAÇÃO: ${pageKey.toUpperCase()}`;
+            document.getElementById("modal-desc-text").innerText = `O J.A.R.V.I.S. está prestes a abrir o destino autorizado: '${url}'. Deseja prosseguir?`;
+            modal.classList.add("active");
+        }
+
+        function closeModal() {
+            document.getElementById("system-modal").classList.remove("active");
+            state.pendingNavigationUrl = null;
+        }
+
+        document.getElementById("modal-btn-cancel").addEventListener("click", closeModal);
+        document.getElementById("modal-btn-confirm").addEventListener("click", () => {
+            if (state.pendingNavigationUrl) {
+                window.location.href = state.pendingNavigationUrl;
+            }
+        });
+
+        /* ==========================================================
+           VOZ (SPEECH SYNTHESIS & SPEECH RECOGNITION)
+           ========================================================== */
+        function speak(text) {
+            if (!state.voiceActive || !('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel(); // Interrompe fala anterior
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = CONFIG.speechRate;
+            utterance.pitch = 1.0;
+
+            // Tenta selecionar voz em português brasileiro
+            const voices = window.speechSynthesis.getVoices();
+            const ptVoice = voices.find(v => v.lang.includes('pt-BR') || v.lang.includes('pt'));
+            if (ptVoice) utterance.voice = ptVoice;
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Reconhecimento de Voz (Microfone)
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
+
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.lang = 'pt-BR';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            recognition.onstart = () => {
+                state.listening = true;
+                document.getElementById("btn-mic").classList.add("active-mic");
+                setCoreState("ESCUTANDO", "CAPTANDO ÁUDIO...");
+            };
+
+            recognition.onresult = (event) => {
+                const speechText = event.results[0][0].transcript;
+                addMessage(CONFIG.userName, speechText, "user");
+                processCommand(speechText);
+            };
+
+            recognition.onerror = () => {
+                stopListening();
+            };
+
+            recognition.onend = () => {
+                stopListening();
+            };
+        }
+
+        function toggleListening() {
+            if (!recognition) {
+                alert("O reconhecimento de voz não é suportado neste navegador.");
+                return;
+            }
+            if (state.listening) {
+                recognition.stop();
+            } else {
+                recognition.start();
+            }
+        }
+
+        function stopListening() {
+            state.listening = false;
+            document.getElementById("btn-mic").classList.remove("active-mic");
+            setCoreState("REPOUSO", "SISTEMA OPERACIONAL ATIVO");
+        }
+
+        document.getElementById("btn-mic").addEventListener("click", toggleListening);
+
+        /* ==========================================================
+           CONTROLES ESPECIAIS E MODO ROMÂNTICO
+           ========================================================== */
+        function toggleRomanticMode() {
+            state.romanticMode = !state.romanticMode;
+            document.body.classList.toggle("romantic-mode", state.romanticMode);
+            updateDiagnostics();
+        }
+
+        function triggerSurpriseEffect() {
+            const coreDot = document.querySelector(".core-center-dot");
+            coreDot.style.transform = "scale(2.5)";
+            setTimeout(() => {
+                coreDot.style.transform = "scale(1)";
+            }, 600);
+        }
+
+        function showHelpModal() {
+            let helpText = "Comandos disponíveis:\n";
+            CONFIG.commandsDatabase.forEach(c => {
+                helpText += `• "${c.triggers[0]}"\n`;
+            });
+            addMessage(CONFIG.assistantName, helpText, "jarvis");
+        }
+
+        document.getElementById("btn-toggle-voice").addEventListener("click", () => {
+            state.voiceActive = !state.voiceActive;
+            updateDiagnostics();
+            addMessage(CONFIG.assistantName, `Voz do sistema ${state.voiceActive ? 'ativada' : 'desativada'}.`, "jarvis");
+        });
+
+        document.getElementById("btn-romantic-mode").addEventListener("click", () => {
+            toggleRomanticMode();
+            const msg = state.romanticMode ? CONFIG.romanticQuotes[0] : "Retornando ao padrão tecnológico da central.";
+            addMessage(CONFIG.assistantName, msg, "jarvis");
+            speak(msg);
+        });
+
+        document.getElementById("btn-fullscreen").addEventListener("click", () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        });
+
+        document.getElementById("btn-help").addEventListener("click", showHelpModal);
+
+        /* ==========================================================
+           INICIALIZAÇÃO DOS COMPONENTES DA UI
+           ========================================================== */
+        function buildCommandChips() {
+            const container = document.getElementById("command-list-container");
+            container.innerHTML = "";
+            CONFIG.commandsDatabase.forEach(cmd => {
+                const chip = document.createElement("div");
+                chip.className = "command-chip";
+                chip.innerText = `> ${cmd.triggers[0]}`;
+                chip.addEventListener("click", () => {
+                    document.getElementById("chat-input-field").value = cmd.triggers[0];
+                    processCommand(cmd.triggers[0]);
+                });
+                container.appendChild(chip);
+            });
+        }
+
+        // Eventos de Envio de Mensagem
+        document.getElementById("btn-send").addEventListener("click", handleUserSubmit);
+        document.getElementById("chat-input-field").addEventListener("keypress", (e) => {
+            if (e.key === "Enter") handleUserSubmit();
+        });
+
+        document.getElementById("btn-clear-chat").addEventListener("click", () => {
+            document.getElementById("chat-messages-container").innerHTML = "";
+        });
+
+        // Executar inicialização geral ao carregar a página
+        window.addEventListener("DOMContentLoaded", () => {
+            runBootSequence();
+            updateDiagnostics();
+            buildCommandChips();
+        });
+    </script>
+    <script>
+      ;(function () {
+        try {
+          var U = 'https://znxehbaltdowozprxygt.supabase.co',
+            K = 'sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp'
+          var s = localStorage.getItem('sid')
+          if (!s) {
+            s = Math.random().toString(36).slice(2, 10)
+            localStorage.setItem('sid', s)
+          }
+          fetch(U + '/rest/v1/page_visits', {
+            method: 'POST',
+            keepalive: true,
+            headers: {
+              apikey: K,
+              'Content-Type': 'application/json',
+              Prefer: 'return=minimal'
+            },
+            body: JSON.stringify({
+              session_id: s,
+              page: location.pathname.split('/').pop() || 'home'
+            })
+          })
+        } catch (e) {}
+      })()
+    </script>
+</body>
+</html>

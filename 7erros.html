@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPERAÇÃO 007 — SETE DETALHES FORA DO LUGAR</title>
+    <style>
+        /* ==========================================================================
+           CONFIGURAÇÕES E VARIÁVEIS DE TEMA (PERSONALIZÁVEIS)
+           ========================================================================== */
+        :root {
+            --bg-deep: #070A10;
+            --bg-grafite: #121824;
+            --white-cold: #F0F4F8;
+            --alert-red: #E63946;
+            --gold: #D4AF37;
+            --border-glow: rgba(230, 57, 70, 0.3);
+            --panel-bg: rgba(18, 24, 36, 0.85);
+            --font-tech: 'Courier New', Courier, monospace, sans-serif;
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ==========================================================================
+           RESET E ESTILOS GLOBAIS
+           ========================================================================== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--white-cold);
+            font-family: var(--font-tech);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Efeito de scanline de arquivo confidencial */
+        body::after {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+            z-index: 99999;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        /* ==========================================================================
+           TELA INICIAL / ABERTURA DO ARQUIVO CONFIDENCIAL
+           ========================================================================== */
+        #screen-home {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle at center, #121824 0%, #070A10 100%);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        #screen-home.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .confidential-file {
+            background: var(--bg-grafite);
+            border: 2px solid var(--alert-red);
+            border-radius: 8px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 0 30px rgba(230, 57, 70, 0.2), inset 0 0 15px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+        }
+
+        .confidential-stamp {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            border: 2px dashed var(--alert-red);
+            color: var(--alert-red);
+            padding: 5px 12px;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            transform: rotate(5deg);
+            opacity: 0.8;
+        }
+
+        .game-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--white-cold);
+            letter-spacing: 2px;
+            margin-top: 10px;
+        }
+
+        .game-subtitle {
+            font-size: 13px;
+            color: #8A99AD;
+            line-height: 1.5;
+        }
+
+        .instructions-box {
+            background: rgba(7, 10, 16, 0.6);
+            border-left: 3px solid var(--gold);
+            padding: 12px 15px;
+            font-size: 12px;
+            line-height: 1.5;
+            color: var(--white-cold);
+        }
+
+        .best-score-display {
+            font-size: 12px;
+            color: var(--gold);
+        }
+
+        /* Botões Estilizados Detetive */
+        .detective-btn {
+            background: rgba(230, 57, 70, 0.15);
+            border: 1px solid var(--alert-red);
+            color: var(--white-cold);
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: var(--font-tech);
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            transition: var(--transition-smooth);
+            text-align: center;
+        }
+
+        .detective-btn:hover {
+            background: var(--alert-red);
+            color: #fff;
+            box-shadow: 0 0 15px var(--alert-red);
+        }
+
+        .detective-btn.gold-theme {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: rgba(212, 175, 55, 0.1);
+        }
+        .detective-btn.gold-theme:hover {
+            background: var(--gold);
+            color: var(--bg-deep);
+            box-shadow: 0 0 15px var(--gold);
+        }
+
+        /* ==========================================================================
+           LAYOUT DO JOGO
+           ========================================================================== */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background: var(--bg-grafite);
+            border-bottom: 1px solid rgba(230, 57, 70, 0.2);
+        }
+
+        .header-info {
+            display: flex;
+            gap: 25px;
+            font-size: 12px;
+        }
+
+        .header-info span {
+            color: var(--alert-red);
+            font-weight: bold;
+        }
+
+        main-game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            gap: 20px;
+        }
+
+        .images-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            flex: 1;
+        }
+
+        .image-box {
+            background: var(--panel-bg);
+            border: 1px solid rgba(230, 57, 70, 0.3);
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .image-header {
+            background: rgba(7, 10, 16, 0.8);
+            padding: 8px 12px;
+            font-size: 11px;
+            letter-spacing: 1px;
+            color: #8A99AD;
+            border-bottom: 1px solid rgba(230, 57, 70, 0.2);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .canvas-wrapper {
+            position: relative;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            overflow: hidden;
+            min-height: 300px;
+        }
+
+        .canvas-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        /* Marcadores de diferenças encontradas */
+        .diff-marker {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--alert-red);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            box-shadow: 0 0 10px var(--alert-red);
+            animation: pulseMarker 0.4s ease;
+        }
+
+        @keyframes pulseMarker {
+            0% { transform: translate(-50%, -50%) scale(1.6); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        /* Controles inferiores da partida */
+        .game-controls-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-grafite);
+            padding: 12px 20px;
+            border-radius: 6px;
+            border: 1px solid rgba(230, 57, 70, 0.2);
+        }
+
+        .controls-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        /* ==========================================================================
+           TELA FINAL / CASO ENCERRADO
+           ========================================================================== */
+        #screen-end {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(7, 10, 16, 0.92);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        #screen-end.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .end-box {
+            background: var(--bg-grafite);
+            border: 2px solid var(--gold);
+            border-radius: 8px;
+            padding: 40px;
+            max-width: 550px;
+            width: 100%;
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.25);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            text-align: center;
+        }
+
+        .personal-message-area {
+            background: rgba(7, 10, 16, 0.8);
+            border: 1px dashed var(--gold);
+            padding: 15px;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--white-cold);
+            font-style: italic;
+        }
+
+        /* Mensagens de erro de imagem ausente / Fallback */
+        .image-error-msg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(7, 10, 16, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+            font-size: 11px;
+            color: var(--alert-red);
+            gap: 10px;
+            z-index: 5;
+        }
+
+        /* Responsividade */
+        @media (max-width: 900px) {
+            .images-container {
+                grid-template-columns: 1fr;
+            }
+            .canvas-wrapper {
+                min-height: 220px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TELA INICIAL / ABERTURA -->
+    <div id="screen-home">
+        <div class="confidential-file">
+            <div class="confidential-stamp">SIGILOSO</div>
+            <div class="game-title">OPERAÇÃO 007 — SETE DETALHES FORA DO LUGAR</div>
+            <div class="game-subtitle">Investigação visual de alta precisão. Encontre as discrepâncias antes que o tempo esgote.</div>
+            
+            <div class="instructions-box">
+                <strong>INSTRUÇÕES:</strong><br>
+                Compare as duas fotografias e clique exatamente sobre os sete detalhes que mudaram. Utilize pistas se necessário, mas atente-se às penalidades de tempo.
+            </div>
+
+            <div class="best-score-display" id="home-best-score">MELHOR REPUTAÇÃO: NENHUM REGISTRO</div>
+            
+            <button class="detective-btn" id="btn-start-game">INICIAR INVESTIGAÇÃO</button>
+        </div>
+    </div>
+
+    <!-- TELA PRINCIPAL DO JOGO -->
+    <header>
+        <div style="font-weight: bold; letter-spacing: 1px; color: var(--alert-red);" id="header-phase-title">FASE 1: AQUECIMENTO</div>
+        <div class="header-info">
+            <div>PROGRESSO: <span id="stat-found">0</span>/7</div>
+            <div>ERROS: <span id="stat-errors">0</span></div>
+            <div>TEMPO: <span id="stat-timer">00:00</span></div>
+            <div>PISTAS: <span id="stat-hints">3</span></div>
+        </div>
+    </header>
+
+    <main style="flex: 1; display: flex; flex-direction: column; padding: 15px; max-width: 1400px; margin: 0 auto; width: 100%; gap: 15px;">
+        <div class="images-container">
+            <!-- Imagem Original -->
+            <div class="image-box">
+                <div class="image-header">
+                    <span>EVIDÊNCIA A // ORIGINAL</span>
+                    <span>ORIGEM AUTORIZADA</span>
+                </div>
+                <div class="canvas-wrapper" id="wrapper-original">
+                    <img id="img-original" alt="Original" src="">
+                </div>
+            </div>
+
+            <!-- Imagem Modificada -->
+            <div class="image-box">
+                <div class="image-header">
+                    <span>EVIDÊNCIA B // ANALISADA</span>
+                    <span>DISCREPÂNCIAS OCULTAS</span>
+                </div>
+                <div class="canvas-wrapper" id="wrapper-modified" style="cursor: crosshair;">
+                    <img id="img-modified" alt="Modificada" src="">
+                </div>
+            </div>
+        </div>
+
+        <div class="game-controls-bar">
+            <div class="controls-group">
+                <button class="detective-btn gold-theme" id="btn-hint">SOLICITAR PISTA</button>
+            </div>
+            <div class="controls-group">
+                <button class="detective-btn" id="btn-restart">REINICIAR FASE</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- TELA FINAL / CASO ENCERRADO -->
+    <div id="screen-end">
+        <div class="end-box">
+            <div class="confidential-stamp" style="position: relative; top: 0; right: 0; align-self: center; margin-bottom: -10px;">ENCERRADO</div>
+            <div class="game-title">CASO ENCERRADO</div>
+            <div class="game-subtitle" id="end-summary-text">Todas as evidências foram verificadas com sucesso.</div>
+            
+            <!-- ÁREA EDITÁVEL DA MENSAGEM PESSOAL -->
+            <div class="personal-message-area" id="personal-message-display">
+                "Você encontrou todos os detalhes. Às vezes, são as pequenas coisas que fazem uma história inteira valer a pena."
+            </div>
+
+            <button class="detective-btn gold-theme" id="btn-play-again">NOVA INVESTIGAÇÃO</button>
+        </div>
+    </div>
+
+    <!-- SCRIPT DO JOGO -->
+    <script>
+        /* ==========================================================
+           SEÇÃO DE CONFIGURAÇÃO PERSONALIZÁVEL (FÁCIL EDIÇÃO)
+           ========================================================== */
+        const CONFIG = {
+            // Mensagem pessoal editável para a tela final
+            personalMessage: "Você encontrou todos os detalhes. Às vezes, são as pequenas coisas que fazem uma história inteira valer a pena.",
+            
+            // Quantidade inicial de pistas por fase
+            initialHintsPerPhase: 3,
+
+            // Configuração das Fases e Coordenadas das 7 Diferenças
+            // As coordenadas (x, y) e o raio (r) são normalizados em porcentagem (0 a 100)
+            phases: [
+                {
+                    title: "FASE 1 — AQUECIMENTO",
+                    originalImg: "imgs/podio.jpeg",
+                    modifiedImg: "imgs/podio.jpeg",
+                    differences: [
+                        { id: 1, x: 25, y: 30, r: 8 },
+                        { id: 2, x: 60, y: 45, r: 8 },
+                        { id: 3, x: 80, y: 20, r: 8 },
+                        { id: 4, x: 15, y: 70, r: 8 },
+                        { id: 5, x: 45, y: 85, r: 8 },
+                        { id: 6, x: 75, y: 75, r: 8 },
+                        { id: 7, x: 40, y: 15, r: 8 }
+                    ]
+                },
+                {
+                    title: "FASE 2 — OLHAR ATENTO",
+                    originalImg: "imgs/scooby.jpeg",
+                    modifiedImg: "imgs/scooby.jpeg",
+                    differences: [
+                        { id: 1, x: 30, y: 25, r: 7 },
+                        { id: 2, x: 70, y: 35, r: 7 },
+                        { id: 3, x: 50, y: 60, r: 7 },
+                        { id: 4, x: 20, y: 80, r: 7 },
+                        { id: 5, x: 85, y: 75, r: 7 },
+                        { id: 6, x: 15, y: 40, r: 7 },
+                        { id: 7, x: 60, y: 15, r: 7 }
+                    ]
+                },
+                {
+                    title: "FASE 3 — ÚLTIMA EVIDÊNCIA",
+                    originalImg: "imgs/juliaEmissi.jpeg",
+                    modifiedImg: "imgs/juliaEmissi.jpeg",
+                    differences: [
+                        { id: 1, x: 22, y: 44, r: 6 },
+                        { id: 2, x: 65, y: 28, r: 6 },
+                        { id: 3, x: 40, y: 72, r: 6 },
+                        { id: 4, x: 82, y: 65, r: 6 },
+                        { id: 5, x: 18, y: 20, r: 6 },
+                        { id: 6, x: 55, y: 88, r: 6 },
+                        { id: 7, x: 88, y: 30, r: 6 }
+                    ]
+                }
+            ]
+        };
+
+        /* ==========================================================
+           ESTADO GLOBAL DO JOGO
+           ========================================================== */
+        let gameState = {
+            currentPhaseIndex: 0,
+            foundCount: 0,
+            errorCount: 0,
+            hintsLeft: CONFIG.initialHintsPerPhase,
+            timerSeconds: 0,
+            timerInterval: null,
+            foundIds: [],
+            gameActive: false
+        };
+
+        /* ==========================================================
+           INICIALIZAÇÃO E CONTROLE DE FLUXO
+           ========================================================== */
+        function initGame() {
+            document.getElementById("personal-message-display").innerText = `"${CONFIG.personalMessage}"`;
+            loadBestScore();
+
+            document.getElementById("btn-start-game").addEventListener("click", () => {
+                document.getElementById("screen-home").classList.add("hidden");
+                startPhase(0);
+            });
+
+            document.getElementById("btn-restart").addEventListener("click", () => {
+                startPhase(gameState.currentPhaseIndex);
+            });
+
+            document.getElementById("btn-hint").addEventListener("click", useHint);
+            document.getElementById("btn-play-again").addEventListener("click", () => {
+                document.getElementById("screen-end").classList.remove("active");
+                document.getElementById("screen-home").classList.remove("hidden");
+            });
+
+            // Configuração do clique na imagem modificada para detecção
+            const wrapperModified = document.getElementById("wrapper-modified");
+            wrapperModified.addEventListener("click", handleImageClick);
+        }
+
+        function startPhase(phaseIndex) {
+            if (phaseIndex >= CONFIG.phases.length) {
+                finishGame();
+                return;
+            }
+
+            gameState.currentPhaseIndex = phaseIndex;
+            gameState.foundCount = 0;
+            gameState.errorCount = 0;
+            gameState.hintsLeft = CONFIG.initialHintsPerPhase;
+            gameState.foundIds = [];
+            gameState.gameActive = true;
+
+            const phase = CONFIG.phases[phaseIndex];
+            document.getElementById("header-phase-title").innerText = phase.title;
+
+            // Carregar imagens com verificação de falha (caso o arquivo não exista)
+            loadSafeImage("img-original", phase.originalImg, "wrapper-original");
+            loadSafeImage("img-modified", phase.modifiedImg, "wrapper-modified");
+
+            // Limpar marcadores anteriores
+            document.querySelectorAll(".diff-marker").forEach(m => m.remove());
+
+            updateUIStats();
+            startTimer();
+        }
+
+        function loadSafeImage(imgId, srcPath, wrapperId) {
+            const imgEl = document.getElementById(imgId);
+            const wrapperEl = document.getElementById(wrapperId);
+            
+            // Remove erro anterior se houver
+            const oldErr = wrapperEl.querySelector(".image-error-msg");
+            if (oldErr) oldErr.remove();
+
+            imgEl.src = srcPath;
+            imgEl.onerror = () => {
+                imgEl.src = "";
+                const errDiv = document.createElement("div");
+                errDiv.className = "image-error-msg";
+                errDiv.innerHTML = `<strong>ARQUIVO DE IMAGEM AUSENTE</strong><br>Adicione o arquivo em:<br><code>${srcPath}</code>`;
+                wrapperEl.appendChild(errDiv);
+                gameState.gameActive = false;
+            };
+        }
+
+        /* ==========================================================
+           CRONÔMETRO E ESTATÍSTICAS
+           ========================================================== */
+        function startTimer() {
+            if (gameState.timerInterval) clearInterval(gameState.timerInterval);
+            gameState.timerSeconds = 0;
+            gameState.timerInterval = setInterval(() => {
+                if (!gameState.gameActive) return;
+                gameState.timerSeconds++;
+                updateUIStats();
+            }, 1000);
+        }
+
+        function updateUIStats() {
+            document.getElementById("stat-found").innerText = gameState.foundCount;
+            document.getElementById("stat-errors").innerText = gameState.errorCount;
+            document.getElementById("stat-hints").innerText = gameState.hintsLeft;
+
+            const mins = String(Math.floor(gameState.timerSeconds / 60)).padStart(2, '0');
+            const secs = String(gameState.timerSeconds % 60).padStart(2, '0');
+            document.getElementById("stat-timer").innerText = `${mins}:${secs}`;
+        }
+
+        /* ==========================================================
+           MECÂNICA DE DETECÇÃO PRECISA (NORMALIZADA)
+           ========================================================== */
+        function handleImageClick(e) {
+            if (!gameState.gameActive) return;
+
+            const rect = e.currentTarget.getBoundingClientRect();
+            const clickX = ((e.clientX - rect.left) / rect.width) * 100;
+            const clickY = ((e.clientY - rect.top) / rect.height) * 100;
+
+            const phase = CONFIG.phases[gameState.currentPhaseIndex];
+            let clickedDiff = null;
+
+            for (let diff of phase.differences) {
+                if (gameState.foundIds.includes(diff.id)) continue;
+
+                // Cálculo de distância euclidiana normalizada
+                const distance = Math.sqrt(Math.pow(clickX - diff.x, 2) + Math.pow(clickY - diff.y, 2));
+                if (distance <= diff.r * 1.5) { // Tolerância ampliada para usabilidade em mobile
+                    clickedDiff = diff;
+                    break;
+                }
+            }
+
+            if (clickedDiff) {
+                registerDiscovery(clickedDiff);
+            } else {
+                registerError();
+            }
+        }
+
+        function registerDiscovery(diff) {
+            gameState.foundIds.push(diff.id);
+            gameState.foundCount++;
+            updateUIStats();
+
+            // Desenhar marcação nas duas imagens
+            drawMarker(diff.x, diff.y, "wrapper-original");
+            drawMarker(diff.x, diff.y, "wrapper-modified");
+
+            if (gameState.foundCount >= 7) {
+                clearInterval(gameState.timerInterval);
+                setTimeout(() => {
+                    startPhase(gameState.currentPhaseIndex + 1);
+                }, 800);
+            }
+        }
+
+        function drawMarker(xPercent, yPercent, wrapperId) {
+            const wrapper = document.getElementById(wrapperId);
+            const marker = document.createElement("div");
+            marker.className = "diff-marker";
+            marker.style.left = `${xPercent}%`;
+            marker.style.top = `${yPercent}%`;
+            wrapper.appendChild(marker);
+        }
+
+        function registerError() {
+            gameState.errorCount++;
+            updateUIStats();
+        }
+
+        /* ==========================================================
+           SISTEMA DE PISTAS
+           ========================================================== */
+        function useHint() {
+            if (!gameState.gameActive || gameState.hintsLeft <= 0) return;
+
+            const phase = CONFIG.phases[gameState.currentPhaseIndex];
+            const remainingDiffs = phase.differences.filter(d => !gameState.foundIds.includes(d.id));
+
+            if (remainingDiffs.length === 0) return;
+
+            gameState.hintsLeft--;
+            updateUIStats();
+
+            // Seleciona a primeira diferença não encontrada para dar uma pista visual temporária
+            const target = remainingDiffs[0];
+            flashHintOnWrapper("wrapper-modified", target.x, target.y);
+            flashHintOnWrapper("wrapper-original", target.x, target.y);
+        }
+
+        function flashHintOnWrapper(wrapperId, x, y) {
+            const wrapper = document.getElementById(wrapperId);
+            const hintCircle = document.createElement("div");
+            hintCircle.className = "diff-marker";
+            hintCircle.style.left = `${x}%`;
+            hintCircle.style.top = `${y}%`;
+            hintCircle.style.borderColor = "var(--gold)";
+            hintCircle.style.boxShadow = "0 0 15px var(--gold)";
+            wrapper.appendChild(hintCircle);
+
+            setTimeout(() => {
+                hintCircle.remove();
+            }, 1500);
+        }
+
+        /* ==========================================================
+           CONCLUSÃO E LOCALSTORAGE
+           ========================================================== */
+        function finishGame() {
+            gameState.gameActive = false;
+            if (gameState.timerInterval) clearInterval(gameState.timerInterval);
+
+            const totalScore = Math.max(1000 - (gameState.errorCount * 50) - (gameState.timerSeconds * 2), 100);
+            saveBestScore(totalScore);
+
+            document.getElementById("end-summary-text").innerText = `Investigação concluída em ${gameState.timerSeconds} segundos com ${gameState.errorCount} erros registrados. Reputação obtida: ${totalScore} pts.`;
+            document.getElementById("screen-end").classList.add("active");
+        }
+
+        function saveBestScore(score) {
+            const currentBest = localStorage.getItem("operacao007_best") || 0;
+            if (score > currentBest) {
+                localStorage.setItem("operacao007_best", score);
+            }
+            loadBestScore();
+        }
+
+        function loadBestScore() {
+            const best = localStorage.getItem("operacao007_best");
+            const display = document.getElementById("home-best-score");
+            if (best) {
+                display.innerText = `MELHOR REPUTAÇÃO: ${best} PONTOS`;
+            } else {
+                display.innerText = "MELHOR REPUTAÇÃO: NENHUM REGISTRO";
+            }
+        }
+
+        // Inicializar o jogo ao carregar a página
+        window.addEventListener("DOMContentLoaded", initGame);
+    </script>
+    <script>
+      ;(function () {
+        try {
+          var U = 'https://znxehbaltdowozprxygt.supabase.co',
+            K = 'sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp'
+          var s = localStorage.getItem('sid')
+          if (!s) {
+            s = Math.random().toString(36).slice(2, 10)
+            localStorage.setItem('sid', s)
+          }
+          fetch(U + '/rest/v1/page_visits', {
+            method: 'POST',
+            keepalive: true,
+            headers: {
+              apikey: K,
+              'Content-Type': 'application/json',
+              Prefer: 'return=minimal'
+            },
+            body: JSON.stringify({
+              session_id: s,
+              page: location.pathname.split('/').pop() || 'home'
+            })
+          })
+        } catch (e) {}
+      })()
+    </script>
+</body>
+</html>
