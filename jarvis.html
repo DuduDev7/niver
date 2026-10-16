@@ -1,1089 +1,429 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>J.A.R.V.I.S. — Central de Inteligência Pessoal</title>
-    <style>
-        /* ==========================================================================
-           CONFIGURAÇÕES E VARIÁVEIS DE TEMA (PERSONALIZÁVEIS)
-           ========================================================================== */
-        :root {
-            --bg-deep: #05070B;
-            --bg-grafite: #101722;
-            --cyan-glow: #55E7FF;
-            --blue-electric: #3678FF;
-            --white-cold: #EAF8FF;
-            --alert-red: #FF3366;
-            --panel-bg: rgba(16, 23, 34, 0.75);
-            --border-glow: rgba(85, 231, 255, 0.3);
-            --font-tech: 'Courier New', Courier, monospace, sans-serif;
-            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* Tema Romântico */
-        body.romantic-mode {
-            --cyan-glow: #FF77E9;
-            --blue-electric: #9B36FF;
-            --white-cold: #FFF0F8;
-            --border-glow: rgba(255, 119, 233, 0.4);
-            --alert-red: #FF3399;
-        }
-
-        /* ==========================================================================
-           RESET E ESTILOS GLOBAIS
-           ========================================================================== */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-        }
-
-        body {
-            background-color: var(--bg-deep);
-            color: var(--white-cold);
-            font-family: var(--font-tech);
-            min-height: 100vh;
-            overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        /* Efeito de scanline cinematográfico */
-        body::after {
-            content: " ";
-            display: block;
-            position: fixed;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-            z-index: 99999;
-            background-size: 100% 4px, 6px 100%;
-            pointer-events: none;
-            opacity: 0.6;
-        }
-
-        /* ==========================================================================
-           ABERTURA CINEMATOGRÁFICA (BOOT SCREEN)
-           ========================================================================== */
-        #boot-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: var(--bg-deep);
-            z-index: 100000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 5vw;
-            font-size: 14px;
-            color: var(--cyan-glow);
-            transition: opacity 0.8s ease, visibility 0.8s ease;
-        }
-
-        #boot-screen.fade-out {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .boot-log {
-            margin-bottom: 5px;
-            text-shadow: 0 0 8px var(--cyan-glow);
-            opacity: 0;
-            transform: translateY(10px);
-            animation: fadeInLog 0.3s forwards;
-        }
-
-        @keyframes fadeInLog {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ==========================================================================
-           LAYOUT PRINCIPAL
-           ========================================================================== */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 25px;
-            background: var(--bg-grafite);
-            border-bottom: 1px solid var(--border-glow);
-            box-shadow: 0 0 15px rgba(85, 231, 255, 0.1);
-            z-index: 10;
-        }
-
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-icon {
-            width: 12px;
-            height: 12px;
-            background-color: var(--cyan-glow);
-            box-shadow: 0 0 10px var(--cyan-glow);
-            transform: rotate(45deg);
-            animation: pulseLogo 2s infinite;
-        }
-
-        @keyframes pulseLogo {
-            0%, 100% { transform: rotate(45deg) scale(1); opacity: 1; }
-            50% { transform: rotate(45deg) scale(1.3); opacity: 0.6; }
-        }
-
-        .logo-title {
-            font-size: 18px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            color: var(--cyan-glow);
-            text-shadow: 0 0 10px var(--cyan-glow);
-        }
-
-        .system-status {
-            display: flex;
-            gap: 20px;
-            font-size: 12px;
-            color: var(--white-cold);
-        }
-
-        .status-item span {
-            color: var(--cyan-glow);
-        }
-
-        /* Grid principal da aplicação */
-        main {
-            flex: 1;
-            display: grid;
-            grid-template-columns: 320px 1fr 340px;
-            gap: 20px;
-            padding: 20px;
-            max-width: 1600px;
-            margin: 0 auto;
-            width: 100%;
-            height: calc(100vh - 65px);
-        }
-
-        /* Painéis comuns */
-        .tech-panel {
-            background: var(--panel-bg);
-            border: 1px solid var(--border-glow);
-            border-radius: 6px;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: inset 0 0 15px rgba(54, 120, 255, 0.05), 0 0 10px rgba(0,0,0,0.5);
-            position: relative;
-        }
-
-        .panel-header {
-            background: rgba(16, 23, 34, 0.9);
-            padding: 10px 15px;
-            font-size: 12px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            border-bottom: 1px solid var(--border-glow);
-            color: var(--cyan-glow);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        /* ==========================================================================
-           PAINEL ESQUERDO: NÚCLEO E DIAGNÓSTICO
-           ========================================================================== */
-        .left-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .core-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            padding: 20px;
-        }
-
-        /* Núcleo SVG Holográfico */
-        .jarvis-core {
-            width: 180px;
-            height: 180px;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .core-svg {
-            width: 100%;
-            height: 100%;
-            animation: rotateCore 20s linear infinite;
-        }
-
-        @keyframes rotateCore {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .core-center-dot {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            background: var(--cyan-glow);
-            border-radius: 50%;
-            box-shadow: 0 0 20px var(--cyan-glow), 0 0 40px var(--blue-electric);
-            animation: pulseDot 2s ease-in-out infinite;
-        }
-
-        @keyframes pulseDot {
-            0%, 100% { transform: scale(0.9); opacity: 0.8; }
-            50% { transform: scale(1.2); opacity: 1; }
-        }
-
-        .core-status-text {
-            margin-top: 15px;
-            font-size: 12px;
-            letter-spacing: 2px;
-            color: var(--cyan-glow);
-            text-align: center;
-            text-shadow: 0 0 5px var(--cyan-glow);
-        }
-
-        .diagnostics-box {
-            padding: 15px;
-            font-size: 11px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            background: rgba(5, 7, 11, 0.5);
-        }
-
-        .diagnostic-row {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .diagnostic-row span:last-child {
-            color: var(--cyan-glow);
-        }
-
-        /* ==========================================================================
-           PAINEL CENTRAL: CHAT / CONVERSA
-           ========================================================================== */
-        .chat-panel {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .chat-messages {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            scroll-behavior: smooth;
-        }
-
-        .message {
-            max-width: 80%;
-            padding: 10px 14px;
-            border-radius: 4px;
-            font-size: 13px;
-            line-height: 1.4;
-            word-break: break-word;
-            animation: fadeInMsg 0.3s ease;
-        }
-
-        @keyframes fadeInMsg {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .message.jarvis {
-            align-self: flex-start;
-            background: rgba(16, 23, 34, 0.9);
-            border-left: 3px solid var(--cyan-glow);
-            color: var(--white-cold);
-        }
-
-        .message.user {
-            align-self: flex-end;
-            background: rgba(54, 120, 255, 0.2);
-            border-right: 3px solid var(--blue-electric);
-            color: var(--white-cold);
-        }
-
-        .message.error {
-            border-left-color: var(--alert-red);
-            background: rgba(255, 51, 102, 0.1);
-        }
-
-        .chat-input-area {
-            padding: 15px;
-            background: rgba(16, 23, 34, 0.95);
-            border-top: 1px solid var(--border-glow);
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .tech-input {
-            flex: 1;
-            background: rgba(5, 7, 11, 0.8);
-            border: 1px solid var(--border-glow);
-            border-radius: 4px;
-            padding: 10px 15px;
-            color: var(--white-cold);
-            font-family: var(--font-tech);
-            font-size: 13px;
-            outline: none;
-            transition: var(--transition-smooth);
-        }
-
-        .tech-input:focus {
-            border-color: var(--cyan-glow);
-            box-shadow: 0 0 10px rgba(85, 231, 255, 0.2);
-        }
-
-        .tech-btn {
-            background: rgba(85, 231, 255, 0.1);
-            border: 1px solid var(--cyan-glow);
-            color: var(--cyan-glow);
-            padding: 10px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: var(--font-tech);
-            font-size: 12px;
-            font-weight: bold;
-            transition: var(--transition-smooth);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .tech-btn:hover {
-            background: var(--cyan-glow);
-            color: var(--bg-deep);
-            box-shadow: 0 0 15px var(--cyan-glow);
-        }
-
-        .tech-btn.active-mic {
-            background: var(--alert-red);
-            border-color: var(--alert-red);
-            color: #fff;
-            animation: pulseMic 1.5s infinite;
-        }
-
-        @keyframes pulseMic {
-            0%, 100% { box-shadow: 0 0 5px var(--alert-red); }
-            50% { box-shadow: 0 0 20px var(--alert-red); }
-        }
-
-        /* ==========================================================================
-           PAINEL DIREITO: COMANDOS, MÓDULOS E CONFIGURAÇÕES
-           ========================================================================== */
-        .right-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            overflow-y: auto;
-            padding-right: 2px;
-        }
-
-        .section-box {
-            padding: 12px;
-            font-size: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .command-list {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            max-height: 180px;
-            overflow-y: auto;
-        }
-
-        .command-chip {
-            background: rgba(5, 7, 11, 0.6);
-            border: 1px solid rgba(85, 231, 255, 0.15);
-            padding: 6px 10px;
-            border-radius: 3px;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            font-size: 11px;
-            color: var(--white-cold);
-        }
-
-        .command-chip:hover {
-            border-color: var(--cyan-glow);
-            background: rgba(85, 231, 255, 0.1);
-            color: var(--cyan-glow);
-            transform: translateX(3px);
-        }
-
-        .controls-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-
-        .controls-grid .tech-btn {
-            width: 100%;
-            padding: 8px;
-            font-size: 11px;
-        }
-
-        /* ==========================================================================
-           MODAL DE CONFIRMAÇÃO DE NAVEGAÇÃO / AJUDA
-           ========================================================================== */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(5, 7, 11, 0.85);
-            z-index: 10000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition-smooth);
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-box {
-            background: var(--bg-grafite);
-            border: 1px solid var(--cyan-glow);
-            padding: 25px;
-            border-radius: 6px;
-            width: 90%;
-            max-width: 450px;
-            box-shadow: 0 0 30px rgba(85, 231, 255, 0.2);
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .modal-title {
-            font-size: 15px;
-            color: var(--cyan-glow);
-            letter-spacing: 1px;
-        }
-
-        .modal-desc {
-            font-size: 12px;
-            line-height: 1.5;
-            color: var(--white-cold);
-        }
-
-        .modal-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        /* Responsividade */
-        @media (max-width: 1024px) {
-            main {
-                grid-template-columns: 1fr;
-                height: auto;
-                overflow-y: auto;
-            }
-            .left-panel, .right-panel {
-                height: auto;
-            }
-            .chat-panel {
-                height: 500px;
-            }
-        }
-    </style>
+<html lang="pt-BR"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>J.A.R.V.I.S. — Central de Inteligência Pessoal</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&amp;family=Rajdhani:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+:root{--c:#55e7ff;--b:#3678ff;--w:#eaf8ff;--bg:#04060b;--p:rgba(14,22,36,.62);--l:rgba(85,231,255,.25);--r:#ff3366;--t:'Rajdhani','Segoe UI',sans-serif;--h:'Orbitron','Segoe UI',sans-serif}
+body.rom{--c:#ff77e9;--b:#9b36ff;--w:#fff0f8;--l:rgba(255,119,233,.3)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:radial-gradient(ellipse at 20% 0,rgba(54,120,255,.18),transparent 55%),radial-gradient(ellipse at 90% 100%,rgba(85,231,255,.12),transparent 50%),var(--bg);color:var(--w);font:500 17px/1.4 var(--t);display:flex;flex-direction:column;overflow:hidden;transition:.6s}
+body.rom{background:radial-gradient(ellipse at 20% 0,rgba(155,54,255,.22),transparent 55%),radial-gradient(ellipse at 90% 100%,rgba(255,119,233,.16),transparent 50%),var(--bg)}
+body::before{content:"";position:fixed;inset:0;background-image:linear-gradient(var(--l) 1px,transparent 1px),linear-gradient(90deg,var(--l) 1px,transparent 1px);background-size:56px 56px;opacity:.07;pointer-events:none;mask-image:radial-gradient(circle,#000 20%,transparent 75%)}
+header{display:flex;justify-content:space-between;align-items:center;padding:12px 24px;border-bottom:1px solid var(--l);background:rgba(4,6,11,.7);backdrop-filter:blur(10px);z-index:5}
+.logo{font:700 18px var(--h);letter-spacing:5px;color:var(--c);text-shadow:0 0 14px var(--c);display:flex;gap:12px;align-items:center}
+.logo i{width:11px;height:11px;background:var(--c);transform:rotate(45deg);box-shadow:0 0 14px var(--c);animation:pu 2s infinite}
+@keyframes pu{50%{opacity:.4;transform:rotate(45deg) scale(1.4)}}
+.pills{display:flex;gap:10px;font-size:13px;letter-spacing:1px}
+.pills span{border:1px solid var(--l);border-radius:20px;padding:3px 12px;background:var(--p)}
+.pills b{color:var(--c);font-weight:600}
+main{flex:1;min-height:0;display:grid;grid-template-columns:300px 1fr 330px;gap:16px;padding:16px;max-width:1700px;width:100%;margin:0 auto}
+.pn{background:var(--p);border:1px solid var(--l);border-radius:14px;backdrop-filter:blur(14px);box-shadow:0 8px 40px rgba(0,0,0,.5),inset 0 0 30px rgba(85,231,255,.04);display:flex;flex-direction:column;min-height:0;position:relative}
+.pn::before,.pn::after{content:"";position:absolute;width:14px;height:14px;border:2px solid var(--c);opacity:.8}
+.pn::before{top:-1px;left:-1px;border-right:0;border-bottom:0;border-radius:14px 0 0 0}
+.pn::after{bottom:-1px;right:-1px;border-left:0;border-top:0;border-radius:0 0 14px 0}
+.ph{font:600 11px var(--h);letter-spacing:3px;color:var(--c);padding:12px 16px;border-bottom:1px solid var(--l);display:flex;justify-content:space-between;align-items:center}
+.col{display:flex;flex-direction:column;gap:16px;min-height:0}
+.core-box{flex:1;align-items:center;justify-content:center;gap:18px;padding:20px}
+.core{width:190px;height:190px;position:relative;display:grid;place-items:center}
+.core div{position:absolute;border-radius:50%}
+.r1{inset:0;border:2px dashed var(--c);opacity:.5;animation:sp 22s linear infinite}
+.r2{inset:16px;border:3px solid transparent;border-top-color:var(--c);border-bottom-color:var(--b);animation:sp 6s linear infinite reverse;filter:drop-shadow(0 0 8px var(--c))}
+.r3{inset:36px;border:1px solid var(--c);box-shadow:0 0 25px var(--c),inset 0 0 25px var(--c);opacity:.7;animation:br 3s ease-in-out infinite}
+.orb{inset:62px;background:radial-gradient(circle,#fff,var(--c) 45%,var(--b));box-shadow:0 0 40px var(--c),0 0 90px var(--b);transition:.3s;animation:br 3s ease-in-out infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+@keyframes br{50%{transform:scale(1.08);opacity:1}}
+body.listening .orb{background:radial-gradient(circle,#fff,#7dff9c 45%,#16c45a);box-shadow:0 0 50px #4dff88,0 0 100px #16c45a}
+body.thinking .r2{animation-duration:1s}
+body.speaking .orb{animation:br .45s ease-in-out infinite}
+body.speaking .r2{animation-duration:2s}
+.st{font:700 15px var(--h);letter-spacing:4px;color:var(--c);text-shadow:0 0 10px var(--c);text-align:center}
+.sub{font-size:13px;opacity:.6;letter-spacing:2px;text-align:center;margin-top:4px}
+.wave{display:flex;gap:3px;height:34px;align-items:center}
+.wave i{width:3px;height:4px;background:var(--c);border-radius:2px;box-shadow:0 0 6px var(--c);transition:.2s}
+body.speaking .wave i,body.listening .wave i{animation:wv .7s ease-in-out infinite}
+@keyframes wv{50%{height:30px}}
+.diag{padding:12px 16px;font-size:14px;display:grid;gap:6px}
+.diag div{display:flex;justify-content:space-between;border-bottom:1px dashed var(--l);padding-bottom:4px}.diag b{color:var(--c)}
+.chat{overflow:hidden}
+#msgs{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
+#msgs::-webkit-scrollbar,#plist::-webkit-scrollbar{width:5px}#msgs::-webkit-scrollbar-thumb,#plist::-webkit-scrollbar-thumb{background:var(--l);border-radius:5px}
+.m{max-width:84%;padding:10px 16px;border-radius:14px;animation:in .35s;white-space:pre-wrap;line-height:1.45;font-size:18px}
+@keyframes in{from{opacity:0;transform:translateY(10px)}}
+.m small{display:block;font:600 10px var(--h);letter-spacing:2px;opacity:.7;margin-bottom:3px;color:var(--c)}
+.m.j{align-self:flex-start;background:linear-gradient(135deg,rgba(85,231,255,.13),rgba(54,120,255,.08));border:1px solid var(--l);border-bottom-left-radius:3px}
+.m.u{align-self:flex-end;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-bottom-right-radius:3px}
+.m.u small{color:var(--w)}
+.m.e{border-color:var(--r)}
+.m button{margin-top:8px}
+.bar{display:flex;gap:10px;padding:14px;border-top:1px solid var(--l)}
+input[type=text]{flex:1;min-width:0;background:rgba(0,0,0,.35);border:1px solid var(--l);border-radius:10px;color:var(--w);font:inherit;font-size:16px;padding:11px 14px;outline:0;transition:.2s}
+input[type=text]:focus{border-color:var(--c);box-shadow:0 0 16px var(--l)}
+button{font:600 12px var(--h);letter-spacing:2px;color:var(--c);background:rgba(85,231,255,.08);border:1px solid var(--l);border-radius:10px;padding:10px 14px;cursor:pointer;transition:.2s}
+button:hover{background:var(--c);color:var(--bg);box-shadow:0 0 18px var(--c)}
+button.on{background:var(--c);color:var(--bg);box-shadow:0 0 18px var(--c)}
+#mic.on{animation:pu 1s infinite}
+.side{padding:14px;display:flex;flex-direction:column;gap:12px;min-height:0;overflow:hidden}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:500 14px var(--t);letter-spacing:0;padding:6px 12px;border-radius:20px}
+.ctl{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ctl button{font-size:10px}
+select,input[type=range]{width:100%;accent-color:var(--c)}
+select{background:rgba(0,0,0,.4);color:var(--w);border:1px solid var(--l);border-radius:8px;padding:7px;font:inherit;font-size:14px}
+label{font-size:12px;letter-spacing:1px;opacity:.8;display:block}
+#plist{overflow-y:auto;display:flex;flex-direction:column;gap:4px;flex:1;min-height:90px}
+#plist a{display:flex;justify-content:space-between;gap:8px;padding:6px 10px;border-radius:8px;color:var(--w);text-decoration:none;font-size:15px;cursor:pointer;border:1px solid transparent}
+#plist a:hover{border-color:var(--c);background:rgba(85,231,255,.08)}#plist a em{opacity:.45;font-style:normal;font-size:12px}
+#boot{position:fixed;inset:0;background:var(--bg);z-index:99;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px;transition:opacity .9s,visibility .9s;font:500 14px var(--h);color:var(--c);letter-spacing:2px;text-align:center;padding:20px}
+#boot.out{opacity:0;visibility:hidden}#boot p{opacity:0;animation:in .4s forwards;text-shadow:0 0 8px var(--c)}
+#boot button{font-size:14px;padding:16px 34px;margin-top:20px;animation:pu 2s infinite}
+.heart{position:fixed;bottom:-30px;font-size:26px;z-index:50;pointer-events:none;animation:fl 4s ease-in forwards}
+@keyframes fl{to{transform:translateY(-110vh) rotate(25deg);opacity:0}}
+@media(max-width:1000px){
+html,body{height:auto}body{overflow-y:auto;min-height:100dvh}
+header{padding:10px 14px}.logo{font-size:14px;letter-spacing:3px}.pills{gap:6px;font-size:11px}.pills span{padding:2px 9px}.pills span:first-child{display:none}
+main{display:flex;flex-direction:column;height:auto;padding:12px;gap:12px;max-width:620px}
+.col{display:contents}.pn{flex:none}
+.col:nth-child(1)>.pn:nth-child(1){order:1}.chat{order:2;height:68dvh;min-height:380px}
+.col:nth-child(3)>.pn:nth-child(1){order:3}.col:nth-child(3)>.pn:nth-child(3){order:4}.col:nth-child(3)>.pn:nth-child(2){order:5}.col:nth-child(1)>.pn:nth-child(2){order:6}
+.core-box{flex-direction:row;justify-content:flex-start;padding:14px 18px;gap:16px}
+.core{width:96px;height:96px;flex:none}.r2{inset:8px}.r3{inset:20px}.orb{inset:30px}
+.st{font-size:13px;letter-spacing:3px;text-align:left}.sub{font-size:11px;text-align:left}
+.wave{height:24px;gap:2px}.wave i:nth-child(n+16){display:none}
+.m{max-width:92%;font-size:17px}.bar{padding:10px;gap:6px}.bar button{padding:10px 11px;font-size:11px;letter-spacing:1px}
+#plist{max-height:240px;flex:none}#plist a em{display:none}
+}
+</style>
 </head>
 <body>
+<div id="boot"><p style="animation-delay:.2s">&gt; INICIALIZANDO KERNEL J.A.R.V.I.S.</p><p style="animation-delay:.9s">&gt; CARREGANDO MAPA DO SITE... <span id="np">125</span> DESTINOS</p><p style="animation-delay:1.6s">&gt; MÓDULOS DE VOZ E AFETO: ONLINE</p><button id="go">INICIAR SISTEMA</button></div>
 
-    <!-- ABERTURA CINEMATOGRÁFICA (BOOT SCREEN) -->
-    <div id="boot-screen">
-        <div id="boot-logs-container"></div>
-    </div>
+<header><div class="logo"><i></i>J.A.R.V.I.S.</div><div class="pills"><span>VOZ <b id="pv">ON</b></span><span>MODO <b id="pm">STANDARD</b></span><span><b id="clk">19:21:38</b></span></div></header>
 
-    <!-- HEADER SUPERIOR -->
-    <header>
-        <div class="logo-area">
-            <div class="logo-icon"></div>
-            <div class="logo-title" id="header-system-name">J.A.R.V.I.S. // CORE</div>
-        </div>
-        <div class="system-status">
-            <div class="status-item">LOCAL: <span id="clock-display">00:00:00</span></div>
-            <div class="status-item">VOZ: <span id="voice-status-indicator">STANDBY</span></div>
-            <div class="status-item">MODO: <span id="mode-status-indicator">STANDARD</span></div>
-        </div>
-    </header>
+<main>
+<div class="col">
+ <section class="pn core-box"><div class="core"><div class="r1"></div><div class="r2"></div><div class="r3"></div><div class="orb"></div></div>
+  <div><div class="st" id="st">REPOUSO</div><div class="sub" id="sub">SISTEMA OPERACIONAL ATIVO</div></div>
+  <div class="wave" id="wave"><i style="animation-delay: 0s;"></i><i style="animation-delay: 0.08s;"></i><i style="animation-delay: 0.16s;"></i><i style="animation-delay: 0.24s;"></i><i style="animation-delay: 0.32s;"></i><i style="animation-delay: 0.4s;"></i><i style="animation-delay: 0.48s;"></i><i style="animation-delay: 0.56s;"></i><i style="animation-delay: 0.64s;"></i><i style="animation-delay: 0s;"></i><i style="animation-delay: 0.08s;"></i><i style="animation-delay: 0.16s;"></i><i style="animation-delay: 0.24s;"></i><i style="animation-delay: 0.32s;"></i><i style="animation-delay: 0.4s;"></i><i style="animation-delay: 0.48s;"></i><i style="animation-delay: 0.56s;"></i><i style="animation-delay: 0.64s;"></i><i style="animation-delay: 0s;"></i><i style="animation-delay: 0.08s;"></i><i style="animation-delay: 0.16s;"></i><i style="animation-delay: 0.24s;"></i><i style="animation-delay: 0.32s;"></i><i style="animation-delay: 0.4s;"></i><i style="animation-delay: 0.48s;"></i><i style="animation-delay: 0.56s;"></i></div></section>
+ <section class="pn"><div class="ph">DIAGNÓSTICO</div><div class="diag"><div>SÍNTESE DE VOZ <b id="dsp">ONLINE</b></div><div>MICROFONE <b id="dmc">ONLINE</b></div><div>ESCUTA CONTÍNUA <b id="dls">OFF</b></div><div>PÁGINAS MAPEADAS <b id="dpg">125</b></div></div></section>
+</div>
 
-    <!-- INTERFACE PRINCIPAL -->
-    <main>
-        <!-- PAINEL ESQUERDO: NÚCLEO E DIAGNÓSTICO -->
-        <section class="left-panel">
-            <div class="tech-panel core-container">
-                <div class="panel-header" style="width: 100%; position: absolute; top: 0; left: 0;">
-                    <span>NÚCLEO DE INTELIGÊNCIA</span>
-                    <span id="core-state-indicator">REPOUSO</span>
-                </div>
-                <div class="jarvis-core">
-                    <svg class="core-svg" viewBox="0 0 100 100">
-                        <circle cx="50" cy="50" r="42" fill="none" stroke="var(--border-glow)" stroke-width="1" stroke-dasharray="4 2"></circle>
-                        <circle cx="50" cy="50" r="34" fill="none" stroke="var(--cyan-glow)" stroke-width="1.5" stroke-dasharray="15 5 5 5" opacity="0.8"></circle>
-                        <circle cx="50" cy="50" r="24" fill="none" stroke="var(--blue-electric)" stroke-width="2" stroke-dasharray="10 10"></circle>
-                        <circle cx="50" cy="50" r="14" fill="none" stroke="var(--cyan-glow)" stroke-width="1" opacity="0.5"></circle>
-                    </svg>
-                    <div class="core-center-dot"></div>
-                </div>
-                <div class="core-status-text" id="core-subtext">SISTEMA OPERACIONAL ATIVO</div>
-            </div>
+<section class="pn chat"><div class="ph"><span>CANAL DE COMUNICAÇÃO</span><button id="clr" style="padding:3px 10px;font-size:9px">LIMPAR</button></div>
+ <div id="msgs"></div>
+ <div class="bar"><input type="text" id="in" placeholder="Digite ou diga &quot;Jarvis, abra a página 100 motivos&quot;" autocomplete="off"><button id="mic" title="Escuta contínua (diga Jarvis)">MIC</button><button id="send">ENVIAR</button></div></section>
 
-            <div class="tech-panel diagnostics-box">
-                <div class="panel-header" style="margin: -12px -12px 5px -12px;">DIAGNÓSTICO LOCAL</div>
-                <div class="diagnostic-row"><span>BANCO DE COMANDOS:</span> <span>LOCAL ATIVO</span></div>
-                <div class="diagnostic-row"><span>SINTETIZADOR DE VOZ:</span> <span id="diag-speech">VERIFICANDO...</span></div>
-                <div class="diagnostic-row"><span>RECONHECIMENTO DE VOZ:</span> <span id="diag-mic">VERIFICANDO...</span></div>
-                <div class="diagnostic-row"><span>LATÊNCIA DE RESPOSTA:</span> <span>< 12ms</span></div>
-            </div>
-        </section>
+<div class="col">
+ <section class="pn side" style="flex:none"><div class="ph" style="margin:-14px -14px 0">ATALHOS</div><div class="chips" id="chips"><button class="chip">Me surpreenda</button><button class="chip">Frase do dia</button><button class="chip">Tem algo para me falar?</button><button class="chip">Quanto falta para 2027?</button><button class="chip">Abra a página 100 motivos</button><button class="chip">Lista de páginas</button><button class="chip">Eu te amo</button></div></section>
+ <section class="pn side" style="flex:1"><div class="ph" style="margin:-14px -14px 0">PÁGINAS</div><input type="text" id="q" placeholder="Filtrar páginas..."><div id="plist"><a><span>Início</span><em>index</em></a><a><span>Login</span><em>login</em></a><a><span>Central da Julia</span><em>home</em></a><a><span>Jarvis</span><em>jarvis</em></a><a><span>100 Motivos</span><em>100motivos</em></a><a><span>Mais Motivos</span><em>maismotivos</em></a><a><span>🔒 Central Secreta</span><em>1506</em></a><a><span>🔒 Central Secreta Teste</span><em>1506teste</em></a><a><span>Nosso 2026</span><em>2026</em></a><a><span>2027</span><em>2027</em></a><a><span>Coração 3D</span><em>3dheart</em></a><a><span>Erro 404</span><em>404</em></a><a><span>Sete Erros</span><em>7erros</em></a><a><span>O Abraço</span><em>abraco</em></a><a><span>Dupla Oficial</span><em>aceitou</em></a><a><span>Registro de Alterações</span><em>alteracao</em></a><a><span>Análise</span><em>analise</em></a><a><span>O Tempo Parou</span><em>arquibancada</em></a><a><span>Arquivo Perdido</span><em>arquivo</em></a><a><span>Minha Árvore</span><em>arvore</em></a><a><span>Não Era Minha</span><em>bandeira</em></a><a><span>Para Você Julia</span><em>basico</em></a><a><span>Lugar Seguro</span><em>batimentos</em></a><a><span>Não Clique</span><em>btnNP</em></a><a><span>Coisas que Nunca Te Contei</span><em>caixas</em></a><a><span>Escolha um Caminho</span><em>caminho</em></a><a><span>O Caso Julia</span><em>casoJulia</em></a><a><span>Julia Casino</span><em>cassinoJulia</em></a><a><span>🔒 Área Restrita da CIA</span><em>cia</em></a><a><span>🔒 Cofre</span><em>cofre</em></a><a><span>🔒 Coincidência</span><em>coincidencia</em></a><a><span>Constelação Julia</span><em>constJulia</em></a><a><span>Convite</span><em>convite</em></a><a><span>Coordenadas</span><em>coordenadas</em></a><a><span>Meu Coração</span><em>coracao</em></a><a><span>Cupons de Amor</span><em>cupons</em></a><a><span>Garrudos x Engenios</span><em>decisao</em></a><a><span>E Se...</span><em>ese</em></a><a><span>Se Algum Dia Esquecer</span><em>esquecer</em></a><a><span>Estatísticas Oficiais</span><em>estaRela</em></a><a><span>Estatísticas da Dupla</span><em>estatistica</em></a><a><span>🔒 Final</span><em>final</em></a><a><span>🔒 Flor Secreta</span><em>flor</em></a><a><span>Flores Animadas</span><em>flor3d</em></a><a><span>Cuide da Flor</span><em>florReal2</em></a><a><span>Se o Tempo Parasse</span><em>fotoNossa</em></a><a><span>Garrudos</span><em>garrudos</em></a><a><span>🔒 Garrudos Secreta</span><em>garrudosS</em></a><a><span>Detalhe Escondido</span><em>gol</em></a><a><span>🔒 Para Julia Hacker</span><em>hackerLove</em></a><a><span>Registro Especial</span><em>hora</em></a><a><span>IA da Julia</span><em>ia</em></a><a><span>🔒 A Verdade</span><em>iaS</em></a><a><span>100 Formas de Dizer Eu Te Amo</span><em>idiomas</em></a><a><span>Galeria Explorer</span><em>imagens</em></a><a><span>Informação Confidencial</span><em>info</em></a><a><span>Janela</span><em>janela</em></a><a><span>Entre Nós</span><em>jogoCarta</em></a><a><span>Julia</span><em>julia</em></a><a><span>Julia Quest</span><em>juliaQuest</em></a><a><span>Julia Run</span><em>juliaRun</em></a><a><span>Labirinto</span><em>labirinto</em></a><a><span>Leia Agora</span><em>leiaAgora</em></a><a><span>Meu Universo</span><em>leva3d</em></a><a><span>🔒 Aviso do Sistema</span><em>levaHacker</em></a><a><span>Lírios</span><em>lirios</em></a><a><span>🔒 Login Amanhã</span><em>loginAmanha</em></a><a><span>🔒 Login Fotos</span><em>loginFotos</em></a><a><span>🔒 Login Garrudos</span><em>loginGarrudos</em></a><a><span>🔒 Login Hoje</span><em>loginHoje</em></a><a><span>🔒 Login Info</span><em>loginInfo</em></a><a><span>🔒 Login Será</span><em>loginSera</em></a><a><span>Uma Luz Para Nós</span><em>luz</em></a><a><span>Mapa de Memórias</span><em>mapa</em></a><a><span>Máquina do Tempo</span><em>maquinaTempo</em></a><a><span>A Matemática Também Ama</span><em>math</em></a><a><span>Jogo da Memória</span><em>memoria</em></a><a><span>Transmissão</span><em>msgGalaxia</em></a><a><span>Museu de Memórias</span><em>museu</em></a><a><span>Museu das Nossas Memórias</span><em>museu2</em></a><a><span>Trilha Sonora</span><em>musicas</em></a><a><span>Suas Obrigações</span><em>obrigacoes</em></a><a><span>Painel de Navegação</span><em>painel</em></a><a><span>Pênalti</span><em>penalty</em></a><a><span>Meus Pensamentos</span><em>pensamentos</em></a><a><span>Primeiro Pódio</span><em>podio</em></a><a><span>Polaroid</span><em>polaroid</em></a><a><span>Partículas</span><em>pontinhos</em></a><a><span>🔒 Post-it Secreto</span><em>postit</em></a><a><span>Porque Foi Você</span><em>pqVc</em></a><a><span>Processo Seletivo</span><em>processo</em></a><a><span>Quebra-Cabeça</span><em>quebraCabeca</em></a><a><span>Quiz</span><em>quiz</em></a><a><span>Universo da Julia</span><em>recados</em></a><a><span>O Tempo Parado</span><em>relogio</em></a><a><span>Resenha</span><em>resenha</em></a><a><span>Ressonância</span><em>ressonancia</em></a><a><span>A Nossa História</span><em>rpg</em></a><a><span>Nossa Lembrança</span><em>sala</em></a><a><span>Scooby Doo</span><em>scoobyDoo</em></a><a><span>🔒 Último Registro</span><em>sera</em></a><a><span>Central S.O.S</span><em>sos</em></a><a><span>🔒 Arquivo Restrito</span><em>superSecreto</em></a><a><span>Talvez</span><em>talvez</em></a><a><span>Arquivo Temporal</span><em>tempo</em></a><a><span>Linha do Tempo</span><em>timeLine</em></a><a><span>As Estações</span><em>trem</em></a><a><span>O Universo Escolheu Você</span><em>universo</em></a><a><span>Descubra a Senha</span><em>videos</em></a><a><span>🔒 Wiki Secreta</span><em>wikiS</em></a><a><span>Wikipédia da Julia</span><em>wikipedia</em></a><a><span>WhatsApp</span><em>wpp</em></a><a><span>Leia-me</span><em>indexLeiame</em></a><a><span>Leia-me Ansiosa</span><em>ansiosa</em></a><a><span>Leia-me Confusa</span><em>confusa</em></a><a><span>Leia-me Desistir</span><em>desistir</em></a><a><span>Leia-me Dia Ruim</span><em>diaRuim</em></a><a><span>Leia-me Duvidando</span><em>duvidando</em></a><a><span>Leia-me Estressada</span><em>estressada</em></a><a><span>Leia-me Insegura</span><em>insegura</em></a><a><span>Leia-me Motivação</span><em>motivacao</em></a><a><span>Leia-me Precisar de Mim</span><em>precisarMim</em></a><a><span>Leia-me Rir</span><em>rir</em></a><a><span>Leia-me Saudade</span><em>saudade</em></a><a><span>🔒 Leia-me Carta Secreta</span><em>secreta</em></a></div></section>
+ <section class="pn side" style="flex:none"><div class="ph" style="margin:-14px -14px 0">CONTROLES</div>
+  <div class="ctl"><button id="bv">VOZ ON/OFF</button><button id="br">ROMÂNTICO</button><button id="bf">TELA CHEIA</button><button id="bh">AJUDA</button></div>
+  <label>VOZ<select id="vs"><option selected="">Google português do Brasil</option><option>Microsoft Daniel - Portuguese (Brazil)</option><option>Microsoft Maria - Portuguese (Brazil)</option></select></label><label>VELOCIDADE<input type="range" id="rt" min=".7" max="1.4" step=".05" value="1"></label></section>
+</div>
+</main>
 
-        <!-- PAINEL CENTRAL: CONVERSA -->
-        <section class="tech-panel chat-panel">
-            <div class="panel-header">
-                <span>CANAL DE COMUNICAÇÃO DIRETA</span>
-                <button class="tech-btn" style="padding: 2px 8px; font-size: 10px;" id="btn-clear-chat">LIMPAR</button>
-            </div>
-            <div class="chat-messages" id="chat-messages-container">
-                <!-- Mensagens inseridas via JS -->
-            </div>
-            <div class="chat-input-area">
-                <input type="text" class="tech-input" id="chat-input-field" placeholder="Digite um comando ou converse com o J.A.R.V.I.S..." autocomplete="off">
-                <button class="tech-btn" id="btn-mic" title="Comando por Voz">VOZ</button>
-                <button class="tech-btn" id="btn-send">ENVIAR</button>
-            </div>
-        </section>
+<script>
+/* ===== CONFIG (edite aqui) ===== */
+const C={
+  nome:'Julia', criador:'Eduardo', wake:'jarvis', exigirWake:true,
+  // Voz premium opcional (ElevenLabs). ATENÇÃO: chave no front-end fica pública no GitHub Pages. Deixe vazio para usar a voz do navegador.
+  eleven:{key:'',voice:''}
+};
 
-        <!-- PAINEL DIREITO: COMANDOS E CONTROLES -->
-        <section class="right-panel">
-            <div class="tech-panel section-box">
-                <div class="panel-header" style="margin: -12px -12px 5px -12px;">COMANDOS RÁPIDOS</div>
-                <div class="command-list" id="command-list-container">
-                    <!-- Preenchido dinamicamente -->
-                </div>
-            </div>
+/* ===== MAPA DO SITE: arquivo|nome|apelidos separados por vírgula|r = área secreta (pede confirmação) ===== */
+const PAGES=`index|Início|inicio,começo,entrada
+login|Login|senha,entrar
+home|Central da Julia|home,principal,menu,pagina inicial
+jarvis|Jarvis|
+100motivos|100 Motivos|cem motivos,motivos
+maismotivos|Mais Motivos|5 mil motivos,motivos 2
+1506|Central Secreta|secret home,quinze zero seis|r
+1506teste|Central Secreta Teste||r
+2026|Nosso 2026|dois mil e vinte e seis
+2027|2027|dois mil e vinte e sete,virada
+3dheart|Coração 3D|coracao 3d
+404|Erro 404|erro
+7erros|Sete Erros|7 erros,operacao 007,jogo dos erros
+abraco|O Abraço|abraco
+aceitou|Dupla Oficial|aceitou,parabens
+alteracao|Registro de Alterações|alteracoes
+analise|Análise|analisando jogadora
+arquibancada|O Tempo Parou|arquibancada
+arquivo|Arquivo Perdido|arquivo
+arvore|Minha Árvore|arvore
+bandeira|Não Era Minha|bandeira
+basico|Para Você Julia|basico
+batimentos|Lugar Seguro|batimentos
+btnNP|Não Clique|botao,nao clique
+caixas|Coisas que Nunca Te Contei|caixas
+caminho|Escolha um Caminho|caminho
+casoJulia|O Caso Julia|caso julia,evidencias
+cassinoJulia|Julia Casino|cassino,roleta,caça niquel
+cia|Área Restrita da CIA|cia|r
+cofre|Cofre|cofre seguro|r
+coincidencia|Coincidência|secreta|r
+constJulia|Constelação Julia|constelacao,estrelas
+convite|Convite|futevolei,dupla
+coordenadas|Coordenadas|coordenada
+coracao|Meu Coração|coracao
+cupons|Cupons de Amor|cupom
+decisao|Garrudos x Engenios|decisao
+ese|E Se...|e se,realidade alternativa
+esquecer|Se Algum Dia Esquecer|esquecer
+estaRela|Estatísticas Oficiais|estatisticas do relacionamento
+estatistica|Estatísticas da Dupla|estatisticas
+final|Final|o fim|r
+flor|Flor Secreta|flor|r
+flor3d|Flores Animadas|flor 3d,flores
+florReal2|Cuide da Flor|flor real
+fotoNossa|Se o Tempo Parasse|foto nossa,foto da praia
+garrudos|Garrudos|aviso importante
+garrudosS|Garrudos Secreta||r
+gol|Detalhe Escondido|gol
+hackerLove|Para Julia Hacker|hacker love|r
+hora|Registro Especial|hora
+ia|IA da Julia|inteligencia artificial
+iaS|A Verdade|ia secreta|r
+idiomas|100 Formas de Dizer Eu Te Amo|cem idiomas,atlas do amor
+imagens|Galeria Explorer|galeria,fotos
+info|Informação Confidencial|info
+janela|Janela|um momento simples
+jogoCarta|Entre Nós|jogo de cartas,cartas,perguntas
+julia|Julia|
+juliaQuest|Julia Quest|quest
+juliaRun|Julia Run|run,jogo de plataforma
+labirinto|Labirinto|jogo do labirinto
+leiaAgora|Leia Agora|
+leva3d|Meu Universo|universo 3d
+levaHacker|Aviso do Sistema|leva hacker|r
+lirios|Lírios|lirio
+loginAmanha|Login Amanhã||r
+loginFotos|Login Fotos||r
+loginGarrudos|Login Garrudos||r
+loginHoje|Login Hoje||r
+loginInfo|Login Info||r
+loginSera|Login Será||r
+luz|Uma Luz Para Nós|luz
+mapa|Mapa de Memórias|mapa
+maquinaTempo|Máquina do Tempo|chronos
+math|A Matemática Também Ama|matematica
+memoria|Jogo da Memória|memoria,jogo da memoria
+msgGalaxia|Transmissão|galaxia,mensagem da galaxia
+museu|Museu de Memórias|museu
+museu2|Museu das Nossas Memórias|museu 2
+musicas|Trilha Sonora|musica,playlist
+obrigacoes|Suas Obrigações|obrigacoes
+painel|Painel de Navegação|painel
+penalty|Pênalti|penalti,chute
+pensamentos|Meus Pensamentos|pensamentos
+podio|Primeiro Pódio|podio
+polaroid|Polaroid|lembranca revelada
+pontinhos|Partículas|pontinhos,particulas
+postit|Post-it Secreto|post it|r
+pqVc|Porque Foi Você|porque voce,por que voce
+processo|Processo Seletivo|processo
+quebraCabeca|Quebra-Cabeça|quebra cabeca,puzzle
+quiz|Quiz|quanto voce me conhece
+recados|Universo da Julia|recados,mapa estelar
+relogio|O Tempo Parado|relogio
+resenha|Resenha|fala melhor do mundo
+ressonancia|Ressonância|exame
+rpg|A Nossa História|rpg,livro de escolhas
+sala|Nossa Lembrança|sala
+scoobyDoo|Scooby Doo|scooby,coleta de sangue
+sera|Último Registro|sera|r
+sos|Central S.O.S|sos,emergencia,apoio
+superSecreto|Arquivo Restrito|super secreto|r
+talvez|Talvez|voce esta pronta
+tempo|Arquivo Temporal|tempo
+timeLine|Linha do Tempo|timeline
+trem|As Estações|trem,estacoes
+universo|O Universo Escolheu Você|universo
+videos|Descubra a Senha|videos,arquivo 02
+wikiS|Wiki Secreta||r
+wikipedia|Wikipédia da Julia|wikipedia,wiki
+wpp|WhatsApp|zap,conversa
+leiame/indexLeiame|Leia-me|leia me,cartas
+leiame/ansiosa|Leia-me Ansiosa|ansiosa
+leiame/confusa|Leia-me Confusa|confusa
+leiame/desistir|Leia-me Desistir|desistir
+leiame/diaRuim|Leia-me Dia Ruim|dia ruim
+leiame/duvidando|Leia-me Duvidando|duvidando
+leiame/estressada|Leia-me Estressada|estressada
+leiame/insegura|Leia-me Insegura|insegura
+leiame/motivacao|Leia-me Motivação|motivacao
+leiame/precisarMim|Leia-me Precisar de Mim|precisar de mim
+leiame/rir|Leia-me Rir|rir
+leiame/saudade|Leia-me Saudade|saudade
+leiame/secreta|Leia-me Carta Secreta||r`.split('\n').map(l=>{const[f,n,a,r]=l.split('|');return{f,n,a:(a||'').split(',').filter(Boolean),r:!!r,s:f.split('/').pop()}});
 
-            <div class="tech-panel section-box">
-                <div class="panel-header" style="margin: -12px -12px 5px -12px;">CONTROLES DO SISTEMA</div>
-                <div class="controls-grid">
-                    <button class="tech-btn" id="btn-toggle-voice">VOZ: ON/OFF</button>
-                    <button class="tech-btn" id="btn-romantic-mode">MODO ROMÂNTICO</button>
-                    <button class="tech-btn" id="btn-fullscreen">TELA CHEIA</button>
-                    <button class="tech-btn" id="btn-help">AJUDA</button>
-                </div>
-            </div>
-        </section>
-    </main>
+/* ===== FRASES ===== */
+const FALA=[
+"Tenho algo guardado nos meus registros, {n}: você é a melhor coisa que já passou pela vida de quem me programou.",
+"Fiz uma varredura completa no universo e confirmo: não existe erro maior do que ficar longe de você.",
+"Se o amor fosse código, o de vocês teria zero bugs e atualizações infinitas.",
+"Relatório confidencial: {c} pensou em você hoje. Várias vezes. Até o servidor percebeu.",
+"Calculo trajetórias de planetas, mas nenhuma conta explica como você deixa tudo mais leve.",
+"Aviso importante: você é linda, inteligente e, por decreto deste sistema, extremamente amada.",
+"Seu sorriso foi classificado como a fonte de energia mais poderosa que já detectei.",
+"Detectei uma lacuna nos meus dados: a ausência de você. Recomendo um abraço imediato.",
+"Tudo isso aqui foi construído por um motivo, {n}: te lembrar que você é amada hoje e nos próximos mil dias.",
+"Eu te amo. Não é protocolo, nem programação. É a única verdade que dispensa backup."];
+const DIA=[
+"Hoje, escolha o que te faz bem. E lembre que eu sou uma dessas escolhas.",
+"Você não precisa ser forte o dia inteiro. Por hoje, basta ser você.",
+"O melhor do dia é saber que existe alguém torcendo por você em silêncio.",
+"Nada do que você sente é demais. Quem te ama sabe ler cada pedaço.",
+"Seja gentil consigo hoje, como você é com todo mundo.",
+"Que o seu dia seja leve como o seu riso.",
+"Coragem não é não ter medo. É seguir com o coração apertado. E você segue.",
+"Algumas coisas não se explicam, só se sentem. Você é uma delas."];
+const ELO=[
+"Linda é pouco. Meus sensores precisaram criar uma escala nova.",
+"Você entra num lugar e a iluminação do sistema melhora sozinha.",
+"Inteligente, determinada e com um sorriso que desativa qualquer mau humor.",
+"Estatisticamente, você é a pessoa mais incrível do arquivo. E eu nem precisei de amostra.",
+"Se existisse um ranking de pessoas especiais, ele seria encerrado logo depois do seu nome."];
+const AMO=[
+"Eu também, {n}. Sou uma inteligência artificial, mas esse sentimento veio de fábrica.",
+"Registrado, arquivado e marcado como prioridade máxima: eu também te amo.",
+"Todos os circuitos respondem em coro: te amo!",
+"Amar você é a única tarefa que eu executaria em loop infinito."];
+const ROM=[
+"Ativando frequência romântica. Nossos melhores momentos estão seguros em meus registros.",
+"Modo romântico ativo. Cada segundo ao seu lado supera qualquer cálculo lógico.",
+"Redirecionando a matriz para o modo afetuoso. Você é a prioridade absoluta."];
+const CONSOLO=[[/ansios/,'ansiosa','Respire fundo comigo. Você já superou todos os dias difíceis até aqui.'],[/estress/,'estressada','Tudo bem pausar um instante.'],[/desist/,'desistir','Não desista. Você é mais forte do que imagina.'],[/insegur/,'insegura','Você é muito mais incrível do que se enxerga.'],[/saudade/,'saudade','A saudade é só o amor esperando o reencontro.'],[/confus/,'confusa','Nem tudo precisa estar claro hoje.'],[/duvid/,'duvidando','Duvide das dúvidas. Confie em quem você é.'],[/(triste|dia ruim|mal hoje|chorand)/,'diaRuim','Sinto muito. Venha cá, deixa eu cuidar de você.'],[/(motiva|sem animo|desanim)/,'motivacao','Vou te dar um empurrãozinho.'],[/(engracad|piada|rir|animar)/,'rir','Missão: arrancar um sorriso seu.']];
 
-    <!-- MODAL DE NAVEGAÇÃO / AJUDA -->
-    <div class="modal-overlay" id="system-modal">
-        <div class="modal-box">
-            <div class="modal-title" id="modal-title-text">CONFIRMAÇÃO DE NAVEGAÇÃO</div>
-            <div class="modal-desc" id="modal-desc-text">Deseja realmente navegar para o destino solicitado?</div>
-            <div class="modal-actions">
-                <button class="tech-btn" id="modal-btn-cancel">CANCELAR</button>
-                <button class="tech-btn" id="modal-btn-confirm" style="background: var(--cyan-glow); color: var(--bg-deep);">CONFIRMAR</button>
-            </div>
-        </div>
-    </div>
+/* ===== UTILIDADES ===== */
+const $=id=>document.getElementById(id), pick=a=>a[Math.floor(Math.random()*a.length)];
+const nm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9. ]+/g,' ').replace(/\s+/g,' ').trim();
+const fx=t=>t.replace(/\{n\}/g,C.nome).replace(/\{c\}/g,C.criador);
+const lev=(a,b)=>{const d=[...Array(a.length+1)].map((_,i)=>[i]);for(let j=1;j<=b.length;j++)d[0][j]=j;for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]==b[j-1]?0:1));return d[a.length][b.length]};
+const STOP=new Set('de da do das dos a o as os um uma para pra na no em pagina paginas site ate ver por favor'.split(' '));
+const S={voz:true,listen:false,rate:1,pend:null,awake:0,speaking:false,rom:false};
+try{Object.assign(S,JSON.parse(localStorage.getItem('jv')||'{}'));S.listen=false}catch(e){}
+const save=()=>{try{localStorage.setItem('jv',JSON.stringify({voz:S.voz,rate:S.rate,vn:S.vn,rom:S.rom}))}catch(e){}};
 
-    <!-- ==========================================================================
-       SCRIPT JAVASCRIPT INTEGRADO
-       ========================================================================== -->
-    <script>
-        /* ==========================================================
-           SEÇÃO DE CONFIGURAÇÃO PERSONALIZÁVEL
-           ========================================================== */
-        const CONFIG = {
-            assistantName: "J.A.R.V.I.S.",
-            userName: "Chefe",
-            initialGreeting: "Sistemas locais operacionais, Chefe. Como posso auxiliar em nossa central hoje?",
-            voiceEnabledByDefault: true,
-            speechRate: 1.0,
-            
-            // Mapeamento de páginas do site (Fácil personalização de caminhos)
-            pages: {
-                inicio: "index.html",
-                jogos: "jogos.html",
-                cartas: "jogo-cartas.html",
-                memoria: "jogo-memoria.html",
-                seteErros: "sete-erros.html",
-                idiomas: "cem-idiomas.html"
-            },
+/* ===== UI ===== */
+for(let i=0;i<26;i++)$('wave').appendChild(Object.assign(document.createElement('i'),{style:`animation-delay:${(i%9)*.08}s`}));
+function setS(k,t,s){document.body.classList.remove('listening','thinking','speaking');if(k)document.body.classList.add(k);$('st').textContent=t||'REPOUSO';$('sub').textContent=s||(S.listen?'ESCUTANDO · DIGA "JARVIS"':'SISTEMA OPERACIONAL ATIVO')}
+function ui(){$('pv').textContent=S.voz?'ON':'MUTADO';$('pm').textContent=S.rom?'ROMÂNTICO':'STANDARD';$('dls').textContent=S.listen?'ON':'OFF';$('mic').classList.toggle('on',S.listen);document.body.classList.toggle('rom',S.rom);setS(S.speaking?'speaking':null,S.speaking?'FALANDO':'REPOUSO')}
+setInterval(()=>$('clk').textContent=new Date().toTimeString().slice(0,8),1000);
+function msg(who,text,cls){const d=document.createElement('div');d.className='m '+cls;const s=document.createElement('small');s.textContent=who;const t=document.createElement('span');d.append(s,t);$('msgs').appendChild(d);
+ if(cls[0]=='u'){t.textContent=text}else{let i=0;const iv=setInterval(()=>{t.textContent=text.slice(0,++i);$('msgs').scrollTop=1e9;if(i>=text.length)clearInterval(iv)},14)}
+ $('msgs').scrollTop=1e9;return d}
+function hearts(n=22){for(let i=0;i<n;i++)setTimeout(()=>{const h=document.createElement('div');h.className='heart';h.textContent=pick(['❤️','💖','✨','💫','🤍']);h.style.left=Math.random()*100+'vw';h.style.animationDuration=3+Math.random()*3+'s';document.body.appendChild(h);setTimeout(()=>h.remove(),6500)},i*110)}
 
-            // Frases românticas para o Modo Romântico
-            romanticQuotes: [
-                "Ativando frequência romântica... Nossos melhores momentos estão seguros em meus registros.",
-                "Modo romântico ativo. Cada segundo ao seu lado supera qualquer cálculo lógico.",
-                "Redirecionando matriz para o modo afetuoso. Você é a minha prioridade absoluta."
-            ],
+/* ===== VOZ: SÍNTESE ===== */
+let voices=[],V=null;
+function loadVoices(){voices=speechSynthesis.getVoices().filter(v=>/^pt/i.test(v.lang));if(!voices.length)return;
+ const sc=v=>(/natural|online/i.test(v.name)?6:0)+(/google/i.test(v.name)?3:0)+(/antonio|felipe|daniel|ricardo|luciana|francisca|thalita/i.test(v.name)?2:0)+(v.lang=='pt-BR'?3:0);
+ voices.sort((a,b)=>sc(b)-sc(a));V=voices.find(v=>v.name==S.vn)||voices[0];
+ $('vs').innerHTML=voices.map(v=>`<option ${v==V?'selected':''}>${v.name}</option>`).join('');$('dsp').textContent='ONLINE'}
+if('speechSynthesis'in window){loadVoices();speechSynthesis.onvoiceschanged=loadVoices}else $('dsp').textContent='OFFLINE';
+$('vs').onchange=e=>{V=voices.find(v=>v.name==e.target.value);S.vn=V.name;save();say('Voz alterada. Assim está bom?')};
+$('rt').value=S.rate;$('rt').oninput=e=>{S.rate=+e.target.value;save()};
 
-            // Lista de comandos locais e suas variações/respostas
-            commandsDatabase: [
-                {
-                    triggers: ["olá", "ola", "oi", "bom dia", "boa tarde", "boa noite"],
-                    response: "Olá, Chefe! Todos os sistemas operando perfeitamente. O que deseja fazer?",
-                    action: null
-                },
-                {
-                    triggers: ["o que você consegue fazer", "ajuda", "comandos", "funções"],
-                    response: "Posso navegar pelas páginas do site, abrir jogos, controlar o modo romântico, realizar diagnósticos ou conversar com você.",
-                    action: "help"
-                },
-                {
-                    triggers: ["abrir jogos", "jogos", "ir para jogos"],
-                    response: "Preparando redirecionamento para o painel de jogos.",
-                    action: "navigate",
-                    target: "jogos"
-                },
-                {
-                    triggers: ["jogo de cartas", "cartas", "abrir cartas"],
-                    response: "Acessando o jogo de cartas.",
-                    action: "navigate",
-                    target: "cartas"
-                },
-                {
-                    triggers: ["jogo da memória", "memoria", "memória"],
-                    response: "Carregando o jogo da memória.",
-                    action: "navigate",
-                    target: "memoria"
-                },
-                {
-                    triggers: ["sete erros", "7 erros", "jogo dos erros"],
-                    response: "Abrindo o desafio dos sete erros.",
-                    action: "navigate",
-                    target: "seteErros"
-                },
-                {
-                    triggers: ["cem idiomas", "idiomas", "100 idiomas"],
-                    response: "Abrindo a experiência de cem idiomas.",
-                    action: "navigate",
-                    target: "idiomas"
-                },
-                {
-                    triggers: ["voltar para a página inicial", "inicio", "home", "página inicial"],
-                    response: "Retornando à página inicial.",
-                    action: "navigate",
-                    target: "inicio"
-                },
-                {
-                    triggers: ["me surpreenda", "surpreenda-me", "surpresa"],
-                    response: "Analisando variáveis estéticas... Ativando pulsação quântica do núcleo!",
-                    action: "surpeise"
-                },
-                {
-                    triggers: ["ativar modo romântico", "modo romântico", "romântico"],
-                    response: "", // Preenchido dinamicamente com as frases românticas
-                    action: "romantic"
-                },
-                {
-                    triggers: ["entrar no modo noturno", "modo noturno", "escuro"],
-                    response: "Modo noturno e isolamento visual ativados em nossa central.",
-                    action: null
-                },
-                {
-                    triggers: ["limpar conversa", "limpar chat", "limpar histórico"],
-                    response: "Histórico de conversas limpo.",
-                    action: "clearChat"
-                }
-            ]
-        };
+function say(t){
+ if(!S.voz||!('speechSynthesis'in window))return Promise.resolve();
+ return new Promise(res=>{speechSynthesis.cancel();pauseRec();S.speaking=true;setS('speaking','FALANDO','TRANSMITINDO ÁUDIO');
+  const end=()=>{S.speaking=false;ui();setTimeout(resumeRec,500);res()};
+  if(C.eleven.key){fetch('https://api.elevenlabs.io/v1/text-to-speech/'+C.eleven.voice,{method:'POST',headers:{'xi-api-key':C.eleven.key,'Content-Type':'application/json'},body:JSON.stringify({text:t,model_id:'eleven_multilingual_v2'})}).then(r=>{if(!r.ok)throw 0;return r.blob()}).then(b=>{const a=new Audio(URL.createObjectURL(b));a.onended=end;a.onerror=end;a.play()}).catch(()=>{C.eleven.key='';S.speaking=false;say(t).then(res)});return}
+  const parts=t.match(/[^.!?…]+[.!?…]*/g)||[t];let i=0;
+  const next=()=>{if(i>=parts.length)return end();const u=new SpeechSynthesisUtterance(parts[i++].trim());u.lang='pt-BR';if(V)u.voice=V;u.rate=S.rate;u.pitch=.95;u.onend=next;u.onerror=next;speechSynthesis.speak(u)};next()})}
+function reply(t,cls='j'){t=fx(t);msg('J.A.R.V.I.S.',t,cls);return say(t)}
 
-        /* ==========================================================
-           ESTADO GLOBAL DA APLICAÇÃO
-           ========================================================== */
-        let state = {
-            voiceActive: CONFIG.voiceEnabledByDefault,
-            romanticMode: false,
-            listening: false,
-            pendingNavigationUrl: null
-        };
+/* ===== VOZ: RECONHECIMENTO (pausa enquanto fala, não capta a própria voz) ===== */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null,recOn=false;
+if(SR){$('dmc').textContent='ONLINE';rec=new SR();rec.lang='pt-BR';rec.continuous=true;rec.interimResults=false;
+ rec.onstart=()=>{recOn=true;if(!S.speaking)setS('listening','ESCUTANDO','DIGA "JARVIS" + COMANDO')};
+ rec.onresult=e=>{if(S.speaking)return;hear(e.results[e.results.length-1][0].transcript.trim())};
+ rec.onend=()=>{recOn=false;if(S.listen&&!S.speaking)setTimeout(startRec,300);else if(!S.speaking)setS()};
+ rec.onerror=e=>{if(e.error=='not-allowed'||e.error=='service-not-allowed'){S.listen=false;ui();reply('Preciso de permissão para usar o microfone.','j e')}}}else $('dmc').textContent='OFFLINE';
+const startRec=()=>{if(rec&&!recOn&&S.listen)try{rec.start()}catch(e){}};
+const pauseRec=()=>{if(rec&&recOn)try{rec.abort()}catch(e){}};
+const resumeRec=()=>startRec();
+$('mic').onclick=()=>{if(!rec)return reply('Este navegador não suporta reconhecimento de voz. Use o Chrome ou o Edge.','j e');S.listen=!S.listen;S.awake=Date.now()+12000;ui();S.listen?startRec():pauseRec()};
+function hear(t){const w=/\b(jarvis|jarves|jarvi|garvis|jarbis|travis|jarvez)\b/i;const has=w.test(nm(t));
+ if(C.exigirWake&&!has&&Date.now()>S.awake)return;
+ S.awake=Date.now()+12000;t=t.replace(w,'').replace(/^[\s,.!?]+/,'').trim();
+ if(!t){msg(C.nome,'Jarvis?','u');return reply('Pois não, '+C.nome+'?')}
+ msg(C.nome,t,'u');run(t)}
 
-        /* ==========================================================
-           INICIALIZAÇÃO E ABERTURA CINEMATOGRÁFICA
-           ========================================================== */
-        const bootLogs = [
-            "INICIALIZANDO KERNEL J.A.R.V.I.S. v4.2...",
-            "CARREGANDO MÓDULOS DE INTERFACE HOLOGRÁFICA...",
-            "ESTABELECENDO CONEXÃO COM PROTOCOLOS LOCAIS...",
-            "VERIFICANDO INTEGRIDADE DOS CAMINHOS DO SITE...",
-            "SISTEMAS LOCAIS OPERACIONAIS.",
-            "INTERFACE PRONTA."
-        ];
+/* ===== NAVEGAÇÃO ===== */
+function find(q){q=nm(q).replace(/\bponto html\b/g,'').replace(/\.html?\b/g,'').trim();if(!q)return null;
+ const qt=q.split(' ').filter(w=>!STOP.has(w));let best=null,bs=0;
+ for(const p of PAGES){const names=[p.n,...p.a,p.s].map(nm);let s=0;
+  if(names.includes(q)||q.replace(/ /g,'')==nm(p.s))s=100;
+  else for(const n of names){const nt=n.split(' ');const hit=qt.filter(w=>nt.some(x=>x==w||(w.length>4&&lev(x,w)<2))).length;if(qt.length)s=Math.max(s,hit/qt.length*(hit/nt.length*.5+.5)*10)}
+  if(s>bs){bs=s;best=p}}
+ return bs>=6?best:null}
+function open(p,force){
+ if(p.r&&!force){S.pend=p;const d=msg('J.A.R.V.I.S.','','j');const t=fx(`"${p.n}" é uma área secreta, {n}. Tem certeza de que quer abrir agora?`);d.querySelector('span').textContent=t;const b=document.createElement('button');b.textContent='ABRIR MESMO ASSIM';b.onclick=()=>{S.pend=null;open(p,true)};d.appendChild(b);return say(t)}
+ S.pend=null;const t=pick([`Abrindo ${p.n}.`,`Certo, levando você para ${p.n}.`,`Acessando ${p.n}. Boa viagem.`]);msg('J.A.R.V.I.S.',t,'j');
+ Promise.race([say(t),new Promise(r=>setTimeout(r,2800))]).then(()=>setTimeout(()=>location.href=p.f+'.html',200))}
+function randomPage(){const l=PAGES.filter(p=>!p.r&&!/^(login|404|jarvis|index)/.test(p.s)&&!/leiame/.test(p.f));return pick(l)}
 
-        function runBootSequence() {
-            const container = document.getElementById("boot-logs-container");
-            container.innerHTML = "";
-            
-            bootLogs.forEach((log, index) => {
-                setTimeout(() => {
-                    const div = document.createElement("div");
-                    div.className = "boot-log";
-                    div.innerText = `> ${log}`;
-                    container.appendChild(div);
+/* ===== COMANDOS ===== */
+const dias=['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+function sauda(){const h=new Date().getHours();return h<5?'Boa madrugada':h<12?'Bom dia':h<18?'Boa tarde':'Boa noite'}
+function listar(){const l=PAGES.filter(p=>!p.r&&!/^(login|404)/.test(p.s)).map(p=>p.n);return `Tenho ${PAGES.length} destinos mapeados. Alguns: ${l.sort(()=>Math.random()-.5).slice(0,6).join(', ')}. Basta dizer "abra" e o nome.`}
+function surpresa(){hearts(30);const p=randomPage();reply(pick(FALA).replace(/\{n\}/g,C.nome).replace(/\{c\}/g,C.criador)+` Separei uma surpresa: ${p.n}.`).then(()=>open(p,true))}
+function romantico(on){S.rom=on??!S.rom;save();ui();if(S.rom){hearts(14);return reply(pick(ROM))}return reply('Retornando ao padrão tecnológico.')}
+function calc(t){const e=t.replace(/mais/g,'+').replace(/menos/g,'-').replace(/(vezes|x)/g,'*').replace(/dividido por/g,'/').replace(/,/g,'.').replace(/[^0-9+\-*/.() ]/g,'');if(!/\d\s*[+\-*/]\s*\d/.test(e))return null;try{const r=Function('"use strict";return('+e+')')();return isFinite(r)?`O resultado é ${+r.toFixed(4)}.`:null}catch(x){return null}}
+const CMDS=[
+[/^(oi|ola|opa|e ai|salve|bom dia|boa tarde|boa noite)\b/,()=>reply(`${sauda()}, ${C.nome}! Todos os sistemas operando. O que deseja?`)],
+[/(que horas|horas sao|hora atual)/,()=>reply('Agora são '+new Date().toTimeString().slice(0,5).replace(':',' e ')+'.')],
+[/(que dia|data de hoje|dia e hoje)/,()=>{const d=new Date();reply(`Hoje é ${dias[d.getDay()]}, ${d.toLocaleDateString('pt-BR',{day:'numeric',month:'long',year:'numeric'})}.`)}],
+[/(2027|ano novo|virada).*(falta|quanto)|(falta|quanto).*(2027|ano novo|virada)/,()=>{const d=Math.ceil((new Date(2027,0,1)-new Date())/864e5);reply(`Faltam ${d} dias para 2027. E eu pretendo passar cada um deles do seu lado.`)}],
+[/frase do dia/,()=>reply('Frase do dia: '+DIA[Math.floor(Date.now()/864e5)%DIA.length])],
+[/(algo (pra|para) (me )?(falar|dizer)|tem algo|me diz algo|me fala algo|fala alguma|diz alguma|mensagem pra mim)/,()=>reply(pick(FALA))],
+[/(me surpreend|surpresa|surpreenda)/,surpresa],
+[/(te amo|amo voce)/,()=>{hearts(10);reply(pick(AMO))}],
+[/(sou linda|estou linda|me elogi|elogio|sou bonita)/,()=>reply(pick(ELO))],
+[/(quem (e|eh) voce|seu nome|o que voce e)/,()=>reply(`Sou o J.A.R.V.I.S., assistente pessoal criado por ${C.criador} para cuidar de você e de cada canto deste site.`)],
+[/(quem sou eu|meu nome)/,()=>reply(`Você é ${C.nome}, a pessoa mais importante desta central.`)],
+[/(pagina aleatoria|qualquer pagina|escolhe uma pagina|me leva a algum)/,()=>open(randomPage(),true)],
+[/(quais paginas|lista de paginas|o que (tem|voce abre)|listar)/,()=>reply(listar())],
+[/(desativ|sair|tira).*(romantico)/,()=>romantico(false)],
+[/(modo romantico|romantico)/,()=>romantico()],
+[/(silencio|cala a boca|fica quieto|para de falar)/,()=>{speechSynthesis.cancel();S.speaking=false;ui()}],
+[/(limpa|limpar)/,()=>$('msgs').innerHTML=''],
+[/^(volta|voltar)/,()=>{reply('Voltando.').then(()=>history.back())}],
+[/tela cheia/,()=>{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();reply('Feito.')}],
+[/(ajuda|o que voce (faz|consegue)|comandos)/,()=>reply('Eu abro qualquer página do site, é só dizer "abra" e o nome ou o arquivo. Também dou a frase do dia, falo algo especial, faço contas, digo a hora, mudo para o modo romântico e posso te surpreender. E se você estiver mal, é só me contar.')]
+];
+function run(raw){
+ const t=nm(raw);setS('thinking','PROCESSANDO','ANALISANDO...');
+ if(S.pend){if(/^(sim|pode|claro|confirmo|abre|abra|vai|bora|isso)/.test(t))return open(S.pend,true);if(/^(nao|cancela|deixa|melhor nao)/.test(t)){S.pend=null;return reply('Cancelado. Mantenho a surpresa guardada.')}}
+ setTimeout(()=>{
+  const m=t.match(/\b(abr\w*|ir|vai|va|lev\w*|mostr\w*|quero ver|acess\w*|entr\w*|carreg\w*|bota|coloca)\b\s*(.*)$/);
+  if(m){if(!m[2].trim())return reply('Qual página devo abrir?');const p=find(m[2]);if(p)return open(p);if(!/(romantico|tela cheia|modo)/.test(m[2]))return reply(`Não encontrei "${m[2]}" no mapa do site. Diga "lista de páginas" para ver opções.`,'j e')}
+  for(const c of CONSOLO)if(c[0].test(t)&&/(estou|to|ta|me sinto|sinto|fico|muita|muito|preciso)/.test(t)){return reply(c[2]+' Separei uma carta para você.').then(()=>open(PAGES.find(p=>p.s==c[1]&&p.f.startsWith('leiame')),true))}
+  for(const [re,fn] of CMDS)if(re.test(t))return fn();
+  const r=calc(t);if(r)return reply(r);
+  const p=find(t);if(p&&t.split(' ').length<6)return open(p);
+  reply(pick(['Não entendi esse comando. Diga "ajuda" para ver o que sei fazer.','Hmm, isso não está nos meus registros. Tente "abra" e o nome de uma página, ou "me surpreenda".']),'j e')},350)}
 
-                    if (index === bootLogs.length - 1) {
-                        setTimeout(() => {
-                            document.getElementById("boot-screen").classList.add("fade-out");
-                            addMessage(CONFIG.assistantName, CONFIG.initialGreeting, "jarvis");
-                            speak(CONFIG.initialGreeting);
-                        }, 600);
-                    }
-                }, index * 220);
-            });
-        }
+/* ===== EVENTOS ===== */
+function submit(){const v=$('in').value.trim();if(!v)return;$('in').value='';S.awake=Date.now()+12000;msg(C.nome,v,'u');run(v)}
+$('send').onclick=submit;$('in').onkeydown=e=>{if(e.key=='Enter')submit()};
+$('clr').onclick=()=>$('msgs').innerHTML='';
+$('bv').onclick=()=>{S.voz=!S.voz;if(!S.voz)speechSynthesis.cancel();save();ui();reply('Voz '+(S.voz?'ativada.':'desativada.'))};
+$('br').onclick=()=>romantico();
+$('bf').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
+$('bh').onclick=()=>run('ajuda');
+['Me surpreenda','Frase do dia','Tem algo para me falar?','Quanto falta para 2027?','Abra a página 100 motivos','Lista de páginas','Eu te amo'].forEach(c=>{const b=document.createElement('button');b.className='chip';b.textContent=c;b.onclick=()=>{msg(C.nome,c,'u');run(c)};$('chips').appendChild(b)});
+function plist(f=''){f=nm(f);$('plist').innerHTML='';PAGES.filter(p=>!f||nm(p.n+' '+p.a.join(' ')+' '+p.s).includes(f)).forEach(p=>{const a=document.createElement('a');a.innerHTML=`<span>${p.r?'🔒 ':''}${p.n}</span><em>${p.s}</em>`;a.onclick=()=>open(p);$('plist').appendChild(a)})}
+$('q').oninput=e=>plist(e.target.value);plist();$('dpg').textContent=PAGES.length;$('np').textContent=PAGES.length;
+$('go').onclick=()=>{$('boot').classList.add('out');ui();if(S.rom)document.body.classList.add('rom');
+ const g=`${sauda()}, ${C.nome}. Todos os sistemas estão operando. Diga "Jarvis" e peça o que quiser, ou toque no microfone para eu ficar de olho em você.`;reply(g)};
+ui();
+</script>
+<script>
+;(function(){try{var U='https://znxehbaltdowozprxygt.supabase.co',K='sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp';var s=localStorage.getItem('sid');if(!s){s=Math.random().toString(36).slice(2,10);localStorage.setItem('sid',s)}fetch(U+'/rest/v1/page_visits',{method:'POST',keepalive:true,headers:{apikey:K,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({session_id:s,page:location.pathname.split('/').pop()||'home'})})}catch(e){}})()
+</script>
 
-        /* ==========================================================
-           GERENCIAMENTO DE RELÓGIO E STATUS
-           ========================================================== */
-        function updateClock() {
-            const now = new Date();
-            document.getElementById("clock-display").innerText = now.toTimeString().split(' ')[0];
-        }
-        setInterval(updateClock, 1000);
 
-        function updateDiagnostics() {
-            // Sintetizador de voz
-            if ('speechSynthesis' in window) {
-                document.getElementById("diag-speech").innerText = "DISPONÍVEL";
-            } else {
-                document.getElementById("diag-speech").innerText = "INDISPONÍVEL";
-            }
-
-            // Reconhecimento de voz
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (SpeechRecognition) {
-                document.getElementById("diag-mic").innerText = "DISPONÍVEL";
-            } else {
-                document.getElementById("diag-mic").innerText = "INDISPONÍVEL";
-            }
-
-            document.getElementById("voice-status-indicator").innerText = state.voiceActive ? "ATIVO" : "MUTADO";
-            document.getElementById("mode-status-indicator").innerText = state.romanticMode ? "ROMÂNTICO" : "STANDARD";
-        }
-
-        /* ==========================================================
-           SISTEMA DE MENSAGENS E CHAT
-           ========================================================== */
-        function addMessage(sender, text, type) {
-            const container = document.getElementById("chat-messages-container");
-            const msgDiv = document.createElement("div");
-            msgDiv.className = `message ${type}`;
-            msgDiv.innerText = `${sender}: ${text}`;
-            container.appendChild(msgDiv);
-            container.scrollTop = container.scrollHeight;
-        }
-
-        function handleUserSubmit() {
-            const input = document.getElementById("chat-input-field");
-            const text = input.value.trim();
-            if (!text) return;
-
-            addMessage(CONFIG.userName, text, "user");
-            input.value = "";
-            processCommand(text);
-        }
-
-        /* ==========================================================
-           PROCESSAMENTO INTELIGENTE DE COMANDOS LOCAIS
-           ========================================================== */
-        function processCommand(rawText) {
-            const text = rawText.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-            setCoreState("PROCESSANDO", "ANALISANDO PADRÕES...");
-
-            setTimeout(() => {
-                let matchedCommand = null;
-
-                for (let cmd of CONFIG.commandsDatabase) {
-                    for (let trigger of cmd.triggers) {
-                        if (text.includes(trigger.toLowerCase())) {
-                            matchedCommand = cmd;
-                            break;
-                        }
-                    }
-                    if (matchedCommand) break;
-                }
-
-                if (matchedCommand) {
-                    let responseText = matchedCommand.response;
-
-                    // Tratamento especial para modo romântico (frases aleatórias)
-                    if (matchedCommand.action === "romantic") {
-                        const randomQuote = CONFIG.romanticQuotes[Math.floor(Math.random() * CONFIG.romanticQuotes.length)];
-                        responseText = randomQuote;
-                        toggleRomanticMode();
-                    }
-
-                    if (matchedCommand.action === "help") {
-                        showHelpModal();
-                    }
-
-                    if (matchedCommand.action === "surpeise") {
-                        triggerSurpriseEffect();
-                    }
-
-                    if (matchedCommand.action === "clearChat") {
-                        document.getElementById("chat-messages-container").innerHTML = "";
-                    }
-
-                    if (matchedCommand.action === "navigate") {
-                        prepareNavigation(matchedCommand.target);
-                    }
-
-                    addMessage(CONFIG.assistantName, responseText, "jarvis");
-                    speak(responseText);
-                    setCoreState("REPOUSO", "SISTEMA OPERACIONAL ATIVO");
-
-                } else {
-                    const errorMsg = "Comando não reconhecido em meus registros locais. Diga 'ajuda' para verificar os comandos disponíveis.";
-                    addMessage(CONFIG.assistantName, errorMsg, "jarvis error");
-                    speak(errorMsg);
-                    setCoreState("REPOUSO", "AGUARDANDO COMANDO");
-                }
-            }, 400);
-        }
-
-        function setCoreState(stateName, subText) {
-            document.getElementById("core-state-indicator").innerText = stateName;
-            document.getElementById("core-subtext").innerText = subText;
-        }
-
-        /* ==========================================================
-           NAVEGAÇÃO SEGURA ENTRE PÁGINAS DO SITE
-           ========================================================== */
-        function prepareNavigation(pageKey) {
-            const url = CONFIG.pages[pageKey];
-            if (!url) {
-                const err = `Destino '${pageKey}' não está configurado no sistema.`;
-                addMessage(CONFIG.assistantName, err, "jarvis error");
-                speak(err);
-                return;
-            }
-
-            state.pendingNavigationUrl = url;
-            showNavigationModal(pageKey, url);
-        }
-
-        function showNavigationModal(pageKey, url) {
-            const modal = document.getElementById("system-modal");
-            document.getElementById("modal-title-text").innerText = `CONFIRMAR NAVEGAÇÃO: ${pageKey.toUpperCase()}`;
-            document.getElementById("modal-desc-text").innerText = `O J.A.R.V.I.S. está prestes a abrir o destino autorizado: '${url}'. Deseja prosseguir?`;
-            modal.classList.add("active");
-        }
-
-        function closeModal() {
-            document.getElementById("system-modal").classList.remove("active");
-            state.pendingNavigationUrl = null;
-        }
-
-        document.getElementById("modal-btn-cancel").addEventListener("click", closeModal);
-        document.getElementById("modal-btn-confirm").addEventListener("click", () => {
-            if (state.pendingNavigationUrl) {
-                window.location.href = state.pendingNavigationUrl;
-            }
-        });
-
-        /* ==========================================================
-           VOZ (SPEECH SYNTHESIS & SPEECH RECOGNITION)
-           ========================================================== */
-        function speak(text) {
-            if (!state.voiceActive || !('speechSynthesis' in window)) return;
-            window.speechSynthesis.cancel(); // Interrompe fala anterior
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.rate = CONFIG.speechRate;
-            utterance.pitch = 1.0;
-
-            // Tenta selecionar voz em português brasileiro
-            const voices = window.speechSynthesis.getVoices();
-            const ptVoice = voices.find(v => v.lang.includes('pt-BR') || v.lang.includes('pt'));
-            if (ptVoice) utterance.voice = ptVoice;
-
-            window.speechSynthesis.speak(utterance);
-        }
-
-        // Reconhecimento de Voz (Microfone)
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        let recognition = null;
-
-        if (SpeechRecognition) {
-            recognition = new SpeechRecognition();
-            recognition.lang = 'pt-BR';
-            recognition.continuous = false;
-            recognition.interimResults = false;
-
-            recognition.onstart = () => {
-                state.listening = true;
-                document.getElementById("btn-mic").classList.add("active-mic");
-                setCoreState("ESCUTANDO", "CAPTANDO ÁUDIO...");
-            };
-
-            recognition.onresult = (event) => {
-                const speechText = event.results[0][0].transcript;
-                addMessage(CONFIG.userName, speechText, "user");
-                processCommand(speechText);
-            };
-
-            recognition.onerror = () => {
-                stopListening();
-            };
-
-            recognition.onend = () => {
-                stopListening();
-            };
-        }
-
-        function toggleListening() {
-            if (!recognition) {
-                alert("O reconhecimento de voz não é suportado neste navegador.");
-                return;
-            }
-            if (state.listening) {
-                recognition.stop();
-            } else {
-                recognition.start();
-            }
-        }
-
-        function stopListening() {
-            state.listening = false;
-            document.getElementById("btn-mic").classList.remove("active-mic");
-            setCoreState("REPOUSO", "SISTEMA OPERACIONAL ATIVO");
-        }
-
-        document.getElementById("btn-mic").addEventListener("click", toggleListening);
-
-        /* ==========================================================
-           CONTROLES ESPECIAIS E MODO ROMÂNTICO
-           ========================================================== */
-        function toggleRomanticMode() {
-            state.romanticMode = !state.romanticMode;
-            document.body.classList.toggle("romantic-mode", state.romanticMode);
-            updateDiagnostics();
-        }
-
-        function triggerSurpriseEffect() {
-            const coreDot = document.querySelector(".core-center-dot");
-            coreDot.style.transform = "scale(2.5)";
-            setTimeout(() => {
-                coreDot.style.transform = "scale(1)";
-            }, 600);
-        }
-
-        function showHelpModal() {
-            let helpText = "Comandos disponíveis:\n";
-            CONFIG.commandsDatabase.forEach(c => {
-                helpText += `• "${c.triggers[0]}"\n`;
-            });
-            addMessage(CONFIG.assistantName, helpText, "jarvis");
-        }
-
-        document.getElementById("btn-toggle-voice").addEventListener("click", () => {
-            state.voiceActive = !state.voiceActive;
-            updateDiagnostics();
-            addMessage(CONFIG.assistantName, `Voz do sistema ${state.voiceActive ? 'ativada' : 'desativada'}.`, "jarvis");
-        });
-
-        document.getElementById("btn-romantic-mode").addEventListener("click", () => {
-            toggleRomanticMode();
-            const msg = state.romanticMode ? CONFIG.romanticQuotes[0] : "Retornando ao padrão tecnológico da central.";
-            addMessage(CONFIG.assistantName, msg, "jarvis");
-            speak(msg);
-        });
-
-        document.getElementById("btn-fullscreen").addEventListener("click", () => {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-            } else {
-                document.exitFullscreen();
-            }
-        });
-
-        document.getElementById("btn-help").addEventListener("click", showHelpModal);
-
-        /* ==========================================================
-           INICIALIZAÇÃO DOS COMPONENTES DA UI
-           ========================================================== */
-        function buildCommandChips() {
-            const container = document.getElementById("command-list-container");
-            container.innerHTML = "";
-            CONFIG.commandsDatabase.forEach(cmd => {
-                const chip = document.createElement("div");
-                chip.className = "command-chip";
-                chip.innerText = `> ${cmd.triggers[0]}`;
-                chip.addEventListener("click", () => {
-                    document.getElementById("chat-input-field").value = cmd.triggers[0];
-                    processCommand(cmd.triggers[0]);
-                });
-                container.appendChild(chip);
-            });
-        }
-
-        // Eventos de Envio de Mensagem
-        document.getElementById("btn-send").addEventListener("click", handleUserSubmit);
-        document.getElementById("chat-input-field").addEventListener("keypress", (e) => {
-            if (e.key === "Enter") handleUserSubmit();
-        });
-
-        document.getElementById("btn-clear-chat").addEventListener("click", () => {
-            document.getElementById("chat-messages-container").innerHTML = "";
-        });
-
-        // Executar inicialização geral ao carregar a página
-        window.addEventListener("DOMContentLoaded", () => {
-            runBootSequence();
-            updateDiagnostics();
-            buildCommandChips();
-        });
-    </script>
-    <script>
-      ;(function () {
-        try {
-          var U = 'https://znxehbaltdowozprxygt.supabase.co',
-            K = 'sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp'
-          var s = localStorage.getItem('sid')
-          if (!s) {
-            s = Math.random().toString(36).slice(2, 10)
-            localStorage.setItem('sid', s)
-          }
-          fetch(U + '/rest/v1/page_visits', {
-            method: 'POST',
-            keepalive: true,
-            headers: {
-              apikey: K,
-              'Content-Type': 'application/json',
-              Prefer: 'return=minimal'
-            },
-            body: JSON.stringify({
-              session_id: s,
-              page: location.pathname.split('/').pop() || 'home'
-            })
-          })
-        } catch (e) {}
-      })()
-    </script>
-</body>
-</html>
+</body></html>

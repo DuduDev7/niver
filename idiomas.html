@@ -1,916 +1,178 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>100 Formas de Dizer Eu Te Amo — Atlas do Amor</title>
-    <style>
-        /* ==========================================================================
-           CONFIGURAÇÕES E VARIÁVEIS DE TEMA (PERSONALIZÁVEIS)
-           ========================================================================== */
-        :root {
-            --bg-deep: #060408;
-            --bg-card: rgba(22, 12, 26, 0.85);
-            --wine: #4A1525;
-            --red-glow: #D93858;
-            --violet: #8A307F;
-            --gold: #E5C158;
-            --white-cold: #F4EEF8;
-            --text-muted: #A396AB;
-            --border-glow: rgba(217, 56, 88, 0.3);
-            --font-serif: 'Georgia', serif;
-            --font-sans: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        /* ==========================================================================
-           RESET E ESTILOS GLOBAIS
-           ========================================================================== */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-        }
-
-        body {
-            background-color: var(--bg-deep);
-            color: var(--white-cold);
-            font-family: var(--font-sans);
-            min-height: 100vh;
-            overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        /* Fundo estelar / constelação sutil */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: radial-gradient(white 1px, transparent 0);
-            background-size: 50px 50px;
-            opacity: 0.05;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* ==========================================================================
-           TELA DE ABERTURA (INTRODUÇÃO)
-           ========================================================================== */
-        #intro-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: radial-gradient(circle at center, #1C0A18 0%, var(--bg-deep) 100%);
-            z-index: 10000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            text-align: center;
-            transition: opacity 1s ease, visibility 1s ease;
-        }
-
-        #intro-screen.fade-out {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .intro-content {
-            max-width: 650px;
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-            animation: fadeInIntro 1.2s ease forwards;
-        }
-
-        @keyframes fadeInIntro {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .intro-title {
-            font-family: var(--font-serif);
-            font-size: clamp(28px, 5vw, 42px);
-            letter-spacing: 3px;
-            color: var(--white-cold);
-            text-shadow: 0 0 20px rgba(217, 56, 88, 0.4);
-        }
-
-        .intro-subtitle {
-            font-size: clamp(14px, 2vw, 17px);
-            color: var(--text-muted);
-            line-height: 1.6;
-            font-family: var(--font-serif);
-            font-style: italic;
-        }
-
-        .atlas-btn {
-            background: linear-gradient(135deg, var(--wine), var(--violet));
-            border: 1px solid var(--gold);
-            color: var(--gold);
-            padding: 14px 32px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-            letter-spacing: 2px;
-            transition: var(--transition-smooth);
-            align-self: center;
-            box-shadow: 0 0 20px rgba(229, 193, 88, 0.2);
-        }
-
-        .atlas-btn:hover {
-            transform: scale(1.05);
-            background: linear-gradient(135deg, var(--violet), var(--red-glow));
-            color: #fff;
-            box-shadow: 0 0 30px rgba(217, 56, 88, 0.5);
-            border-color: #fff;
-        }
-
-        /* ==========================================================================
-           HEADER / NAVBAR DA EXPERIÊNCIA
-           ========================================================== */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 40px;
-            background: rgba(6, 4, 8, 0.85);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(229, 193, 88, 0.15);
-            z-index: 100;
-            position: relative;
-        }
-
-        .header-logo {
-            font-family: var(--font-serif);
-            font-size: 16px;
-            letter-spacing: 2px;
-            color: var(--gold);
-        }
-
-        .progress-indicator {
-            font-size: 13px;
-            color: var(--text-muted);
-            letter-spacing: 1px;
-        }
-
-        .progress-indicator span {
-            color: var(--red-glow);
-            font-weight: bold;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 15px;
-        }
-
-        .icon-btn {
-            background: transparent;
-            border: 1px solid rgba(229, 193, 88, 0.3);
-            color: var(--white-cold);
-            padding: 8px 14px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: var(--transition-smooth);
-        }
-
-        .icon-btn:hover {
-            border-color: var(--gold);
-            color: var(--gold);
-            background: rgba(229, 193, 88, 0.05);
-        }
-
-        /* ==========================================================================
-           LAYOUT PRINCIPAL: O ATLAS DE LUZES (EXPERIÊNCIA CENTRAL)
-           ========================================================== */
-        main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 30px;
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
-            gap: 25px;
-            z-index: 10;
-        }
-
-        .controls-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            background: var(--bg-card);
-            padding: 15px 25px;
-            border-radius: 12px;
-            border: 1px solid var(--border-glow);
-        }
-
-        .search-input {
-            background: rgba(6, 4, 8, 0.6);
-            border: 1px solid rgba(229, 193, 88, 0.2);
-            border-radius: 20px;
-            padding: 8px 18px;
-            color: var(--white-cold);
-            font-size: 13px;
-            outline: none;
-            width: 260px;
-            transition: var(--transition-smooth);
-        }
-
-        .search-input:focus {
-            border-color: var(--red-glow);
-            box-shadow: 0 0 10px rgba(217, 56, 88, 0.3);
-        }
-
-        .filters-group {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .filter-chip {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 6px 14px;
-            border-radius: 15px;
-            cursor: pointer;
-            font-size: 11px;
-            color: var(--text-muted);
-            transition: var(--transition-smooth);
-        }
-
-        .filter-chip.active, .filter-chip:hover {
-            background: var(--red-glow);
-            border-color: var(--red-glow);
-            color: #fff;
-        }
-
-        /* Grid de Constelações / Cartões de Idiomas */
-        .atlas-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 15px;
-            max-height: calc(100vh - 280px);
-            overflow-y: auto;
-            padding-right: 5px;
-            scroll-behavior: smooth;
-        }
-
-        .atlas-card {
-            background: var(--bg-card);
-            border: 1px solid rgba(229, 193, 88, 0.15);
-            border-radius: 10px;
-            padding: 20px;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .atlas-card::after {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 3px; height: 100%;
-            background: var(--gold);
-            opacity: 0.3;
-            transition: var(--transition-smooth);
-        }
-
-        .atlas-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--red-glow);
-            box-shadow: 0 8px 25px rgba(217, 56, 88, 0.2);
-        }
-
-        .atlas-card:hover::after {
-            opacity: 1;
-            background: var(--red-glow);
-        }
-
-        .atlas-card.discovered::before {
-            content: "✓";
-            position: absolute;
-            top: 15px; right: 15px;
-            font-size: 11px;
-            color: var(--gold);
-        }
-
-        .card-number {
-            font-size: 10px;
-            color: var(--text-muted);
-            letter-spacing: 1px;
-        }
-
-        .card-language {
-            font-family: var(--font-serif);
-            font-size: 15px;
-            color: var(--white-cold);
-            font-weight: bold;
-        }
-
-        .card-phrase-preview {
-            font-size: 12px;
-            color: var(--text-muted);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* ==========================================================================
-           MODAL DE EXPERIÊNCIA DA EXPRESSÃO (DETALHE DO IDIOMA)
-           ========================================================== */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(6, 4, 8, 0.9);
-            backdrop-filter: blur(15px);
-            z-index: 20000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition-smooth);
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .expression-modal-box {
-            background: radial-gradient(circle at top, #201025 0%, #0D0610 100%);
-            border: 1px solid var(--gold);
-            border-radius: 16px;
-            padding: 40px;
-            max-width: 650px;
-            width: 100%;
-            box-shadow: 0 0 50px rgba(229, 193, 88, 0.2);
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-            position: relative;
-            animation: scaleModal 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        @keyframes scaleModal {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .modal-header-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 12px;
-            color: var(--gold);
-            letter-spacing: 2px;
-        }
-
-        .expression-display-area {
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            padding: 20px 0;
-            border-top: 1px solid rgba(255,255,255,0.08);
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-        }
-
-        .expression-original {
-            font-family: var(--font-serif);
-            font-size: clamp(28px, 4vw, 40px);
-            color: var(--white-cold);
-            text-shadow: 0 0 15px rgba(217, 56, 88, 0.4);
-            line-height: 1.3;
-        }
-
-        .expression-transliteration {
-            font-size: 14px;
-            color: var(--text-muted);
-            font-style: italic;
-        }
-
-        .expression-translation {
-            font-size: 16px;
-            color: var(--gold);
-            font-weight: 600;
-        }
-
-        .expression-meta {
-            font-size: 12px;
-            color: var(--text-muted);
-            line-height: 1.5;
-            text-align: center;
-        }
-
-        .modal-actions-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 10px;
-        }
-
-        .modal-left-btns, .modal-right-btns {
-            display: flex;
-            gap: 10px;
-        }
-
-        /* ==========================================================================
-           TELA FINAL / CONCLUSÃO DO ATLAS (100 DE 100)
-           ========================================================== */
-        #completion-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(6, 4, 8, 0.95);
-            backdrop-filter: blur(20px);
-            z-index: 30000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition-smooth);
-        }
-
-        #completion-screen.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .completion-box {
-            background: radial-gradient(circle at center, #2C1020 0%, #0A0408 100%);
-            border: 2px solid var(--gold);
-            border-radius: 16px;
-            padding: 50px;
-            max-width: 650px;
-            width: 100%;
-            box-shadow: 0 0 60px rgba(229, 193, 88, 0.3);
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-            text-align: center;
-        }
-
-        .personal-message-display {
-            background: rgba(6, 4, 8, 0.8);
-            border: 1px dashed var(--gold);
-            padding: 20px;
-            border-radius: 10px;
-            font-family: var(--font-serif);
-            font-style: italic;
-            font-size: 15px;
-            line-height: 1.7;
-            color: var(--white-cold);
-        }
-
-        /* Responsividade */
-        @media (max-width: 768px) {
-            header { padding: 15px 20px; }
-            main { padding: 15px; }
-            .controls-bar { flex-direction: column; align-items: stretch; }
-            .search-input { width: 100%; }
-        }
-    </style>
+<html lang="pt-BR"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>100 Formas de Dizer Eu Te Amo — Atlas do Amor</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+:root{--bg:#060408;--red:#d93858;--vio:#8a307f;--gold:#e5c158;--w:#f4eef8;--mu:#a396ab;--g:rgba(20,10,26,.78);--bd:rgba(217,56,88,.32);--se:'Cormorant Garamond',Georgia,serif;--sa:'Inter','Segoe UI',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:radial-gradient(ellipse at 50% 40%,#1c0a18,var(--bg) 70%);color:var(--w);font:400 15px/1.45 var(--sa);touch-action:none}
+canvas{position:fixed;inset:0;width:100%;height:100%;cursor:grab}canvas:active{cursor:grabbing}
+button{font:600 11px var(--sa);letter-spacing:2px;text-transform:uppercase;color:var(--w);background:var(--g);border:1px solid var(--bd);border-radius:30px;padding:12px 20px;cursor:pointer;backdrop-filter:blur(14px);transition:.25s}
+button:hover,button.on{background:var(--red);border-color:var(--red);box-shadow:0 0 22px rgba(217,56,88,.5)}
+header{position:fixed;top:0;left:0;right:0;padding:calc(14px + env(safe-area-inset-top)) 20px 12px;display:flex;justify-content:space-between;align-items:center;pointer-events:none;z-index:3}
+.lg{font:700 clamp(16px,3.4vw,24px) var(--se);letter-spacing:4px;text-shadow:0 0 18px var(--red)}
+.cnt{font:600 12px var(--sa);letter-spacing:2px;color:var(--gold);text-align:right}.cnt b{font-size:20px}
+#pb{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--vio),var(--red),var(--gold));box-shadow:0 0 12px var(--red);width:0;z-index:4;transition:width .8s}
+#tick{position:fixed;top:calc(64px + env(safe-area-inset-top));left:0;right:0;text-align:center;font:italic 500 clamp(20px,4vw,30px) var(--se);color:var(--w);opacity:0;transition:opacity 1s;pointer-events:none;z-index:2;text-shadow:0 0 20px var(--red);padding:0 16px}
+#tick small{display:block;font:600 10px var(--sa);letter-spacing:3px;color:var(--mu);margin-top:2px;font-style:normal;text-transform:uppercase}
+.bar{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom));left:0;right:0;display:flex;gap:10px;justify-content:center;z-index:3;padding:0 12px}
+#tip{position:fixed;pointer-events:none;background:var(--g);border:1px solid var(--bd);border-radius:10px;padding:6px 12px;font-size:13px;opacity:0;transition:opacity .15s;z-index:5;white-space:nowrap;transform:translate(-50%,-140%)}
+.sheet{position:fixed;z-index:6;background:var(--g);backdrop-filter:blur(22px);border:1px solid var(--bd);box-shadow:0 20px 80px rgba(0,0,0,.7),0 0 60px rgba(138,48,127,.25);transition:transform .55s cubic-bezier(.16,1,.3,1),opacity .4s;opacity:0;pointer-events:none}
+.sheet.open{opacity:1;pointer-events:auto;transform:none!important}
+#card{right:4vw;top:50%;width:min(470px,40vw);border-radius:24px;padding:30px 28px;transform:translate(60px,-50%);max-height:90dvh;overflow:auto;text-align:center}
+#card.open{transform:translateY(-50%)!important}
+.meta{display:flex;justify-content:space-between;font:600 10px var(--sa);letter-spacing:3px;color:var(--mu)}
+#cl{font:700 13px var(--sa);letter-spacing:5px;color:var(--gold);margin:20px 0 6px;text-transform:uppercase}
+#co{font:700 clamp(30px,6vw,52px)/1.15 var(--se);text-shadow:0 0 30px rgba(217,56,88,.55);word-break:break-word;animation:up .7s}
+#co.l{font-size:clamp(22px,4.4vw,34px)}
+#ct{font:500 14px 'Courier New',monospace;color:var(--mu);margin:10px 0 4px;word-break:break-word}
+#cr{font:italic 500 22px var(--se);color:var(--red);margin-bottom:14px}
+#cn{color:var(--mu);font-size:14px;border-top:1px solid var(--bd);padding-top:14px;margin-bottom:18px}
+@keyframes up{from{opacity:0;transform:translateY(14px);filter:blur(6px)}}
+.acts{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}.acts button{padding:10px 14px;font-size:10px}
+.nv{position:absolute;top:50%;background:none;border:0;font-size:22px;padding:10px;color:var(--mu);backdrop-filter:none}.nv:hover{background:none;box-shadow:none;color:var(--red)}
+#dr{right:0;top:0;bottom:0;width:min(400px,92vw);transform:translateX(100%);display:flex;flex-direction:column;border-radius:24px 0 0 24px;padding:calc(18px + env(safe-area-inset-top)) 16px 16px}
+#dr input{width:100%;background:rgba(0,0,0,.4);border:1px solid var(--bd);border-radius:12px;padding:12px 14px;color:var(--w);font:inherit;font-size:16px;outline:0;margin:12px 0 10px}
+#dr input:focus{border-color:var(--red)}
+.fl{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none}.fl button{padding:7px 13px;font-size:10px;white-space:nowrap;flex:none}
+#ls{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:6px;touch-action:pan-y;overscroll-behavior:contain}
+.it{display:flex;align-items:center;gap:12px;text-align:left;border-radius:14px;padding:11px 14px;letter-spacing:0;text-transform:none;font:500 15px var(--sa);background:rgba(255,255,255,.04)}
+.it b{font:600 11px var(--sa);color:var(--mu);width:26px}.it span{flex:1}.it em{font:italic 500 17px var(--se);color:var(--gold);max-width:45%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.it.d b{color:var(--gold)}
+.top{display:flex;justify-content:space-between;align-items:center}.top h3{font:700 18px var(--se);letter-spacing:3px}
+#intro,#end{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;gap:22px;background:radial-gradient(circle,#1c0a18,var(--bg));transition:opacity 1.2s,visibility 1.2s}
+#intro.out{opacity:0;visibility:hidden}
+#end{opacity:0;visibility:hidden;background:rgba(6,4,8,.93);backdrop-filter:blur(10px)}#end.open{opacity:1;visibility:visible}
+.t{font:700 clamp(30px,8vw,64px)/1.1 var(--se);letter-spacing:4px;text-shadow:0 0 40px var(--red);max-width:900px}
+.s{font:italic 500 clamp(18px,3.4vw,26px) var(--se);color:var(--mu);max-width:620px}
+.heart{position:fixed;bottom:-40px;z-index:30;pointer-events:none;animation:fl 5s ease-in forwards}@keyframes fl{to{transform:translateY(-115vh) rotate(30deg);opacity:0}}
+@media(max-width:760px){
+#card{right:0;left:0;top:auto;bottom:0;width:100%;border-radius:26px 26px 0 0;padding:22px 20px calc(20px + env(safe-area-inset-bottom));transform:translateY(100%);max-height:62dvh}
+#card.open{transform:none!important}
+#dr{top:auto;left:0;right:0;bottom:0;width:100%;height:78dvh;border-radius:26px 26px 0 0;transform:translateY(100%)}
+#co{font-size:clamp(26px,8vw,40px)}#cr{font-size:19px}.bar button{padding:11px 14px;font-size:10px;letter-spacing:1px}.nv{top:44%}}
+</style>
 </head>
 <body>
+<div id="pb" style="width: 0%;"></div>
+<canvas id="g" width="786" height="1704"></canvas>
+<header><div class="lg">ATLAS DO AMOR</div><div class="cnt">DESCOBERTAS<br><b id="n">0</b> / 100</div></header>
+<div id="tick" style="opacity: 0.9;">Volim te<small>Bósnio</small></div><div id="tip"></div>
+<div class="bar"><button id="bR">✦ Aleatório</button><button id="bL">☰ Lista</button></div>
 
-    <!-- ABERTURA / INTRODUÇÃO -->
-    <div id="intro-screen">
-        <div class="intro-content">
-            <h1 class="intro-title" id="intro-main-title">100 FORMAS DE DIZER EU TE AMO</h1>
-            <p class="intro-subtitle" id="intro-sub-text">"Em cada idioma, as palavras mudam. O sentimento pode continuar o mesmo."</p>
-            <button class="atlas-btn" id="btn-start-discovery">COMEÇAR A DESCOBERTA</button>
-        </div>
-    </div>
+<div id="card" class="sheet">
+ <button class="nv" id="pv" style="left:0">‹</button><button class="nv" id="nx" style="right:0">›</button>
+ <div class="meta"><span id="ci"></span><span id="cg"></span></div>
+ <div id="cl"></div><div id="co"></div><div id="ct"></div><div id="cr"></div><div id="cn"></div>
+ <div class="acts"><button id="bA">🔊 Ouvir</button><button id="bC">Copiar</button><button id="bF">☆ Favoritar</button><button id="bX">Fechar</button></div>
+</div>
 
-    <!-- HEADER -->
-    <header>
-        <div class="header-logo" id="header-title-display">ATLAS DO AMOR</div>
-        <div class="progress-indicator">DESCOBERTAS: <span id="counter-discovered">0</span>/100</div>
-        <div class="header-actions">
-            <button class="icon-btn" id="btn-random">IDIOMA ALEATÓRIO</button>
-            <button class="icon-btn" id="btn-reset">REINICIAR</button>
-        </div>
-    </header>
+<div id="dr" class="sheet">
+ <div class="top"><h3>OS 100 IDIOMAS</h3><button id="dx" style="padding:8px 14px">Fechar</button></div>
+ <input type="text" id="q" placeholder="Buscar idioma ou expressão..." autocomplete="off">
+ <div class="fl" id="fl"><button class="on">Todos</button><button class="">Europa</button><button class="">Ásia</button><button class="">África</button><button class="">Américas</button><button class="">Oceania</button><button class="">★ Favoritos</button><button class="">Descobertos</button></div><div id="ls"><button class="it " data-i="1"><b>001</b><span>Francês</span><em>· · ·</em></button><button class="it " data-i="2"><b>002</b><span>Espanhol</span><em>· · ·</em></button><button class="it " data-i="3"><b>003</b><span>Italiano</span><em>· · ·</em></button><button class="it " data-i="4"><b>004</b><span>Alemão</span><em>· · ·</em></button><button class="it " data-i="5"><b>005</b><span>Inglês</span><em>· · ·</em></button><button class="it " data-i="6"><b>006</b><span>Português</span><em>· · ·</em></button><button class="it " data-i="7"><b>007</b><span>Japonês</span><em>· · ·</em></button><button class="it " data-i="8"><b>008</b><span>Mandarim</span><em>· · ·</em></button><button class="it " data-i="9"><b>009</b><span>Coreano</span><em>· · ·</em></button><button class="it " data-i="10"><b>010</b><span>Russo</span><em>· · ·</em></button><button class="it " data-i="11"><b>011</b><span>Grego</span><em>· · ·</em></button><button class="it " data-i="12"><b>012</b><span>Árabe</span><em>· · ·</em></button><button class="it " data-i="13"><b>013</b><span>Hebraico</span><em>· · ·</em></button><button class="it " data-i="14"><b>014</b><span>Hindi</span><em>· · ·</em></button><button class="it " data-i="15"><b>015</b><span>Turco</span><em>· · ·</em></button><button class="it " data-i="16"><b>016</b><span>Holandês</span><em>· · ·</em></button><button class="it " data-i="17"><b>017</b><span>Sueco</span><em>· · ·</em></button><button class="it " data-i="18"><b>018</b><span>Dinamarquês</span><em>· · ·</em></button><button class="it " data-i="19"><b>019</b><span>Norueguês</span><em>· · ·</em></button><button class="it " data-i="20"><b>020</b><span>Finlandês</span><em>· · ·</em></button><button class="it " data-i="21"><b>021</b><span>Polonês</span><em>· · ·</em></button><button class="it " data-i="22"><b>022</b><span>Tcheco</span><em>· · ·</em></button><button class="it " data-i="23"><b>023</b><span>Húngaro</span><em>· · ·</em></button><button class="it " data-i="24"><b>024</b><span>Romeno</span><em>· · ·</em></button><button class="it " data-i="25"><b>025</b><span>Búlgaro</span><em>· · ·</em></button><button class="it " data-i="26"><b>026</b><span>Ucraniano</span><em>· · ·</em></button><button class="it " data-i="27"><b>027</b><span>Vietnamita</span><em>· · ·</em></button><button class="it " data-i="28"><b>028</b><span>Tailandês</span><em>· · ·</em></button><button class="it " data-i="29"><b>029</b><span>Indonésio</span><em>· · ·</em></button><button class="it " data-i="30"><b>030</b><span>Malaio</span><em>· · ·</em></button><button class="it " data-i="31"><b>031</b><span>Tagalo (Filipino)</span><em>· · ·</em></button><button class="it " data-i="32"><b>032</b><span>Persa (Fars)</span><em>· · ·</em></button><button class="it " data-i="33"><b>033</b><span>Urdu</span><em>· · ·</em></button><button class="it " data-i="34"><b>034</b><span>Bengali</span><em>· · ·</em></button><button class="it " data-i="35"><b>035</b><span>Tâmil</span><em>· · ·</em></button><button class="it " data-i="36"><b>036</b><span>Telugu</span><em>· · ·</em></button><button class="it " data-i="37"><b>037</b><span>Marata</span><em>· · ·</em></button><button class="it " data-i="38"><b>038</b><span>Guzerate</span><em>· · ·</em></button><button class="it " data-i="39"><b>039</b><span>Panjabi</span><em>· · ·</em></button><button class="it " data-i="40"><b>040</b><span>Suaíli</span><em>· · ·</em></button><button class="it " data-i="41"><b>041</b><span>Africâner</span><em>· · ·</em></button><button class="it " data-i="42"><b>042</b><span>Amárico</span><em>· · ·</em></button><button class="it " data-i="43"><b>043</b><span>Zulú</span><em>· · ·</em></button><button class="it " data-i="44"><b>044</b><span>Xosa</span><em>· · ·</em></button><button class="it " data-i="45"><b>045</b><span>Iorubá</span><em>· · ·</em></button><button class="it " data-i="46"><b>046</b><span>Igbo</span><em>· · ·</em></button><button class="it " data-i="47"><b>047</b><span>Hauçá</span><em>· · ·</em></button><button class="it " data-i="48"><b>048</b><span>Malgaxe</span><em>· · ·</em></button><button class="it " data-i="49"><b>049</b><span>Somalis</span><em>· · ·</em></button><button class="it " data-i="50"><b>050</b><span>Havaiano</span><em>· · ·</em></button><button class="it " data-i="51"><b>051</b><span>Maori</span><em>· · ·</em></button><button class="it " data-i="52"><b>052</b><span>Samoano</span><em>· · ·</em></button><button class="it " data-i="53"><b>053</b><span>Tonganês</span><em>· · ·</em></button><button class="it " data-i="54"><b>054</b><span>Fijiano</span><em>· · ·</em></button><button class="it " data-i="55"><b>055</b><span>Quéchua</span><em>· · ·</em></button><button class="it " data-i="56"><b>056</b><span>Guarani</span><em>· · ·</em></button><button class="it " data-i="57"><b>057</b><span>Náuatl</span><em>· · ·</em></button><button class="it " data-i="58"><b>058</b><span>Inuktitut</span><em>· · ·</em></button><button class="it " data-i="59"><b>059</b><span>Groenlandês</span><em>· · ·</em></button><button class="it " data-i="60"><b>060</b><span>Catalão</span><em>· · ·</em></button><button class="it " data-i="61"><b>061</b><span>Basco</span><em>· · ·</em></button><button class="it " data-i="62"><b>062</b><span>Galego</span><em>· · ·</em></button><button class="it " data-i="63"><b>063</b><span>Gaélico Escocês</span><em>· · ·</em></button><button class="it " data-i="64"><b>064</b><span>Irlandês</span><em>· · ·</em></button><button class="it " data-i="65"><b>065</b><span>Galês</span><em>· · ·</em></button><button class="it " data-i="66"><b>066</b><span>Bretão</span><em>· · ·</em></button><button class="it " data-i="67"><b>067</b><span>Esperanto</span><em>· · ·</em></button><button class="it " data-i="68"><b>068</b><span>Latim</span><em>· · ·</em></button><button class="it " data-i="69"><b>069</b><span>Islandês</span><em>· · ·</em></button><button class="it " data-i="70"><b>070</b><span>Maltês</span><em>· · ·</em></button><button class="it " data-i="71"><b>071</b><span>Albanês</span><em>· · ·</em></button><button class="it " data-i="72"><b>072</b><span>Sérvio</span><em>· · ·</em></button><button class="it " data-i="73"><b>073</b><span>Croata</span><em>· · ·</em></button><button class="it " data-i="74"><b>074</b><span>Bósnio</span><em>· · ·</em></button><button class="it " data-i="75"><b>075</b><span>Esloveno</span><em>· · ·</em></button><button class="it " data-i="76"><b>076</b><span>Eslovaco</span><em>· · ·</em></button><button class="it " data-i="77"><b>077</b><span>Lituano</span><em>· · ·</em></button><button class="it " data-i="78"><b>078</b><span>Letão</span><em>· · ·</em></button><button class="it " data-i="79"><b>079</b><span>Estoniano</span><em>· · ·</em></button><button class="it " data-i="80"><b>080</b><span>Luxemburguês</span><em>· · ·</em></button><button class="it " data-i="81"><b>081</b><span>Armênio</span><em>· · ·</em></button><button class="it " data-i="82"><b>082</b><span>Georgiano</span><em>· · ·</em></button><button class="it " data-i="83"><b>083</b><span>Azeri</span><em>· · ·</em></button><button class="it " data-i="84"><b>084</b><span>Cazaque</span><em>· · ·</em></button><button class="it " data-i="85"><b>085</b><span>Uzbeque</span><em>· · ·</em></button><button class="it " data-i="86"><b>086</b><span>Quirguiz</span><em>· · ·</em></button><button class="it " data-i="87"><b>087</b><span>Tajique</span><em>· · ·</em></button><button class="it " data-i="88"><b>088</b><span>Mongol</span><em>· · ·</em></button><button class="it " data-i="89"><b>089</b><span>Nepali</span><em>· · ·</em></button><button class="it " data-i="90"><b>090</b><span>Cingalês</span><em>· · ·</em></button><button class="it " data-i="91"><b>091</b><span>Birmanês</span><em>· · ·</em></button><button class="it " data-i="92"><b>092</b><span>Khmer (Camboja)</span><em>· · ·</em></button><button class="it " data-i="93"><b>093</b><span>Laosiano</span><em>· · ·</em></button><button class="it " data-i="94"><b>094</b><span>Curdo</span><em>· · ·</em></button><button class="it " data-i="95"><b>095</b><span>Yiddish</span><em>· · ·</em></button><button class="it " data-i="96"><b>096</b><span>Tâmil do Sri Lanka</span><em>· · ·</em></button><button class="it " data-i="97"><b>097</b><span>Tétum</span><em>· · ·</em></button><button class="it " data-i="98"><b>098</b><span>Frísio</span><em>· · ·</em></button><button class="it " data-i="99"><b>099</b><span>Sardenho</span><em>· · ·</em></button><button class="it " data-i="100"><b>100</b><span>Feroês</span><em>· · ·</em></button></div>
+ <button id="bZ" style="margin-top:10px;padding:9px;font-size:10px;opacity:.7">Reiniciar progresso</button>
+</div>
 
-    <!-- CONTEÚDO PRINCIPAL -->
-    <main>
-        <div class="controls-bar">
-            <input type="text" class="search-input" id="search-input" placeholder="Pesquisar idioma ou expressão..." autocomplete="off">
-            <div class="filters-group" id="region-filters">
-                <div class="filter-chip active" data-region="all">Todos</div>
-                <div class="filter-chip" data-region="Europa">Europa</div>
-                <div class="filter-chip" data-region="Ásia">Ásia</div>
-                <div class="filter-chip" data-region="África">África</div>
-                <div class="filter-chip" data-region="Américas">Américas</div>
-                <div class="filter-chip" data-region="Oceania">Oceania</div>
-            </div>
-        </div>
+<div id="intro" class="out"><h1 class="t">100 FORMAS DE DIZER EU TE AMO</h1><p class="s">"Em cada idioma, as palavras mudam. O sentimento pode continuar o mesmo."</p><button id="go" style="font-size:13px;padding:16px 36px">Começar a descoberta</button></div>
+<div id="end"><h2 class="t" style="font-size:clamp(26px,6vw,44px)">ATLAS COMPLETO</h2><p class="s" id="fm"></p><button id="bE">Rever as estrelas</button></div>
 
-        <div class="atlas-grid" id="atlas-grid-container">
-            <!-- Preenchido via JavaScript -->
-        </div>
-    </main>
+<script>
+const DB=[{"id":1,"lang":"Francês","region":"Europa","original":"Je t'aime","translit":"[zhuh tem]","translation":"Eu te amo","note":"Expressão clássica de afeto romântico na França.","la":46,"lo":2,"c":"fr"},{"id":2,"lang":"Espanhol","region":"Europa","original":"Te quiero","translit":"[te ki̯e.ɾo]","translation":"Eu te quero / Eu te amo","note":"Usado tanto para carinho profundo quanto para romance.","la":40,"lo":-4,"c":"es"},{"id":3,"lang":"Italiano","region":"Europa","original":"Ti amo","translit":"[ti ˈa.mo]","translation":"Eu te amo","note":"Reservado estritamente para o amor romântico na Itália.","la":42,"lo":12,"c":"it"},{"id":4,"lang":"Alemão","region":"Europa","original":"Ich liebe dich","translit":"[ɪç ˈliː.bə dɪç]","translation":"Eu te amo","note":"Declaração profunda e significativa no mundo germânico.","la":51,"lo":10,"c":"de"},{"id":5,"lang":"Inglês","region":"Europa","original":"I love you","translit":"[aɪ lʌv ju]","translation":"Eu te amo","note":"A forma mais universal de declaração no idioma inglês.","la":52,"lo":-1,"c":"en"},{"id":6,"lang":"Português","region":"Américas","original":"Eu te amo","translit":"[ew t(e) ˈã.mu]","translation":"Eu te amo","note":"A expressão mais pura do afeto em língua portuguesa.","la":-15,"lo":-50,"c":"pt"},{"id":7,"lang":"Japonês","region":"Ásia","original":"愛してる","translit":"[aishiteru]","translation":"Eu te amo","note":"Usado com cautela e sinceridade na cultura japonesa.","la":36,"lo":138,"c":"ja"},{"id":8,"lang":"Mandarim","region":"Ásia","original":"我爱你","translit":"[wǒ ài nǐ]","translation":"Eu te amo","note":"Fórmula tradicional de afeto romântico na China.","la":35,"lo":105,"c":"zh"},{"id":9,"lang":"Coreano","region":"Ásia","original":"사랑해","translit":"[saranghae]","translation":"Eu te amo","note":"Forma afetuosa e direta de declarar amor.","la":36,"lo":128,"c":"ko"},{"id":10,"lang":"Russo","region":"Europa","original":"Я тебя люблю","translit":"[ja tʲɪˈbʲa lʲubˈlʲu]","translation":"Eu te amo","note":"Expressão central de afeto na Rússia.","la":56,"lo":38,"c":"ru"},{"id":11,"lang":"Grego","region":"Europa","original":"Σ' αγαπώ","translit":"[s aɣaˈpo]","translation":"Eu te amo","note":"Do grego moderno, carregado de paixão.","la":39,"lo":22,"c":"el"},{"id":12,"lang":"Árabe","region":"Ásia","original":"أحبك","translit":"[uhibbuka / uhibbuki]","translation":"Eu te amo","note":"Variável conforme o gênero da pessoa amada.","la":24,"lo":45,"c":"ar"},{"id":13,"lang":"Hebraico","region":"Ásia","original":"אני אוהב אותך","translit":"[ani ohev otakh]","translation":"Eu te amo","note":"Forma falada por homem para mulher (e variações).","la":31,"lo":35,"c":"he"},{"id":14,"lang":"Hindi","region":"Ásia","original":"मैं तुमसे प्यार करता हूँ","translit":"[main tumse pyaar karta hoon]","translation":"Eu te amo","note":"Expressão romântica tradicional na Índia.","la":25,"lo":80,"c":"hi"},{"id":15,"lang":"Turco","region":"Europa","original":"Seni seviyorum","translit":"[seˈni se.vijˈo.ɾum]","translation":"Eu te amo","note":"Declaração sincera e calorosa na Turquia.","la":39,"lo":35,"c":"tr"},{"id":16,"lang":"Holandês","region":"Europa","original":"Ik hou van jou","translit":"[ɪk ɦʌu vɑn jʌu]","translation":"Eu amo você","note":"A forma padrão de afeto nos Países Baixos.","la":52,"lo":5,"c":"nl"},{"id":17,"lang":"Sueco","region":"Europa","original":"Jag älskar dig","translit":"[jɑːɡ ˈɛlskar deɪ]","translation":"Eu te amo","note":"Doce e melódico na língua sueca.","la":62,"lo":15,"c":"sv"},{"id":18,"lang":"Dinamarquês","region":"Europa","original":"Jeg elsker dig","translit":"[jɑw ˈelsɡɐ di]","translation":"Eu te amo","note":"Expressão afetuosa na Dinamarca.","la":56,"lo":10,"c":"da"},{"id":19,"lang":"Norueguês","region":"Europa","original":"Jeg elsker deg","translit":"[jæːɡ ˈɛlskər dæi]","translation":"Eu te amo","note":"Afeto profundo em terras norueguesas.","la":61,"lo":9,"c":"no"},{"id":20,"lang":"Finlandês","region":"Europa","original":"Minä rakastan sinua","translit":"[ˈminæ ˈrɑkɑstɑn ˈsinuɑ]","translation":"Eu te amo","note":"Termo rico em sonoridade na Finlândia.","la":64,"lo":26,"c":"fi"},{"id":21,"lang":"Polonês","region":"Europa","original":"Kocham cię","translit":"[ˈkɔ.xam t͡ɕɛ]","translation":"Eu te amo","note":"Declaração apaixonada na Polônia.","la":52,"lo":19,"c":"pl"},{"id":22,"lang":"Tcheco","region":"Europa","original":"Miluji tě","translit":"[ˈmɪlʊjɪ tɛ]","translation":"Eu te amo","note":"Afeto sincero na República Tcheca.","la":49.8,"lo":15.5,"c":"cs"},{"id":23,"lang":"Húngaro","region":"Europa","original":"Szeretlek","translit":"[ˈsɛrɛtlɛk]","translation":"Eu te amo","note":"Expressão única e calorosa no idioma húngaro.","la":47,"lo":19,"c":"hu"},{"id":24,"lang":"Romeno","region":"Europa","original":"Te iubesc","translit":"[te juˈbesk]","translation":"Eu te amo","note":"De raiz latina, vibrante e romântico.","la":46,"lo":25,"c":"ro"},{"id":25,"lang":"Búlgaro","region":"Europa","original":"Обичам те","translit":"[oˈbit͡ʃɐm tɛ]","translation":"Eu te amo","note":"Declaração afetuosa na Bulgária.","la":42.7,"lo":25.5,"c":"bg"},{"id":26,"lang":"Ucraniano","region":"Europa","original":"Я кохаю тебе","translit":"[ja koˈxaju teˈbɛ]","translation":"Eu te amo","note":"Usado especialmente para o amor romântico.","la":49,"lo":31,"c":"uk"},{"id":27,"lang":"Vietnamita","region":"Ásia","original":"Anh yêu em / Em yêu anh","translit":"[anh iew em]","translation":"Eu te amo","note":"Pronomes ajustados conforme quem fala e ouve.","la":16,"lo":107,"c":"vi"},{"id":28,"lang":"Tailandês","region":"Ásia","original":"ฉันรักคุณ","translit":"[chan rak khun]","translation":"Eu te amo","note":"Expressão polida e afetuosa na Tailândia.","la":15,"lo":101,"c":"th"},{"id":29,"lang":"Indonésio","region":"Ásia","original":"Aku cinta padamu","translit":"[a.ku ˈtʃin.ta pa.da.mu]","translation":"Eu te amo","note":"Doce e acolhedor na Indonésia.","la":-5,"lo":115,"c":"id"},{"id":30,"lang":"Malaio","region":"Ásia","original":"Saya cinta pada awak","translit":"[sa.ja ˈtʃin.ta]","translation":"Eu te amo","note":"Afeto comum na Malásia.","la":4,"lo":102,"c":"ms"},{"id":31,"lang":"Tagalo (Filipino)","region":"Ásia","original":"Mahal kita","translit":"[maˈhal kiˈta]","translation":"Eu te amo","note":"Caloroso e expressivo nas Filipinas.","la":13,"lo":122,"c":"fil"},{"id":32,"lang":"Persa (Fars)","region":"Ásia","original":"دوستت دارم","translit":"[dustet dāram]","translation":"Eu te amo (Eu tenho você como amigo querido)","note":"A forma tradicional de declarar amor no Irã.","la":32,"lo":53,"c":"fa"},{"id":33,"lang":"Urdu","region":"Ásia","original":"میں تم سے محبت کرتا ہوں","translit":"[main tumse mohabbat karta hoon]","translation":"Eu te amo","note":"Poético e lírico no Paquistão.","la":30,"lo":70,"c":"ur"},{"id":34,"lang":"Bengali","region":"Ásia","original":"আমি তোমাকে ভালোবাসি","translit":"[ami tōmākē bhālobāsi]","translation":"Eu te amo","note":"Afeto profundo em Bengala.","la":24,"lo":90,"c":"bn"},{"id":35,"lang":"Tâmil","region":"Ásia","original":"நான் உன்னை காதலிக்கிறேன்","translit":"[nān unnai kāthalikkirēn]","translation":"Eu te amo","note":"Um dos idiomas clássicos mais antigos do mundo.","la":11,"lo":79,"c":"ta"},{"id":36,"lang":"Telugu","region":"Ásia","original":"Nenu ninnu premistunnanu","translit":"[nenu ninnu premistunnanu]","translation":"Eu te amo","note":"Falado no sul da Índia.","la":17,"lo":79,"c":"te"},{"id":37,"lang":"Marata","region":"Ásia","original":"Mi tuzhi prem karto","translit":"[mi tuzhi prem karto]","translation":"Eu te amo","note":"Expressão romântica em marata.","la":19,"lo":75,"c":"mr"},{"id":38,"lang":"Guzerate","region":"Ásia","original":"Hu tne prem karu chu","translit":"[hu tne prem karu chu]","translation":"Eu te amo","note":"Afeto caloroso em guzerate.","la":23,"lo":72,"c":"gu"},{"id":39,"lang":"Panjabi","region":"Ásia","original":"Main tuhanu pyar karda haan","translit":"[main tuhanu pyar karda haan]","translation":"Eu te amo","note":"Vibrante e expressivo no Panjabe.","la":31,"lo":75,"c":"pa"},{"id":40,"lang":"Suaíli","region":"África","original":"Nakupenda","translit":"[na.kuˈpɛn.da]","translation":"Eu te amo","note":"Amplamente falado na África Oriental.","la":-6,"lo":35,"c":"sw"},{"id":41,"lang":"Africâner","region":"África","original":"Ek het jou lief","translit":"[ɛk hɛt jɔu lif]","translation":"Eu te amo","note":"Simples e direto na África do Sul.","la":-30,"lo":25,"c":"af"},{"id":42,"lang":"Amárico","region":"África","original":"እወድሻለሁ","translit":"[iwedishalehu]","translation":"Eu te amo","note":"Falado na Etiópia.","la":9,"lo":40,"c":"am"},{"id":43,"lang":"Zulú","region":"África","original":"Ngiyakuthanda","translit":"[ŋgija.kuˈtʰaːnda]","translation":"Eu te amo","note":"Emocionante e tradicional na África do Sul.","la":-29,"lo":31,"c":"zu"},{"id":44,"lang":"Xosa","region":"África","original":"Ndiyakuthanda","translit":"[ndija.kuˈtʰaːnda]","translation":"Eu te amo","note":"Linguagem rica em cliques e musicalidade.","la":-32,"lo":27,"c":"xh"},{"id":45,"lang":"Iorubá","region":"África","original":"Mo ni ifẹ rẹ","translit":"[mo ni i.fɛ ɾɛ]","translation":"Eu te amo","note":"Expressão cultural profunda na África Ocidental.","la":8,"lo":4,"c":"yo"},{"id":46,"lang":"Igbo","region":"África","original":"A hụrụ m gị n'anya","translit":"[a ɦu.ɾu m ɡi n‿aɲa]","translation":"Eu te amo","note":"Significa literalmente 'eu te vejo nos meus olhos'.","la":6,"lo":7.5,"c":"ig"},{"id":47,"lang":"Hauçá","region":"África","original":"Ina son ki / Ina son ka","translit":"[i.na son ki]","translation":"Eu te amo","note":"Afeto comum no norte da Nigéria.","la":12,"lo":8,"c":"ha"},{"id":48,"lang":"Malgaxe","region":"África","original":"Tiako ianao","translit":"[tiˈaku iˈanau]","translation":"Eu te amo","note":"Falado em Madagascar.","la":-19,"lo":47,"c":"mg"},{"id":49,"lang":"Somalis","region":"África","original":"Waan ku jeclahay","translit":"[waːn ku dʒɛkləhaj]","translation":"Eu te amo","note":"Lirico e expressivo na Somália.","la":5,"lo":46,"c":"so"},{"id":50,"lang":"Havaiano","region":"Oceania","original":"Aloha wau iā ʻoe","translit":"[aˈlo.ha vau iˈaː ˈo.e]","translation":"Eu te amo","note":"Carregado do espírito 'Aloha' de afeto.","la":20,"lo":-157,"c":"haw"},{"id":51,"lang":"Maori","region":"Oceania","original":"Kei te aroha au ki a koe","translit":"[kei te a.ɾo.ha au ki a koe]","translation":"Eu te amo","note":"Tradição viva dos povos originários da Nova Zelândia.","la":-39,"lo":176,"c":"mi"},{"id":52,"lang":"Samoano","region":"Oceania","original":"Ou te alofa ia te oe","translit":"[ou te a.lo.fa ia te oe]","translation":"Eu te amo","note":"Afeto caloroso nas ilhas Samoa.","la":-13.8,"lo":-172,"c":"sm"},{"id":53,"lang":"Tonganês","region":"Oceania","original":"Oku ou ʻofa kiate koe","translit":"[oku ou ˈofa kiate koe]","translation":"Eu te amo","note":"Expressão de carinho em Tonga.","la":-21,"lo":-175,"c":"to"},{"id":54,"lang":"Fijiano","region":"Oceania","original":"Au domoni iko","translit":"[au do.mo.ni i.ko]","translation":"Eu te amo","note":"Falado nas ilhas Fiji.","la":-18,"lo":178,"c":"fj"},{"id":55,"lang":"Quéchua","region":"Américas","original":"Kuyasqayki","translit":"[ku.jas.qaj.ki]","translation":"Eu te amo","note":"Herança dos povos andinos.","la":-13,"lo":-72,"c":"qu"},{"id":56,"lang":"Guarani","region":"Américas","original":"Rohayhu","translit":"[ɾo.ha.jhu]","translation":"Eu te amo","note":"Língua oficial e afetuosa no Paraguai.","la":-23,"lo":-58,"c":"gn"},{"id":57,"lang":"Náuatl","region":"Américas","original":"Niktlazohtla","translit":"[nik.tla.zoh.tla]","translation":"Eu te amo","note":"Antiga e bela língua asteca.","la":19,"lo":-99,"c":"nah"},{"id":58,"lang":"Inuktitut","region":"Américas","original":"Nagligivagit","translit":"[naɡ.li.ɣi.va.ɡit]","translation":"Eu te amo","note":"Falado pelos povos inuites do ártico.","la":66,"lo":-85,"c":"iu"},{"id":59,"lang":"Groenlandês","region":"Américas","original":"Asavigaat","translit":"[a.sa.vi.gaːt]","translation":"Eu te amo","note":"Expressão do extremo norte do mundo.","la":72,"lo":-42,"c":"kl"},{"id":60,"lang":"Catalão","region":"Europa","original":"T'estimo","translit":"[tesˈti.mu]","translation":"Eu te amo","note":"Falado na Catalunha e regiões vizinhas.","la":41.7,"lo":1.5,"c":"ca"},{"id":61,"lang":"Basco","region":"Europa","original":"Maite zaitut","translit":"[mai.te zai.tut]","translation":"Eu te amo","note":"Idioma singular sem parentesco conhecido na Europa.","la":43,"lo":-2,"c":"eu"},{"id":62,"lang":"Galego","region":"Europa","original":"Quero-te","translit":"[ˈke.ɾo te]","translation":"Eu te quero / amo","note":"Poético e lírico na Galiza.","la":42.7,"lo":-8,"c":"gl"},{"id":63,"lang":"Gaélico Escocês","region":"Europa","original":"Tha gaol agam ort","translit":"[haː gøːl a.kəm ɔrʃt]","translation":"Eu te amo","note":"Tradição céltica das Terras Altas.","la":57,"lo":-5,"c":"gd"},{"id":64,"lang":"Irlandês","region":"Europa","original":"Tá grá agam ort","translit":"[tɑː gɾˠɑː a.ɡəmˠ ɔɾˠt]","translation":"Eu te amo","note":"Significa literalmente 'há amor em mim por ti'.","la":53,"lo":-8,"c":"ga"},{"id":65,"lang":"Galês","region":"Europa","original":"Rwy'n dy garu di","translit":"[ruːɪn də ˈɡaɾɨ diː]","translation":"Eu te amo","note":"Linguagem melódica do País de Gales.","la":52,"lo":-3.7,"c":"cy"},{"id":66,"lang":"Bretão","region":"Europa","original":"Da garout a ran","translit":"[ka.ret a ran]","translation":"Eu te amo","note":"Tradição celta na França.","la":48,"lo":-3,"c":"br"},{"id":67,"lang":"Esperanto","region":"Europa","original":"Mi amas vin","translit":"[mi ˈa.mas vin]","translation":"Eu te amo","note":"Idioma construído para a união entre os povos.","la":52.2,"lo":21,"c":"eo"},{"id":68,"lang":"Latim","region":"Europa","original":"Te amo","translit":"[te ˈaː.moː]","translation":"Eu te amo","note":"A raiz clássica de tantas línguas românticas.","la":41.9,"lo":12.5,"c":"la"},{"id":69,"lang":"Islandês","region":"Europa","original":"Ég elska þig","translit":"[jɛːɣ ˈɛl.ska θɪɣ]","translation":"Eu te amo","note":"Preservado com pureza na Islândia.","la":65,"lo":-18,"c":"is"},{"id":70,"lang":"Maltês","region":"Europa","original":"Inħobbok","translit":"[ɪnˈħob.bok]","translation":"Eu te amo","note":"Idioma semítico com forte influência românica em Malta.","la":35.9,"lo":14.4,"c":"mt"},{"id":71,"lang":"Albanês","region":"Europa","original":"Të dua","translit":"[tə ˈdu.a]","translation":"Eu te amo","note":"Língua indo-europeia única nos Bálcãs.","la":41,"lo":20,"c":"sq"},{"id":72,"lang":"Sérvio","region":"Europa","original":"Волим те","translit":"[volim te]","translation":"Eu te amo","note":"Afeto sincero na Sérvia.","la":44,"lo":21,"c":"sr"},{"id":73,"lang":"Croata","region":"Europa","original":"Volim te","translit":"[vɔ.lim te]","translation":"Eu te amo","note":"Expressão calorosa na Croácia.","la":45,"lo":16,"c":"hr"},{"id":74,"lang":"Bósnio","region":"Europa","original":"Volim te","translit":"[vɔ.lim te]","translation":"Eu te amo","note":"Afeto profundo na Bósnia.","la":44,"lo":18,"c":"bs"},{"id":75,"lang":"Esloveno","region":"Europa","original":"Ljubim te","translit":"[ʎu.bim te]","translation":"Eu te amo","note":"Doce e delicado na Eslovênia.","la":46,"lo":14.8,"c":"sl"},{"id":76,"lang":"Eslovaco","region":"Europa","original":"Ľúbim ťa","translit":"[ʎuː.bim ťa]","translation":"Eu te amo","note":"Expressão afetuosa na Eslováquia.","la":48.7,"lo":19.5,"c":"sk"},{"id":77,"lang":"Lituano","region":"Europa","original":"Aš myliu tave","translit":"[aʃ ˈmi.lʲu taˈvɛ]","translation":"Eu te amo","note":"Um dos idiomas mais antigos da Europa.","la":55,"lo":24,"c":"lt"},{"id":78,"lang":"Letão","region":"Europa","original":"Es mīlu tevi","translit":"[es ˈmiː.lu ˈte.vi]","translation":"Eu te amo","note":"Lírica e expressiva na Letônia.","la":57,"lo":25,"c":"lv"},{"id":79,"lang":"Estoniano","region":"Europa","original":"Ma armastan sind","translit":"[mɑ ˈɑrmɑstɑn sind]","translation":"Eu te amo","note":"De origem fino-úgrica, suave e bela.","la":59,"lo":25.5,"c":"et"},{"id":80,"lang":"Luxemburguês","region":"Europa","original":"Ech hunn dech gär","translit":"[ɛç hun dɛç ˈɡæː.ʁən]","translation":"Eu te amo (gosto muito de ti)","note":"O afeto característico em Luxemburgo.","la":49.8,"lo":6.1,"c":"lb"},{"id":81,"lang":"Armênio","region":"Ásia","original":"Ես սիրում եմ քեզ","translit":"[Yes sirum em k'ez]","translation":"Eu te amo","note":"Antigo e rico alfabeto na Armênia.","la":40,"lo":45,"c":"hy"},{"id":82,"lang":"Georgiano","region":"Ásia","original":"მიყვარხარ","translit":"[miqvarxar]","translation":"Eu te amo","note":"Escrita única e fascinante no Cáucaso.","la":42,"lo":43.5,"c":"ka"},{"id":83,"lang":"Azeri","region":"Ásia","original":"Mən səni sevirəm","translit":"[mæn sæˈni seviɾæm]","translation":"Eu te amo","note":"Afeto caloroso no Azerbaijão.","la":40.4,"lo":47.5,"c":"az"},{"id":84,"lang":"Cazaque","region":"Ásia","original":"Мен сені жақсы көремін","translit":"[men seni jaqsı köremin]","translation":"Eu te amo","note":"Expressão nas estepes da Ásia Central.","la":48,"lo":68,"c":"kk"},{"id":85,"lang":"Uzbeque","region":"Ásia","original":"Men seni sevaman","translit":"[men seni sevaman]","translation":"Eu te amo","note":"Tradição afetuosa no Uzbequistão.","la":41,"lo":64,"c":"uz"},{"id":86,"lang":"Quirguiz","region":"Ásia","original":"Мен сени сүйөм","translit":"[men seni süyöm]","translation":"Eu te amo","note":"Expressão sincera no Quirguistão.","la":41,"lo":74.5,"c":"ky"},{"id":87,"lang":"Tajique","region":"Ásia","original":"Ман туро дӯст медорам","translit":"[man turo dūst medoram]","translation":"Eu te amo","note":"Língua de raiz persa na Ásia Central.","la":38.8,"lo":71,"c":"tg"},{"id":88,"lang":"Mongol","region":"Ásia","original":"Би чамд хайртай","translit":"[Bi chamd khairtai]","translation":"Eu te amo","note":"Voz forte e sincera nas planícies da Mongólia.","la":47,"lo":103,"c":"mn"},{"id":89,"lang":"Nepali","region":"Ásia","original":"म तिमीलाई माया गर्छु","translit":"[ma timīlāī māyā garchu]","translation":"Eu te amo","note":"Doce afeto nas montanhas do Nepal.","la":28,"lo":84,"c":"ne"},{"id":90,"lang":"Cingalês","region":"Ásia","original":"මම ඔයාට ආදරෙයි","translit":"[mama oyata adarei]","translation":"Eu te amo","note":"Falado no Sri Lanka.","la":7.8,"lo":80.7,"c":"si"},{"id":91,"lang":"Birmanês","region":"Ásia","original":"ချစ်တယ်","translit":"[chit tai]","translation":"Eu te amo","note":"Simples e direto em Mianmar.","la":21,"lo":96,"c":"my"},{"id":92,"lang":"Khmer (Camboja)","region":"Ásia","original":"អូនស្រឡាញ់បង","translit":"[oun srolanh bong]","translation":"Eu te amo","note":"Gracioso e poético no Camboja.","la":12.5,"lo":105,"c":"km"},{"id":93,"lang":"Laosiano","region":"Ásia","original":"ຂ້ອຍຮັກເຈົ້າ","translit":"[khoi hak chao]","translation":"Eu te amo","note":"Afeto gentil no Laos.","la":19,"lo":103,"c":"lo"},{"id":94,"lang":"Curdo","region":"Ásia","original":"Ez te hez dikim","translit":"[ez te hez dikim]","translation":"Eu te amo","note":"Tradição viva no Curdistão.","la":36.5,"lo":43.5,"c":"ku"},{"id":95,"lang":"Yiddish","region":"Europa","original":"איך האָב דיך ליב","translit":"[ikh hob dikh lib]","translation":"Eu te amo","note":"Língua de rica herança cultural europeia.","la":50,"lo":24,"c":"yi"},{"id":96,"lang":"Tâmil do Sri Lanka","region":"Ásia","original":"Unnai virumbukiraen","translit":"[unnai virumbukiraen]","translation":"Eu te amo","note":"Variante regional de afeto.","la":8,"lo":81,"c":"ta"},{"id":97,"lang":"Tétum","region":"Oceania","original":"Ha'u hadomi o","translit":"[hau hadomi o]","translation":"Eu te amo","note":"Falado no Timor-Leste.","la":-8.8,"lo":125.8,"c":"tet"},{"id":98,"lang":"Frísio","region":"Europa","original":"Ik hâld fan dy","translit":"[ik hɔːld fan di]","translation":"Eu te amo","note":"Idioma germânico falado no norte dos Países Baixos.","la":53.1,"lo":5.8,"c":"fy"},{"id":99,"lang":"Sardenho","region":"Europa","original":"Deo ti amo","translit":"[ˈdɛo ti ˈamo]","translation":"Eu te amo","note":"Dialeto/língua histórica da Sardenha.","la":40,"lo":9,"c":"sc"},{"id":100,"lang":"Feroês","region":"Europa","original":"Eg elski teg","translit":"[eː ɛlskɪ teː]","translation":"Eu te amo","note":"Falado nas Ilhas Feroé, isoladas no Atlântico Norte.","la":62,"lo":-6.9,"c":"fo"}];
+const FINAL="Você percorreu cem maneiras de dizer a mesma coisa. Em diferentes lugares, com diferentes palavras e diferentes sons, uma mensagem continuou voltando: eu te amo.";
+const $=i=>document.getElementById(i),RAD=Math.PI/180,TAU=Math.PI*2;
+const ld=k=>{try{return JSON.parse(localStorage.getItem(k))||[]}catch(e){return[]}};
+let disc=ld('atlas_discovered'),fav=ld('atlas_favorites'),flt='Todos',qs='';
+const save=()=>{try{localStorage.setItem('atlas_discovered',JSON.stringify(disc));localStorage.setItem('atlas_favorites',JSON.stringify(fav))}catch(e){}};
+const cv=$('g'),x=cv.getContext('2d');
+let W,H,R=200,cx=0,cy=0,yaw=0,pit=.35,vy=0,vp=0,drag=null,tgt=null,cur=null,P=[],hov=null,moved=0;
+const BG=Array.from({length:150},()=>({x:Math.random(),y:Math.random(),r:Math.random()*1.3+.2,s:Math.random()*6}));
+const GR=[];for(let lo=0;lo<360;lo+=30){const l=[];for(let la=-90;la<=90;la+=6)l.push([la,lo]);GR.push(l)}
+for(let la=-60;la<=60;la+=30){const l=[];for(let lo=0;lo<=360;lo+=6)l.push([la,lo]);GR.push(l)}
+function size(){const d=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*d;cv.height=H*d;x.setTransform(d,0,0,d,0,0)}
+addEventListener('resize',size);size();
+const mob=()=>W<760;
+function proj(la,lo){const p=la*RAD,l=lo*RAD-yaw,cp=Math.cos(pit),sp=Math.sin(pit),c=Math.cos(p);return{x:c*Math.sin(l),y:cp*Math.sin(p)-sp*c*Math.cos(l),z:sp*Math.sin(p)+cp*c*Math.cos(l)}}
+function frame(t){
+ yaw=((yaw%TAU)+TAU)%TAU;
+ if(!drag){if(!tgt&&cur==null)yaw+=.0014;yaw-=vy;pit=Math.max(-1.25,Math.min(1.25,pit+vp));vy*=.94;vp*=.94}
+ if(tgt){const a=((tgt.y-yaw+3*Math.PI)%TAU)-Math.PI;yaw+=a*.08;pit+=(tgt.p-pit)*.08;if(Math.abs(a)<.004&&Math.abs(tgt.p-pit)<.004)tgt=null}
+ const m=mob(),open=cur!=null;
+ const tR=m?(open?Math.min(W*.36,H*.17):Math.min(W*.44,(H-190)/2)):Math.min((open?W*.28:W*.36),(H-170)/2);
+ const tx=!m&&open?W*.3:W/2,ty=m&&open?H*.2:(H-10)/2+(m?0:10);
+ R+=(tR-R)*.08;cx+=(tx-cx)*.08;cy+=(ty-cy)*.08;
+ draw(t);requestAnimationFrame(frame)}
+function draw(t){
+ x.clearRect(0,0,W,H);
+ BG.forEach(b=>{const X=((b.x*W*1.2-yaw*40)%W+W)%W;x.globalAlpha=.25+.5*Math.abs(Math.sin(t/900+b.s));x.fillStyle='#fff';x.fillRect(X,b.y*H,b.r,b.r)});
+ x.globalAlpha=1;
+ let g=x.createRadialGradient(cx,cy,R*.88,cx,cy,R*1.25);g.addColorStop(0,'rgba(217,56,88,.28)');g.addColorStop(.45,'rgba(138,48,127,.12)');g.addColorStop(1,'rgba(138,48,127,0)');
+ x.fillStyle=g;x.beginPath();x.arc(cx,cy,R*1.25,0,TAU);x.fill();
+ g=x.createRadialGradient(cx-R*.35,cy-R*.35,R*.1,cx,cy,R);g.addColorStop(0,'rgba(90,34,76,.65)');g.addColorStop(.7,'rgba(28,10,34,.8)');g.addColorStop(1,'rgba(10,4,14,.95)');
+ x.fillStyle=g;x.beginPath();x.arc(cx,cy,R,0,TAU);x.fill();
+ x.strokeStyle='rgba(244,238,248,.1)';x.lineWidth=1;
+ GR.forEach(l=>{x.beginPath();let on=0;for(const[la,lo]of l){const p=proj(la,lo);if(p.z>0){const X=cx+R*p.x,Y=cy-R*p.y;on?x.lineTo(X,Y):x.moveTo(X,Y);on=1}else on=0}x.stroke()});
+ P=DB.map(d=>{const p=proj(d.la,d.lo);return{d,sx:cx+R*p.x,sy:cy-R*p.y,z:p.z}});
+ x.strokeStyle='rgba(229,193,88,.4)';x.lineWidth=1.2;x.beginPath();let pr=null;
+ disc.forEach(id=>{const s=P[id-1];if(pr&&pr.z>0&&s.z>0){x.moveTo(pr.sx,pr.sy);x.lineTo(s.sx,s.sy)}pr=s});x.stroke();
+ P.forEach(s=>{const d=s.d,f=s.z>0,ok=disc.includes(d.id),tw=.65+.35*Math.sin(t/450+d.id*1.7),sel=cur===d.id||hov===d.id;
+  const c=ok?'229,193,88':'230,110,160',r=(ok?3.8:2.8)*(f?1:.55)*(sel?1.7:1),a=f?.4+.6*s.z:.1;
+  x.fillStyle=`rgba(${c},${a*.22*tw})`;x.beginPath();x.arc(s.sx,s.sy,r*4.2,0,TAU);x.fill();
+  x.fillStyle=`rgba(${c},${a*(ok?1:tw)})`;x.beginPath();x.arc(s.sx,s.sy,r,0,TAU);x.fill();
+  if(f&&(sel||fav.includes(d.id))){x.strokeStyle=sel?'#fff':'rgba(255,255,255,.7)';x.lineWidth=1.2;x.beginPath();x.arc(s.sx,s.sy,r+4,0,TAU);x.stroke()}})}
+requestAnimationFrame(frame);
 
-    <!-- MODAL DE EXIBIÇÃO DA EXPRESSÃO -->
-    <div class="modal-overlay" id="expression-modal">
-        <div class="expression-modal-box">
-            <div class="modal-header-info">
-                <span id="modal-index-label">001 / 100</span>
-                <span id="modal-region-label">EUROPA</span>
-            </div>
-            
-            <div class="expression-display-area">
-                <div class="expression-original" id="modal-original-text">Je t'aime</div>
-                <div class="expression-transliteration" id="modal-translit-text">Transliteração: [zhuh tem]</div>
-                <div class="expression-translation" id="modal-translation-text">Eu te amo</div>
-            </div>
+/* interação */
+function hit(px,py){let b=null,bd=(mob()?26:18)**2;P.forEach(s=>{if(s.z>.05){const d=(s.sx-px)**2+(s.sy-py)**2;if(d<bd){bd=d;b=s}}});return b}
+cv.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY};moved=0;vy=vp=0;tgt=null;cv.setPointerCapture(e.pointerId)});
+cv.addEventListener('pointermove',e=>{
+ if(drag){const dx=e.clientX-drag.x,dy=e.clientY-drag.y;moved+=Math.abs(dx)+Math.abs(dy);yaw-=dx/R*.9;pit=Math.max(-1.25,Math.min(1.25,pit+dy/R*.9));vy=dx/R*.02;vp=dy/R*.02;drag={x:e.clientX,y:e.clientY};hov=null;$('tip').style.opacity=0}
+ else if(e.pointerType=='mouse'){const s=hit(e.clientX,e.clientY);hov=s?s.d.id:null;const t=$('tip');if(s){t.textContent=s.d.lang+(disc.includes(s.d.id)?' · '+s.d.original:'');t.style.left=s.sx+'px';t.style.top=s.sy+'px';t.style.opacity=1}else t.style.opacity=0}});
+cv.addEventListener('pointerup',e=>{drag=null;if(moved<8){const s=hit(e.clientX,e.clientY);if(s)openC(s.d.id)}});
+addEventListener('keydown',e=>{if(e.key=='Escape'){closeC();$('dr').classList.remove('open')}if(cur!=null&&e.key=='ArrowRight')step(1);if(cur!=null&&e.key=='ArrowLeft')step(-1)});
 
-            <div class="expression-meta" id="modal-meta-text">
-                Nota linguística ou cultural sobre o idioma.
-            </div>
+/* cartão */
+function openC(id){
+ const d=DB[id-1];cur=id;
+ if(!disc.includes(id)){disc.push(id);save();stats();if(disc.length>=100)setTimeout(finish,1200)}
+ $('ci').textContent=String(id).padStart(3,'0')+' / 100';$('cg').textContent=d.region.toUpperCase();
+ $('cl').textContent=d.lang;const o=$('co');o.textContent=d.original;o.className=d.original.length>16?'l':'';o.style.animation='none';o.offsetWidth;o.style.animation='';
+ $('ct').textContent=d.translit||'';$('cr').textContent=d.translation;$('cn').textContent=d.note;favBtn();
+ $('card').classList.add('open');$('dr').classList.remove('open');tgt={y:d.lo*RAD,p:Math.max(-.9,Math.min(.9,d.la*RAD*.6))};
+ if(navigator.vibrate)navigator.vibrate(12);$('tip').style.opacity=0}
+function closeC(){cur=null;$('card').classList.remove('open')}
+const step=n=>openC(((cur-1+n+100)%100)+1);
+function favBtn(){const f=fav.includes(cur);$('bF').textContent=f?'★ Favoritado':'☆ Favoritar';$('bF').style.color=f?'var(--gold)':''}
+$('bX').onclick=closeC;$('pv').onclick=()=>step(-1);$('nx').onclick=()=>step(1);
+$('bF').onclick=()=>{const i=fav.indexOf(cur);i>-1?fav.splice(i,1):fav.push(cur);save();favBtn()};
+$('bC').onclick=()=>{const d=DB[cur-1];navigator.clipboard&&navigator.clipboard.writeText(`${d.original} (${d.translation} - ${d.lang})`).then(()=>{$('bC').textContent='Copiado!';setTimeout(()=>$('bC').textContent='Copiar',1400)})};
+$('bA').onclick=()=>{const d=DB[cur-1];if(!('speechSynthesis'in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(d.original.split('/')[0]);u.lang=d.c;u.rate=.85;const b=$('bA');b.classList.add('on');u.onend=u.onerror=()=>b.classList.remove('on');speechSynthesis.speak(u)};
+$('bR').onclick=()=>{const l=DB.filter(d=>!disc.includes(d.id));const p=l.length?l:DB;openC(p[Math.floor(Math.random()*p.length)].id)};
 
-            <div class="modal-actions-bar">
-                <div class="modal-left-btns">
-                    <button class="icon-btn" id="modal-btn-audio">Ouvir Pronúncia</button>
-                    <button class="icon-btn" id="modal-btn-copy">Copiar Frase</button>
-                </div>
-                <div class="modal-right-btns">
-                    <button class="icon-btn" id="modal-btn-favorite">★ Favoritar</button>
-                    <button class="icon-btn" id="modal-btn-close" style="border-color: var(--red-glow); color: var(--red-glow);">Fechar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+/* lista */
+const REG=['Todos','Europa','Ásia','África','Américas','Oceania','★ Favoritos','Descobertos'];
+$('fl').innerHTML=REG.map(r=>`<button class="${r==flt?'on':''}">${r}</button>`).join('');
+$('fl').onclick=e=>{if(e.target.tagName!='BUTTON')return;flt=e.target.textContent;[...$('fl').children].forEach(b=>b.classList.toggle('on',b==e.target));list()};
+$('q').oninput=e=>{qs=e.target.value.toLowerCase();list()};
+function list(){const nz=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');const q=nz(qs);
+ $('ls').innerHTML=DB.filter(d=>(flt=='Todos'||d.region==flt||(flt=='Descobertos'&&disc.includes(d.id))||(flt[0]=='★'&&fav.includes(d.id)))&&(!q||nz(d.lang).includes(q)||(disc.includes(d.id)&&nz(d.original).includes(q)))).map(d=>{const k=disc.includes(d.id);return`<button class="it ${k?'d':''}" data-i="${d.id}"><b>${String(d.id).padStart(3,'0')}</b><span>${d.lang}</span><em>${k?d.original:'· · ·'}</em></button>`}).join('')}
+$('ls').onclick=e=>{const b=e.target.closest('.it');if(b)openC(+b.dataset.i)};
+$('bL').onclick=()=>{list();closeC();$('dr').classList.add('open')};$('dx').onclick=()=>$('dr').classList.remove('open');
+$('bZ').onclick=()=>{if(confirm('Deseja realmente reiniciar todo o progresso do Atlas?')){disc=[];fav=[];save();stats();list();closeC()}};
 
-    <!-- TELA FINAL / CONCLUSÃO -->
-    <div id="completion-screen">
-        <div class="completion-box">
-            <h2 class="intro-title" style="font-size: 26px;">ATLAS COMPLETO</h2>
-            <p class="intro-subtitle" id="completion-desc">Você percorreu cem maneiras de dizer a mesma coisa. Em diferentes lugares, com diferentes palavras e diferentes sons, uma mensagem continuou voltando: eu te amo.</p>
-            
-            <div class="personal-message-display" id="personal-message-box">
-                "As palavras são apenas ecos do que o coração já decidiu sentir em todos os idiomas do mundo."
-            </div>
+/* progresso, final, abertura */
+function stats(){$('n').textContent=disc.length;$('pb').style.width=disc.length+'%'}
+function hearts(n){for(let i=0;i<n;i++)setTimeout(()=>{const h=document.createElement('div');h.className='heart';h.textContent=['❤️','💖','✨','🤍','💫'][i%5];h.style.cssText+=`left:${Math.random()*100}vw;font-size:${18+Math.random()*22}px;animation-duration:${4+Math.random()*3}s`;document.body.appendChild(h);setTimeout(()=>h.remove(),7500)},i*90)}
+function finish(){closeC();$('fm').textContent=FINAL;$('end').classList.add('open');hearts(60)}
+$('bE').onclick=()=>$('end').classList.remove('open');
+$('go').onclick=()=>{$('intro').classList.add('out');tick()};
+let ti=0;function tick(){const d=DB[Math.floor(Math.random()*100)],e=$('tick');e.style.opacity=0;setTimeout(()=>{e.innerHTML=`${d.original}<small>${d.lang}</small>`;e.style.opacity=.9},900);setTimeout(tick,4200)}
+stats();list();
+</script>
+<script>
+;(function(){try{var U='https://znxehbaltdowozprxygt.supabase.co',K='sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp';var s=localStorage.getItem('sid');if(!s){s=Math.random().toString(36).slice(2,10);localStorage.setItem('sid',s)}fetch(U+'/rest/v1/page_visits',{method:'POST',keepalive:true,headers:{apikey:K,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({session_id:s,page:location.pathname.split('/').pop()||'home'})})}catch(e){}})()
+</script>
 
-            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 10px;">
-                <button class="atlas-btn" id="btn-re-explore" style="padding: 10px 24px; font-size: 12px;">REVER EXPRESSÕES</button>
-            </div>
-        </div>
-    </div>
 
-    <!-- SCRIPT JAVASCRIPT -->
-    <script>
-        /* ==========================================================
-           CONFIGURAÇÃO PERSONALIZÁVEL
-           ========================================================== */
-        const CONFIG = {
-            title: "100 FORMAS DE DIZER EU TE AMO",
-            subtitle: "Uma frase. Cem idiomas. Um sentimento que atravhesa o mundo.",
-            personalMessage: "Você percorreu cem maneiras de dizer a mesma coisa. Em diferentes lugares, com diferentes palavras e diferentes sons, uma mensagem continuou voltando: eu te amo.",
-            
-            // Base de dados contendo exatamente 100 expressões em 100 idiomas distintos
-            languagesDatabase: [
-                { id: 1, lang: "Francês", region: "Europa", original: "Je t'aime", translit: "[zhuh tem]", translation: "Eu te amo", note: "Expressão clássica de afeto romântico na França." },
-                { id: 2, lang: "Espanhol", region: "Europa", original: "Te quiero", translit: "[te ki̯e.ɾo]", translation: "Eu te quero / Eu te amo", note: "Usado tanto para carinho profundo quanto para romance." },
-                { id: 3, lang: "Italiano", region: "Europa", original: "Ti amo", translit: "[ti ˈa.mo]", translation: "Eu te amo", note: "Reservado estritamente para o amor romântico na Itália." },
-                { id: 4, lang: "Alemão", region: "Europa", original: "Ich liebe dich", translit: "[ɪç ˈliː.bə dɪç]", translation: "Eu te amo", note: "Declaração profunda e significativa no mundo germânico." },
-                { id: 5, lang: "Inglês", region: "Europa", original: "I love you", translit: "[aɪ lʌv ju]", translation: "Eu te amo", note: "A forma mais universal de declaração no idioma inglês." },
-                { id: 6, lang: "Português", region: "Américas", original: "Eu te amo", translit: "[ew t(e) ˈã.mu]", translation: "Eu te amo", note: "A expressão mais pura do afeto em língua portuguesa." },
-                { id: 7, lang: "Japonês", region: "Ásia", original: "愛してる", translit: "[aishiteru]", translation: "Eu te amo", note: "Usado com cautela e sinceridade na cultura japonesa." },
-                { id: 8, lang: "Mandarim", region: "Ásia", original: "我爱你", translit: "[wǒ ài nǐ]", translation: "Eu te amo", note: "Fórmula tradicional de afeto romântico na China." },
-                { id: 9, lang: "Coreano", region: "Ásia", original: "사랑해", translit: "[saranghae]", translation: "Eu te amo", note: "Forma afetuosa e direta de declarar amor." },
-                { id: 10, lang: "Russo", region: "Europa", original: "Я тебя люблю", translit: "[ja tʲɪˈbʲa lʲubˈlʲu]", translation: "Eu te amo", note: "Expressão central de afeto na Rússia." },
-                { id: 11, lang: "Grego", region: "Europa", original: "Σ' αγαpώ", translit: "[s aɣaˈrɔ]", translation: "Eu te amo", note: "Do grego moderno, carregado de paixão." },
-                { id: 12, lang: "Árabe", region: "Ásia", original: "أحبحك", translit: "[uhibbuka / uhibbuki]", translation: "Eu te amo", note: "Variável conforme o gênero da pessoa amada." },
-                { id: 13, lang: "Hebraico", region: "Ásia", original: "אני אוהב אותך", translit: "[ani ohev otakh]", translation: "Eu te amo", note: "Forma falada por homem para mulher (e variações)." },
-                { id: 14, lang: "Hindi", region: "Ásia", original: "मैं तुमसे प्यार करता हूँ", translit: "[main tumse pyaar karta hoon]", translation: "Eu te amo", note: "Expressão romântica tradicional na Índia." },
-                { id: 15, lang: "Turco", region: "Europa", original: "Seni seviyorum", translit: "[seˈni se.vijˈo.ɾum]", translation: "Eu te amo", note: "Declaração sincera e calorosa na Turquia." },
-                { id: 16, lang: "Holandês", region: "Europa", original: "Ik hou van jou", translit: "[ɪk ɦʌu vɑn jʌu]", translation: "Eu amo você", note: "A forma padrão de afeto nos Países Baixos." },
-                { id: 17, lang: "Sueco", region: "Europa", original: "Jag älskar dig", translit: "[jɑːɡ ˈɛlskar deɪ]", translation: "Eu te amo", note: "Doce e melódico na língua sueca." },
-                { id: 18, lang: "Dinamarquês", region: "Europa", original: "Jeg elsker dig", translit: "[jɑw ˈelsɡɐ di]", translation: "Eu te amo", note: "Expressão afetuosa na Dinamarca." },
-                { id: 19, lang: "Norueguês", region: "Europa", original: "Jeg elsker deg", translit: "[jæːɡ ˈɛlskər dæi]", translation: "Eu te amo", note: "Afeto profundo em terras norueguesas." },
-                { id: 20, lang: "Finlandês", region: "Europa", original: "Minä rakastan sinua", translit: "[ˈminæ ˈrɑkɑstɑn ˈsinuɑ]", translation: "Eu te amo", note: "Termo rico em sonoridade na Finlândia." },
-                { id: 21, lang: "Polonês", region: "Europa", original: "Kocham cię", translit: "[ˈkɔ.xam t͡ɕɛ]", translation: "Eu te amo", note: "Declaração apaixonada na Polônia." },
-                { id: 22, lang: "Tcheco", region: "Europa", original: "Miluji tě", translit: "[ˈmɪlʊjɪ tɛ]", translation: "Eu te amo", note: "Afeto sincero na República Tcheca." },
-                { id: 23, lang: "Húngaro", region: "Europa", original: "Szeretlek", translit: "[ˈsɛrɛtlɛk]", translation: "Eu te amo", note: "Expressão única e calorosa no idioma húngaro." },
-                { id: 24, lang: "Romeno", region: "Europa", original: "Te iubesc", translit: "[te juˈbesk]", translation: "Eu te amo", note: "De raiz latina, vibrante e romântico." },
-                { id: 25, lang: "Búlgaro", region: "Europa", original: "Обичам те", translit: "[oˈbit͡ʃɐm tɛ]", translation: "Eu te amo", note: "Declaração afetuosa na Bulgária." },
-                { id: 26, lang: "Ucraniano", region: "Europa", original: "Я кохаю тебе", translit: "[ja koˈxaju teˈbɛ]", translation: "Eu te amo", note: "Usado especialmente para o amor romântico." },
-                { id: 27, lang: "Vietnamita", region: "Ásia", original: "Anh yêu em / Em yêu anh", translit: "[anh iew em]", translation: "Eu te amo", note: "Pronomes ajustados conforme quem fala e ouve." },
-                { id: 28, lang: "Tailandês", region: "Ásia", original: "ฉันรักคุณ", translit: "[chan rak khun]", translation: "Eu te amo", note: "Expressão polida e afetuosa na Tailândia." },
-                { id: 29, lang: "Indonésio", region: "Ásia", original: "Aku cinta padamu", translit: "[a.ku ˈtʃin.ta pa.da.mu]", translation: "Eu te amo", note: "Doce e acolhedor na Indonésia." },
-                { id: 30, lang: "Malaio", region: "Ásia", original: "Saya cinta pada awak", translit: "[sa.ja ˈtʃin.ta]", translation: "Eu te amo", note: "Afeto comum na Malásia." },
-                { id: 31, lang: "Tagalo (Filipino)", region: "Ásia", original: "Mahal kita", translit: "[maˈhal kiˈta]", translation: "Eu te amo", note: "Caloroso e expressivo nas Filipinas." },
-                { id: 32, lang: "Persa (Fars)", region: "Ásia", original: "دوستت دارم", translit: "[dustet dāram]", translation: "Eu te amo (Eu tenho você como amigo querido)", note: "A forma tradicional de declarar amor no Irã." },
-                { id: 33, lang: "Urdu", region: "Ásia", original: "میں تم سے محبت کرتا ہوں", translit: "[main tumse mohabbat karta hoon]", translation: "Eu te amo", note: "Poético e lírico no Paquistão." },
-                { id: 34, lang: "Bengali", region: "Ásia", original: "আমি তোমাকে ভালোবাসি", translit: "[ami tōmākē bhālobāsi]", translation: "Eu te amo", note: "Afeto profundo em Bengala." },
-                { id: 35, lang: "Tâmil", region: "Ásia", original: "நான் unnai kaadhalikkiren", translit: "[nān unnai kāthalikkirēn]", translation: "Eu te amo", note: "Um dos idiomas clássicos mais antigos do mundo." },
-                { id: 36, lang: "Telugu", region: "Ásia", original: "Nenu ninnu premistunnanu", translit: "[nenu ninnu premistunnanu]", translation: "Eu te amo", note: "Falado no sul da Índia." },
-                { id: 37, lang: "Marata", region: "Ásia", original: "Mi tuzhi prem karto", translit: "[mi tuzhi prem karto]", translation: "Eu te amo", note: "Expressão romântica em marata." },
-                { id: 38, lang: "Guzerate", region: "Ásia", original: "Hu tne prem karu chu", translit: "[hu tne prem karu chu]", translation: "Eu te amo", note: "Afeto caloroso em guzerate." },
-                { id: 39, lang: "Panjabi", region: "Ásia", original: "Main tuhanu pyar karda haan", translit: "[main tuhanu pyar karda haan]", translation: "Eu te amo", note: "Vibrante e expressivo no Panjabe." },
-                { id: 40, lang: "Suaíli", region: "África", original: "Nakupenda", translit: "[na.kuˈpɛn.da]", translation: "Eu te amo", note: "Amplamente falado na África Oriental." },
-                { id: 41, lang: "Africâner", region: "África", original: "Ek het jou lief", translit: "[ɛk hɛt jɔu lif]", translation: "Eu te amo", note: "Simples e direto na África do Sul." },
-                { id: 42, lang: "Amárico", region: "África", original: "እወድሻለሁ", translit: "[iwedishalehu]", translation: "Eu te amo", note: "Falado na Etiópia." },
-                { id: 43, lang: "Zulú", region: "África", original: "Ngiyakuthanda", translit: "[ŋgija.kuˈtʰaːnda]", translation: "Eu te amo", note: "Emocionante e tradicional na África do Sul." },
-                { id: 44, lang: "Xosa", region: "África", original: "Ndiyakuthanda", translit: "[ndija.kuˈtʰaːnda]", translation: "Eu te amo", note: "Linguagem rica em cliques e musicalidade." },
-                { id: 45, lang: "Iorubá", region: "África", original: "Mo ni ifẹ rẹ", translit: "[mo ni i.fɛ ɾɛ]", translation: "Eu te amo", note: "Expressão cultural profunda na África Ocidental." },
-                { id: 46, lang: "Igbo", region: "África", original: "A hụrụ m gị n'anya", translit: "[a ɦu.ɾu m ɡi n‿aɲa]", translation: "Eu te amo", note: "Significa literalmente 'eu te vejo nos meus olhos'." },
-                { id: 47, lang: "Hauçá", region: "África", original: "Ina son ki / Ina son ka", translit: "[i.na son ki]", translation: "Eu te amo", note: "Afeto comum no norte da Nigéria." },
-                { id: 48, lang: "Malgaxe", region: "África", original: "Tiako ianao", translit: "[tiˈaku iˈanau]", translation: "Eu te amo", note: "Falado em Madagascar." },
-                { id: 49, lang: "Somalis", region: "África", original: "Waan ku jeclahay", translit: "[waːn ku dʒɛkləhaj]", translation: "Eu te amo", note: "Lirico e expressivo na Somália." },
-                { id: 50, lang: "Havaiano", region: "Oceania", original: "Aloha wau iā ʻoe", translit: "[aˈlo.ha vau iˈaː ˈo.e]", translation: "Eu te amo", note: "Carregado do espírito 'Aloha' de afeto." },
-                { id: 51, lang: "Maori", region: "Oceania", original: "Kei te aroha au ki a koe", translit: "[kei te a.ɾo.ha au ki a koe]", translation: "Eu te amo", note: "Tradição viva dos povos originários da Nova Zelândia." },
-                { id: 52, lang: "Samoano", region: "Oceania", original: "Ou te alofa ia te oe", translit: "[ou te a.lo.fa ia te oe]", translation: "Eu te amo", note: "Afeto caloroso nas ilhas Samoa." },
-                { id: 53, lang: "Tonganês", region: "Oceania", original: "Oku ou ʻofa kiate koe", translit: "[oku ou ˈofa kiate koe]", translation: "Eu te amo", note: "Expressão de carinho em Tonga." },
-                { id: 54, lang: "Fijiano", region: "Oceania", original: "Au domoni iko", translit: "[au do.mo.ni i.ko]", translation: "Eu te amo", note: "Falado nas ilhas Fiji." },
-                { id: 55, lang: "Quéchua", region: "Américas", original: "Kuyasqayki", translit: "[ku.jas.qaj.ki]", translation: "Eu te amo", note: "Herança dos povos andinos." },
-                { id: 56, lang: "Guarani", region: "Américas", original: "Rohayhu", translit: "[ɾo.ha.jhu]", translation: "Eu te amo", note: "Língua oficial e afetuosa no Paraguai." },
-                { id: 57, lang: "Náuatl", region: "Américas", original: "Niktlazohtla", translit: "[nik.tla.zoh.tla]", translation: "Eu te amo", note: "Antiga e bela língua asteca." },
-                { id: 58, lang: "Inuktitut", region: "Américas", original: "Nagligivagit", translit: "[naɡ.li.ɣi.va.ɡit]", translation: "Eu te amo", note: "Falado pelos povos inuites do ártico." },
-                { id: 59, lang: "Groenlandês", region: "Américas", original: "Asavigaat", translit: "[a.sa.vi.gaːt]", translation: "Eu te amo", note: "Expressão do extremo norte do mundo." },
-                { id: 60, lang: "Catalão", region: "Europa", original: "T'estimo", translit: "[tesˈti.mu]", translation: "Eu te amo", note: "Falado na Catalunha e regiões vizinhas." },
-                { id: 61, lang: "Basco", region: "Europa", original: "Maite zaitut", translit: "[mai.te zai.tut]", translation: "Eu te amo", note: "Idioma singular sem parentesco conhecido na Europa." },
-                { id: 62, lang: "Galego", region: "Europa", original: "Quero-te", translit: "[ˈke.ɾo te]", translation: "Eu te quero / amo", note: "Poético e lírico na Galiza." },
-                { id: 63, lang: "Gaélico Escocês", region: "Europa", original: "Tha gaol agam ort", translit: "[haː gøːl a.kəm ɔrʃt]", translation: "Eu te amo", note: "Tradição céltica das Terras Altas." },
-                { id: 64, lang: "Irlandês", region: "Europa", original: "Tá grá agam ort", translit: "[tɑː gɾˠɑː a.ɡəmˠ ɔɾˠt]", translation: "Eu te amo", note: "Significa literalmente 'há amor em mim por ti'." },
-                { id: 65, lang: "Galês", region: "Europa", original: "Rwy'n dy gar di", translit: [".rʊɪn di gɑːr di"], translation: "Eu te amo", note: "Linguagem melódica do País de Gales." },
-                { id: 66, lang: "Bretão", region: "Europa", original: "Karet a ran achanout", translit: "[ka.ret a ran]", translation: "Eu te amo", note: "Tradição celta na França." },
-                { id: 67, lang: "Esperanto", region: "Europa", original: "Mi amas vin", translit: "[mi ˈa.mas vin]", translation: "Eu te amo", note: "Idioma construído para a união entre os povos." },
-                { id: 68, lang: "Latim", region: "Europa", original: "Te amo", translit: "[te ˈaː.moː]", translation: "Eu te amo", note: "A raiz clássica de tantas línguas românticas." },
-                { id: 69, lang: "Islandês", region: "Europa", original: "Ég elska þig", translit: "[jɛːɣ ˈɛl.ska θɪɣ]", translation: "Eu te amo", note: "Preservado com pureza na Islândia." },
-                { id: 70, lang: "Maltês", region: "Europa", original: "Inħobbok", translit: "[ɪnˈħob.bok]", translation: "Eu te amo", note: "Idioma semítico com forte influência românica em Malta." },
-                { id: 71, lang: "Albanês", region: "Europa", original: "Të dua", translit: "[tə ˈdu.a]", translation: "Eu te amo", note: "Língua indo-europeia única nos Bálcãs." },
-                { id: 72, lang: "Sérvio", region: "Europa", original: "Волим те", translit: "[volim te]", translation: "Eu te amo", note: "Afeto sincero na Sérvia." },
-                { id: 73, lang: "Croata", region: "Europa", original: "Volim te", translit: "[vɔ.lim te]", translation: "Eu te amo", note: "Expressão calorosa na Croácia." },
-                { id: 74, lang: "Bósnio", region: "Europa", original: "Volim te", translit: "[vɔ.lim te]", translation: "Eu te amo", note: "Afeto profundo na Bósnia." },
-                { id: 75, lang: "Esloveno", region: "Europa", original: "Ljubim te", translit: "[ʎu.bim te]", translation: "Eu te amo", note: "Doce e delicado na Eslovênia." },
-                { id: 76, lang: "Eslovaco", region: "Europa", original: "Ľúbim ťa", translit: "[ʎuː.bim ťa]", translation: "Eu te amo", note: "Expressão afetuosa na Eslováquia." },
-                { id: 77, lang: "Lituano", region: "Europa", original: "Aš myliu tave", translit: "[aʃ ˈmi.lʲu taˈvɛ]", translation: "Eu te amo", note: "Um dos idiomas mais antigos da Europa." },
-                { id: 78, lang: "Letão", region: "Europa", original: "Es mīlu tevi", translit: "[es ˈmiː.lu ˈte.vi]", translation: "Eu te amo", note: "Lírica e expressiva na Letônia." },
-                { id: 79, lang: "Estoniano", region: "Europa", original: "Ma armastan sind", translit: "[mɑ ˈɑrmɑstɑn sind]", translation: "Eu te amo", note: "De origem fino-úgrica, suave e bela." },
-                { id: 80, lang: "Luxemburguês", region: "Europa", original: "Ech hun dech gären", translit: "[ɛç hun dɛç ˈɡæː.ʁən]", translation: "Eu te amo (gosto muito de ti)", note: "O afeto característico em Luxemburgo." },
-                { id: 81, lang: "Armênio", region: "Ásia", original: "Ես սիրում եմ քեզ", translit: "[Yes sirum em k'ez]", translation: "Eu te amo", note: "Antigo e rico alfabeto na Armênia." },
-                { id: 82, lang: "Georgiano", region: "Ásia", original: "მიყვarхar", translit: "[miqvarxar]", translation: "Eu te amo", note: "Escrita única e fascinante no Cáucaso." },
-                { id: 83, lang: "Azeri", region: "Ásia", original: "Mən səni sevirəm", translit: "[mæn sæˈni seviɾæm]", translation: "Eu te amo", note: "Afeto caloroso no Azerbaijão." },
-                { id: 84, lang: "Cazaque", region: "Ásia", original: "Мен сені жақсы көремін", translit: "[men seni jaqsı köremin]", translation: "Eu te amo", note: "Expressão nas estepes da Ásia Central." },
-                { id: 85, lang: "Uzbeque", region: "Ásia", original: "Men seni sevaman", translit: "[men seni sevaman]", translation: "Eu te amo", note: "Tradição afetuosa no Uzbequistão." },
-                { id: 86, lang: "Quirguiz", region: "Ásia", original: "Мен сени сүйөм", translit: "[men seni süyöm]", translation: "Eu te amo", note: "Expressão sincera no Quirguistão." },
-                { id: 87, lang: "Tajique", region: "Ásia", original: "Ман туро дӯст медорам", translit: "[man turo dūst medoram]", translation: "Eu te amo", note: "Língua de raiz persa na Ásia Central." },
-                { id: 88, lang: "Mongol", region: "Ásia", original: "Би чамд хайртай", translit: "[Bi chamd khairtai]", translation: "Eu te amo", note: "Voz forte e sincera nas planícies da Mongólia." },
-                { id: 89, lang: "Nepali", region: "Ásia", original: "म तिमीलाई माया गर्छु", translit: "[ma timīlāī māyā garchu]", translation: "Eu te amo", note: "Doce afeto nas montanhas do Nepal." },
-                { id: 90, lang: "Cingalês", region: "Ásia", original: "ම I love you / මn oyaṭa adarei", translit: "[mama oyata adarei]", translation: "Eu te amo", note: "Falado no Sri Lanka." },
-                { id: 91, lang: "Birmanês", region: "Ásia", original: "ချစ်တယ်", translit: "[chit tai]", translation: "Eu te amo", note: "Simples e direto em Mianmar." },
-                { id: 92, lang: "Khmer (Camboja)", region: "Ásia", original: "អូនស្រឡាញ់បង", translit: "[oun srolanh bong]", translation: "Eu te amo", note: "Gracioso e poético no Camboja." },
-                { id: 93, lang: "Laosiano", region: "Ásia", original: "ຂ້ອຍຮັກເຈົ້າ", translit: "[khoi hak chao]", translation: "Eu te amo", note: "Afeto gentil no Laos." },
-                { id: 94, lang: "Curdo", region: "Ásia", original: "Ez te hezkirini", translit: "[ez te hez dikim]", translation: "Eu te amo", note: "Tradição viva no Curdistão." },
-                { id: 95, lang: "Yiddish", region: "Europa", original: "איך האָב דיך ליב", translit: "[ikh hob dikh lib]", translation: "Eu te amo", note: "Língua de rica herança cultural europeia." },
-                { id: 96, lang: "Srí Lanca (Tamil local)", region: "Ásia", original: "Unnai virumbukiraen", translit: "[unnai virumbukiraen]", translation: "Eu te amo", note: "Variante regional de afeto." },
-                { id: 97, lang: "Maubere (Tétum)", region: "Oceania", original: "Ha'u laran-lu'u ba o", translit: "[hau du há]", translation: "Eu te amo", note: "Falado no Timor-Leste." },
-                { id: 98, lang: "Frísio", region: "Europa", original: "Ik hâld fan dy", translit: "[ik hɔːld fan di]", translation: "Eu te amo", note: "Idioma germânico falado no norte dos Países Baixos." },
-                { id: 99, lang: "Sardenho", region: "Europa", original: "Amu tziu / Tenzo bene", translit: "[tue amo]", translation: "Eu te amo", note: "Dialeto/língua histórica da Sardenha." },
-                { id: 100, lang: "Feroês", region: "Europa", original: "Eg elski teg", translit: "[eː ɛlskɪ teː]", translation: "Eu te amo", note: "Falado nas Ilhas Feroé, isoladas no Atlântico Norte." }
-            ]
-        };
-
-        /* ==========================================================
-           ESTADO GLOBAL DA APLICAÇÃO
-           ========================================================== */
-        let state = {
-            discoveredIds: JSON.parse(localStorage.getItem("atlas_discovered")) || [],
-            favorites: JSON.parse(localStorage.getItem("atlas_favorites")) || [],
-            currentActiveId: null,
-            currentFilter: "all",
-            searchQuery: ""
-        };
-
-        /* ==========================================================
-           INICIALIZAÇÃO E RENDERIZAÇÃO DO ATLAS
-           ========================================================== */
-        function initAtlas() {
-            document.getElementById("intro-main-title").innerText = CONFIG.title;
-            document.getElementById("intro-sub-text").innerText = `"${CONFIG.subtitle}"`;
-            document.getElementById("header-title-display").innerText = CONFIG.title.split("—")[0].trim();
-            document.getElementById("completion-desc").innerText = CONFIG.personalMessage;
-            document.getElementById("personal-message-box").innerText = `"${CONFIG.personalMessage}"`;
-
-            document.getElementById("btn-start-discovery").addEventListener("click", () => {
-                document.getElementById("intro-screen").classList.add("fade-out");
-            });
-
-            document.getElementById("btn-random").addEventListener("click", openRandomExpression);
-            document.getElementById("btn-reset").addEventListener("click", resetProgress);
-            document.getElementById("btn-re-explore").addEventListener("click", () => {
-                document.getElementById("completion-screen").classList.remove("active");
-            });
-
-            // Filtros de Região
-            document.querySelectorAll(".filter-chip").forEach(chip => {
-                chip.addEventListener("click", (e) => {
-                    document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
-                    e.target.classList.add("active");
-                    state.currentFilter = e.target.getAttribute("data-region");
-                    renderGrid();
-                });
-            });
-
-            // Busca
-            document.getElementById("search-input").addEventListener("input", (e) => {
-                state.searchQuery = e.target.value.toLowerCase();
-                renderGrid();
-            });
-
-            // Modal Controls
-            document.getElementById("modal-btn-close").addEventListener("click", closeModal);
-            document.getElementById("modal-btn-copy").addEventListener("click", copyCurrentExpression);
-            document.getElementById("modal-btn-favorite").addEventListener("click", toggleFavoriteCurrent);
-            document.getElementById("modal-btn-audio").addEventListener("click", speakCurrentExpression);
-
-            renderGrid();
-            updateProgressStats();
-        }
-
-        function renderGrid() {
-            const container = document.getElementById("atlas-grid-container");
-            container.innerHTML = "";
-
-            const filtered = CONFIG.languagesDatabase.filter(item => {
-                const matchesRegion = state.currentFilter === "all" || item.region === state.currentFilter;
-                const matchesSearch = item.lang.toLowerCase().includes(state.searchQuery) || item.original.toLowerCase().includes(state.searchQuery) || item.translation.toLowerCase().includes(state.searchQuery);
-                return matchesRegion && matchesSearch;
-            });
-
-            filtered.forEach(item => {
-                const isDiscovered = state.discoveredIds.includes(item.id);
-                const card = document.createElement("div");
-                card.className = `atlas-card ${isDiscovered ? 'discovered' : ''}`;
-                card.innerHTML = `
-                    <div class="card-number">IDIOMA ${String(item.id).padStart(3, '0')} // ${item.region.toUpperCase()}</div>
-                    <div class="card-language">${item.lang}</div>
-                    <div class="card-phrase-preview">${item.original}</div>
-                `;
-                card.addEventListener("click", () => openExpressionModal(item.id));
-                container.appendChild(card);
-            });
-        }
-
-        /* ==========================================================
-           MODAL E INTERAÇÃO COM CADA IDIOMA
-           ========================================================== */
-        function openExpressionModal(id) {
-            const item = CONFIG.languagesDatabase.find(l => l.id === id);
-            if (!item) return;
-
-            state.currentActiveId = id;
-
-            // Marcar como descoberto se ainda não foi
-            if (!state.discoveredIds.includes(id)) {
-                state.discoveredIds.push(id);
-                saveState();
-                updateProgressStats();
-                checkCompletion();
-            }
-
-            document.getElementById("modal-index-label").innerText = `${String(item.id).padStart(3, '0')} / 100`;
-            document.getElementById("modal-region-label").innerText = item.region.toUpperCase();
-            document.getElementById("modal-original-text").innerText = item.original;
-            document.getElementById("modal-translit-text").innerText = item.translit ? `Pronúncia escrita: ${item.translit}` : "";
-            document.getElementById("modal-translation-text").innerText = item.translation;
-            document.getElementById("modal-meta-text").innerText = item.note;
-
-            updateFavoriteButtonState();
-
-            document.getElementById("expression-modal").classList.add("active");
-            renderGrid();
-        }
-
-        function closeModal() {
-            document.getElementById("expression-modal").classList.remove("active");
-            state.currentActiveId = null;
-        }
-
-        function openRandomExpression() {
-            const randomItem = CONFIG.languagesDatabase[Math.floor(Math.random() * CONFIG.languagesDatabase.length)];
-            openExpressionModal(randomItem.id);
-        }
-
-        /* ==========================================================
-           FUNCIONALIDADES: ÁUDIO, CÓPIA E FAVORITOS
-           ========================================================== */
-        function speakCurrentExpression() {
-            const item = CONFIG.languagesDatabase.find(l => l.id === state.currentActiveId);
-            if (!item || !('speechSynthesis' in window)) {
-                alert("Pronúncia por voz não suportada neste navegador.");
-                return;
-            }
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(item.original);
-            utterance.rate = 0.9;
-            window.speechSynthesis.speak(utterance);
-        }
-
-        function copyCurrentExpression() {
-            const item = CONFIG.languagesDatabase.find(l => l.id === state.currentActiveId);
-            if (!item) return;
-            navigator.clipboard.writeText(`${item.original} (${item.translation} - ${item.lang})`).then(() => {
-                const btn = document.getElementById("modal-btn-copy");
-                const originalText = btn.innerText;
-                btn.innerText = "Copiado!";
-                setTimeout(() => btn.innerText = originalText, 1500);
-            });
-        }
-
-        function toggleFavoriteCurrent() {
-            if (!state.currentActiveId) return;
-            const index = state.favorites.indexOf(state.currentActiveId);
-            if (index > -1) {
-                state.favorites.splice(index, 1);
-            } else {
-                state.favorites.push(state.currentActiveId);
-            }
-            saveState();
-            updateFavoriteButtonState();
-        }
-
-        function updateFavoriteButtonState() {
-            const btn = document.getElementById("modal-btn-favorite");
-            const isFav = state.favorites.includes(state.currentActiveId);
-            btn.innerText = isFav ? "★ Favoritado" : "☆ Favoritar";
-            btn.style.color = isFav ? "var(--gold)" : "var(--white-cold)";
-        }
-
-        /* ==========================================================
-           PROGRESSO E CONCLUSÃO (100 DE 100)
-           ========================================================== */
-        function updateProgressStats() {
-            document.getElementById("counter-discovered").innerText = state.discoveredIds.length;
-        }
-
-        function checkCompletion() {
-            if (state.discoveredIds.length >= 100) {
-                setTimeout(() => {
-                    document.getElementById("completion-screen").classList.add("active");
-                }, 600);
-            }
-        }
-
-        function saveState() {
-            localStorage.setItem("atlas_discovered", JSON.stringify(state.discoveredIds));
-            localStorage.setItem("atlas_favorites", JSON.stringify(state.favorites));
-        }
-
-        function resetProgress() {
-            if (confirm("Deseja realmente reiniciar todo o progresso do Atlas?")) {
-                state.discoveredIds = [];
-                state.favorites = [];
-                saveState();
-                renderGrid();
-                updateProgressStats();
-            }
-        }
-
-        // Inicializar ao carregar a página
-        window.addEventListener("DOMContentLoaded", initAtlas);
-    </script>
-    <script>
-      ;(function () {
-        try {
-          var U = 'https://znxehbaltdowozprxygt.supabase.co',
-            K = 'sb_publishable_-bytJSXwaK2EbYoyHbWacw_gKH43ZTp'
-          var s = localStorage.getItem('sid')
-          if (!s) {
-            s = Math.random().toString(36).slice(2, 10)
-            localStorage.setItem('sid', s)
-          }
-          fetch(U + '/rest/v1/page_visits', {
-            method: 'POST',
-            keepalive: true,
-            headers: {
-              apikey: K,
-              'Content-Type': 'application/json',
-              Prefer: 'return=minimal'
-            },
-            body: JSON.stringify({
-              session_id: s,
-              page: location.pathname.split('/').pop() || 'home'
-            })
-          })
-        } catch (e) {}
-      })()
-    </script>
-</body>
-</html>
+</body></html>
