@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         gatilho: '#coracao-secreto',
         titulo: 'Tem algo escondido aqui... 🤫',
         texto: 'Qual é a nossa senha?',
-        senhas: ['VoceAcha'],
+        senhas: ['VoceAchaQueAcabou'],
         sucesso: 'Então era verdade... ainda existiam muitos, muitos mais motivos. ❤️'
       },
 
@@ -31,8 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
       {
         faixa: [2001, 3000],
         tipo: 'cliques',
-        cliques: 5,
-        dica: 'Existe um coraçãozinho escondido lá no fim da página. Quem sabe ele goste de carinho...',
+        cliques: 10,
+        dica: '',
         sucesso: 'O coração gostou do carinho. Os motivos 2001 a 3000 são seus. ❤️'
       },
 
@@ -44,8 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
         dica: 'Clique em um dos botões trancados para aceitar o desafio.',
         perguntas: [
           { p: 'Uma coisa que você odeie que eu use', r: ['bone'] },
-          { p: 'Uma coisa que eu preciso para viver', r: ['você','Julia'] },
-          { p: 'Lugar que você me deixa no vácuo', r: ['tiktok'] }
+          { p: 'Eu...', r: ['te amo'] },
+          { p: 'Uma coisa que eu preciso para viver', r: ['você','Julia'] }
         ],
         sucesso: 'Você me conhece mesmo. Os motivos 3001 a 4000 são seus. ❤️'
       },
@@ -55,8 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
         faixa: [4001, 5000],
         tipo: 'senha',
         titulo: 'Os últimos motivos... 🔐',
-        texto: 'Qual é a palavra (ou a data) mais importante de nós dois?',
-        senhas: ['liberado'],
+        texto: 'Não entendo de falar de amor, então vou ter que ler....',
+        senhas: ['entrelinhas'],
         dica: 'Clique em um dos botões trancados. A resposta só você sabe.',
         sucesso: 'Todos os 5000 motivos estão liberados. E mesmo assim, o amor continua. ❤️'
       }
